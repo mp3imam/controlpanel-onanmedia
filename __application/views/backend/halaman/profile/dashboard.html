@@ -1,0 +1,90 @@
+<section class="content" style="min-height:550px;">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="box box-primary" style="margin-top:50px;">
+                <div class="box-header with-border" style="border-bottom:4px double #ddd;">
+                    <h3 class="box-title"><b>PROFILE USER</b></h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <center>
+                                <h1 style="font-size:20px; font-weight:bold; margin:10px 0px 10px;">B J S  -  D I G I T A L</h1>
+                                <img src="{$host}__assets/images/logo-bjs.png" style="width:130px;" />
+                                <br/>
+                                <br/>
+                                <h1 style="font-size:20px; font-weight:bold; margin:5px 0px 0px;">PT. BIANTARA JAYA SERVICES</h1>
+                            </center>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="table-responsive">
+                                <table class="table no-border" width="100%" style="font-weight:bold;">
+                                    <tr>
+                                        <td class="text-left" width="180">USER BJS-DIGITAL</td>
+                                        <td class="text-center" width="30">:</td>
+                                        <td class="text-left">{$auth.username|default:'-'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left" >NAMA PERUSAHAAN</td>
+                                        <td class="text-center" >:</td>
+                                        <td class="text-left">{$auth.nama_perusahaan|default:'-'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">ALAMAT</td>
+                                        <td class="text-center">:</td>
+                                        <td class="text-left">{$auth.alamat|default:'-'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">EMAIL</td>
+                                        <td class="text-center">:</td>
+                                        <td class="text-left">{$auth.email|default:'-'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">NAMA PIC</td>
+                                        <td class="text-center">:</td>
+                                        <td class="text-left">{$auth.pic|default:'-'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">NPWP</td>
+                                        <td class="text-center">:</td>
+                                        <td class="text-left">{$auth.npwp|default:'-'}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-12">
+                            <div class="small-box bg-green">
+                                <div class="inner">
+                                  <h3>{$data.total_order|number_format:0:",":"."|default:'0'}</h3>
+                                  <h4 style="font-size:26px;font-weight: bold;">TOTAL ORDER AKTIF</h4>
+                                </div>
+                                <div class="icon">
+                                  <i class="fa fa-address-book"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Buka Data Order <i class="fa fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xs-12">
+                            <!-- small box -->
+                            <div class="small-box bg-yellow">
+                               <div class="inner">
+                                    <h3>{$data.total_invoice|number_format:0:",":"."|default:'0'}</h3>
+                                    <h4 style="font-size:26px;font-weight: bold;">TOTAL INVOICE PROSES</h4>
+                               </div>
+                               <div class="icon">
+                                  <i class="fa fa-file-text-o"></i>
+                               </div>
+                               <a href="#" class="small-box-footer">Buka Data Invoice <i class="fa fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BJS-DIGITAL WEB</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    {literal}
+    <style>
+        @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
+        .login-block{
+            background: #DE6262;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to bottom, #FFB88C, #DE6262);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to bottom, #FFB88C, #DE6262); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            float:left;
+            width:100%;
+            min-height:100vh;
+            padding : 90px 0;
+        }
+        .banner-sec{background:url(__assets/images/bjs-office.jpg)  no-repeat left bottom; background-size:cover; min-height:500px; border-radius: 0 10px 10px 0; padding:0;}
+        .container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}
+        .carousel-inner{border-radius:0 10px 10px 0;}
+        .carousel-caption{text-align:left; left:5%;}
+        .login-sec{padding: 50px 30px; position:relative;}
+        .login-sec .copy-text{position:absolute; width:80%; bottom:20px; font-size:13px; text-align:center;}
+        .login-sec .copy-text i{color:#FEB58A;}
+        .login-sec .copy-text a{color:#E36262;}
+        .login-sec h2{margin-bottom:30px; font-weight:800; font-size:20px; color: #DE6262;}
+        .login-sec h2:after{content:" "; width:100px; height:5px; background:#FEB58A; display:block; margin-top:20px; border-radius:3px; margin-left:auto;margin-right:auto}
+        .btn-login{background: #DE6262; color:#fff; font-weight:600;}
+        .banner-text{width:70%; position:absolute; bottom:40px; padding-left:20px;}
+        .banner-text h2{color:#fff; font-weight:600;}
+        .banner-text h2:after{content:" "; width:100px; height:5px; background:#FFF; display:block; margin-top:20px; border-radius:3px;}
+        .banner-text p{color:#fff;}
+    </style>
+    {/literal}
+</head>
+<body>
+
+    <section class="login-block">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-4 login-sec">
+                <p align="center">
+                    <img src="{$host}__assets/images/logo-bjsdigital.png" class="img-responsive" style="max-height: 60%; max-width: 60%; height: auto; width: auto;">
+                </p>
+                <!-- <h2 class="text-center">Login User</h2> -->
+                <form class="login-form" role="form" id="login_form" action="{$host}login-app" method="post">
+                    {if isset($error)}
+                        <p style="margin-top:5px;margin-bottom:5px !important;" class="login-box-msg"><b><font color="red">{$error}</font></b></p>
+                    {/if}	
+                    <div class="form-group">
+                        <label for="exampleInputEmail1" class="">username</label>
+                        <input type="text" name="user" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1" class="">password</label>
+                        <input type="password" name="pwd" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-check text-right">
+                        <button type="submit" class="btn btn-login">Login</button>
+                    </div>
+                </form>
+                <br/>
+                <div class="copy-text"><b>PT. BIANTARA JAYA SERVICES @ 2022</b></div>
+            </div>
+                <div class="col-md-8 banner-sec">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        $(document).ready(function() {
+            window.history.pushState(null, "", window.location.href);        
+            window.onpopstate = function() {
+                window.history.pushState(null, "", window.location.href);
+            };
+        });
+    </script>
+</body>
+</html>

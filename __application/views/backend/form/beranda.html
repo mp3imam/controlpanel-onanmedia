@@ -1,0 +1,173 @@
+<section class="content">
+	<div class="row">
+		
+		<div class="col-lg-12">
+			
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="box">
+						<div class="box-body">
+							<div class="row">
+								<div class="col-lg-4 col-xs-12">
+									<div class="small-box bg-green" style="box-shadow: 5px 10px #B2B1B1;">
+										<div class="inner">
+											<p><b>APLIKASI MANAJEMEN ASURANSI</b></p>
+											<h3>BPRS HIKP</h3>
+										</div>
+										<div class="icon">
+											<i class="fa fa-cubes"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-xs-12">
+									<div class="small-box bg-yellow" style="box-shadow: 5px 10px #B2B1B1;">
+										<div class="inner">
+											<p>PANDUAN PENGGUNAAN APLIKASI</p>
+											{if $auth.cl_user_group_id eq '3'}
+												<a href='{$host}__manual/user_legal.pdf' target="_blank" style="color:#fff;"><h3>LIHAT</h3></a>
+											{else}
+												<a href='#' onclick="alert('Panduan Penggunaan Aplikasi Sedang Tahap Pembuatan')" style="color:#fff;"><h3>LIHAT</h3></a>
+											{/if}
+										</div>
+										<div class="icon">
+											<i class="fa fa-book"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-5 col-xs-12">
+									<div class="small-box bg-red" style="box-shadow: 5px 10px #B2B1B1;">
+										<div class="inner">
+											<p>{$auth.nama_cabang|upper|default:'KANTOR PUSAT HIK PARAHYANGAN'}</p>
+											<h3>USER {$auth.user_group|upper|default:'SUPERADMIN'}</h3>
+										</div>
+										<div class="icon">
+											<i class="fa fa-bank"></i>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							<hr/>
+							<div class="row" style="margin-top:15px;">
+								<div class="col-md-12"> 
+									<div class="box box-success">
+										<div class="box-header with-border">
+											<h3 class="box-title">
+												<font color="red" style="font-weight: bold;font-size:18px;">STATISTIK DATA</font>
+											</h3>
+										</div>
+										<div class="box-body">
+											<div class="row">
+												<div class="col-lg-2 col-xs-12"></div>
+												<div class="col-lg-2 col-xs-12"></div>
+												<div class="col-lg-4 col-xs-12">
+													<div class="small-box bg-blue" style="box-shadow: 5px 10px #B2B1B1;">
+														<div class="inner">
+															<p><b>TOTAL DATA TARIKAN CORE BANKING</b></p>
+															<h3>{$jumlah_data.total_data|default:'0'}</h3>
+														</div>
+														<div class="icon">
+															<i class="fa fa-file-text"></i>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-2 col-xs-12"></div>
+												<div class="col-lg-2 col-xs-12"></div>
+											</div>
+											<hr/>
+											<div class="row">
+												<div class="col-lg-3 col-xs-12">
+													<div class="small-box bg-teal" style="box-shadow: 5px 10px #B2B1B1;">
+														<div class="inner">
+															<p><b>BELUM DIPROSES</b></p>
+															<h3>{$belum_proses.total_data|default:'0'}</h3>
+														</div>
+														<div class="icon">
+															<i class="fa fa-check-square"></i>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-3 col-xs-12">
+													<div class="small-box bg-purple" style="box-shadow: 5px 10px #B2B1B1;">
+														<div class="inner">
+															<p><b>SUDAH DIPROSES</b></p>
+															<h3>{$sudah_proses.total_data|default:'0'}</h3>
+														</div>
+														<div class="icon">
+															<i class="fa fa-check-square-o"></i>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-3 col-xs-12">
+													<div class="small-box bg-orange" style="box-shadow: 5px 10px #B2B1B1;">
+														<div class="inner">
+															<p><b>BELUM DIKIRIM</b></p>
+															<h3>{$belum_kirim.total_data|default:'0'}</h3>
+														</div>
+														<div class="icon">
+															<i class="fa fa-check-square"></i>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-3 col-xs-12">
+													<div class="small-box bg-green" style="box-shadow: 5px 10px #B2B1B1;">
+														<div class="inner">
+															<p><b>SUDAH DIKIRIM</b></p>
+															<h3>{$sudah_kirim.total_data|default:'0'}</h3>
+														</div>
+														<div class="icon">
+															<i class="fa fa-check-square"></i>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr/>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+				
+		</div>
+		
+	</div>
+</section>
+
+<script type="text/javascript">
+	$('#generate_{$acak}').on('click', function(){
+		if( $('#bulan').val() == "" ){
+			$.messager.alert('PT. BJS - APPS','Combo Bulan Harus Diisi','warning'); 
+			return false;
+		}
+		if( $('#tahun').val() == "" ){
+			$.messager.alert('PT. BJS - APPS','Combo Tahun Harus Diisi','warning'); 
+			return false;
+		}
+		
+		$.LoadingOverlay("show");
+		$.post(host+'backoffice-display/filter_dashboard', { 'tipe':'gm', 'bulan':$('#bulan').val(), 'tahun':$('#tahun').val() }, function(resp){ 
+			var parse = JSON.parse(resp);
+			$('#dokumen_diajukan').html(parse.dokumen_proses.total_diajukan);
+			$('#dokumen_disetujui').html(parse.dokumen_proses.total_disetujui);
+			$('#dokumen_proses').html(parse.dokumen_proses.total_proses);
+			$('#dokumen_selesai').html(parse.dokumen_proses.total_selesai);
+			
+			$('#legal_diajukan').html(parse.legal_proses.total_diajukan);
+			$('#legal_disetujui').html(parse.legal_proses.total_disetujui);
+			$('#legal_proses').html(parse.legal_proses.total_proses);
+			$('#legal_selesai').html(parse.legal_proses.total_selesai);
+			
+			$('#visa_diajukan').html(parse.visa_proses.total_diajukan);
+			$('#visa_disetujui').html(parse.visa_proses.total_disetujui);
+			$('#visa_proses').html(parse.visa_proses.total_proses);
+			$('#visa_selesai').html(parse.visa_proses.total_selesai);
+			
+			$.LoadingOverlay("hide", true);
+		} );
+	});
+</script>

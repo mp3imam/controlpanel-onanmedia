@@ -1,0 +1,302 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*body {
+    background:url(../image/body-bg.png) repeat;
+}*/
+body {
+  /*background:url(../image/backgrouns.jpg) center !important;*/
+  background: url(../../image/default.jpg) no-repeat center center fixed !important;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover !important;
+}
+
+.card-container.card {
+  width: 350px;
+  padding: 40px 40px;
+}
+
+.btn {
+  font-weight: 700;
+  /*height: 36px;*/
+  height: 34px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/*
+ * Card component
+ */
+.card {
+  background-color: #f7f7f7;
+  /* just in case there no content*/
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  /* shadows and rounded borders */
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+
+/*
+ * Form styles
+ */
+.profile-name-card {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0 0;
+  min-height: 1em;
+}
+
+.reauth-email {
+  display: block;
+  color: #404040;
+  line-height: 2;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.form-signin #inputEmail,
+.form-signin #inputPassword {
+  direction: ltr;
+  height: 44px;
+  font-size: 16px;
+}
+
+.form-signin input[type="email"],
+.form-signin input[type="password"],
+.form-signin input[type="text"],
+.form-signin button {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  z-index: 1;
+  position: relative;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.form-signin .form-control:focus {
+  border-color: rgb(104, 145, 162);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgb(104, 145, 162);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(104, 145, 162);
+}
+
+.btn-signin {
+  /*background-color: #4d90fe; */
+  background-color: rgb(104, 145, 162);
+  /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
+  padding: 0px;
+  font-weight: 700;
+  font-size: 14px;
+  height: 36px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: none;
+  -o-transition: all 0.218s;
+  -moz-transition: all 0.218s;
+  -webkit-transition: all 0.218s;
+  transition: all 0.218s;
+}
+
+.btn-signin:hover,
+.btn-signin:active,
+.btn-signin:focus {
+  background-color: rgb(12, 97, 33);
+}
+
+.forgot-password {
+  color: rgb(104, 145, 162);
+}
+
+.forgot-password:hover,
+.forgot-password:active,
+.forgot-password:focus {
+  color: rgb(12, 97, 33);
+}
+
+/*add*/
+
+.header_login {
+  /*background-image: linear-gradient(to bottom, rgba(115, 64, 14, 1) 0%, rgba(161, 88, 20, 1) 100%);
+    border-bottom: 1px solid #d37922;*/
+  background-image: linear-gradient(
+    to bottom,
+    rgba(115, 64, 14, 0) 0%,
+    rgba(161, 88, 20, 0.28) 100%
+  );
+  border-bottom: 1px solid #7d4a1857;
+  box-shadow: 0 0 140px 0 #331a01;
+  color: #ffffff;
+  margin: -10px 0 0 0;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 30px;
+}
+
+.header_login img {
+  margin: 0px;
+  padding: 0px;
+}
+
+.has-success .input-group-addon {
+  background-color: #dff0d8;
+  border-color: #367fa9 !important;
+  color: #367fa9;
+}
+
+.has-error .input-group-addon {
+  background-color: #f2dede;
+  border-color: #a94442 !important;
+  color: #a94442;
+}
+.btn-pidsus {
+  background-color: #ec407a;
+  border-color: #e91e63;
+  color: #fff;
+}
+.btn-pidsus:hover {
+  background-color: #d81b60;
+  border-color: #e91e63;
+  color: #fff;
+}
+
+/*
+==============================================
+expandUp
+==============================================
+*/
+
+.expandUp {
+  animation-name: expandUp;
+  -webkit-animation-name: expandUp;
+
+  animation-duration: 0.2s;
+  -webkit-animation-duration: 0.7s;
+
+  animation-timing-function: ease;
+  -webkit-animation-timing-function: ease;
+
+  visibility: visible !important;
+}
+
+@keyframes expandUp {
+  0% {
+    transform: translateY(100%) scale(0.6) scaleY(0.5);
+  }
+  60% {
+    transform: translateY(-7%) scaleY(1.12);
+  }
+  75% {
+    transform: translateY(3%);
+  }
+  100% {
+    transform: translateY(0%) scale(1) scaleY(1);
+  }
+}
+
+@-webkit-keyframes expandUp {
+  0% {
+    -webkit-transform: translateY(100%) scale(0.6) scaleY(0.5);
+  }
+  60% {
+    -webkit-transform: translateY(-7%) scaleY(1.12);
+  }
+  75% {
+    -webkit-transform: translateY(3%);
+  }
+  100% {
+    -webkit-transform: translateY(0%) scale(1) scaleY(1);
+  }
+}
+.left-sider {
+  background: #fff;
+  color: #333;
+}
+.left-sider img {
+  width: 362px;
+  margin: 0 auto;
+}
+.notice {
+  margin: 0 0 30px;
+  background: #485156;
+  color: #fff;
+  display: block;
+  padding: 10px;
+  text-align: center;
+  border-radius: 3px;
+  position: relative;
+  display: none;
+}
+.notice::before {
+  content: "";
+  border: 10px solid transparent;
+  border-top: 10px solid #485156;
+  position: absolute;
+  bottom: -20px;
+  left: 30px;
+}
+.login-client {
+  padding: 5px;
+  background: #5c3c16;
+  color: #fff;
+}
+.client-logo {
+  float: left;
+  width: 100px;
+  height: 100px;
+  /*margin-right: 15px;*/
+}
+.client-logo img {
+  /*width: 100px;*/
+  width: 45%;
+}
+.login-client h2 {
+  font-size: 19px;
+  margin-bottom: 5px;
+  margin-top: 12px;
+}
+.login-client p {
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+.heading {
+  text-align: center;
+  color: #fff;
+  padding: 22px;
+  margin: -20px -20px 15px;
+  background: #5c3c16;
+  /*overflow: hidden;*/
+}
+.bg-black {
+}
