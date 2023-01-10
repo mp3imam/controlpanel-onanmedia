@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BJS-DIGITAL WEB</title>
+    <title>ONANMEDIA</title>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <!------ Include the above in your HEAD tag ---------->
     {literal}
     <style>
@@ -43,10 +43,11 @@
             <div class="row">
             <div class="col-md-4 login-sec">
                 <p align="center">
-                    <img src="{$host}__assets/images/logo-bjsdigital.png" class="img-responsive" style="max-height: 60%; max-width: 60%; height: auto; width: auto;">
+                    <!-- <img src="{$host}__assets/images/logo-bjsdigital.png" class="img-responsive" style="max-height: 60%; max-width: 60%; height: auto; width: auto;"> -->
+                    <img src="{$host}__assets/images/logo.png" class="img-responsive" style="max-height: 60%; max-width: 60%; height: auto; width: auto;">
                 </p>
                 <!-- <h2 class="text-center">Login User</h2> -->
-                <form class="login-form" role="form" id="login_form" action="{$host}login-app" method="post">
+                <form class="login-form" role="form" id="login_form" action="{$host}index.php/login-app" method="post">
                     {if isset($error)}
                         <p style="margin-top:5px;margin-bottom:5px !important;" class="login-box-msg"><b><font color="red">{$error}</font></b></p>
                     {/if}	
@@ -63,12 +64,14 @@
                     </div>
                 </form>
                 <br/>
-                <div class="copy-text"><b>PT. BIANTARA JAYA SERVICES @ 2022</b></div>
+                <!-- <div class="copy-text"><b>PT. BIANTARA JAYA SERVICES @ 2022</b></div> -->
+                <div class="copy-text"><b>ONANMEDIA @ 2023</b></div>
             </div>
-                <div class="col-md-8 banner-sec">
+                <div class="col-md-8 banner-sec" style="background:url({$host}__assets/images/bjs-office.jpg)  no-repeat left bottom; background-size:cover; min-height:500px; border-radius: 0 10px 10px 0; padding:0;">
                     
                 </div>
             </div>
+            <h1></h1>
         </div>
     </section>
 

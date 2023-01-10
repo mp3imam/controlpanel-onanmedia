@@ -1,49 +1,54 @@
-<?php if (!defined('BASEPATH')) {exit('No direct script access allowed');}
+<?php if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
 //
-class Mbackend extends CI_Model{
-	function __construct(){
+class Mbackend extends CI_Model
+{
+	function __construct()
+	{
 		parent::__construct();
 		$this->auth = unserialize(base64_decode($this->session->userdata('bj5d1g1t4l')));
 	}
-	
-	function getdata($type="", $balikan="", $p1="", $p2="",$p3="",$p4=""){
+
+	function getdata($type = "", $balikan = "", $p1 = "", $p2 = "", $p3 = "", $p4 = "")
+	{
 		$array = array();
 		$where  = " WHERE 1=1 ";
 		$where2 = "";
-		
+
 		$cabang = $this->input->post('kantor_cabang');
 		$key = $this->input->post('key');
 		$kat = $this->input->post('kat');
 		$array_pass = array(
-			'no_transaksi', 
+			'no_transaksi',
 			'no_dokumen',
 			'no_cif',
 			'nama_nasabah',
 			'no_rekening',
 		);
 
-		if($key != "" && $kat != "" && !in_array($kat, $array_pass) ){
-			$where .= " AND LOWER(".$kat.") like '%".strtolower(trim($key))."%' ";				
+		if ($key != "" && $kat != "" && !in_array($kat, $array_pass)) {
+			$where .= " AND LOWER(" . $kat . ") like '%" . strtolower(trim($key)) . "%' ";
 		}
 
-		switch($type){
+		switch ($type) {
 
 			case "total_order":
 				$sql = "
 					select count(id) as total
 					from tbl_order_header
 					where status_data in ('DISETUJUI DIRUT', 'SUDAH DITRANSFER', 'PROSES', 'PROSES SELESAI', 'SELESAI')
-					and tbl_klien_id = '".$this->auth['id']."'
+					and tbl_klien_id = '" . $this->auth['id'] . "'
 				";
-			break;
+				break;
 			case "total_invoice":
 				$sql = "
 					select count(id) as total
 					from tbl_invoice_header
 					where status_data in ('DIBUAT', 'TERKIRIM', 'REQUEST KIRIM', 'PROSES KIRIM')
-					and tbl_klien_id = '".$this->auth['id']."'
+					and tbl_klien_id = '" . $this->auth['id'] . "'
 				";
-			break;
+				break;
 
 			case "order":
 				$sql = "
@@ -60,9 +65,9 @@ class Mbackend extends CI_Model{
 							ELSE 'TIDAK ADA STATUS'
 						END AS status_data
 					from bjsdigital.vw_order_header a
-					$where and a.tbl_klien_id = '".$this->auth['id']."'					
+					$where and a.tbl_klien_id = '" . $this->auth['id'] . "'					
 				";
-			break;
+				break;
 
 
 			case "aplikasi_sso":
@@ -73,11 +78,11 @@ class Mbackend extends CI_Model{
 					left join tbl_aplikasi b on b.id = a.tbl_aplikasi_id
 					left join tbl_aplikasi_grup c on c.id = a.tbl_aplikasi_grup_id
 					left join tbl_user_sso d on d.id = a.tbl_user_sso_id
-					where a.tbl_user_sso_id = '".$p1."'
+					where a.tbl_user_sso_id = '" . $p1 . "'
 				";
 				$data = $this->db->query($sql)->result_array();
-				if($data){
-					foreach($data as $k => $v){
+				if ($data) {
+					foreach ($data as $k => $v) {
 						$session['id'] = $v['id'];
 						$session['username'] = $v['username'];
 						$session['password'] = "";
@@ -86,39 +91,39 @@ class Mbackend extends CI_Model{
 						$session['user_group'] = $v['nama_grup'];
 						$session['from'] = "SSOHIKP";
 
-						$data[$k]['link'] = $v['url']."?code=".base64_encode( json_encode($session) );
+						$data[$k]['link'] = $v['url'] . "?code=" . base64_encode(json_encode($session));
 						//$data[$k]['decode'] = $session;
 					}
 				}
 
 				$array = $data;
-			break;
+				break;
 			case "data_login_sso":
 				$sql = "
 					SELECT a.*
 					FROM tbl_user_sso a
-					WHERE a.username = '".$p1."'
+					WHERE a.username = '" . $p1 . "'
 				";
-			break;
+				break;
 			case "data_login":
 				$sql = "
 					SELECT A.*, B.user_group
 					FROM tbl_user A
 					LEFT JOIN cl_user_group B ON B.id = A.cl_user_group_id
-					WHERE A.username = '".$p1."' ORDER BY A.id DESC
+					WHERE A.username = '" . $p1 . "' ORDER BY A.id DESC
 				";
-			break;
-			
+				break;
+
 			case "aplikasi_sso_role":
 				$id = $this->input->post('id') ?? "0";
-				
+
 				$sql = "
 					select a.id, a.nama
 					from tbl_aplikasi a
 				";
 				$data = $this->db->query($sql)->result_array();
-				
-				foreach($data as $k => $v){
+
+				foreach ($data as $k => $v) {
 					$sdetail = "
 						select a.id, a.nama as nama_grup
 						from tbl_aplikasi_grup a
@@ -137,14 +142,14 @@ class Mbackend extends CI_Model{
 				}
 
 				$array = $data;
-			break;
+				break;
 			case "akses_sso":
 				$sql = "
 					SELECT a.*
 					FROM tbl_user_sso a
 					$where 
 				";
-			break;
+				break;
 			case "tbl_user":
 				$sql = "
 					SELECT A.*, B.user_group
@@ -154,76 +159,75 @@ class Mbackend extends CI_Model{
 				";
 
 				// and cl_user_group_id <> '4'
-			break;
+				break;
 			case "menu":
 				$sql = "
 					SELECT a.tbl_menu_id, b.nama_menu, b.type_menu, b.icon_menu, b.url, b.ref_tbl
 						FROM tbl_user_prev_group a
 					LEFT JOIN tbl_user_menu b ON a.tbl_menu_id = b.id 
-					WHERE a.cl_user_group_id=".$this->auth['cl_user_group_id']." 
+					WHERE a.cl_user_group_id=" . $this->auth['cl_user_group_id'] . " 
 					AND (b.type_menu='P' OR b.type_menu='PC') AND b.status='1'
 					ORDER BY b.urutan ASC
 				";
-				
+
 				$parent = $this->db->query($sql)->result_array();
 				$menu = array();
-				foreach($parent as $v){
-					$menu[$v['tbl_menu_id']]=array();
-					$menu[$v['tbl_menu_id']]['parent']=$v['nama_menu'];
-					$menu[$v['tbl_menu_id']]['icon_menu']=$v['icon_menu'];
-					$menu[$v['tbl_menu_id']]['url']=$v['url'];
-					$menu[$v['tbl_menu_id']]['type_menu']=$v['type_menu'];
-					$menu[$v['tbl_menu_id']]['judul_kecil']=$v['ref_tbl'];
-					$menu[$v['tbl_menu_id']]['child']=array();
-					$sql="
+				foreach ($parent as $v) {
+					$menu[$v['tbl_menu_id']] = array();
+					$menu[$v['tbl_menu_id']]['parent'] = $v['nama_menu'];
+					$menu[$v['tbl_menu_id']]['icon_menu'] = $v['icon_menu'];
+					$menu[$v['tbl_menu_id']]['url'] = $v['url'];
+					$menu[$v['tbl_menu_id']]['type_menu'] = $v['type_menu'];
+					$menu[$v['tbl_menu_id']]['judul_kecil'] = $v['ref_tbl'];
+					$menu[$v['tbl_menu_id']]['child'] = array();
+					$sql = "
 						SELECT a.tbl_menu_id, b.nama_menu, b.url, b.icon_menu , b.type_menu, b.ref_tbl
 							FROM tbl_user_prev_group a
 						LEFT JOIN tbl_user_menu b ON a.tbl_menu_id = b.id 
-						WHERE a.cl_user_group_id=".$this->auth['cl_user_group_id']." 
+						WHERE a.cl_user_group_id=" . $this->auth['cl_user_group_id'] . " 
 						AND (b.type_menu = 'C' OR b.type_menu = 'CHC') 
-						AND b.status='1' AND b.parent_id=".$v['tbl_menu_id']." 
+						AND b.status='1' AND b.parent_id=" . $v['tbl_menu_id'] . " 
 						ORDER BY b.urutan ASC
 						";
 					$child = $this->db->query($sql)->result_array();
-					foreach($child as $x){
-						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]=array();
-						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['menu']=$x['nama_menu'];
-						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['type_menu']=$x['type_menu'];
-						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['url']=$x['url'];
-						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['icon_menu']=$x['icon_menu'];
-						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['judul_kecil']=$x['ref_tbl'];
-						
-						if($x['type_menu'] == 'CHC'){
+					foreach ($child as $x) {
+						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']] = array();
+						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['menu'] = $x['nama_menu'];
+						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['type_menu'] = $x['type_menu'];
+						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['url'] = $x['url'];
+						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['icon_menu'] = $x['icon_menu'];
+						$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['judul_kecil'] = $x['ref_tbl'];
+
+						if ($x['type_menu'] == 'CHC') {
 							$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['sub_child'] = array();
-							$sqlSubChild="
+							$sqlSubChild = "
 								SELECT a.tbl_menu_id, b.nama_menu, b.url, b.icon_menu , b.type_menu, b.ref_tbl
 									FROM tbl_user_prev_group a
 								LEFT JOIN tbl_user_menu b ON a.tbl_menu_id = b.id 
-								WHERE a.cl_user_group_id=".$this->auth['cl_user_group_id']." 
+								WHERE a.cl_user_group_id=" . $this->auth['cl_user_group_id'] . " 
 								AND b.type_menu = 'CC'
-								AND b.parent_id_2 = ".$x['tbl_menu_id']."
+								AND b.parent_id_2 = " . $x['tbl_menu_id'] . "
 								AND b.status='1' 
 								ORDER BY b.urutan ASC
 							";
 							$SubChild = $this->db->query($sqlSubChild)->result_array();
-							foreach($SubChild as $z){
+							foreach ($SubChild as $z) {
 								$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['sub_child'][$z['tbl_menu_id']]['sub_menu'] = $z['nama_menu'];
 								$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['sub_child'][$z['tbl_menu_id']]['type_menu'] = $z['type_menu'];
 								$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['sub_child'][$z['tbl_menu_id']]['url'] = $z['url'];
 								$menu[$v['tbl_menu_id']]['child'][$x['tbl_menu_id']]['sub_child'][$z['tbl_menu_id']]['icon_menu'] = $z['icon_menu'];
 							}
 						}
-						
 					}
 				}
-				
+
 				/*
 				echo "<pre>";
 				print_r($menu);exit;
 				//*/
-				
+
 				$array = $menu;
-			break;		
+				break;
 
 			case "menu_parent":
 				$sql = "
@@ -232,71 +236,73 @@ class Mbackend extends CI_Model{
 					WHERE (A.type_menu = 'P' OR A.type_menu = 'PC') AND A.status = '1'
 					ORDER BY A.urutan ASC
 				";
-			break;
+				break;
 			case "menu_child":
 				$sql = "
 					SELECT A.*
 					FROM tbl_user_menu A
-					WHERE (A.type_menu = 'C') AND A.parent_id = '".$p1."' AND A.status = '1'
+					WHERE (A.type_menu = 'C') AND A.parent_id = '" . $p1 . "' AND A.status = '1'
 					ORDER BY A.urutan ASC
 				";
-			break;
+				break;
 			case "menu_child_2":
 				$sql = "
 					SELECT A.*
 					FROM tbl_user_menu A
-					WHERE A.type_menu = 'CC' AND A.parent_id_2 = '".$p1."' AND A.status = '1'
+					WHERE A.type_menu = 'CC' AND A.parent_id_2 = '" . $p1 . "' AND A.status = '1'
 					ORDER BY A.urutan ASC
 				";
-			break;
+				break;
 			case "previliges_menu":
 				$sql = "
 					SELECT A.*
 					FROM tbl_user_prev_group A
-					WHERE A.tbl_menu_id = '".$p1."' AND A.cl_user_group_id = '".$p2."'
+					WHERE A.tbl_menu_id = '" . $p1 . "' AND A.cl_user_group_id = '" . $p2 . "'
 				";
-			break;		
-			// End Modul User Management
-			
-			
+				break;
+				// End Modul User Management
+
+
 			default:
-				if($balikan=='get'){$where .=" AND A.id=".$this->input->post('id');}
-				$sql="
+				if ($balikan == 'get') {
+					$where .= " AND A.id=" . $this->input->post('id');
+				}
+				$sql = "
 					SELECT ROW_NUMBER() OVER (ORDER BY A.id DESC) as rowID, A.*
-					FROM ".$type." A ".$where."
+					FROM " . $type . " A " . $where . "
 				";
-				if($balikan=='get')return $this->db->query($sql)->row_array();
-			break;
+				if ($balikan == 'get') return $this->db->query($sql)->row_array();
+				break;
 		}
-		
-		if($balikan == 'json'){
-			return $this->lib->json_grid($sql,$type);
-		}elseif($balikan == 'row_array'){
+
+		if ($balikan == 'json') {
+			return $this->lib->json_grid($sql, $type);
+		} elseif ($balikan == 'row_array') {
 			return $this->db->query($sql)->row_array();
-		}elseif($balikan == 'result'){
+		} elseif ($balikan == 'result') {
 			return $this->db->query($sql)->result();
-		}elseif($balikan == 'result_array'){
+		} elseif ($balikan == 'result_array') {
 			return $this->db->query($sql)->result_array();
-		}elseif($balikan == 'json_encode'){
+		} elseif ($balikan == 'json_encode') {
 			//$data = $this->db->query($sql)->result_array(); 
 			//header('Content-Type: application/json; charset=utf-8');
 			return json_encode($data);
-		}elseif($balikan == 'variable'){
+		} elseif ($balikan == 'variable') {
 			return $array;
 		}
-		
 	}
-	
-	function get_combo($type="", $p1="", $p2=""){
+
+	function get_combo($type = "", $p1 = "", $p2 = "")
+	{
 		$where = "WHERE 1=1 ";
-		switch($type){
-			
+		switch ($type) {
+
 			case "cl_status":
 				$sql = "
 					SELECT id, nama_status as txt
 					FROM $type 
 				";
-			break;
+				break;
 			case "cl_kantor_cabang":
 				$sql = "
 					SELECT a.id_cb as id, a.nama as txt
@@ -304,74 +310,79 @@ class Mbackend extends CI_Model{
 					$where 
 				";
 				// and ( a.nama_cabang like '%Cabang%' or a.nama_cabang like '%Pusat%' )
-			break;
+				break;
 			case "cl_type":
 				$sql = "
 					SELECT id, nama_type as txt
 					FROM cl_type
 				";
-			break;
+				break;
 			case "cl_user_group":
 				$sql = "
 					SELECT id, user_group as txt
 					FROM cl_user_group
 					$where and id <> '4'
 				";
-			break;
-			
+				break;
+
 			default:
-				$txt = str_replace("cl_","",$type);
+				$txt = str_replace("cl_", "", $type);
 				$sql = "
 					SELECT id, $txt as txt
 					FROM $type
 				";
-			break;
+				break;
 		}
-		
+
 		return $this->db->query($sql)->result_array();
 	}
-	
-	function simpandata($table,$data,$sts_crud){ //$sts_crud --> STATUS NYEE INSERT, UPDATE, DELETE
+
+	function simpandata($table, $data, $sts_crud)
+	{ //$sts_crud --> STATUS NYEE INSERT, UPDATE, DELETE
 		$this->db->trans_begin();
-		if(isset($data['id'])){
+		if (isset($data['id'])) {
 			$id = $data['id'];
 			unset($data['id']);
 		}
-		
-		if($sts_crud == "add"){
+
+		if ($sts_crud == "add") {
 			$data['create_date'] = date('Y-m-d H:i:s');
 			$data['create_by'] = $this->auth['nama_lengkap'];
-				
+
 			unset($data['id']);
 		}
-		
-		if($sts_crud == "edit"){
+
+		if ($sts_crud == "edit") {
 			$data['update_date'] = date('Y-m-d H:i:s');
 			$data['update_by'] = $this->auth['nama_lengkap'];
 		}
-		
-		switch($table){
+
+		switch ($table) {
 
 			case "akses_sso":
-				if($sts_crud == "add" || $sts_crud == "edit"){
+				if ($sts_crud == "add" || $sts_crud == "edit") {
 					$tbl_aplikasi_id = $data['tbl_aplikasi_id'];
 					$tbl_aplikasi_grup_id = $data['tbl_aplikasi_grup_id'];
 
 					$data['password'] =  $this->encryption->encrypt($data['password']);
 
-					if(isset($data['tbl_aplikasi_id'])){ unset($data['tbl_aplikasi_id']); }
-					if(isset($data['tbl_aplikasi_grup_id'])){ unset($data['tbl_aplikasi_grup_id']); }
+					if (isset($data['tbl_aplikasi_id'])) {
+						unset($data['tbl_aplikasi_id']);
+					}
+					if (isset($data['tbl_aplikasi_grup_id'])) {
+						unset($data['tbl_aplikasi_grup_id']);
+					}
 				}
 
-				if($sts_crud == "add"){
+				if ($sts_crud == "add") {
 					$insert = $this->db->insert('tbl_user_sso', $data);
 					$id = $this->db->insert_id();
 
-					if($insert){
-						foreach($tbl_aplikasi_id as $k => $v){
-							if($v != ""){
+					if ($insert) {
+						foreach ($tbl_aplikasi_id as $k => $v) {
+							if ($v != "") {
 								$arr_detail = array(
-									'id' => time().$k,
+									'id' => time() . $k,
 									'tbl_user_sso_id' => $id,
 									'tbl_aplikasi_id' => $v,
 									'tbl_aplikasi_grup_id' => $tbl_aplikasi_grup_id[$v],
@@ -382,15 +393,15 @@ class Mbackend extends CI_Model{
 					}
 				}
 
-				if($sts_crud == "edit"){
-					$update = $this->db->update('tbl_user_sso', $data, array('id'=>$id) );
+				if ($sts_crud == "edit") {
+					$update = $this->db->update('tbl_user_sso', $data, array('id' => $id));
 
-					if($update){
-						$this->db->delete('tbl_user_sso_role', array('tbl_user_sso_id'=>$id) );
-						foreach($tbl_aplikasi_id as $k => $v){
-							if($v != ""){
+					if ($update) {
+						$this->db->delete('tbl_user_sso_role', array('tbl_user_sso_id' => $id));
+						foreach ($tbl_aplikasi_id as $k => $v) {
+							if ($v != "") {
 								$arr_detail = array(
-									'id' => time().$k,
+									'id' => time() . $k,
 									'tbl_user_sso_id' => $id,
 									'tbl_aplikasi_id' => $v,
 									'tbl_aplikasi_grup_id' => $tbl_aplikasi_grup_id[$v],
@@ -400,81 +411,81 @@ class Mbackend extends CI_Model{
 						}
 					}
 				}
-				
-				if($sts_crud == "delete"){
-					$this->db->delete('tbl_user_sso_role', array('tbl_user_sso_id'=>$id) );
-					$this->db->delete('tbl_user_sso', array('id'=>$id) );
+
+				if ($sts_crud == "delete") {
+					$this->db->delete('tbl_user_sso_role', array('tbl_user_sso_id' => $id));
+					$this->db->delete('tbl_user_sso', array('id' => $id));
 				}
-				
+
 				$sts_crud = "ablahu";
-			break;
-			
+				break;
+
 			case "user_role_group":
 				$id_group = $id;
-				$this->db->delete('tbl_user_prev_group', array('cl_user_group_id'=>$id_group) );
-				if(isset($data['data'])){
+				$this->db->delete('tbl_user_prev_group', array('cl_user_group_id' => $id_group));
+				if (isset($data['data'])) {
 					$postdata = $data['data'];
-					$row=array();
-					foreach($postdata as $v){
-						$pecah = explode("_",$v);
-						$row["buat"]=0;
-						$row["baca"]=0;
-						$row["ubah"]=0;
-						$row["hapus"]=0;
-						
-						switch($pecah[0]){
+					$row = array();
+					foreach ($postdata as $v) {
+						$pecah = explode("_", $v);
+						$row["buat"] = 0;
+						$row["baca"] = 0;
+						$row["ubah"] = 0;
+						$row["hapus"] = 0;
+
+						switch ($pecah[0]) {
 							case "C":
-								$row["buat"]=1;
-							break;
+								$row["buat"] = 1;
+								break;
 							case "R":
-								$row["baca"]=1;
-							break;
+								$row["baca"] = 1;
+								break;
 							case "U":
-								$row["ubah"]=1;
-							break;
+								$row["ubah"] = 1;
+								break;
 							case "D":
-								$row["hapus"]=1;
-							break;
+								$row["hapus"] = 1;
+								break;
 						}
-						
+
 						$row["tbl_menu_id"] = $pecah[1];
 						$row["cl_user_group_id"] = $id_group;
-						
-						$cek_data = $this->db->get_where('tbl_user_prev_group', array('tbl_menu_id'=>$pecah[1], 'cl_user_group_id'=>$id_group) )->row_array();
-						if(!$cek_data){
+
+						$cek_data = $this->db->get_where('tbl_user_prev_group', array('tbl_menu_id' => $pecah[1], 'cl_user_group_id' => $id_group))->row_array();
+						if (!$cek_data) {
 							$row['create_date'] = date('Y-m-d H:i:s');
 							$row['create_by'] = $this->auth['nama_lengkap'];
-							
+
 							$this->db->insert('tbl_user_prev_group', $row);
-						}else{
-							if($row["buat"]==0)unset($row["buat"]);
-							if($row["baca"]==0)unset($row["baca"]);
-							if($row["ubah"]==0)unset($row["ubah"]);
-							if($row["hapus"]==0)unset($row["hapus"]);
+						} else {
+							if ($row["buat"] == 0) unset($row["buat"]);
+							if ($row["baca"] == 0) unset($row["baca"]);
+							if ($row["ubah"] == 0) unset($row["ubah"]);
+							if ($row["hapus"] == 0) unset($row["hapus"]);
 
 							$row['update_date'] = date('Y-m-d H:i:s');
 							$row['update_by'] = $this->auth['nama_lengkap'];
-							
-							$this->db->update('tbl_user_prev_group', $row, array('tbl_menu_id'=>$pecah[1], 'cl_user_group_id'=>$id_group) );
+
+							$this->db->update('tbl_user_prev_group', $row, array('tbl_menu_id' => $pecah[1], 'cl_user_group_id' => $id_group));
 						}
-					}	
+					}
 				}
-			break;
+				break;
 			case "user_mng":
 				$table = "tbl_user";
-				if($sts_crud=='add' || $sts_crud == 'edit'){
-					$data['password']=$this->encrypt->encode($data['password']);
+				if ($sts_crud == 'add' || $sts_crud == 'edit') {
+					$data['password'] = $this->encrypt->encode($data['password']);
 				}
-			break;
+				break;
 			case "user_group":
 				$table = "cl_user_group";
-			break;
+				break;
 			case "ubah_password":
 				$this->load->library("encrypt");
 
 				$table = "tbl_user";
 				$password_lama = $this->encrypt->decode($this->auth["password"]);
-				if($data["pwd_lama"] != $password_lama){
+				if ($data["pwd_lama"] != $password_lama) {
 					echo 2;
 					exit;
 				}
@@ -483,40 +494,69 @@ class Mbackend extends CI_Model{
 
 				unset($data["pwd_lama"]);
 				unset($data["pwd_baru"]);
-			break;
+				break;
 		}
-		
-		switch ($sts_crud){
+
+		switch ($sts_crud) {
 			case "add":
-				$insert = $this->db->insert($table,$data);
+				$insert = $this->db->insert($table, $data);
 				$id = $this->db->insert_id();
-				
-				if($insert){
-					if($table == "tbl_foto"){
-						
+
+				if ($insert) {
+					if ($table == "tbl_foto") {
 					}
 				}
-			break;
+				break;
 			case "edit":
-				$update = $this->db->update($table, $data, array('id' => $id) );	
-				
-				if($update){
-					if($table == "tbl_foto"){
-						
+				$update = $this->db->update($table, $data, array('id' => $id));
+
+				if ($update) {
+					if ($table == "tbl_foto") {
 					}
 				}
-			break;
+				break;
 			case "delete":
-				$this->db->delete($table, array('id' => $id));	
-			break;
+				$this->db->delete($table, array('id' => $id));
+				break;
 		}
-		
-		if($this->db->trans_status() == false){
+
+		if ($this->db->trans_status() == false) {
 			$this->db->trans_rollback();
 			return 'gagal';
-		}else{
-			 return $this->db->trans_commit();
+		} else {
+			return $this->db->trans_commit();
 		}
 	}
-	
+
+	function ambil_menu_utama()
+	{
+		$sql = "SELECT * FROM panel.tbl_user_menu WHERE id > 100 AND parent_id IS NULL ORDER BY urutan ASC";
+		$lcmenu = $this->db->query($sql)->result();
+		$res = $lcmenu;
+
+		return $res;
+	}
+
+	function cek_submenu($id)
+	{
+		$lret = false;
+
+		$sql = "SELECT count(*) AS jml FROM panel.tbl_user_menu WHERE parent_id = '$id'";
+		$lcmenu = $this->db->query($sql)->result_array();
+
+		$row = $lcmenu;
+		if ($row[0]['jml'] > 0) {
+			$lret = true;
+		}
+		return $lret;
+	}
+
+	function ambil_submenu($id)
+	{
+		$sql = "SELECT * FROM panel.tbl_user_menu WHERE parent_id = '$id' ORDER BY urutan ASC";
+		$lcmenu = $this->db->query($sql)->result_array();
+
+		$res = $lcmenu;
+		return $res;
+	}
 }

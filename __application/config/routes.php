@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 $route['default_controller'] = 'backendxx';
 $route['404_override'] = '';
@@ -8,6 +8,8 @@ $route['translate_uri_dashes'] = FALSE;
 $route['xboxend'] = 'backendxx';
 $route['login-app'] = 'login/loginnya';
 $route['logout-app'] = 'login/logoutnya';
+
+$route['register-app'] = 'login/register_app';
 
 $route['backoffice-grid/(:any)'] = 'backendxx/get_grid/$1';
 $route['backoffice-grid-report/(:any)'] = 'backendxx/get_grid_report/$1';
@@ -32,5 +34,3 @@ $route['invoice'] = 'backendxx/modul/invoice';
 $route['bjsdigital-data/(:any)'] = 'backendxx/getdata/$1';
 $route['bjsdigital-data/(:any)/(:any)'] = 'backendxx/getdata/$1/$2';
 // End Routing Frontend
-
-

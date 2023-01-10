@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>BJS-DIGITAL WEB</title>
+    <title>ONANMEDIA</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
     {$main_css}
@@ -52,13 +52,13 @@
     </script>
 </head>
 
-<body class="hold-transition skin-red layout-top-nav">
+<body class="hold-transition skin-blue layout-top-nav">
     <div class="wrapper">
 		<header class="main-header">
 			<nav class="navbar navbar-static-top">
 				<div class="">
 					<div class="navbar-header">
-						<a href="{$host}" class="navbar-brand"><b>BJS-DIGITAL</b></a>
+						<a href="{$host}" class="navbar-brand"><b>ONANMEDIA</b></a>
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
 							<i class="fa fa-bars"></i>
 						</button>
@@ -66,15 +66,26 @@
 		
 					<div class="collapse navbar-collapse pull-left" id="navbar-collapse">
 						<ul class="nav navbar-nav">
-							<li class="">
-								<a href="{$host}">PROFIL</a>
+							<!-- <li class="dropdown">
+								<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">PROFIL</a>
+								<ul class="dropdown-menu">
+									<li class="">
+										<a href="javascript:;">SUB MENU</a>
+									</li>
+								</ul>
+								<ul class="nav navbar-nav">
+									<li class="">
+										<a href="{$host}">PROFIL SUB 1</a>
+									</li>
+								</ul>
 							</li>
 							<li class="">
 								<a href="{$host}order">ORDER</a>
 							</li>
 							<li class="">
 								<a href="{$host}invoice">INVOICE</a>
-							</li>
+							</li> -->
+							{$data.menu}
 						</ul>
 					</div>
 
@@ -124,8 +135,8 @@
 		<footer class="main-footer">
 			<div class="text-center">
 				<div class="hidden-xs">
-					<b>BJS-DIGITAL</b> V.1.0 -
-					<strong><a href="www.biantarajaya.com" target="_blank">PT. BIANTARA JAYA SERVICES</a></strong>
+					<b>ONANMEDIA</b>
+					<strong><a href="{$host}" target="_blank">ONANMEDIA</a></strong>
 				</div>
 			</div>
 		</footer>
@@ -150,3 +161,7 @@
 
 </body>
 </html>
+
+<script>
+	console.log('{$data.menu}');
+</script>
