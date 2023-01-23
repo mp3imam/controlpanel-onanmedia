@@ -2,7 +2,7 @@
 	exit('No direct script access allowed');
 }
 
-class Backendxx extends JINGGA_Controller
+class User extends JINGGA_Controller
 {
 
 	function __construct()
@@ -19,6 +19,7 @@ class Backendxx extends JINGGA_Controller
 		$this->nsmarty->assign('acak', md5(date('H:i:s')));
 		$this->temp = "backend/";
 		$this->load->model('mbackend');
+		$this->load->model('muser');
 		$this->load->library(array('encrypt', 'lib'));
 
 		$this->nsmarty->assign("main_css", $this->lib->assetsmanager('css', 'main'));
@@ -65,14 +66,22 @@ class Backendxx extends JINGGA_Controller
 	{
 		if ($this->auth) {
 			switch ($p1) {
-				case "invoice":
-					$this->nsmarty->assign("halaman", "backend/halaman/invoice/main-invoice.html");
+				case "penjual":
+					$this->nsmarty->assign("halaman", "backend/user/penjual.html");
 					break;
-				case "order":
-					$this->nsmarty->assign("halaman", "backend/halaman/order/main-order.html");
+				case "pembeli":
+					$this->nsmarty->assign("halaman", "backend/user/pembeli.html");
+					break;
+				case "detail_penjual":
+					$this->nsmarty->assign("halaman", "backend/user/detail_penjual.html");
 					break;
 			}
 
+			if ($p2 != '') {
+				$data['user_penjual'] = $this->muser->getdata('detail_penjual', 'row_array', $p2);
+			}
+			$data['menu'] = $this->get_menu();
+			$this->nsmarty->assign("data", $data);
 			$this->nsmarty->display('backend/main-backend.html');
 		} else {
 			$this->nsmarty->display('backend/main-login.html');
@@ -345,7 +354,7 @@ class Backendxx extends JINGGA_Controller
 
 	function getdata($p1, $p2 = "json", $p3 = "")
 	{
-		echo $this->mbackend->getdata($p1, $p2, $p3);
+		echo $this->muser->getdata($p1, $p2, $p3);
 	}
 
 	function simpandata($p1 = "", $p2 = "")

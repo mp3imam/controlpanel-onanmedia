@@ -31,6 +31,14 @@ $route['backoffice-cetak/(:any)/(:any)/(:any)'] = 'backendxx/cetak/$1/$2/$3';
 $route['order'] = 'backendxx/modul/order';
 $route['invoice'] = 'backendxx/modul/invoice';
 
+$route['penjual'] = 'user/modul/penjual';
+$route['detail_penjual/(:any)'] = 'user/modul/detail_penjual/$1';
+
+$route['pembeli'] = 'user/modul/pembeli';
+
 $route['bjsdigital-data/(:any)'] = 'backendxx/getdata/$1';
 $route['bjsdigital-data/(:any)/(:any)'] = 'backendxx/getdata/$1/$2';
+
+$route['onanmedia-data/(:any)'] = 'user/getdata/$1';
+$route['onanmedia-data/(:any)/(:any)'] = 'user/getdata/$1/$2';
 // End Routing Frontend

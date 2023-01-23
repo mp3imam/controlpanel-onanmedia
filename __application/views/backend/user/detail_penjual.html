@@ -1,0 +1,108 @@
+<section class="content" style="min-height:550px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary" style="margin-bottom:0px;">
+                <div class="box-header with-border" style="border-bottom:4px double #ddd;">
+                    <h3 class="box-title"><b>DETAIL PENJUAL</b></h3>
+                </div>
+                <div class="box-body">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                        <li class="active"><a href="#profil" data-toggle="tab" aria-expanded="true">Profil</a></li>
+                        <li class=""><a href="#skill" data-toggle="tab" aria-expanded="false" onclick="reload_grid_skill()">Skill</a></li>
+                        <li class=""><a href="#sertifikat" data-toggle="tab" aria-expanded="false" onclick="reload_grid_sertifikat()">Sertifikat</a></li>
+                        <li class=""><a href="#layanan_jasa" data-toggle="tab" aria-expanded="false">Layanan Jasa</a></li>
+                        </ul>
+                        <div class="tab-content">
+
+                        <div class="tab-pane active" id="profil">
+                            <div class="row" style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div class="col-sm-2">
+                                    <span>Foto Profile</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <!-- <img class="profile-user-img img-responsive img-circle" src="{$host}{$data.user_penjual.picture_url}" alt="User profile picture"> -->
+                                    <img class="profile-user-img img-responsive img-circle" src="{$host}__assets/images/profile.png" alt="User profile picture">
+                                </div>
+                            </div>
+                            <!-- Nama Lengkap -->
+                            {include file="backend/template/custom_input_form.html" label="Nama Lengkap" type="text" name="nm_lengkap" id="nm_lengkap" value="{$data.user_penjual.fullname|default:''}" read="readonly"}
+                            <!-- No Handphone -->
+                            {include file="backend/template/custom_input_form.html" label="No Handphone" type="text" name="no_hp" id="no_hp" value="{$data.user_penjual.phone|default:''}" read="readonly"}
+                            <!-- Email -->
+                            {include file="backend/template/custom_input_form.html" label="Email" type="text" name="email" id="email" value="{$data.user_penjual.email|default:''}" read="readonly"}
+                            <!-- Pekerjaan -->
+                            {include file="backend/template/custom_input_form.html" label="Pekerjaan" type="text" name="pekerjaan" id="pekerjaan" value="{$data.user_penjual.occupation|default:''}" read="readonly"}
+                            <!-- Level Penjual -->
+                            {include file="backend/template/custom_input_form.html" label="Level Penjual" type="text" name="lvl_penjual" id="lvl_penjual" value="{$data.user_penjual.level|default:''}" read="readonly"}
+                            <!-- Gender -->
+                            {include file="backend/template/custom_input_form.html" label="Gender" type="text" name="gender" id="gender" value="{$data.user_penjual.gender|default:''}" read="readonly"}
+                            <!-- Tgl Lahir -->
+                            {include file="backend/template/custom_input_form.html" label="Tgl Lahir" type="text" name="tgl_lahir" id="tgl_lahir" value="{$data.user_penjual.date_birth|default:''}" read="readonly"}
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-primary" href="{$host}penjual">Tutup</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="skill">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {assign var=jenis_grid value='grid'}
+                                    {assign var=height_grid value='getClientHeight()-210'}
+                                    {assign var=id_param value={$data.user_penjual.user_id|default:''}}
+                                    {include file="backend/template/grid.html" main="main-skill-penjual" table={$table|default:''} filter_core="true" button={$button|default:'false'} }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="sertifikat">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {assign var=jenis_grid value='grid'}
+                                    {assign var=height_grid value='getClientHeight()-210'}
+                                    {assign var=id_param value={$data.user_penjual.user_id|default:''}}
+                                    {include file="backend/template/grid.html" main="main-sertifikat-penjual" table={$table|default:''} filter_core="true" button={$button|default:'false'} }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="layanan_jasa">
+                        </div>
+                        
+                        </div>
+                        
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    function reload_grid_skill() {
+        setTimeout(() => {
+            $('#grid_main-skill-penjual').datagrid({
+                columns: [[
+                    { field: 'name', title: 'Keahlian', width: 400, halign: 'center', align: 'center' },
+                    { field: 'level', title: 'Level', width: 400, halign: 'center', align: 'center' }
+                ]]
+            });
+        }, 50);
+    }
+
+    function reload_grid_sertifikat() {
+        setTimeout(() => {
+            $('#grid_main-sertifikat-penjual').datagrid({
+                columns: [[
+                    { field: 'title', title: 'Nama Sertifikat', width: 350, halign: 'center', align: 'center' },
+                    { field: 'published_by', title: 'Dikeluarkan Oleh', width: 250, halign: 'center', align: 'center' },
+                    { field: 'year', title: 'Tahun', width: 250, halign: 'center', align: 'center' },
+                ]]
+            });
+        }, 50);
+    }
+</script>
