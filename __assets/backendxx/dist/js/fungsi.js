@@ -222,6 +222,12 @@ function genGrid(modnya, divnya, lebarnya, tingginya, par1) {
 				$('#btn_detail').attr('href', url);
 				console.log(url);
 			}
+			if (modnya == 'main-pembeli') {
+				$('#user_id').val(rowData.user_id)
+				var url = host + 'detail_pembeli/' + rowData.user_id;
+				$('#btn_detail').attr('href', url);
+				console.log(url);
+			}
 		},
 		onDblClickRow: function (rowIndex, rowData) {
 

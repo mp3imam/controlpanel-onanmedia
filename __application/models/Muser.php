@@ -41,14 +41,6 @@ class Muser extends CI_Model
 					WHERE a.tipe = '1'
 				";
 				break;
-			case "pembeli":
-				$sql = "
-					SELECT a.*, to_char(a.created_at::timestamp with time zone, 'DD-MM-YYYY HH:MM'::text) AS tgl_daftar,
-						ROW_NUMBER() OVER (ORDER BY a.user_id DESC) as rowID
-					FROM public.user a
-					WHERE a.tipe = '1'
-					";
-				break;
 			case "detail_penjual":
 				$sql = "
 					SELECT a.*, ROW_NUMBER() OVER (ORDER BY a.user_id DESC) as rowID
@@ -71,6 +63,21 @@ class Muser extends CI_Model
 						FROM public.user_certification a
 						WHERE a.user_id = '$user_id'
 						";
+				break;
+			case "pembeli":
+				$sql = "
+					SELECT a.*, to_char(a.created_at::timestamp with time zone, 'DD-MM-YYYY HH:MM'::text) AS tgl_daftar,
+						ROW_NUMBER() OVER (ORDER BY a.user_id DESC) as rowID
+					FROM public.user a
+					WHERE a.tipe = '1'
+					";
+				break;
+			case "detail_pembeli":
+				$sql = "
+					SELECT a.*, ROW_NUMBER() OVER (ORDER BY a.user_id DESC) as rowID
+					FROM public.user a
+					WHERE a.user_id = '$p1'
+					";
 				break;
 				// End Modul User
 

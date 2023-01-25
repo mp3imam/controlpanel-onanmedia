@@ -75,10 +75,18 @@ class User extends JINGGA_Controller
 				case "detail_penjual":
 					$this->nsmarty->assign("halaman", "backend/user/detail_penjual.html");
 					break;
+				case "detail_pembeli":
+					$this->nsmarty->assign("halaman", "backend/user/detail_pembeli.html");
+					break;
 			}
 
 			if ($p2 != '') {
-				$data['user_penjual'] = $this->muser->getdata('detail_penjual', 'row_array', $p2);
+				if ($p1 == 'detail_penjual') {
+					$data['user_penjual'] = $this->muser->getdata('detail_penjual', 'row_array', $p2);
+				}
+				if ($p1 == 'detail_pembeli') {
+					$data['user_pembeli'] = $this->muser->getdata('detail_pembeli', 'row_array', $p2);
+				}
 			}
 			$data['menu'] = $this->get_menu();
 			$this->nsmarty->assign("data", $data);
