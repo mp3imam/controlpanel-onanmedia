@@ -37,6 +37,9 @@ $route['detail_penjual/(:any)'] = 'user/modul/detail_penjual/$1';
 $route['pembeli'] = 'user/modul/pembeli';
 $route['detail_pembeli/(:any)'] = 'user/modul/detail_pembeli/$1';
 
+$route['transaksi_berlangsung'] = 'backendxx/modul/transaksi_berlangsung';
+$route['transaksi_selesai'] = 'backendxx/modul/transaksi_selesai';
+
 $route['bjsdigital-data/(:any)'] = 'backendxx/getdata/$1';
 $route['bjsdigital-data/(:any)/(:any)'] = 'backendxx/getdata/$1/$2';
 

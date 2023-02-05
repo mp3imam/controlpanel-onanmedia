@@ -97,6 +97,21 @@ class Muser extends CI_Model
 					WHERE a.user_id = '$p1'
 					";
 				break;
+			case "transaksi_berlangsung":
+				$sql = "
+					SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, 
+						UPPER(a.kode) AS kode, a.penawaran, b.nama AS nm_activity, c.fullname AS nm_penjual, d.fullname AS nm_pembeli,
+						to_char(a.created::timestamp with time zone, 'DD-MM-YYYY HH:MM'::text) AS created
+					FROM public.order a
+					LEFT JOIN public.ms_activity b
+					ON a.activity = b.id
+					LEFT JOIN public.user c
+					ON a.id_penjual = c.user_id
+					LEFT JOIN public.user d
+					ON a.id_pembeli = d.user_id
+					WHERE a.activity NOT IN ('1013')
+					";
+				break;
 				// End Modul User
 
 

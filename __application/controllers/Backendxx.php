@@ -71,8 +71,16 @@ class Backendxx extends JINGGA_Controller
 				case "order":
 					$this->nsmarty->assign("halaman", "backend/halaman/order/main-order.html");
 					break;
+				case "transaksi_berlangsung":
+					$this->nsmarty->assign("halaman", "backend/halaman/transaction/berlangsung.html");
+					break;
+				case "transaksi_selesai":
+					$this->nsmarty->assign("halaman", "backend/halaman/transaction/selesai.html");
+					break;
 			}
 
+			$data['menu'] = $this->get_menu();
+			$this->nsmarty->assign("data", $data);
 			$this->nsmarty->display('backend/main-backend.html');
 		} else {
 			$this->nsmarty->display('backend/main-login.html');

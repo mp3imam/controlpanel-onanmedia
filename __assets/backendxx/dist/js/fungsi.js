@@ -165,6 +165,23 @@ function genGrid(modnya, divnya, lebarnya, tingginya, par1) {
 				{ field: 'tgl_input', title: 'Tanggal Input', width: 250, halign: 'center', align: 'center' },
 			];
 			break;
+		case "main-transaksi-berlangsung":
+			judulnya = "";
+			urlnya = "transaksi_berlangsung";
+			fitnya = true;
+			param = par1;
+			row_number = true;
+			nowrap_nya = false;
+
+			kolom[modnya] = [
+				{ field: 'kode', title: 'Kode', width: 150, halign: 'center', align: 'center' },
+				{ field: 'penawaran', title: 'Penawaran', width: 150, halign: 'center', align: 'center' },
+				{ field: 'nm_activity', title: 'Aktivitas', width: 150, halign: 'center', align: 'center' },
+				{ field: 'nm_penjual', title: 'Penjual', width: 350, halign: 'center', align: 'center' },
+				{ field: 'nm_pembeli', title: 'Pembeli', width: 170, halign: 'center', align: 'center' },
+				{ field: 'created', title: 'Tanggal Transaksi', width: 170, halign: 'center', align: 'center' },
+			];
+			break;
 
 		// case "user_group":
 		// 	judulnya = "";
