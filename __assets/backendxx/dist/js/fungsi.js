@@ -150,6 +150,21 @@ function genGrid(modnya, divnya, lebarnya, tingginya, par1) {
 				{ field: 'year', title: 'Tahun', width: 250, halign: 'center', align: 'center' },
 			];
 			break;
+		case "main-layanan-jasa-penjual":
+			judulnya = "";
+			urlnya = "layanan_jasa_penjual";
+			fitnya = true;
+			param = { 'user_id': par1 };
+			row_number = true;
+			nowrap_nya = false;
+
+			kolom[modnya] = [
+				{ field: 'judul_jasa', title: 'Nama Layanan Jasa', width: 350, halign: 'center', align: 'center' },
+				{ field: 'nm_kategori', title: 'Kategori', width: 350, halign: 'center', align: 'center' },
+				{ field: 'nm_subkategori', title: 'Subkategori', width: 350, halign: 'center', align: 'center' },
+				{ field: 'tgl_input', title: 'Tanggal Input', width: 250, halign: 'center', align: 'center' },
+			];
+			break;
 
 		// case "user_group":
 		// 	judulnya = "";

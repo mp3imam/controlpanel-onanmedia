@@ -64,6 +64,24 @@ class Muser extends CI_Model
 						WHERE a.user_id = '$user_id'
 						";
 				break;
+			case "layanan_jasa_penjual":
+				$user_id = $this->input->post('user_id');
+				$sql = "
+						SELECT 
+							b.name AS nm_kategori,
+							c.name AS nm_subkategori,
+							ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID,
+							to_char(a.created_at::timestamp with time zone, 'DD-MM-YYYY'::text) AS tgl_input,
+							a.*
+						FROM 
+							public.jasa a
+						LEFT JOIN public.kategori b 
+						ON a.kategori_id = b.id
+						LEFT JOIN public.subkategori c
+						ON a.subkategori_id = c.id
+						WHERE a.user_id = '$user_id'
+						";
+				break;
 			case "pembeli":
 				$sql = "
 					SELECT a.*, to_char(a.created_at::timestamp with time zone, 'DD-MM-YYYY HH:MM'::text) AS tgl_daftar,

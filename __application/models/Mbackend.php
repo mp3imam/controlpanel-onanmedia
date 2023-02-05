@@ -530,7 +530,7 @@ class Mbackend extends CI_Model
 
 	function ambil_menu_utama()
 	{
-		$sql = "SELECT * FROM panel.tbl_user_menu WHERE id > 100 AND parent_id IS NULL ORDER BY urutan ASC";
+		$sql = "SELECT * FROM panel.tbl_user_menu WHERE (type_menu = '' OR type_menu = 'PC') AND parent_id IS NULL ORDER BY urutan ASC";
 		$lcmenu = $this->db->query($sql)->result();
 		$res = $lcmenu;
 
@@ -553,7 +553,7 @@ class Mbackend extends CI_Model
 
 	function ambil_submenu($id)
 	{
-		$sql = "SELECT * FROM panel.tbl_user_menu WHERE parent_id = '$id' ORDER BY urutan ASC";
+		$sql = "SELECT * FROM panel.tbl_user_menu WHERE type_menu = 'C' AND parent_id = '$id' ORDER BY urutan ASC";
 		$lcmenu = $this->db->query($sql)->result_array();
 
 		$res = $lcmenu;

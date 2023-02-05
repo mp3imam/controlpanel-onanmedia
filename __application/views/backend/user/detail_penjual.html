@@ -11,7 +11,7 @@
                         <li class="active"><a href="#profil" data-toggle="tab" aria-expanded="true">Profil</a></li>
                         <li class=""><a href="#skill" data-toggle="tab" aria-expanded="false" onclick="reload_grid_skill()">Skill</a></li>
                         <li class=""><a href="#sertifikat" data-toggle="tab" aria-expanded="false" onclick="reload_grid_sertifikat()">Sertifikat</a></li>
-                        <li class=""><a href="#layanan_jasa" data-toggle="tab" aria-expanded="false">Layanan Jasa</a></li>
+                        <li class=""><a href="#layanan_jasa" data-toggle="tab" aria-expanded="false" onclick="reload_grid_layanan()">Layanan Jasa</a></li>
                         </ul>
                         <div class="tab-content">
 
@@ -39,12 +39,6 @@
                             {include file="backend/template/custom_input_form.html" label="Gender" type="text" name="gender" id="gender" value="{$data.user_penjual.gender|default:''}" read="readonly"}
                             <!-- Tgl Lahir -->
                             {include file="backend/template/custom_input_form.html" label="Tgl Lahir" type="text" name="tgl_lahir" id="tgl_lahir" value="{$data.user_penjual.date_birth|default:''}" read="readonly"}
-
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <a class="btn btn-primary" href="{$host}penjual">Tutup</a>
-                                </div>
-                            </div>
                         </div>
                         
                         <div class="tab-pane" id="skill">
@@ -70,8 +64,21 @@
                         </div>
 
                         <div class="tab-pane" id="layanan_jasa">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {assign var=jenis_grid value='grid'}
+                                    {assign var=height_grid value='getClientHeight()-210'}
+                                    {assign var=id_param value={$data.user_penjual.user_id|default:''}}
+                                    {include file="backend/template/grid.html" main="main-layanan-jasa-penjual" table={$table|default:''} filter_core="true" button={$button|default:'false'} }
+                                </div>
+                            </div>
                         </div>
-                        
+
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-sm-12">
+                                <a class="btn btn-primary" href="{$host}penjual">Tutup</a>
+                            </div>
+                        </div>
                         </div>
                         
                         </div>
@@ -101,6 +108,19 @@
                     { field: 'title', title: 'Nama Sertifikat', width: 350, halign: 'center', align: 'center' },
                     { field: 'published_by', title: 'Dikeluarkan Oleh', width: 250, halign: 'center', align: 'center' },
                     { field: 'year', title: 'Tahun', width: 250, halign: 'center', align: 'center' },
+                ]]
+            });
+        }, 50);
+    }
+
+    function reload_grid_layanan() {
+        setTimeout(() => {
+            $('#grid_main-layanan-jasa-penjual').datagrid({
+                columns: [[
+                    { field: 'judul_jasa', title: 'Nama Layanan Jasa', width: 350, halign: 'center', align: 'center' },
+                    { field: 'nm_kategori', title: 'Kategori', width: 200, halign: 'center', align: 'center' },
+                    { field: 'nm_subkategori', title: 'Subkategori', width: 200, halign: 'center', align: 'center' },
+                    { field: 'tgl_input', title: 'Tanggal Input', width: 200, halign: 'center', align: 'center' },
                 ]]
             });
         }, 50);
