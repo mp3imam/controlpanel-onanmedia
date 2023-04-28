@@ -33,6 +33,14 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+$routes->group('onanapps', static function ($routes) {
+    $routes->post('datagrid/([a-zA-Z0-9_]+)', 'Onan::get_data_grid/$1');
+    $routes->get('grid/([a-zA-Z0-9_]+)', 'Onan::get_grid/$1');
+    $routes->post('form/([a-zA-Z0-9_]+)', 'Onan::get_form/$1');
+    $routes->post('display/([a-zA-Z0-9_]+)', 'Onan::getdisplay/$1');
+
+});
+
 //$routes->get('/login-user', 'Login::process');
 
 /*

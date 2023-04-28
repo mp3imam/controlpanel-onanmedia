@@ -26,7 +26,8 @@ function assetCss($type="")
   
   $assets = '';
   foreach ($arr as $k) {
-    $version = filemtime($k);
+    //$version = filemtime($k);
+    $version =  filemtime(FCPATH.$k);
     $assets .= "<link rel='stylesheet' href='" . $baseUrl . $k . "?v=" . $version . "' />";
   }
   return $assets;
@@ -46,6 +47,7 @@ function assetJs($type="")
         'assets/plugins/jeasyui/jquery.easyui.min.js',
         'assets/dist/js/adminlte.min.js',
         'assets/dist/js/fungsi.js',
+        'assets/dist/js/fungsi-onan.js',
         'assets/dist/js/demo.js',
       ];
     break;
@@ -60,7 +62,8 @@ function assetJs($type="")
 
   $assets = '';
   foreach ($arr as $k) {
-    $version = filemtime($k);
+    //$version = filemtime($k);
+    $version =  filemtime(FCPATH.$k);
     $assets .= "<script src='" . $baseUrl . $k . "?v=" . $version . "'></script>";
   }
   return $assets;
@@ -272,82 +275,55 @@ function generateUniqId($marketId)
   return $kd;
 }
 
-function getMenu($marketId)
-{
-  $allMenu =  [
-    [
-      'id' => 1,
-      'url' => base_url('home'),
-      'icon' => "icon-stats-dots",
-      'title' => "Dashboard",
-    ],
-    [
-      'id' => 2,
-      'url' => base_url('penyelenggaralelang'),
-      'icon' => "icon-home2",
-      'title' => "Penyelenggara Lelang",
-    ],
-    [
-      'id' => 3,
-      'url' => base_url('rekaptransaksi'),
-      'icon' => "icon-stack",
-      'title' => "Rekap Transaksi",
-    ],
-    [
-      'id' => 4,
-      'url' => '#',
-      'icon' => "icon-gear",
-      'title' => "Pengaturan",
-      'child' => [
-        [
-          'id' => 41,
-          'url' => base_url('role'),
-          'title' => "Role",
-        ],
-        [
-          'id' => 42,
-          'url' => base_url('users'),
-          'title' => "User",
-        ],
-      ]
-    ],
-    [
-      'id' => 5,
-      'url' => '#',
-      'icon' => "icon-stack",
-      'title' => "Laporan",
-      'child' => [
-        [
-          'id' => 51,
-          'url' => base_url('laporan/plk'),
-          'title' => "Transaksi PLK",
-        ],
-        [
-          'id' => 52,
-          'url' => base_url('laporan/bulanan'),
-          'title' => "Laporan Bulanan",
-        ],
-        [
-          'id' => 53,
-          'url' => base_url('laporan/triwulan'),
-          'title' => "Laporan Triwulan",
-        ],
-        [
-          'id' => 54,
-          'url' => base_url('laporan/tahunan'),
-          'title' => "Laporan Tahunan",
-        ],
-      ]
-    ],
-  ];
-  $showToPenyelenggara = [4];
-  $showedMenus = [];
-  if ($marketId != '') {
-    foreach ($showToPenyelenggara as $key) {
-      array_push($showedMenus, $allMenu[$key]);
-    }
-  } else {
-    $showedMenus = $allMenu;
-  }
-  return $showedMenus;
+function json_grid($sql, $type=""){
+    $request = \Config\Services::request();
+		$db = db_connect();
+
+		$footer = false;
+		$arr_foot = array();
+		
+		$page = (integer) (($request->getPost('page')) ? $request->getPost('page') : 0);
+		$limit = (integer) (($request->getPost('rows')) ? $request->getPost('rows') : 0);
+		
+		$count = $db->query($sql)->getNumRows();
+		
+		if($page != 0 && $limit != 0){
+			if( $count >0 ) { $total_pages = ceil($count/$limit); } else { $total_pages = 0; } 
+			if ($page > $total_pages) $page = $total_pages; 
+		}
+
+    $sql2 = $sql;
+		
+		//POSTGRESSS
+		if($limit != 0){
+			$end = $page * $limit; 
+			$start = $end - $limit + 1;
+			if($start < 0) $start = 0;
+			$sql = "
+				SELECT * FROM (
+					".$sql."
+				) AS X WHERE X.rowID BETWEEN $start AND $end
+			";	
+		}
+
+    $data = $db->query($sql)->getResultArray(); 
+
+    if($data){
+      $responce = new stdClass();
+      $responce->rows = $data;
+      $responce->total = $count;
+      
+      if($footer == true){
+        $responce->footer = $arr_foot;
+      }
+      
+      return json_encode($responce);
+   }else{ 
+      $responce = new stdClass();
+      $responce->rows = 0;
+      $responce->total = 0;
+
+      return json_encode($responce);
+   } 
+
 }

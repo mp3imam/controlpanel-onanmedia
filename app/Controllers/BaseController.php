@@ -84,6 +84,7 @@ class BaseController extends Controller
             $this->smarty->assign('mainjs', assetJs('login'));
         }
         
+        $this->smarty->assign('acak', md5(date('H:i:s')) );
         $this->smarty->assign('session', $this->session->get());
         $this->smarty->assign('baseurl', getenv('app.baseURL'));
     }
