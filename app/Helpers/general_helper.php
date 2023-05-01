@@ -45,9 +45,13 @@ function assetJs($type="")
         'assets/plugins/jquery/jquery.min.js',
         'assets/plugins/bootstrap/js/bootstrap.bundle.min.js',
         'assets/plugins/jeasyui/jquery.easyui.min.js',
+        'assets/plugins/jquery-validation/jquery.validate.min.js',
         'assets/dist/js/adminlte.min.js',
+        'assets/dist/js/loading-overlay.js',
+        'assets/dist/js/autoNumeric.js',
         'assets/dist/js/fungsi.js',
         'assets/dist/js/fungsi-onan.js',
+        'assets/dist/js/fungsi-master.js',
         'assets/dist/js/demo.js',
       ];
     break;
@@ -327,3 +331,17 @@ function json_grid($sql, $type=""){
    } 
 
 }
+
+//Function Generate ID AutoIncrement Sequence
+function genpkseq($table=""){
+  $db = db_connect();
+
+  $sql = "
+    SELECT nextval('".$table."') as id;
+  ";
+  $data = $db->query($sql)->getRowArray();
+  $yearmonth = date('Y').date('m').date('d');
+
+  return $yearmonth.str_pad($data['id'],6,'0',STR_PAD_LEFT);
+}
+//END Function Generate ID AutoIncrement Sequence

@@ -27,3 +27,37 @@ function getClientHeight(){
 	return theHeight;
 }
 
+function submit_form(frm,func){
+	var url = jQuery('#'+frm).attr("url");
+   // $.messager.progress();
+	jQuery('#'+frm).form('submit',{
+            url:url,
+            onSubmit: function(){
+				var isValid = $(this).form('validate');
+				if (!isValid){
+					//$.messager.progress('close');	// hide progress bar while the form is invalid
+				}
+				return isValid;	
+            },
+            success:function(data){
+                if (func == undefined ){
+                     if (data == "1"){
+                        pesan('Data Sudah Disimpan ','Sukses');
+                    }else{
+                         pesan(data,'Result');
+                    }
+                }else{
+                    func(data);
+                }
+				//$.messager.progress('close');
+            },
+            error:function(data){
+                 if (func == undefined ){
+                     pesan(data,'Error');
+                }else{
+                    func(data);
+                }
+            }
+    });
+}
+

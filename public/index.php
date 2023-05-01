@@ -27,6 +27,10 @@ $paths = new Config\Paths();
 $bootstrap = rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
 $app       = require realpath($bootstrap) ?: $bootstrap;
 
+$viewpathnya = rtrim($paths->viewDirectory, '\\/ ') . DIRECTORY_SEPARATOR;
+
+define('VIEWPATH', $viewpathnya);
+
 /*
  *---------------------------------------------------------------
  * LAUNCH THE APPLICATION
