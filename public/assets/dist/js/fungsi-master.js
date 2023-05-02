@@ -42,6 +42,19 @@ function genGridMaster(modnya, divnya, lebarnya, tingginya){
 			];
 		break;
 
+		case "kategori":
+			judulnya = "";
+			urlnya = "kategori";
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			kolom[modnya] = [			
+				{field:'nama',title:'Nama',width:200, halign:'center',align:'left'},
+				{field:'url',title:'URL',width:200, halign:'center',align:'left'},
+			];
+		break;
+
     }
 
     urlglobal = host+'master/datagrid/'+urlnya;

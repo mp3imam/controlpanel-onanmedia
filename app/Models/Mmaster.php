@@ -38,6 +38,27 @@ class Mmaster extends Model{
             break;
         }
 
+        switch($type){
+            case "kategori":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
+                    from public.\"MsKategori\" a
+                    $where and a.\"isAktif\" = 1
+                ";
+            break;
+
+            default:
+                
+            break;
+        }
+
         if($balikan == 'json_grid'){
 			return json_grid($sql,$type);
 		}elseif($balikan == 'row_array'){
