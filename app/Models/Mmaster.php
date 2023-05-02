@@ -31,27 +31,20 @@ class Mmaster extends Model{
                     from public.\"MsBahasa\" a
                     $where and a.\"isAktif\" = 1
                 ";
-            break;
 
-            default:
-                
-            break;
-        }
-
-        switch($type){
-            case "kategori":
-                $id = service('request')->getPost('id');
-				if($id){
-					$where .= "
-						and a.id = '".$id."'
-					";
-				}
-
-                $sql = "
-                    SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
-                    from public.\"MsKategori\" a
-                    $where and a.\"isAktif\" = 1
-                ";
+                case "kategori":
+                    $id = service('request')->getPost('id');
+                    if($id){
+                        $where .= "
+                            and a.id = '".$id."'
+                        ";
+                    }
+    
+                    $sql = "
+                        SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
+                        from public.\"MsKategori\" a
+                        $where and a.\"isAktif\" = 1
+                    ";
             break;
 
             default:
