@@ -79,10 +79,7 @@
 <script>
 $(function() {
     $('#grid_parent_{$mod}').css({
-        //'height': (getClientHeight()-165)
-        'height': ({
-            $height_grid | default: 'getClientHeight()-255'
-        })
+        'height': ({$height_grid|default:'getClientHeight()-255'})
     });
     heighttree = (getClientHeight() - 255) + 'px';
 
