@@ -22,46 +22,58 @@ class Master extends BaseController
         // $this->smarty->display('main-backend.php');
     }
 
-    function get_form($mod){
-		$temp='master/form/form_'.$mod.".php";
-		$sts = $this->request->getPost('editstatus');
-		if(isset($sts)){
-			$this->smarty->assign('sts',$sts);
-		}else{
-			$sts = "";
-		}
+    function get_form($mod)
+    {
+        $temp = 'master/form/form_' . $mod . ".php";
+        $sts = $this->request->getPost('editstatus');
+        if (isset($sts)) {
+            $this->smarty->assign('sts', $sts);
+        } else {
+            $sts = "";
+        }
 
-        switch($mod){
+        switch ($mod) {
             case "bahasa":
-                if($sts=='edit'){
+                if ($sts == 'edit') {
                     $data = $this->Mmaster->getdata('bahasa', 'row_array');
-                    $this->smarty->assign('data',$data);
+                    $this->smarty->assign('data', $data);
+                }
+            break;
+
+            case "kategori":
+                if ($sts == 'edit') {
+                    $data = $this->Mmaster->getdata('kategori', 'row_array');
+                    $this->smarty->assign('data', $data);
                 }
             break;
         }
 
-        $this->smarty->assign('mod',$mod);
-		$this->smarty->assign('temp',$temp);
-		
-		if(!file_exists(VIEWPATH.$temp)){$this->smarty->display('konstruksi.php');}
-		else{$this->smarty->display($temp);}
+        $this->smarty->assign('mod', $mod);
+        $this->smarty->assign('temp', $temp);
+
+        if (!file_exists(VIEWPATH . $temp)) {
+            $this->smarty->display('konstruksi.php');
+        } else {
+            $this->smarty->display($temp);
+        }
     }
 
-    function get_grid($mod){
+    function get_grid($mod)
+    {
         $temp = 'master/grid_config.php';
         $tombol_std = "true";
         $filter = $this->combo_option($mod);
         $cekmenu = $this->db->table('panel.tbl_user_menu')->getWhere(['ref_tbl' => $mod])->getRowArray();
 
-        switch($mod){
+        switch ($mod) {
             case "master":
-                
-            break;
+
+                break;
 
             default:
-                
-            break;
-        }  
+
+                break;
+        }
 
         $this->smarty->assign('judulbesar', $cekmenu['keterangan'] ?? null);
         $this->smarty->assign("table", $mod);
@@ -71,56 +83,74 @@ class Master extends BaseController
         $this->smarty->display($temp);
     }
 
-    function get_data_grid($type){
+    function get_data_grid($type)
+    {
         echo $this->Mmaster->getdata($type, 'json_grid');
     }
 
-    function simpandata($p1="",$p2=""){
-		//echo "<pre>";
-		//print_r($_POST); exit;
-		
-		$post = array();
-        foreach($_POST as $k=>$v){
-			if($this->request->getPost($k)!=""){
-				$post[$k] = $this->request->getPost($k);
-				//$post[$k] = htmlspecialchars($post[$k], ENT_QUOTES);
-				//$post[$k] = str_replace('"','&acute;&acute;', $post[$k]);
-				//$post[$k] = str_replace("'","&acute;", $post[$k]);
-			}else{
-				$post[$k] = null;
-			}
-		}
-		
-		// echo "<pre>";
-		// print_r($post); 
-		// exit;
-		
-		if(isset($post['editstatus'])){$editstatus = $post['editstatus'];unset($post['editstatus']);}
-		else $editstatus = $p2;
+    function simpandata($p1 = "", $p2 = "")
+    {
+        //echo "<pre>";
+        //print_r($_POST); exit;
 
-        $simpannya = $this->Mmaster->simpandata($p1, $post, $editstatus); 
-		
+        $post = array();
+        foreach ($_POST as $k => $v) {
+            if ($this->request->getPost($k) != "") {
+                $post[$k] = $this->request->getPost($k);
+                //$post[$k] = htmlspecialchars($post[$k], ENT_QUOTES);
+                //$post[$k] = str_replace('"','&acute;&acute;', $post[$k]);
+                //$post[$k] = str_replace("'","&acute;", $post[$k]);
+            } else {
+                $post[$k] = null;
+            }
+        }
+
+        // echo "<pre>";
+        // print_r($post); 
+        // exit;
+
+        if (isset($post['editstatus'])) {
+            $editstatus = $post['editstatus'];
+            unset($post['editstatus']);
+        } else $editstatus = $p2;
+
+        $simpannya = $this->Mmaster->simpandata($p1, $post, $editstatus);
+
         $respon = array(
             "respons" => $simpannya
         );
 
-		return service('response')->setJSON($respon);
-	}
+        return service('response')->setJSON($respon);
+    }
 
-    function combo_option($mod){
-		$opt="";
-		switch($mod){
-			case "bahasa":
-				$opt .="<option value='a.nama'>Nama Bahasa</option>";
-			break;
-			
-			default:
-				$txt = str_replace("_", " ", $mod);
-				$opt .="<option value='A.".$mod."'>".strtoupper($txt)."</option>";
-			break;
-		}
+    function combo_option($mod)
+    {
+        $opt = "";
+        switch ($mod) {
+            case "bahasa":
+                $opt .= "<option value='a.nama'>Nama Bahasa</option>";
+            break;
 
-		return $opt;
-	}
+            case "kategori":
+                $opt .= "<option value='a.nama'>Nama Kategori</option>";
+                $opt .= "<option value='a.url'>URL</option>";
+            break;
+
+            default:
+                $txt = str_replace("_", " ", $mod);
+                $opt .= "<option value='A." . $mod . "'>" . strtoupper($txt) . "</option>";
+                break;
+        }
+
+        return $opt;
+    }
+
+    public function search($keyword) {
+        $builder = $this->db->table('nama_tabel');
+        $builder->like('nama_field', $keyword);
+        $query = $builder->get();
+        return $query->getResultArray();
+    }
+    
 
 }

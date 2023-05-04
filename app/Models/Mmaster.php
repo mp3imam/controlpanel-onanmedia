@@ -37,7 +37,7 @@ class Mmaster extends Model{
                 $id = service('request')->getPost('id');
                 if($id){
                     $where .= "
-                        and a.id = '".$id."'
+                    and a.id = '".$id."'
                     ";
                 }
 
@@ -102,6 +102,28 @@ class Mmaster extends Model{
                     $delete = $this->db->table($table)->where('id', $id)->update($data);
                 }
             break;
+
+            case "kategori":
+                $table = 'public."MsKategori"';
+                if ($sts_crud == "add") {
+                    $id = genpkseq('panel.all_master_id_seq');
+
+                    $data['id'] = $id;
+                    $data['isAktif'] = 1;
+
+                    $insert = $this->db->table($table)->insert($data);
+                }
+
+                if($sts_crud == "edit"){
+                    $update = $this->db->table($table)->where('id', $id)->update($data);
+                }
+
+                if ($sts_crud == "delete") {
+                    $data['isAktif'] = 0;
+                    $delete = $this->db->table($table)->where('id', $id)->update($data);
+                }
+
+                break;
         }
 
         if($this->db->transStatus() === false){
