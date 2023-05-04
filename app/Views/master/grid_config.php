@@ -36,8 +36,8 @@
                                                 placeholder="Kolom Pencarian Data">
                                         </div>
                                         <div class="col-sm-2">
-                                            <!-- <a href="javascript:void(0);" class="btn btn-warning btn-sm"
-                                                onClick="filterData()">Cari</a> -->
+                                            <a href="javascript:void(0);" class="btn btn-warning btn-sm"
+                                                onClick="">Cari</a>
                                         </div>
                                         <div class="col-sm-6 text-right">
                                             {if $tombol_std|default:'' eq 'true'}
@@ -87,12 +87,5 @@ $(function() {
     heighttree = (getClientHeight() - 255) + 'px';
 
     genGridMaster('{$mod}', 'grid_{$mod}', '', '');
-
-    var table = $('#grid_{$mod}').DataTable();
-
-    function filterData() {
-        var nama = $('input[name="nama"]').val();
-        table.column(1).search(nama).draw();
-    }
 });
 </script>
