@@ -146,5 +146,26 @@
         <!-- /.control-sidebar -->
 
     </div>
+    
+    <!-- Modal Standard -->
+    <div class="modal fade" id="pesanModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><span id="headernya"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id='modalencuk' class="modal-product"></div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- Modal Standard -->
+
 </body>
 </html>

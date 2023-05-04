@@ -18,7 +18,93 @@ class Monan extends Model{
         $where = " where 1=1 ";
 
         switch($type){
+            case "onan_user_alamat":
+                $idx_usr = service('request')->getPost('idx_usr');
+				if($idx_usr){
+					$where .= "
+						and a.\"userId\" = '".$idx_usr."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*
+                    from public.\"UserAlamat\" a
+                    $where
+                ";
+            break;
+
+            case "onan_user_bahasa":
+                $idx_usr = service('request')->getPost('idx_usr');
+				if($idx_usr){
+					$where .= "
+						and a.\"userId\" = '".$idx_usr."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as bahasa
+                    from public.\"UserBahasa\" a
+                    left join public.\"MsBahasa\" b on b.id = a.\"msBahasaId\"
+                    $where
+                ";
+            break;
+            case "onan_user_pendidikan":
+                $idx_usr = service('request')->getPost('idx_usr');
+				if($idx_usr){
+					$where .= "
+						and a.\"userId\" = '".$idx_usr."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as negara, c.nama as tingkat
+                    from public.\"UserEdukasi\" a
+                    left join public.\"MsNegara\" b on b.id = a.\"msNegaraId\"
+                    left join public.\"MsTingkatEdukasi\" c on c.id = a.\"msTingkatEdukasiId\"
+                    $where
+                ";
+            break;
+            case "onan_user_keahlian":
+                $idx_usr = service('request')->getPost('idx_usr');
+				if($idx_usr){
+					$where .= "
+						and a.\"userId\" = '".$idx_usr."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*
+                    from public.\"UserKeahlian\" a
+                    $where
+                ";
+            break;
+            case "onan_user_produk":
+                $idx_usr = service('request')->getPost('idx_usr');
+				if($idx_usr){
+					$where .= "
+						and a.\"userId\" = '".$idx_usr."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as subkategori, c.nama as kategori
+                    from public.\"Jasa\" a
+                    left join public.\"MsSubkategori\" b on b.id = a.\"msSubkategoriId\"
+                    left join public.\"MsKategori\" c on c.id = a.\"msKategoriId\"
+                    $where
+                ";
+            break;
             case "onan_user":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
                 $sql = "
                     SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
                     from public.\"User\" a

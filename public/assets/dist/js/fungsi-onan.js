@@ -30,6 +30,94 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 	
     switch(modnya){
 		
+		case "onan_user_alamat":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_usr'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'alamat',title:'Alamat',width:250, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'catatanKurir',title:'Catatan Kurir',width:200, halign:'center',align:'left'},
+				{field:'namaPenerima',title:'Nama Penerima',width:200, halign:'center',align:'left'},
+			];
+		break;
+
+		case "onan_user_bahasa":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_usr'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'bahasa',title:'Bahasa',width:250, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'level',title:'Level',width:150, halign:'center',align:'center'},
+			];
+		break;
+		case "onan_user_pendidikan":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_usr'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'tingkat',title:'Tingkat Pendidikan',width:150, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'negara',title:'Negara',width:250, halign:'center',align:'center'},
+				{field:'institusi',title:'Institusi',width:250, halign:'center',align:'left'},
+			];
+		break;
+		case "onan_user_keahlian":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_usr'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'nama',title:'Nama Keahlian',width:250, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'level',title:'Level',width:150, halign:'center',align:'center'},
+			];
+		break;
+		case "onan_user_produk":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_usr'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'nama',title:'Nama Produk',width:200, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'kategori',title:'Kategori',width:200, halign:'center',align:'left'},
+				{field:'subkategori',title:'Sub Kategori',width:200, halign:'center',align:'left'},
+				{field:'impresi',title:'Impresi Halaman',width:150, halign:'center',align:'center'},	
+				{field:'klik',title:'Jumlah Klik',width:150, halign:'center',align:'center'},	
+				{field:'hargaTermurah',title:'Harga Termurah',width:150, halign:'center',align:'right'},	
+				{field:'hargaTermahal',title:'Harga Termahal',width:150, halign:'center',align:'right'},	
+			];
+		break;
 		case "onan_user":
 			judulnya = "";
 			urlnya = "onan_user";
@@ -93,7 +181,7 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 		onLoadSuccess: function(data){
 			if(data.total == 0){
 				var $panel = $(this).datagrid('getPanel');
-				var $info = '<div class="info-empty" style="margin-top:20%;">Data Tidak Tersedia</div>';
+				var $info = '<div class="info-empty" style="margin-top:10%;">Data Tidak Tersedia</div>';
 				$($panel).find(".datagrid-view").append($info);
 			}else{
 				$($panel).find(".datagrid-view").append('');
@@ -206,8 +294,45 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 			}
 		break;
 
-		case "contohnya":
-			$.messager.alert(nama_apps,"Alert nya",'info');
+		case "lihat_detail_user":
+			var row = $("#grid_"+modulnya).datagrid('getSelected');
+			if(row){
+
+				$('#gridnya_'+modulnya).hide();
+				$('#detailnya_'+modulnya).empty().show().addClass("loading");
+				$.post(host+'onanapps/display/user_detail', { 'id':row.id }, function(resp){
+					$('#detailnya_'+modulnya).show();
+					$('#detailnya_'+modulnya).html(resp).removeClass("loading");
+				});
+				
+				// $.LoadingOverlay("show");
+				// $('#modalencuk').html('');
+				// $('#headernya').html("<b>Detail User Onanmedia</b>");
+				// $('#pesanModal').modal('show');
+
+				// $('#pesanModal').on('shown.bs.modal', function (e) {
+				// 	e.preventDefault();
+				// 	$.ajax({
+				// 		type: "POST",
+				// 		url: host+'onanapps-display/'+type,
+				// 		data: {
+				// 			'id' : row.id
+				// 		},
+				// 		success: function(resp){
+				// 			$('#modalencuk').html(resp);
+				// 			$.LoadingOverlay("hide", true);
+				// 		}
+				// 	});
+					
+				// 	$(this).off('shown.bs.modal');
+				// });
+
+			}else{
+
+			}
+		
+		
+			
 		break;
 
 	}

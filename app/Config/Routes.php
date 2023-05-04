@@ -39,6 +39,7 @@ $routes->group('onanapps', static function ($routes) {
     $routes->get('grid/([a-zA-Z0-9_]+)', 'Onan::get_grid/$1');
     $routes->post('form/([a-zA-Z0-9_]+)', 'Onan::get_form/$1');
     $routes->post('display/([a-zA-Z0-9_]+)', 'Onan::getdisplay/$1');
+    $routes->post('simpan/([a-zA-Z0-9_]+)', 'Onan::simpandata/$1');
 
 });
 
