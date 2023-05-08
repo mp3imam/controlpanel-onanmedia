@@ -1,4 +1,4 @@
-<form id="form_{$acak}" method="post" url="{$baseurl}master/simpan/bahasa" enctype="multipart/form-data" >
+<form id="form_{$acak}" method="post" url="{$baseurl}master/simpan/subkategori" enctype="multipart/form-data" >
     <input type="hidden" name="id" value="{$data.id|default:''}">
 	<input type="hidden" name="editstatus" value="{$sts|default:'add'}">
 
@@ -8,7 +8,9 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    {include file="components/input_form.php" required="true" label="Nama Bahasa" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
+                    {include file="components/input_form.php" required="true" label="Nama Subkategori" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
+                    {include file="components/input_form.php" required="true" label="URL" class_width="col-lg-12" type="text" name="url" id="url" value="{$data.url|default:''}"}
+                    {include file="components/import_form.php" required="true" label="Id Kategori" class_width="col-lg-12" type="text" name="msKategoriId" id="msKategoriId" value="{$data.msKategoriId|default:''}"}
                 </div>
             </div>
 
@@ -30,10 +32,12 @@
 <script>	
     var rulesnya = {
 		nama : "required",
+        url : "required",
 	};
 
 	var messagesnya = {
 		nama : "<i style='color:red'>Harus Diisi</i>",
+        url : "<i style='color:red'>Harus Diisi</i>",
 	}
 
 	$( "#form_{$acak}" ).validate( {

@@ -1,4 +1,4 @@
-<form id="form_{$acak}" method="post" url="{$baseurl}master/simpan/bahasa" enctype="multipart/form-data" >
+<form id="form_{$acak}" method="post" url="{$baseurl}master/simpan/pendidikan" enctype="multipart/form-data" >
     <input type="hidden" name="id" value="{$data.id|default:''}">
 	<input type="hidden" name="editstatus" value="{$sts|default:'add'}">
 
@@ -8,7 +8,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    {include file="components/input_form.php" required="true" label="Nama Bahasa" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
+                    {include file="components/input_form.php" required="true" label="Nama Pendidikan" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
                 </div>
             </div>
 

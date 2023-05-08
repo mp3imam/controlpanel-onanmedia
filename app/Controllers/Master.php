@@ -46,6 +46,27 @@ class Master extends BaseController
                     $this->smarty->assign('data', $data);
                 }
             break;
+
+            case "subkategori":
+                if ($sts == 'edit') {
+                    $data = $this->Mmaster->getdata('subkategori', 'row_array');
+                    $this->smarty->assign('data', $data);
+                }
+            break;
+
+            case "pekerjaan":
+                if ($sts == 'edit') {
+                    $data = $this->Mmaster->getdata('pekerjaan', 'row_array');
+                    $this->smarty->assign('data', $data);
+                }
+            break;
+
+            case "pendidikan":
+                if ($sts == 'edit') {
+                    $data = $this->Mmaster->getdata('pendidikan', 'row_array');
+                    $this->smarty->assign('data', $data);
+                }
+            break;
         }
 
         $this->smarty->assign('mod', $mod);
@@ -136,6 +157,20 @@ class Master extends BaseController
                 $opt .= "<option value='a.url'>URL</option>";
             break;
 
+            case "subkategori":
+                $opt .= "<option value='a.nama'>Nama Subkategori</option>";
+                $opt .= "<option value='a.url'>URL</option>";
+                $opt .= "<option value='a.msKategoriId'>URL</option>";
+            break;
+
+            case "pekerjaan":
+                $opt .= "<option value='a.nama'>Nama Pekerjaan</option>";
+            break;
+
+            case "pendidikan":
+                $opt .= "<option value='a.nama'>Nama Pendidikan</option>";
+            break;
+
             default:
                 $txt = str_replace("_", " ", $mod);
                 $opt .= "<option value='A." . $mod . "'>" . strtoupper($txt) . "</option>";
@@ -145,12 +180,21 @@ class Master extends BaseController
         return $opt;
     }
 
-    public function search($keyword) {
-        $builder = $this->db->table('nama_tabel');
-        $builder->like('nama_field', $keyword);
-        $query = $builder->get();
-        return $query->getResultArray();
-    }
+    public function search()
+{
+    $model = new Data_model();
+
+    $keyword = $this->request->getPost('search');
+    $data = $model->searchData($keyword);
+
+    $response = [
+        'total' => count($data),
+        'rows' => $data,
+    ];
+
+    return $this->response->setJSON($response);
+}
+
     
 
 }
