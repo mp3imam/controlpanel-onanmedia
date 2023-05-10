@@ -50,16 +50,20 @@ class Mmaster extends Model{
 
             case "subkategori":
                 $id = service('request')->getPost('id');
-                if($id){
+                if ($id) {
                     $where .= "
                     and a.id = '".$id."'
                     ";
                 }
 
                 $sql = "
-                    SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
-                    from public.\"MsSubkategori\" a
-                    $where and a.\"isAktif\" = 1
+                    SELECT
+                        ROW_NUMBER() OVER (ORDER BY a.id DESC) AS rowID,
+                        a.*,
+                        b.nama AS kategori_nama
+                    FROM public.\"MsSubkategori\" a
+                    LEFT JOIN public.\"MsKategori\" b ON a.\"msKategoriId\" = b.id
+                    $where AND a.\"isAktif\" = 1
                 ";
             break;
 
@@ -245,14 +249,5 @@ class Mmaster extends Model{
 		}
 
     }
-
-    public function searchData($keyword)
-{
-    $builder = $this->db->table('nama_tabel');
-    $builder->like('nama_field', $keyword);
-    $query = $builder->get();
-
-    return $query->getResultArray();
-}
 
 }

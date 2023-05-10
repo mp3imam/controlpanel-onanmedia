@@ -10,8 +10,7 @@
                 <div class="col-sm-12">
                     {include file="components/input_form.php" required="true" label="Nama Subkategori" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
                     {include file="components/input_form.php" required="true" label="URL" class_width="col-lg-12" type="text" name="url" id="url" value="{$data.url|default:''}"}
-                    {include file="components/import_form.php" required="true" label="Id Kategori" class_width="col-lg-12" type="text" name="msKategoriId" id="msKategoriId" value="{$data.msKategoriId|default:''}"}
-                </div>
+					{include file="components/input_form.php" required="true" label="Kategori" class_width="col-lg-12" type="select" name="msKategoriId" id="msKategoriId" options="getKategoriOptions()"}
             </div>
 
             <hr />
@@ -33,12 +32,23 @@
     var rulesnya = {
 		nama : "required",
         url : "required",
+		msKategoriId: "required",
 	};
 
 	var messagesnya = {
 		nama : "<i style='color:red'>Harus Diisi</i>",
         url : "<i style='color:red'>Harus Diisi</i>",
+		msKategoriId : "<i style='color:red'>Harus Diisi</i>",
 	}
+
+	function getKategoriOptions() {
+        return $.ajax({
+            url: "{$baseurl}master/getKategoriOptions",
+            type: "GET",
+            dataType: "json",
+            async: false
+        }).responseJSON;
+    }
 
 	$( "#form_{$acak}" ).validate( {
 		rules: rulesnya,
