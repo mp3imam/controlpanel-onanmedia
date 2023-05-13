@@ -63,9 +63,9 @@ function genGridMaster(modnya, divnya, lebarnya, tingginya) {
 				nowrap_nya = true,
 
 				kolom[modnya] = [
+					{ field: 'kategori_nama', title: 'Kategori', width: 200, halign: 'center', align: 'left' },
 					{ field: 'nama', title: 'Nama SubKategori', width: 200, halign: 'center', align: 'left' },
 					{ field: 'url', title: 'URL', width: 200, halign: 'center', align: 'left' },
-					{ field: 'msKategoriId', title: 'Id Kategori', width: 200, halign: 'center', align: 'left' },
 				];
 			break;
 

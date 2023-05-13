@@ -7,10 +7,12 @@
         <div class="col-sm-12">
 
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-8">
                     {include file="components/input_form.php" required="true" label="Nama Subkategori" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
-                    {include file="components/input_form.php" required="true" label="URL" class_width="col-lg-12" type="text" name="url" id="url" value="{$data.url|default:''}"}
-					{include file="components/input_form.php" required="true" label="Kategori" class_width="col-lg-12" type="select" name="msKategoriId" id="msKategoriId" options="getKategoriOptions()"}
+				</div>
+				<div class="col-sm-4">
+					{include file="components/input_form.php" required="true" label="Kategori" class_width="col-lg-12" type="select" name="msKategoriId" id="msKategoriId" option="{$msKategoriId|default:''}"}
+				</div>
             </div>
 
             <hr />
@@ -31,24 +33,24 @@
 <script>	
     var rulesnya = {
 		nama : "required",
-        url : "required",
+        //url : "required",
 		msKategoriId: "required",
 	};
 
 	var messagesnya = {
 		nama : "<i style='color:red'>Harus Diisi</i>",
-        url : "<i style='color:red'>Harus Diisi</i>",
+       // url : "<i style='color:red'>Harus Diisi</i>",
 		msKategoriId : "<i style='color:red'>Harus Diisi</i>",
 	}
 
-	function getKategoriOptions() {
-        return $.ajax({
-            url: "{$baseurl}master/getKategoriOptions",
-            type: "GET",
-            dataType: "json",
-            async: false
-        }).responseJSON;
-    }
+	// function getKategoriOptions() {
+    //     return $.ajax({
+    //         url: "{$baseurl}master/getKategoriOptions",
+    //         type: "GET",
+    //         dataType: "json",
+    //         async: false
+    //     }).responseJSON;
+    // }
 
 	$( "#form_{$acak}" ).validate( {
 		rules: rulesnya,
@@ -80,3 +82,7 @@
 	    }
 	} );
 </script>
+
+
+
+{* include file="components/input_form.php" required="true" label="URL" class_width="col-lg-12" type="text" name="url" id="url" value="{$data.url|default:''}" *}

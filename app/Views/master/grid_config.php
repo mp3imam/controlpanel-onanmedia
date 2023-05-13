@@ -30,12 +30,12 @@
 
                                 <div class="row mb-2">
                                     <div class="col-sm-4">
-                                        <input class="form-control form-control-sm" type="text" name="search" id="search_input"
-                                            placeholder="Kolom Pencarian Data">
+                                        <input class="form-control form-control-sm" type="text" name="search" id="search_input" placeholder="Kolom Pencarian Data">
                                     </div>
                                     <div class="col-sm-2">
-                                        <a href="javascript:void(0);" class="btn btn-warning btn-sm" id="search_btn"
-                                            onClick="">Cari</a>
+                                        <a href="javascript:void(0);" class="btn btn-warning btn-sm" id="search_btn" >Cari</a>
+                                        &nbsp;
+                                        <a href="javascript:void(0);" class="btn btn-info btn-sm" id="reload_btn" >Reload</a>
                                     </div>
                                     <div class="col-sm-6 text-right">
                                         {if $tombol_std|default:'' eq 'true'}
@@ -85,14 +85,22 @@ $(function(){
 
     genGridMaster('{$mod}','grid_{$mod}', '', '');
 
-    $('#search_btn').click(function() {
-        var searchVal = $('#search_input').val();
-        var url = '{$baseurl}master/grid/kategori';
+    $('#reload_btn').click(function() {
         var queryParams = {
-            search: searchVal,
+            search: "",
         };
 
-        $('#grid_{$mod}').datagrid('load', queryParams);
+        $('#grid_{$mod}').datagrid('reload', queryParams);
+    });
+    $('#search_btn').click(function() {
+        //var searchVal = $('#search_input').val();
+        // var url = '{$baseurl}master/grid/kategori';
+
+        var queryParams = {
+            search: $('#search_input').val(),
+        };
+
+        $('#grid_{$mod}').datagrid('reload', queryParams);
     });
 });
 </script>

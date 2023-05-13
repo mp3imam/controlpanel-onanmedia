@@ -20,7 +20,7 @@
 					{assign var="requirednya" value='required="true"'}
 				{/if}
 				
-				<select id="{$id|default:''}" name="{$name|default:''}" {$multiple} {* $requirednya *} class="form-control {$class|default:''}">
+				<select id="{$id|default:''}" name="{$name|default:''}" {$multiple} {* $requirednya *} class="form-control form-control-sm {$class|default:''}">
 					{$option|default:''}
 				</select>
 			{elseif $type eq 'select2_multiple'}
@@ -29,7 +29,7 @@
 					{assign var="requirednya" value='required="true"'}
 				{/if}
 			
-				<select id="{$id|default:''}" multiple="multiple" name="{$name|default:''}" {$multiple} {$requirednya} class="form-control {$class|default:''}">
+				<select id="{$id|default:''}" multiple="multiple" name="{$name|default:''}" {$multiple} {$requirednya} class="form-control form-control-sm {$class|default:''}">
 					{$option|default:''}
 				</select>
 				<label class="validation_error_message" for="{$name|default:''}"></label>	

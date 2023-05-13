@@ -10,9 +10,6 @@
                 <div class="col-sm-12">
                     {include file="components/input_form.php" required="true" label="Nama Kategori" class_width="col-lg-12" type="text" name="nama" id="nama" value="{$data.nama|default:''}"}
                 </div>
-                <div class="col-sm-12">
-                    {include file="components/input_form.php" required="true" label="URL" class_width="col-lg-12" type="text" name="url" id="url" value="{$data.url|default:''}"}
-                </div>
             </div>
 
             <hr />
@@ -71,3 +68,10 @@
 	    }
 	} );
 </script>
+
+
+{*
+<div class="col-sm-12">
+    {include file="components/input_form.php" required="true" label="URL" class_width="col-lg-12" type="text" name="url" id="url" value="{$data.url|default:''}"}
+</div>
+*}

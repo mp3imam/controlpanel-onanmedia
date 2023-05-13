@@ -16,6 +16,7 @@ class Mmaster extends Model{
     function getdata($type="", $balikan="", $p1="", $p2=""){
         $array = array();
         $where = " where 1=1 ";
+        $search = service('request')->getPost('search');
 
         switch($type){
             case "bahasa":
@@ -26,6 +27,10 @@ class Mmaster extends Model{
 					";
 				}
 
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' )";
+                }
+
                 $sql = "
                     SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
                     from public.\"MsBahasa\" a
@@ -33,12 +38,23 @@ class Mmaster extends Model{
                 ";
             break;
 
+            case "kategori_combo":
+                $sql = "
+                    SELECT a.id, a.nama as txt
+                    from public.\"MsKategori\" a
+                    $where and a.\"isAktif\" = 1
+                ";
+            break;
             case "kategori":
                 $id = service('request')->getPost('id');
                 if($id){
                     $where .= "
                     and a.id = '".$id."'
                     ";
+                }
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' )";
                 }
 
                 $sql = "
@@ -54,6 +70,10 @@ class Mmaster extends Model{
                     $where .= "
                     and a.id = '".$id."'
                     ";
+                }
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' OR LOWER( upper(b.nama) ) like '%".strtolower(trim($search))."%' )";
                 }
 
                 $sql = "
@@ -75,6 +95,10 @@ class Mmaster extends Model{
                     ";
                 }
 
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' )";
+                }
+
                 $sql = "
                     SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
                     from public.\"MsPekerjaan\" a
@@ -88,6 +112,10 @@ class Mmaster extends Model{
                     $where .= "
                     and a.id = '".$id."'
                     ";
+                }
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' )";
                 }
 
                 $sql = "
@@ -159,6 +187,7 @@ class Mmaster extends Model{
 
                     $data['id'] = $id;
                     $data['isAktif'] = 1;
+                    $data['url'] = clean( strtolower($data['nama']), '-');
 
                     $insert = $this->db->table($table)->insert($data);
                 }
@@ -181,6 +210,7 @@ class Mmaster extends Model{
     
                     $data['id'] = $id;
                     $data['isAktif'] = 1;
+                    $data['url'] = clean( strtolower($data['nama']), '-');
     
                     $insert = $this->db->table($table)->insert($data);
                 }
@@ -193,8 +223,7 @@ class Mmaster extends Model{
                     $data['isAktif'] = 0;
                     $delete = $this->db->table($table)->where('id', $id)->update($data);
                 }
-    
-                break;
+            break;
 
             case "pekerjaan":
                 $table = 'public."MsPekerjaan"';

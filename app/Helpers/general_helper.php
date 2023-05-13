@@ -345,3 +345,10 @@ function genpkseq($table=""){
   return $yearmonth.str_pad($data['id'],6,'0',STR_PAD_LEFT);
 }
 //END Function Generate ID AutoIncrement Sequence
+
+// Function Clean String
+function clean($string, $separator="_") {
+  $string = str_replace(' ', $separator, $string); // Replaces all spaces with hyphens.
+  return preg_replace('/[^A-Za-z0-9\-]/', $separator, $string); // Removes special chars.
+}
+// End Function Clean String

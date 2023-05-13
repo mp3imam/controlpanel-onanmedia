@@ -52,6 +52,8 @@ class Master extends BaseController
                     $data = $this->Mmaster->getdata('subkategori', 'row_array');
                     $this->smarty->assign('data', $data);
                 }
+
+                $this->smarty->assign("msKategoriId", $this->getcombo("kategori", "return", ($sts == "edit" ? $data["msKategoriId"] : "") ));
             break;
 
             case "pekerjaan":
@@ -89,11 +91,11 @@ class Master extends BaseController
         switch ($mod) {
             case "master":
 
-                break;
+            break;
 
             default:
 
-                break;
+            break;
         }
 
         $this->smarty->assign('judulbesar', $cekmenu['keterangan'] ?? null);
@@ -118,9 +120,6 @@ class Master extends BaseController
         foreach ($_POST as $k => $v) {
             if ($this->request->getPost($k) != "") {
                 $post[$k] = $this->request->getPost($k);
-                //$post[$k] = htmlspecialchars($post[$k], ENT_QUOTES);
-                //$post[$k] = str_replace('"','&acute;&acute;', $post[$k]);
-                //$post[$k] = str_replace("'","&acute;", $post[$k]);
             } else {
                 $post[$k] = null;
             }
@@ -142,6 +141,62 @@ class Master extends BaseController
         );
 
         return service('response')->setJSON($respon);
+    }
+
+    function getcombo($type="", $balikan="", $p1="", $p2="", $p3=""){
+        $v = $this->request->getPost('v');
+		if($v != ""){
+			$selTxt = $v;
+		}else{
+			$selTxt = $p1;
+		}
+
+        $optTemp = '<option selected value=""> -- Pilih -- </option>';
+        switch($type){
+
+            case "kategori":
+                $data = $this->Mmaster->getdata('kategori_combo', 'result_array');
+            break;
+
+            // case "filter_status_rab_user":
+			// 	$optTemp = '<option selected value="">Filter Kirim User</option>';
+			// 	$data = array(
+			// 		'0' => array('id'=>'0','txt'=>'BELUM DIKIRIM USER'),
+			// 		'1' => array('id'=>'1','txt'=>'SUDAH DIKIRIM USER'),
+			// 	);
+			// break;
+            // case "tanggal" :
+			// 	$data = $this->arraydate('tanggal');
+			// 	$optTemp = '<option value=""> -- Tanggal -- </option>';
+			// break;
+			// case "bulan" :
+			// 	$data = $this->arraydate('bulan');
+			// 	$optTemp = '<option value=""> -- Bulan -- </option>';
+			// break;
+			// case "tahun" :
+			// 	$data = $this->arraydate('tahun');
+			// 	$optTemp = '<option value=""> -- Tahun -- </option>';
+			// break;
+        }
+
+        if($data){
+			foreach($data as $k=>$v){
+				$v['txt'] = str_replace("'", "`", $v['txt']);
+				$v['txt'] = str_replace('"', '`', $v['txt']);
+				
+				if($selTxt == $v['id']){
+					$optTemp .= '<option selected value="'.$v['id'].'">'.$v['txt'].'</option>';
+				}else{ 
+					$optTemp .= '<option value="'.$v['id'].'">'.$v['txt'].'</option>';	
+				}
+			}
+		}
+		
+		if($balikan == 'return'){
+			return $optTemp;
+		}elseif($balikan == 'echo'){
+			echo $optTemp;
+		}
     }
 
     function combo_option($mod)
@@ -180,20 +235,20 @@ class Master extends BaseController
         return $opt;
     }
 
-    public function search()
-{
-    $model = new Data_model();
+//     public function search()
+// {
+//     $model = new Data_model();
 
-    $keyword = $this->request->getPost('search');
-    $data = $model->searchData($keyword);
+//     $keyword = $this->request->getPost('search');
+//     $data = $model->searchData($keyword);
 
-    $response = [
-        'total' => count($data),
-        'rows' => $data,
-    ];
+//     $response = [
+//         'total' => count($data),
+//         'rows' => $data,
+//     ];
 
-    return $this->response->setJSON($response);
-}
+//     return $this->response->setJSON($response);
+// }
 
     
 
