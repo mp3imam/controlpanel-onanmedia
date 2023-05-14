@@ -31,12 +31,12 @@
                                     
                                     <div class="row mb-2">
                                          <div class="col-sm-4">
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder="Kolom Pencarian Data">
+                                            <input class="form-control form-control-sm" type="text" id="search_input" placeholder="Kolom Pencarian Data">
                                         </div>
                                         <div class="col-sm-2">
-                                            <a href="javascript:void(0);" class="btn btn-warning btn-sm"
-                                                onClick="">Cari</a>
+                                            <a href="javascript:void(0);" class="btn btn-warning btn-sm" id="search_btn" >Cari</a>
+                                            &nbsp;
+                                            <a href="javascript:void(0);" class="btn btn-info btn-sm" id="reload_btn" >Reload</a>
                                         </div>
                                         <div class="col-sm-6 text-right">
                                             {if $mod eq 'onan_user'}
@@ -77,5 +77,21 @@ $(function(){
     heighttree = (getClientHeight()-255)+'px';
 
     genGridOnan('{$mod}','grid_{$mod}', '', '');
+
+    $('#reload_btn').click(function() {
+        $('#search_input').val('');
+        var queryParams = {
+            search: "",
+        };
+
+        $('#grid_{$mod}').datagrid('reload', queryParams);
+    });
+    $('#search_btn').click(function() {
+        var queryParams = {
+            search: $('#search_input').val(),
+        };
+
+        $('#grid_{$mod}').datagrid('reload', queryParams);
+    });
 });
 </script>

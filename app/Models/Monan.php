@@ -16,6 +16,7 @@ class Monan extends Model{
     function getdata($type="", $balikan="", $p1="", $p2=""){
         $array = array();
         $where = " where 1=1 ";
+        $search = service('request')->getPost('search');
 
         switch($type){
             case "onan_user_alamat":
@@ -105,9 +106,19 @@ class Monan extends Model{
 					";
 				}
 
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( 
+                        LOWER( upper(a.name) ) like '%".strtolower(trim($search))."%' 
+                        OR LOWER( upper(a.phone) ) like '%".strtolower(trim($search))."%' 
+                        OR LOWER( upper(a.email) ) like '%".strtolower(trim($search))."%' 
+                        OR LOWER( upper(a.username) ) like '%".strtolower(trim($search))."%' 
+                    )";
+                }
+
                 $sql = "
                     SELECT ROW_NUMBER() OVER (ORDER BY a.id DESC) as rowID, a.*
                     from public.\"User\" a
+                    $where
                 ";
             break;
 
@@ -131,6 +142,34 @@ class Monan extends Model{
 		}elseif($balikan == 'variable'){
 			return $array;
 		}
+    }
+
+    function simpandata($table,$data,$sts_crud){ //$sts_crud --> STATUS NYEE INSERT, UPDATE, DELETE
+		$this->db->transStart();
+		if(isset($data['id'])){
+			$id = $data['id'];
+			unset($data['id']);
+		}
+		
+		if($sts_crud == "add"){
+			unset($data['id']);
+		}
+
+        switch($table){
+            case "onanuser_aktifkan":
+                $table = 'public.User';
+                $update = $this->db->table($table)->where('id', $id)->update(['status'=>1]);
+            break;
+        }
+
+        if($this->db->transStatus() === false){
+			$this->db->transRollback();
+			return 'gagal';
+		}else{
+			$this->db->transCommit();
+            return "1";
+		}
+
     }
 
 }

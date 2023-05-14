@@ -86,6 +86,7 @@ $(function(){
     genGridMaster('{$mod}','grid_{$mod}', '', '');
 
     $('#reload_btn').click(function() {
+        $('#search_input').val('');
         var queryParams = {
             search: "",
         };
@@ -93,9 +94,6 @@ $(function(){
         $('#grid_{$mod}').datagrid('reload', queryParams);
     });
     $('#search_btn').click(function() {
-        //var searchVal = $('#search_input').val();
-        // var url = '{$baseurl}master/grid/kategori';
-
         var queryParams = {
             search: $('#search_input').val(),
         };

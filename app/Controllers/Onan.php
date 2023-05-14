@@ -64,30 +64,36 @@ class Onan extends BaseController
         }
     }
 
-    function simpandata($p1="",$p2=""){
-		$post = array();
-        foreach($_POST as $k=>$v){
-			if($this->request->getPost($k)!=""){
-				$post[$k] = $this->request->getPost($k);
-			}else{
-				$post[$k] = null;
-			}
-		}
-		
-		// echo "<pre>";
-		// print_r($post); 
-		// exit;
-		
-		if(isset($post['editstatus'])){$editstatus = $post['editstatus'];unset($post['editstatus']);}
-		else $editstatus = $p2;
+    function simpandata($p1 = "", $p2 = "")
+    {
+        //echo "<pre>";
+        //print_r($_POST); exit;
 
-        $simpannya = $this->Mmaster->simpandata($p1, $post, $editstatus); 
-		
+        $post = array();
+        foreach ($_POST as $k => $v) {
+            if ($this->request->getPost($k) != "") {
+                $post[$k] = $this->request->getPost($k);
+            } else {
+                $post[$k] = null;
+            }
+        }
+
+        // echo "<pre>";
+        // print_r($post); 
+        // exit;
+
+        if (isset($post['editstatus'])) {
+            $editstatus = $post['editstatus'];
+            unset($post['editstatus']);
+        } else $editstatus = $p2;
+
+        $simpannya = $this->Monan->simpandata($p1, $post, $editstatus);
+
         $respon = array(
             "respons" => $simpannya
         );
 
-		return service('response')->setJSON($respon);
-	}
+        return service('response')->setJSON($respon);
+    }
 
 }

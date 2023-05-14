@@ -131,7 +131,43 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 			kolom[modnya] = [			
 				{field:'email',title:'Email',width:200, halign:'center',align:'left'},
 				{field:'phone',title:'No. Handphone',width:150, halign:'center',align:'center'},
-				{field:'username',title:'Username',width:150, halign:'center',align:'left'},	
+				{field:'username',title:'Username',width:150, halign:'center',align:'left'},
+				{field:'isEmailVerified',title:'Verifikasi Email',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+				{field:'isPhoneVerified',title:'Verifikasi No. HP',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+				{field:'sellerStatus',title:'Terdaftar Seller',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+				{field:'status',title:'Aktivasi Admin',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
 			];
 		break;
 
