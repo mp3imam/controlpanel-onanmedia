@@ -157,7 +157,7 @@ class Mmaster extends Model{
 		if($sts_crud == "add"){
 			unset($data['id']);
 		}
-
+        
         switch($table){
 			case "bahasa":
                 $table = 'public."MsBahasa"';
@@ -188,6 +188,7 @@ class Mmaster extends Model{
                     $data['id'] = $id;
                     $data['isAktif'] = 1;
                     $data['url'] = clean( strtolower($data['nama']), '-');
+                    $data['icon'] = "/icons/subkategori/icon/penulisan&terjemahan/storytelling.png";
 
                     $insert = $this->db->table($table)->insert($data);
                 }
@@ -211,6 +212,8 @@ class Mmaster extends Model{
                     $data['id'] = $id;
                     $data['isAktif'] = 1;
                     $data['url'] = clean( strtolower($data['nama']), '-');
+                    $data['icon'] = "/icons/subkategori/icon/penulisan&terjemahan/storytelling.png";
+                    $data['background'] = "/icons/subkategori/background/it-support.png";
     
                     $insert = $this->db->table($table)->insert($data);
                 }
