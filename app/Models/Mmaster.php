@@ -73,7 +73,7 @@ class Mmaster extends Model{
                 }
 
                 if(isset($search) && $search != ""){
-                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' OR LOWER( upper(b.nama) ) like '%".strtolower(trim($search))."%' )";
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' )";
                 }
 
                 $sql = "
@@ -206,27 +206,29 @@ class Mmaster extends Model{
 
             case "subkategori":
                 $table = 'public."MsSubkategori"';
+
                 if ($sts_crud == "add") {
                     $id = genpkseq('panel.all_master_id_seq');
-    
+
                     $data['id'] = $id;
                     $data['isAktif'] = 1;
-                    $data['url'] = clean( strtolower($data['nama']), '-');
-                    $data['icon'] = "/icons/subkategori/icon/penulisan&terjemahan/storytelling.png";
+                    $data['url'] = clean(strtolower($data['nama']), '-');
+                    $data['icon'] = $this->getKategoriIcon($data['msKategoriId']); // Menggunakan icon dari kategori yang dipilih
                     $data['background'] = "/icons/subkategori/background/it-support.png";
-    
+
                     $insert = $this->db->table($table)->insert($data);
                 }
-    
-                if($sts_crud == "edit"){
+
+                if ($sts_crud == "edit") {
                     $update = $this->db->table($table)->where('id', $id)->update($data);
                 }
-    
+
                 if ($sts_crud == "delete") {
                     $data['isAktif'] = 0;
+                    unset($data['icon']);
                     $delete = $this->db->table($table)->where('id', $id)->update($data);
                 }
-            break;
+                break;
 
             case "pekerjaan":
                 $table = 'public."MsPekerjaan"';
@@ -280,6 +282,16 @@ class Mmaster extends Model{
             return "1";
 		}
 
+    }
+
+    function getKategoriIcon($msKategoriId) {
+        $kategori = $this->db->table('public."MsKategori"')->where('id', $msKategoriId)->get()->getRow();
+    
+        if ($kategori) {
+            return $kategori->icon;
+        }
+    
+        return null;
     }
 
 }
