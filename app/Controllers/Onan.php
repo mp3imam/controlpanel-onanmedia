@@ -31,6 +31,10 @@ class Onan extends BaseController
                 
             break;
 
+            case "onan_transaksi":
+            
+            break;
+
             default:
                 
             break;
@@ -58,6 +62,18 @@ class Onan extends BaseController
 
                 $this->smarty->assign("mod", 'onan_user');
                 $this->smarty->assign("user", $user);
+                $this->smarty->assign("id", $id);
+                $this->smarty->display($temp);
+            break;
+
+            case "transaksi_detail":
+                $temp = 'onan/form/form_transaksi_detail.php';
+                $id = $this->request->getPost('id');
+
+                $order = $this->Monan->getdata('onan_transaksi', 'row_array');
+
+                $this->smarty->assign("mod", 'onan_transaksi');
+                $this->smarty->assign("order", $order);
                 $this->smarty->assign("id", $id);
                 $this->smarty->display($temp);
             break;

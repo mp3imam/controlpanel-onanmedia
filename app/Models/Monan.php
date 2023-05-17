@@ -121,6 +121,46 @@ class Monan extends Model{
                     $where
                 ";
             break;
+            case "onan_transaksi_jasa":
+                $idx_order = service('request')->getPost('idx_order');
+				if($idx_order){
+					$where .= "
+						and a.\"orderId\" = '".$idx_order."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as jasa
+                    from public.\"OrderJasa\" a
+                    left join public.\"Jasa\" b on b.id = a.\"jasaId\"
+                    $where
+                ";
+            break;
+            case "onan_transaksi":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( 
+                        LOWER( upper(a.penawaran) ) like '%".strtolower(trim($search))."%' 
+                    )";
+                }
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as penjual, c.name as pembeli, d.nama as aktifitas
+                    from public.\"Order\" a
+                    left join public.\"User\" b on b.id = a.\"userIdPenjual\"
+                    left join public.\"User\" c on c.id = a.\"userIdPembeli\"
+                    left join public.\"MsAktifitas\" d on d.id = a.\"msAktifitasId\"
+                    $where
+                ";
+            break;
 
             default:
                 

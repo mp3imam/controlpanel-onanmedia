@@ -73,7 +73,7 @@ class Mmaster extends Model{
                 }
 
                 if(isset($search) && $search != ""){
-                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' )";
+                    $where .= " AND ( LOWER( upper(a.nama) ) like '%".strtolower(trim($search))."%' OR LOWER( upper(b.nama) ) like '%".strtolower(trim($search))."%' )";
                 }
 
                 $sql = "
