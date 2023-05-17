@@ -259,7 +259,7 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 						return formatNumber(value);
 					}
 				},			
-				{field:'namau',title:'Nama',width:200, halign:'center',align:'left'},
+				{field:'namauser',title:'Nama',width:200, halign:'center',align:'left'},
 				{field:'durasiKontrak',title:'Durasi Kontrak',width:200, halign:'center',align:'center'},
 				{field:'resume',title:'Resume',width:200, halign:'center',align:'left'},
 				{field:'portofolio',title:'Portofolio',width:200, halign:'center',align:'left'},
