@@ -45,6 +45,9 @@
                                             {if $mod eq 'onan_transaksi'}
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_transaksi', '{$mod}', '{$acak}');" >Lihat Detail</a>
                                             {/if}
+                                            {if $mod eq 'onan_tender'}
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_tender', '{$mod}', '{$acak}');" >Lihat Detail</a>
+                                            {/if}
 
                                         </div>
                                     </div>

@@ -184,7 +184,11 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 				{field:'deskripsi',title:'Deskripsi',width:150, halign:'center',align:'center'},
 				{field:'namaPricing',title:'Nama Pricing',width:150, halign:'center',align:'center'},
 				{field:'jasa',title:'Jasa',width:150, halign:'center',align:'center'},
-				{field:'nilai',title:'Nilai',width:150, halign:'center',align:'center'},
+				{field:'nilai',title:'Nilai',width:150, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
 			];
 		break;
 		case "onan_transaksi":
@@ -202,27 +206,113 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 				{field:'penjual',title:'Penjual',width:200, halign:'center',align:'left'},
 				{field:'pembeli',title:'Pembeli',width:200, halign:'center',align:'left'},
 				{field:'totalPenawaran',title:'Total Penawaran',width:200, halign:'center',align:'center',
-				formatter: function (value, row) {
-					return value.toLocaleString(undefined, { maximumFranctionDigits: 3 });
-				}
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
 				},
 				{field:'totalFee',title:'Total Fee',width:150, halign:'center',align:'center',
-				formatter: function (value, row) {
-					return value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFranctionDigits: 0 });
-				}
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
 				},
-				{field:'totalBayar',title:'Total Bayar',width:150, halign:'center',align:'center'},
-				{field: 'totalKomisiPenjual',title: 'Total Komisi Penjual',width:150, halign:'center',align:'center'},
+				{field:'totalBayar',title:'Total Bayar',width:150, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field: 'totalKomisiPenjual',title: 'Total Komisi Penjual',width:150, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
 				{field: 'persentaseKomisiOnan',title:'Persentase Komisi Onan',width:150, halign:'center',align:'center',
-				formatter: function (value, row) {
-					return value + "%";
-				}
+					formatter: function (value, row) {
+						return value + "%";
+					}
 				},
-				{field: 'totalKomisiOnan',title: 'Total Komisi Onan',width:150, halign:'center',align:'center'},
-				{field: 'totalKomisiPenjual',title: 'Total Komisi Penjual',width:150, halign:'center',align:'center'},
+				{field: 'totalKomisiOnan',title: 'Total Komisi Onan',width:150, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field: 'totalKomisiPenjual',title: 'Total Komisi Penjual',width:150, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
 
 			];
 		break;
+		
+		case "onan_tender_peserta":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_tender'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'budget',title:'Budget',width:200, halign:'center',align:'left',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},			
+				{field:'namau',title:'Nama',width:200, halign:'center',align:'left'},
+				{field:'durasiKontrak',title:'Durasi Kontrak',width:200, halign:'center',align:'center'},
+				{field:'resume',title:'Resume',width:200, halign:'center',align:'left'},
+				{field:'portofolio',title:'Portofolio',width:200, halign:'center',align:'left'},
+				{field:'alasan',title:'Alasan',width:200, halign:'center',align:'left'},
+				{field:'msAlasanPembatalanTenderId',title:'Alasan Pembatalan Tender',width:200, halign:'center',align:'left'},
+				{field:'coverLatter',title:'Cover Letter',width:200, halign:'center',align:'left'},
+				{field:'tenderId',title:'Tender',width:200, halign:'center',align:'left'},
+				{field:'statusDiterima',title:'Status Diterima',width:200, halign:'center',align:'left'},
+				{field:'statusAkun',title:'Status Akun',width:200, halign:'center',align:'left'},
+			];	
+		break;	
+		
+		case "onan_tender":
+			judulnya = "";
+			urlnya = "onan_tender";
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [
+				{field: 'judulTender',title:'Judul Tender',width:200, halign:'center',align:'left'},
+			];
+			kolom[modnya] = [
+				{field: 'namauser',title:'User',width:200, halign:'center',align:'left'},
+				{field: 'skills',title:'Skill',width:200, halign:'center',align:'left'},
+				{field: 'durasiKontrak',title:'Durasi Kontrak',width:200, halign:'center',align:'center'},
+				{field: 'kategori',title:'Kategori',width:200, halign:'center',align:'center'},
+				{field: 'lingkupPekerjaan',title:'Lingkup Pekerjaan',width:200, halign:'center',align:'center'},
+				{field: 'tipePekerjaan',title:'Tipe Pekerjaan',width:200, halign:'center',align:'center'},
+				{field: 'merchant',title:'Merchant Level',width:200, halign:'center',align:'left'},
+				{field: 'deskripsiPekerjaan',title:'Deskripsi Pekerjaan',width:400, halign:'center',align:'left'},
+				{field: 'metodePembayaran',title:'Metode Pembayaran',width:200, halign:'center',align:'center'},
+				{field: 'posting',title:'Posting Tender',width:200, halign:'center',align:'center'},
+				{field: 'budget',title:'Budget',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field: 'syaratKetentuan',title:'Syarat Ketentuan',width:200, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+			]
+
+		function formatNumber(value) {
+			const formatter = new Intl.NumberFormat('id-ID');
+			return formatter.format(value);
+		}
 
     }
 
@@ -443,10 +533,26 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 			}else{
 
 			}
-		
-		
 			
 		break;
+
+		case "lihat_detail_tender":
+			var row = $("#grid_"+modulnya).datagrid('getSelected');
+			if(row){
+
+				$('#gridnya_'+modulnya).hide();
+				$('#detailnya_'+modulnya).empty().show().addClass("loading");
+				$.post(host+'onanapps/display/tender_detail', { 'id':row.id }, function(resp){
+					$('#detailnya_'+modulnya).show();
+					$('#detailnya_'+modulnya).html(resp).removeClass("loading");
+				});
+				
+			}else{
+
+			}
+			
+		break;
+
 
 	}
 

@@ -121,6 +121,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_transaksi_jasa":
                 $idx_order = service('request')->getPost('idx_order');
 				if($idx_order){
@@ -161,6 +162,47 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
+            case "onan_tender_peserta":
+                $idx_tender = service('request')->getPost('idx_tender');
+				if($idx_tender){
+					$where .= "
+						and a.\"tenderId\" = '".$idx_tender."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as namau
+                    from public.\"TenderPeserta\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    $where
+                ";
+            break;
+            case "onan_tender":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";    
+				}    
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND (
+                        LOWER(upper(a.kategori)) LIKE '%" . strtolower(trim($search)) . "%'
+                    )";
+                }    
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as namauser, c.nama as merchant, d.nama as posting
+                    from public.\"Tender\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    left join public.\"MsMerchantLevel\" c on c.id = a.\"msMerchantLevelId\"
+                    left join public.\"MsPostingTender\" d on d.id = a.\"msPostingTenderId\"
+                    $where
+                ";    
+            break;                
 
             default:
                 
