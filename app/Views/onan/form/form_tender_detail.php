@@ -20,11 +20,11 @@
             </tr>
             <tr>
                 <td >
-                    User
+                    Nama
                 </td>
                 <td >:</td>
                 <td >
-                    {$tender.namau|default:'-'}
+                    {$tender.namauser|default:'-'}
                 </td>
             </tr>
             <tr>

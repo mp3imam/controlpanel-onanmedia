@@ -283,7 +283,7 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 				{field: 'judulTender',title:'Judul Tender',width:200, halign:'center',align:'left'},
 			];
 			kolom[modnya] = [
-				{field: 'namauser',title:'User',width:200, halign:'center',align:'left'},
+				{field: 'namauser',title:'Nama',width:200, halign:'center',align:'left'},
 				{field: 'skills',title:'Skill',width:200, halign:'center',align:'left'},
 				{field: 'durasiKontrak',title:'Durasi Kontrak',width:200, halign:'center',align:'center'},
 				{field: 'kategori',title:'Kategori',width:200, halign:'center',align:'center'},

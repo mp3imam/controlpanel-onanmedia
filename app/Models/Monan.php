@@ -173,7 +173,7 @@ class Monan extends Model{
 
                 $sql = "
                     SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
-                        b.name as namau
+                        b.name as namauser
                     from public.\"TenderPeserta\" a
                     left join public.\"User\" b on b.id = a.\"userId\"
                     $where
