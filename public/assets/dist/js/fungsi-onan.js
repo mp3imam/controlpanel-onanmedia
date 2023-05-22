@@ -324,10 +324,16 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 			kolom[modnya] = [			
 				{field:'subkategori',title:'Subkategori',width:200, halign:'center',align:'left'},
 				{field:'kategori',title:'Kategori',width:200, halign:'center',align:'left'},
-				{field:'impresi',title:'Impresi',width:200, halign:'center',align:'center'},
-				{field:'klik',title:'Klik',width:200, halign:'center',align:'center'},
+				{field:'impresi',title:'Impresi',width:150, halign:'center',align:'center'},
+				{field:'klik',title:'Klik',width:150, halign:'center',align:'center'},
 				{field:'namauser',title:'Nama User',width:200, halign:'center',align:'left'},
+				{field:'tags',title:'Tags',width:200, halign:'center',align:'left'},
 				{field:'deskripsi',title:'Deskripsi',width:300, halign:'center',align:'left'},
+				{field:'cover',title:'Cover',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return '<img width="25%" src="' + value + '" />';
+					}
+				},
 				{field:'slug',title:'Slug',width:200, halign:'center',align:'left'},
 				{field:'hargaTermahal',title:'Harga Termahal',width:200, halign:'center',align:'center',
 					formatter: function (value, row) {
@@ -340,7 +346,7 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 					}
 				},
 				{field:'statusjasa',title:'Status Jasa',width:200, halign:'center',align:'center'},
-				{field:'isPengambilan',title:'Pengambilan',width:200, halign:'center',align:'center',
+				{field:'isPengambilan',title:'Pengambilan',width:150, halign:'center',align:'center',
 					formatter:function(value,rowData,rowIndex){
 						if(value == 1){
 							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
@@ -349,7 +355,7 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 						}
 					}
 				},
-				{field:'isPengiriman',title:'Pengiriman',width:200, halign:'center',align:'center',
+				{field:'isPengiriman',title:'Pengiriman',width:150, halign:'center',align:'center',
 					formatter:function(value,rowData,rowIndex){
 						if(value == 1){
 							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
@@ -358,7 +364,7 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 						}
 					}	
 				},
-				{field:'isUnggulan',title:'Unggulan',width:200, halign:'center',align:'center',
+				{field:'isUnggulan',title:'Unggulan',width:150, halign:'center',align:'center',
 					formatter:function(value,rowData,rowIndex){
 						if(value == 1){
 							return '<img width="15%" src="'+host+'assets/images/ok.png" />';

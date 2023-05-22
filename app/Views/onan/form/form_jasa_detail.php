@@ -45,6 +45,11 @@
                 <td >{$jasa.namauser|default:'-'}</td>
             </tr>
             <tr>
+                <td >Tags</td>
+                <td >:</td>
+                <td >{$jasa.tags|default:'-'}</td>
+            </tr>
+            <tr>
                 <td >Deskripsi</td>
                 <td >:</td>
                 <td >{$jasa.deskripsi|default:'-'}</td>
@@ -63,6 +68,18 @@
                 <td width="40%">Slug</td>
                 <td width="5%">:</td>
                 <td width="55%">{$jasa.slug|default:'-'}</td>
+            </tr>
+            <tr>
+                <td >Cover</td>
+                <td >:</td>
+                <td >
+                    {if $jasa.cover|default:''}
+                        <img width="25%" src="{$jasa.cover}" />
+                    {else}
+                        -
+                    {/if}
+
+                </td>
             </tr>
             <tr>
                 <td >Harga Termahal</td>
