@@ -307,7 +307,61 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 						}
 					}
 				},
-			]
+			];
+
+		break;
+
+		case "onan_jasa_pricing":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			param['idx_pricing'] = idx_usr;
+
+			frozen[modnya] = [			
+				{field:'jasaId',title:"Nama Jasa",width: 200, halign:'center', align:'left'},
+			];
+			kolom[modnya] = [			
+				{field:'nama',title:"Nama Pricing",width:200, halign:'center',align:'left'},
+				{field:'deskripsi',title:'Deskripsi',width:200, halign:'center',align:'left'},
+				{field:'jumlahPeriode',title:'Jumlah Periode', width:200, halign:'center',align:'center'},
+				{field:'periode',title:'Periode',width:200, halign:'center',align:'center'},
+				{field:'harga',title:'Harga',width:200, halign:'center',align:'center'},
+			];
+
+		break;
+
+		case "onan_jasa":
+			judulnya = "";
+			urlnya = "onan_jasa";
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [
+				{field:'nama',title:'Nama Jasa',width: 200, halign:'center',align:'left'}
+			];
+
+			kolom[modnya] = [
+				{field:'msSubkategoriId',title:'Subkategori',width:200, halign:'center',align:'left'},
+				{field:'msKategoriId',title:'Kategori',width:200, halign:'center',align:'left'},
+				{field:'impresi',title:'Impresi',width:200, halign:'center',align:'center'},
+				{field:'klik',title:'Klik',width:200, halign:'center',align:'center'},
+				{field:'userId',title:'Nama User',width:200, halign:'center',align:'left'},
+				{field:'deskripsi',title:'Deskripsi',width:300, halign:'center',align:'left'},
+				{field:'slug',title:'Slug',width:200, halign:'center',align:'left'},
+				{field:'hargaTermahal',title:'Harga Termahal',width:200, halign:'center',align:'center'},
+				{field:'hargaTermurah',title:'Harga Termurah',width:200, halign:'center',align:'center'},
+				{field:'msStatusJasaId',title:'Status Jasa',width:200, halign:'center',align:'center'},
+				{field:'isPengambilan',title:'Pengambilan',width:200, halign:'center',align:'center'},
+				{field:'isPengiriman',title:'Pengiriman',width:200, halign:'center',align:'center'},
+				{field:'isUnggulan',title:'Unggulan',width:200, halign:'center',align:'center'},
+			];
+		
+		break;
+
 
 		function formatNumber(value) {
 			const formatter = new Intl.NumberFormat('id-ID');
@@ -543,6 +597,23 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				$('#gridnya_'+modulnya).hide();
 				$('#detailnya_'+modulnya).empty().show().addClass("loading");
 				$.post(host+'onanapps/display/tender_detail', { 'id':row.id }, function(resp){
+					$('#detailnya_'+modulnya).show();
+					$('#detailnya_'+modulnya).html(resp).removeClass("loading");
+				});
+				
+			}else{
+
+			}
+			
+		break;
+
+		case "lihat_detail_jasa":
+			var row = $("#grid_"+modulnya).datagrid('getSelected');
+			if(row){
+
+				$('#gridnya_'+modulnya).hide();
+				$('#detailnya_'+modulnya).empty().show().addClass("loading");
+				$.post(host+'onanapps/display/jasa_detail', { 'id':row.id }, function(resp){
 					$('#detailnya_'+modulnya).show();
 					$('#detailnya_'+modulnya).html(resp).removeClass("loading");
 				});

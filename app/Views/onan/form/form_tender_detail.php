@@ -1,10 +1,3 @@
-<script>
-    function formatNumber(value) {
-			const formatter = new Intl.NumberFormat('id-ID');
-			return formatter.format(value);
-	}
-</script>
-
 <div class="row mb-2">
     <div class="col-sm-6">
         <table class="table table-borderless">
@@ -102,9 +95,9 @@
                 <td >:</td>
                 <td >
                     {if $tender.syaratKetentuan|default:'' eq '1'}
-                        <img width="10%" title="Sudah Terdaftar Sebagai Seller" src="{$baseurl}assets/images/ok.png" />
+                        <img width="10%" title="Sudah Terdaftar Sebagai Syarat Ketentuan" src="{$baseurl}assets/images/ok.png" />
                     {else}
-                        <img width="10%" title="Belum Terdaftar Sebagai Seller" src="{$baseurl}assets/images/not-ok.png" />
+                        <img width="10%" title="Belum Terdaftar Sebagai Syarat Ketentuan" src="{$baseurl}assets/images/not-ok.png" />
                     {/if}
                 </td>
             </tr>
@@ -138,16 +131,16 @@
 
 
 <script>
+    function formatNumber(value) {
+        const formatter = new Intl.NumberFormat('id-ID');
+        return formatter.format(value);
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         var budgetElement = document.getElementById("formattedBudget");
-        var budgetValue = budgetElement.textContent || budgetElement.innerText;
+        var budgetValue = parseFloat(budgetElement.textContent.replace(/\./g, "").replace(/,/g, ""));
         budgetElement.textContent = formatNumber(budgetValue);
     });
-
-    function formatNumber(value) {
-		const formatter = new Intl.NumberFormat('id-ID');
-		return formatter.format(value);
-	}
 
     var idx_usr = "{$id|default:''}";
 
@@ -158,25 +151,4 @@
 
     genGridOnan('{$mod}_peserta','grid_peserta_{$mod}', '', '');
 
-    // $('#aktivkan_{$acak}').on('click', function(){
-    //     //alert('Uhui');
-    //     $.messager.confirm(nama_apps,'Anda Yakin Ingin Mengaktifkan Data Ini ?',function(re){
-	// 		if(re){
-    //             $.LoadingOverlay("show");
-	// 			$.post(host+'onanapps/simpan/onanuser_aktifkan', { 'id':idx_usr, 'editstatus':'ablahu' } , function(resp){
-	// 				if (resp.respons == "1") {
-	// 					$.messager.alert(nama_apps,"Data User Sudah Aktif",'info');
-    //                     $('#cancels_{$acak}').trigger('click');
-    //                     $('#grid_{$mod}').datagrid('reload');
-
-	// 					//$("#grid_"+submodulnya).datagrid('reload');								
-	// 				}else{
-	// 					$.messager.alert(nama_apps,"Gagal Mengaktifkan Data "+resp,'error');
-	// 				}
-					
-	// 				$.LoadingOverlay("hide", true);
-	// 			});	
-    //         }
-    //     });
-    // });
 </script>

@@ -50,6 +50,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user_pendidikan":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -67,6 +68,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user_keahlian":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -81,6 +83,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user_produk":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -98,6 +101,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user":
                 $id = service('request')->getPost('id');
 				if($id){
@@ -138,6 +142,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_transaksi":
                 $id = service('request')->getPost('id');
 				if($id){
@@ -179,6 +184,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_tender":
                 $id = service('request')->getPost('id');
 				if($id){
@@ -202,7 +208,43 @@ class Monan extends Model{
                     left join public.\"MsPostingTender\" d on d.id = a.\"msPostingTenderId\"
                     $where
                 ";    
-            break;                
+            break;
+            
+            case "onan_jasa_pricing":
+                $idx_pricing = service('request')->getPost('idx_pricing');
+				if($idx_pricing){
+					$where .= "
+						and a.\"jasaId\" = '".$idx_pricing."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*
+                    from public.\"JasaPricing\" a
+                    $where
+                ";
+            break;
+
+            case "onan_jasa":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";    
+				}    
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND (
+                        LOWER(upper(a.deskripsi)) LIKE '%" . strtolower(trim($search)) . "%'
+                    )";
+                }    
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*
+                    from public.\"Jasa\" a
+                    $where
+                ";    
+            break;
 
             default:
                 
