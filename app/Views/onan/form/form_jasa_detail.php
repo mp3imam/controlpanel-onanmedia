@@ -17,7 +17,7 @@
                 </td>
                 <td >:</td>
                 <td >
-                    {$jasa.msSubkategoriId|default:'-'}
+                    {$jasa.subkategori|default:'-'}
                 </td>
             </tr>
             <tr>
@@ -26,7 +26,7 @@
                 </td>
                 <td >:</td>
                 <td >
-                    {$jasa.msKategoriId|default:'-'}
+                    {$jasa.kategori|default:'-'}
                 </td>
             </tr>
             <tr>
@@ -42,7 +42,7 @@
             <tr>
                 <td >Nama User</td>
                 <td >:</td>
-                <td >{$jasa.userId|default:'-'}</td>
+                <td >{$jasa.namauser|default:'-'}</td>
             </tr>
             <tr>
                 <td >Deskripsi</td>
@@ -77,22 +77,43 @@
             <tr>
                 <td >Status Jasa</td>
                 <td >:</td>
-                <td >{$jasa.msStatusJasaId|default:'-'}</td>
+                <td >{$jasa.statusjasa|default:'-'}</td>
             </tr>
             <tr>
                 <td >Pengambilan</td>
                 <td >:</td>
-                <td ><span>{$jasa.isPengambilan|default:'-'}</span></td>
+                <td >
+                    {if $jasa.isPengambilan|default:'' eq '1'}
+                        <img width="10%" title="Sudah Terdaftar di Pengambilan" src="{$baseurl}assets/images/ok.png" />
+                    {else}
+                        <img width="10%" title="Belum Terdaftar di Pengambilan" src="{$baseurl}assets/images/not-ok.png" />
+                    {/if}
+
+                </td>
             </tr>
             <tr>
                 <td >Pengiriman</td>
                 <td >:</td>
-                <td ><span>{$jasa.isPengiriman|default:'-'}</span></td>
+                <td >
+                    {if $jasa.isPengiriman|default:'' eq '1'}
+                        <img width="10%" title="Sudah Terdaftar di Pengiriman" src="{$baseurl}assets/images/ok.png" />
+                    {else}
+                        <img width="10%" title="Belum Terdaftar di Pengiriman" src="{$baseurl}assets/images/not-ok.png" />
+                    {/if}
+
+                </td>
             </tr>
             <tr>
                 <td >Unggulan</td>
                 <td >:</td>
-                <td ><span>{$jasa.isUnggulan|default:'-'}</span></td>
+                <td >
+                    {if $jasa.isUnggulan|default:'' eq '1'}
+                        <img width="10%" title="Sudah Terdaftar di Unggulan" src="{$baseurl}assets/images/ok.png" />
+                    {else}
+                        <img width="10%" title="Belum Terdaftar di Unggulan" src="{$baseurl}assets/images/not-ok.png" />
+                    {/if}
+
+                </td>
             </tr>
 
         </table>

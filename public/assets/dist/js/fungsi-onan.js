@@ -311,55 +311,90 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 
 		break;
 
-		case "onan_jasa_pricing":
+		case "onan_produk_jasa":
+			judulnya = "";
+			urlnya = "onan_produk_jasa";
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [			
+				{field:'nama',title:'Nama Jasa',width:200, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'subkategori',title:'Subkategori',width:200, halign:'center',align:'left'},
+				{field:'kategori',title:'Kategori',width:200, halign:'center',align:'left'},
+				{field:'impresi',title:'Impresi',width:200, halign:'center',align:'center'},
+				{field:'klik',title:'Klik',width:200, halign:'center',align:'center'},
+				{field:'namauser',title:'Nama User',width:200, halign:'center',align:'left'},
+				{field:'deskripsi',title:'Deskripsi',width:300, halign:'center',align:'left'},
+				{field:'slug',title:'Slug',width:200, halign:'center',align:'left'},
+				{field:'hargaTermahal',title:'Harga Termahal',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field:'hargaTermurah',title:'Harga Termurah',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field:'statusjasa',title:'Status Jasa',width:200, halign:'center',align:'center'},
+				{field:'isPengambilan',title:'Pengambilan',width:200, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+				{field:'isPengiriman',title:'Pengiriman',width:200, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}	
+				},
+				{field:'isUnggulan',title:'Unggulan',width:200, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+
+			];
+
+		break;
+
+		case "onan_produk_jasa_pricing":
 			judulnya = "";
 			urlnya = modnya;
 			fitnya = true;
 			row_number=true;
 			nowrap_nya = false;
 
-			param['idx_pricing'] = idx_usr;
+			param['idx_jasa'] = idx_usr;
 
 			frozen[modnya] = [			
-				{field:'jasaId',title:"Nama Jasa",width: 200, halign:'center', align:'left'},
+				{field:'jasaid',title:"Nama Jasa",width: 200, halign:'center', align:'left'},			
 			];
 			kolom[modnya] = [			
 				{field:'nama',title:"Nama Pricing",width:200, halign:'center',align:'left'},
 				{field:'deskripsi',title:'Deskripsi',width:200, halign:'center',align:'left'},
 				{field:'jumlahPeriode',title:'Jumlah Periode', width:200, halign:'center',align:'center'},
 				{field:'periode',title:'Periode',width:200, halign:'center',align:'center'},
-				{field:'harga',title:'Harga',width:200, halign:'center',align:'center'},
+				{field:'harga',title:'Harga',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
 			];
-
-		break;
-
-		case "onan_jasa":
-			judulnya = "";
-			urlnya = "onan_jasa";
-			fitnya = true;
-			row_number=true;
-			nowrap_nya = false;
-
-			frozen[modnya] = [
-				{field:'nama',title:'Nama Jasa',width: 200, halign:'center',align:'left'}
-			];
-
-			kolom[modnya] = [
-				{field:'msSubkategoriId',title:'Subkategori',width:200, halign:'center',align:'left'},
-				{field:'msKategoriId',title:'Kategori',width:200, halign:'center',align:'left'},
-				{field:'impresi',title:'Impresi',width:200, halign:'center',align:'center'},
-				{field:'klik',title:'Klik',width:200, halign:'center',align:'center'},
-				{field:'userId',title:'Nama User',width:200, halign:'center',align:'left'},
-				{field:'deskripsi',title:'Deskripsi',width:300, halign:'center',align:'left'},
-				{field:'slug',title:'Slug',width:200, halign:'center',align:'left'},
-				{field:'hargaTermahal',title:'Harga Termahal',width:200, halign:'center',align:'center'},
-				{field:'hargaTermurah',title:'Harga Termurah',width:200, halign:'center',align:'center'},
-				{field:'msStatusJasaId',title:'Status Jasa',width:200, halign:'center',align:'center'},
-				{field:'isPengambilan',title:'Pengambilan',width:200, halign:'center',align:'center'},
-				{field:'isPengiriman',title:'Pengiriman',width:200, halign:'center',align:'center'},
-				{field:'isUnggulan',title:'Unggulan',width:200, halign:'center',align:'center'},
-			];
-		
 		break;
 
 
@@ -623,7 +658,6 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 			}
 			
 		break;
-
 
 	}
 

@@ -209,23 +209,8 @@ class Monan extends Model{
                     $where
                 ";    
             break;
-            
-            case "onan_jasa_pricing":
-                $idx_pricing = service('request')->getPost('idx_pricing');
-				if($idx_pricing){
-					$where .= "
-						and a.\"jasaId\" = '".$idx_pricing."'
-					";
-				}
 
-                $sql = "
-                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*
-                    from public.\"JasaPricing\" a
-                    $where
-                ";
-            break;
-
-            case "onan_jasa":
+            case "onan_produk_jasa":
                 $id = service('request')->getPost('id');
 				if($id){
 					$where .= "
@@ -235,16 +220,39 @@ class Monan extends Model{
 
                 if(isset($search) && $search != ""){
                     $where .= " AND (
-                        LOWER(upper(a.deskripsi)) LIKE '%" . strtolower(trim($search)) . "%'
+                        LOWER(upper(a.nama)) LIKE '%" . strtolower(trim($search)) . "%'
                     )";
                 }    
 
                 $sql = "
-                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as subkategori, c.nama as kategori, d.name as namauser, e.nama as statusjasa
                     from public.\"Jasa\" a
+                    left join public.\"MsSubkategori\" b on b.id = a.\"msSubkategoriId\"
+                    left join public.\"MsKategori\" c on c.id = a.\"msKategoriId\"
+                    left join public.\"User\" d on d.id = a.\"userId\"
+                    left join public.\"MsStatusJasa\" e on e.id = a.\"msStatusJasaId\"
                     $where
                 ";    
             break;
+
+            case "onan_produk_jasa_pricing":
+                $idx_jasa = service('request')->getPost('idx_jasa');
+				if($idx_jasa){
+					$where .= "
+						and a.\"jasaId\" = '".$idx_jasa."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as jasaid
+                    from public.\"JasaPricing\" a
+                    left join public.\"Jasa\" b on b.id = a.\"jasaId\"
+                    $where
+                ";
+            break;
+
 
             default:
                 

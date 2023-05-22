@@ -39,8 +39,8 @@ class Onan extends BaseController
 
             break;
 
-            case "onan_jasa":
-            
+            case "onan_produk_jasa":
+
             break;
 
             default:
@@ -102,13 +102,15 @@ class Onan extends BaseController
                 $temp = 'onan/form/form_jasa_detail.php';
                 $id = $this->request->getPost('id');
 
-                $jasa = $this->Monan->getdata('onan_jasa', 'row_array');
+                $jasa = $this->Monan->getdata('onan_produk_jasa', 'row_array');
 
-                $this->smarty->assign("mod", 'onan_jasa');
+                $this->smarty->assign("mod", 'onan_produk_jasa');
                 $this->smarty->assign("jasa", $jasa);
                 $this->smarty->assign("id", $id);
                 $this->smarty->display($temp);
             break;
+
+
         }
     }
 
