@@ -19,6 +19,67 @@ class Monan extends Model{
         $search = service('request')->getPost('search');
 
         switch($type){
+
+            case "onan_produk_jasa":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as penjual, c.nama as kategori, d.nama as subkategori, e.nama as statusjasa,
+                        to_char(a.\"createdAt\"::timestamp with time zone, 'DD-MM-YYYY'::text) AS tanggal_posting
+                    from public.\"Jasa\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    left join public.\"MsKategori\" c on c.id = a.\"msKategoriId\"
+                    left join public.\"MsSubkategori\" d on d.id = a.\"msSubkategoriId\"
+                    left join public.\"MsStatusJasa\" e on e.id = a.\"msStatusJasaId\"
+                    $where
+                ";
+            break;
+            
+            case "onan_tender":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as penjual,
+                        to_char(a.\"createdAt\"::timestamp with time zone, 'DD-MM-YYYY'::text) AS tanggal_posting
+                    from public.\"Tender\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    $where
+                ";
+            break;
+            
+            case "onan_transaksi":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as aktivitas, c.name as penjual, d.name as pembeli,
+                        to_char(a.\"createdAt\"::timestamp with time zone, 'DD-MM-YYYY'::text) AS tanggal_order
+                    from public.\"Order\" a
+                    left join public.\"MsAktifitas\" b on b.id = a.\"msAktifitasId\"
+                    left join public.\"User\" c on c.id = a.\"userIdPenjual\"
+                    left join public.\"User\" d on d.id = a.\"userIdPembeli\"
+                    $where
+                ";
+            break;
+
             case "onan_user_alamat":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -33,7 +94,6 @@ class Monan extends Model{
                     $where
                 ";
             break;
-
             case "onan_user_bahasa":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){

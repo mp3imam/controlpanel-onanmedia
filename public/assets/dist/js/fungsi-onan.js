@@ -30,6 +30,172 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 	
     switch(modnya){
 		
+		case "onan_produk_jasa":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [			
+				{field:'penjual',title:'User Posting',width:250, halign:'center',align:'center'},
+			];
+			kolom[modnya] = [	
+				{field:'nama',title:'Nama Jasa',width:300, halign:'center',align:'left'},		
+				{field:'statusjasa',title:'Status',width:150, halign:'center',align:'center'},		
+				{field:'kategori',title:'Kategori',width:150, halign:'center',align:'center'},
+				{field:'subkategori',title:'Subkategori',width:200, halign:'center',align:'center'},
+				{field:'tags',title:'Tags',width:250, halign:'center',align:'left'},
+				{field:'klik',title:'Jumlah View',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return NumberFormat(value)+' Bulan';
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'cover',title:'Gambar Produk',width:120, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return '<a href="'+value+'" target="_blank">Lihat Gambar</a>';
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'hargaTermurah',title:'Harga Termurah',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'hargaTermahal',title:'Harga Termahal',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+			];
+		break;
+
+		case "onan_tender":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [			
+				{field:'judulTender',title:'Nama Tender',width:300, halign:'center',align:'left'},			
+			];
+			kolom[modnya] = [			
+				{field:'penjual',title:'User Posting',width:250, halign:'center',align:'center'},
+				{field:'tanggal_posting',title:'Tgl. Posting',width:150, halign:'center',align:'center'},
+				{field:'skills',title:'Skill',width:250, halign:'center',align:'left'},
+				{field:'kategori',title:'Kategori',width:250, halign:'center',align:'left'},
+				{field:'durasiKontrak',title:'Durasi',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return NumberFormat(value)+' Bulan';
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'lingkupPekerjaan',title:'Lingkup Pekerjaan',width:250, halign:'center',align:'center'},
+				{field:'metodePembayaran',title:'Metode Pembayaran',width:250, halign:'center',align:'center'},
+				{field:'budget',title:'Nilai Tender',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+			];
+		break;
+
+		case "onan_transaksi":
+			judulnya = "";
+			urlnya = modnya;
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [			
+				{field:'nomor',title:'No. Transaksi',width:200, halign:'center',align:'center'},			
+			];
+			kolom[modnya] = [			
+				{field:'penawaran',title:'Title',width:250, halign:'center',align:'left'},
+				{field:'aktivitas',title:'Aktivitas',width:150, halign:'center',align:'center'},
+				{field:'tanggal_order',title:'Tgl. Order',width:150, halign:'center',align:'center'},
+				{field:'penjual',title:'User Penjual',width:250, halign:'center',align:'center'},
+				{field:'pembeli',title:'User Pembeli',width:250, halign:'center',align:'center'},
+				{field:'jumlahTermin',title:'Jumlah Termin',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'totalPenawaran',title:'Total Order',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'totalFee',title:'Biaya Aplikasi',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'totalBayar',title:'Total Bayar',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'totalKomisiOnan',title:'Komisi Onan',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+				{field:'totalKomisiPenjual',title:'Dana Penjual',width:150, halign:'center',align:'right',
+					formatter:function(value,rowData,rowIndex){
+						if(value){
+							return "Rp. "+NumberFormat(value);
+						}else{
+							return '-';
+						}
+					}
+				},
+			];
+		break;
+
 		case "onan_user_alamat":
 			judulnya = "";
 			urlnya = modnya;
@@ -47,7 +213,6 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 				{field:'namaPenerima',title:'Nama Penerima',width:200, halign:'center',align:'left'},
 			];
 		break;
-
 		case "onan_user_bahasa":
 			judulnya = "";
 			urlnya = modnya;
@@ -215,8 +380,8 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 			
 		},
 		onLoadSuccess: function(data){
+			var $panel = $(this).datagrid('getPanel');
 			if(data.total == 0){
-				var $panel = $(this).datagrid('getPanel');
 				var $info = '<div class="info-empty" style="margin-top:10%;">Data Tidak Tersedia</div>';
 				$($panel).find(".datagrid-view").append($info);
 			}else{
@@ -330,6 +495,9 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 			}
 		break;
 
+		case "lihat_detail_transaksi":
+			
+		break;
 		case "lihat_detail_user":
 			var row = $("#grid_"+modulnya).datagrid('getSelected');
 			if(row){
