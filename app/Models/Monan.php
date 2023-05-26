@@ -110,6 +110,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user_pendidikan":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -127,6 +128,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user_keahlian":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -141,6 +143,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user_produk":
                 $idx_usr = service('request')->getPost('idx_usr');
 				if($idx_usr){
@@ -158,6 +161,7 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
             case "onan_user":
                 $id = service('request')->getPost('id');
 				if($id){
@@ -181,6 +185,134 @@ class Monan extends Model{
                     $where
                 ";
             break;
+
+            case "onan_transaksi_jasa":
+                $idx_order = service('request')->getPost('idx_order');
+				if($idx_order){
+					$where .= "
+						and a.\"orderId\" = '".$idx_order."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as jasa
+                    from public.\"OrderJasa\" a
+                    left join public.\"Jasa\" b on b.id = a.\"jasaId\"
+                    $where
+                ";
+            break;
+
+            case "onan_transaksi":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";
+				}
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND ( 
+                        LOWER( upper(a.penawaran) ) like '%".strtolower(trim($search))."%' 
+                    )";
+                }
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as penjual, c.name as pembeli, d.nama as aktifitas
+                    from public.\"Order\" a
+                    left join public.\"User\" b on b.id = a.\"userIdPenjual\"
+                    left join public.\"User\" c on c.id = a.\"userIdPembeli\"
+                    left join public.\"MsAktifitas\" d on d.id = a.\"msAktifitasId\"
+                    $where
+                ";
+            break;
+
+            case "onan_tender_peserta":
+                $idx_tender = service('request')->getPost('idx_tender');
+				if($idx_tender){
+					$where .= "
+						and a.\"tenderId\" = '".$idx_tender."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as namauser
+                    from public.\"TenderPeserta\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    $where
+                ";
+            break;
+
+            case "onan_tender":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";    
+				}    
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND (
+                        LOWER(upper(a.kategori)) LIKE '%" . strtolower(trim($search)) . "%'
+                    )";
+                }    
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as namauser, c.nama as merchant, d.nama as posting
+                    from public.\"Tender\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    left join public.\"MsMerchantLevel\" c on c.id = a.\"msMerchantLevelId\"
+                    left join public.\"MsPostingTender\" d on d.id = a.\"msPostingTenderId\"
+                    $where
+                ";    
+            break;
+
+            case "onan_produk_jasa":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";    
+				}    
+
+                if(isset($search) && $search != ""){
+                    $where .= " AND (
+                        LOWER(upper(a.nama)) LIKE '%" . strtolower(trim($search)) . "%'
+                    )";
+                }    
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as subkategori, c.nama as kategori, d.name as namauser, e.nama as statusjasa
+                    from public.\"Jasa\" a
+                    left join public.\"MsSubkategori\" b on b.id = a.\"msSubkategoriId\"
+                    left join public.\"MsKategori\" c on c.id = a.\"msKategoriId\"
+                    left join public.\"User\" d on d.id = a.\"userId\"
+                    left join public.\"MsStatusJasa\" e on e.id = a.\"msStatusJasaId\"
+                    $where
+                ";    
+            break;
+
+            case "onan_produk_jasa_pricing":
+                $idx_jasa = service('request')->getPost('idx_jasa');
+				if($idx_jasa){
+					$where .= "
+						and a.\"jasaId\" = '".$idx_jasa."'
+					";
+				}
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.nama as jasaid
+                    from public.\"JasaPricing\" a
+                    left join public.\"Jasa\" b on b.id = a.\"jasaId\"
+                    $where
+                ";
+            break;
+
 
             default:
                 

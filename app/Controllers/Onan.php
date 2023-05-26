@@ -31,6 +31,18 @@ class Onan extends BaseController
                 
             break;
 
+            case "onan_transaksi":
+            
+            break;
+
+            case "onan_tender":
+
+            break;
+
+            case "onan_produk_jasa":
+
+            break;
+
             default:
                 
             break;
@@ -61,6 +73,44 @@ class Onan extends BaseController
                 $this->smarty->assign("id", $id);
                 $this->smarty->display($temp);
             break;
+
+            case "transaksi_detail":
+                $temp = 'onan/form/form_transaksi_detail.php';
+                $id = $this->request->getPost('id');
+
+                $order = $this->Monan->getdata('onan_transaksi', 'row_array');
+
+                $this->smarty->assign("mod", 'onan_transaksi');
+                $this->smarty->assign("order", $order);
+                $this->smarty->assign("id", $id);
+                $this->smarty->display($temp);
+            break;
+
+            case "tender_detail":
+                $temp = 'onan/form/form_tender_detail.php';
+                $id = $this->request->getPost('id');
+
+                $tender = $this->Monan->getdata('onan_tender', 'row_array');
+
+                $this->smarty->assign("mod", 'onan_tender');
+                $this->smarty->assign("tender", $tender);
+                $this->smarty->assign("id", $id);
+                $this->smarty->display($temp);
+            break;
+
+            case "jasa_detail":
+                $temp = 'onan/form/form_jasa_detail.php';
+                $id = $this->request->getPost('id');
+
+                $jasa = $this->Monan->getdata('onan_produk_jasa', 'row_array');
+
+                $this->smarty->assign("mod", 'onan_produk_jasa');
+                $this->smarty->assign("jasa", $jasa);
+                $this->smarty->assign("id", $id);
+                $this->smarty->display($temp);
+            break;
+
+
         }
     }
 
