@@ -312,7 +312,30 @@ class Monan extends Model{
                     $where
                 ";
             break;
+            
+            case "onan_cairdana":
+                $id = service('request')->getPost('id');
+				if($id){
+					$where .= "
+						and a.id = '".$id."'
+					";    
+				}    
 
+                if(isset($search) && $search != ""){
+                    $where .= " AND (
+                        LOWER(upper(a.status)) LIKE '%" . strtolower(trim($search)) . "%'
+                    )";
+                }    
+
+                $sql = "
+                    SELECT ROW_NUMBER() OVER (ORDER BY a.\"createdAt\" DESC) as rowID, a.*,
+                        b.name as userid, c.nama as msbankid
+                    from public.\"Pencairan\" a
+                    left join public.\"User\" b on b.id = a.\"userId\"
+                    left join public.\"MsBank\" c on c.id = a.\"msBankId\"
+                    $where
+                ";    
+            break;
 
             default:
                 

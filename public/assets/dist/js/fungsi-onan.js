@@ -568,6 +568,31 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 			];
 		break;
 
+		case "onan_cairdana":
+			judulnya = "";
+			urlnya = "onan_cairdana";
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [
+				{field:'userid',title:'Nama User',width:200, halign:'center',align:'center'},
+			];
+			kolom[modnya] = [
+				{field:'nilai',title:'Nilai',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field:'jenis',title:'Jenis',width:200, halign:'center',align:'center'},
+				{field:'namaRekening',title:'Nama Rekening',width:200, halign:'center',align:'center'},
+				{field:'rekening',title:'No Rekening',width:200, halign:'center',align:'center'},
+				{field:'msbankid',title:'ID Bank',width:200, halign:'center',align:'center'},
+				{field:'status',title:'Status',width:200, halign:'center',align:'center'},
+				{field:'keterangan',title:'Keterangan',width:200, halign:'center',align:'center'},
+			];
+		break;
+
 
 		function formatNumber(value) {
 			const formatter = new Intl.NumberFormat('id-ID');
@@ -823,6 +848,23 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				$('#gridnya_'+modulnya).hide();
 				$('#detailnya_'+modulnya).empty().show().addClass("loading");
 				$.post(host+'onanapps/display/jasa_detail', { 'id':row.id }, function(resp){
+					$('#detailnya_'+modulnya).show();
+					$('#detailnya_'+modulnya).html(resp).removeClass("loading");
+				});
+				
+			}else{
+
+			}
+			
+		break;
+
+		case "lihat_detail_cairdana":
+			var row = $("#grid_"+modulnya).datagrid('getSelected');
+			if(row){
+
+				$('#gridnya_'+modulnya).hide();
+				$('#detailnya_'+modulnya).empty().show().addClass("loading");
+				$.post(host+'onanapps/display/dana_detail', { 'id':row.id }, function(resp){
 					$('#detailnya_'+modulnya).show();
 					$('#detailnya_'+modulnya).html(resp).removeClass("loading");
 				});
