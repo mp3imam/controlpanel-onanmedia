@@ -3,7 +3,7 @@
         <table class="table table-borderless">
             <tr>
                 <td colspan="3">
-                    <font color="blue" style="font-weight: bold;font-size:18px;">DETAIL DANA</font>
+                    <font color="blue" style="font-weight: bold;font-size:18px;">PROFIL USER</font>
                 </td>
             </tr>
             <tr>
@@ -21,16 +21,19 @@
                 </td>
             </tr>
             <tr>
+                <td >Jenis</td>
+                <td >:</td>
+                <td >{$pencairan.jenis|default:'-'}</td>
+            </tr>
+            <tr>
                 <td >
                     Nama Rekening
                 </td>
                 <td >:</td>
-                <td >
-                    {$pencairan.namaRekening|default:'-'}
-                </td>
+                <td >{$pencairan.namaRekening|default:'-'}</td>
             </tr>
         </table>
-        
+
     </div>
     <div class="col-sm-6">
         <table class="table table-borderless">
@@ -40,9 +43,13 @@
                 </td>
             </tr>
             <tr>
-                <td width="40%">Rekening</td>
-                <td width="4%">:</td>
-                <td width="55%">{$pencairan.rekening|default:'-'}</td>
+                <td width="40%">
+                    No Rekening
+                </td>
+                <td  width="5%">:</td>
+                <td  width="55%">
+                    {$pencairan.rekening|default:'-'}
+                </td>
             </tr>
             <tr>
                 <td >ID Bank</td>
@@ -50,18 +57,20 @@
                 <td >{$pencairan.msbankid|default:'-'}</td>
             </tr>
             <tr>
-                 <td >Status</td>
+                <td >
+                    Status
+                </td>
                 <td >:</td>
                 <td >{$pencairan.status|default:'-'}</td>
             </tr>
             <tr>
-                 <td >Keterangan</td>
+                <td >
+                    Keterangan
+                </td>
                 <td >:</td>
                 <td >{$pencairan.keterangan|default:'-'}</td>
             </tr>
+
         </table>
     </div>
     
-</div>
-
-

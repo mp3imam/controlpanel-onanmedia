@@ -118,10 +118,10 @@ class Onan extends BaseController
                 $temp = 'onan/form/form_dana_detail.php';
                 $id = $this->request->getPost('id');
 
-                $dana = $this->Monan->getdata('onan_cairdana', 'row_array');
+                $pencairan = $this->Monan->getdata('onan_cairdana', 'row_array');
 
                 $this->smarty->assign("mod", 'onan_cairdana');
-                $this->smarty->assign("dana", $dana);
+                $this->smarty->assign("pencairan", $pencairan);
                 $this->smarty->assign("id", $id);
                 $this->smarty->display($temp);
             break;

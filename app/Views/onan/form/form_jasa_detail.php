@@ -42,7 +42,7 @@
             <tr>
                 <td >Nama User</td>
                 <td >:</td>
-                <td >{$jasa.namauser|default:'-'}</td>
+                <td >{$jasa.penjual|default:'-'}</td>
             </tr>
             <tr>
                 <td >Tags</td>
@@ -112,7 +112,7 @@
                 <td >Pengiriman</td>
                 <td >:</td>
                 <td >
-                    {if $jasa.isPengiriman|default:'' eq '1'}
+                    {if $user.isPengiriman|default:'' eq '1'}
                         <img width="10%" title="Sudah Terdaftar di Pengiriman" src="{$baseurl}assets/images/ok.png" />
                     {else}
                         <img width="10%" title="Belum Terdaftar di Pengiriman" src="{$baseurl}assets/images/not-ok.png" />
