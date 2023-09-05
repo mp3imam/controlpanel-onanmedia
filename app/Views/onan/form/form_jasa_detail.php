@@ -54,6 +54,11 @@
                 <td >:</td>
                 <td >{$jasa.deskripsi|default:'-'}</td>
             </tr>
+            <tr>
+                <td >Status Verifikasi Jasa</td>
+                <td >:</td>
+                <td >{$jasa.statusjasa|default:'-'}</td>
+            </tr>
         </table>
         
     </div>
@@ -61,6 +66,11 @@
         <table class="table table-borderless">
             <tr>
                 <td colspan="3" align="right">
+                    {if $jasa.msStatusJasaId|default:'' eq '2'}
+                        {include file="components/button_save.php" text="Verifikasi Jasa" id_na="aktivkan_jasa" style_btn="btn-success"  btn_goyz="true"}
+                        &nbsp;
+                    {/if}
+
                     {include file="components/button_save.php" text="Kembali" click="$('#gridnya_{$mod}').show();$('#detailnya_{$mod}').hide();" id_na="cancel" style_btn="btn-danger"  btn_goyz="true"}
                 </td>
             </tr>
@@ -84,12 +94,12 @@
             <tr>
                 <td >Harga Termahal</td>
                 <td >:</td>
-                <td >{$jasa.hargaTermahal|default:'-'}</td>
+                <td >{$jasa.hargaTermahal|number_format:0:",":"."|default:'0'}</td>
             </tr>
             <tr>
                 <td >Harga Termurah</td>
                 <td >:</td>
-                <td >{$jasa.hargaTermurah|default:'-'}</td>
+                <td >{$jasa.hargaTermurah|number_format:0:",":"."|default:'0'}</td>
             </tr>
             <tr>
                 <td >Status Jasa</td>
@@ -171,4 +181,25 @@
 
     genGridOnan('{$mod}_pricing','grid_pricing_{$mod}', '', '');
 
+    $('#aktivkan_jasa_{$acak}').on('click', function(){
+        //alert('Uhui');
+        $.messager.confirm(nama_apps,'Anda Yakin Ingin Verifikasi Data Jasa Ini ?',function(re){
+			if(re){
+                $.LoadingOverlay("show");
+				$.post(host+'onanapps/simpan/onanjasa_aktifkan', { 'id':idx_usr, 'editstatus':'ablahu' } , function(resp){
+					if (resp.respons == "1") {
+						$.messager.alert(nama_apps,"Data Jasa Sudah Terverifikasi",'info');
+                        $('#cancels_{$acak}').trigger('click');
+                        $('#grid_{$mod}').datagrid('reload');
+
+						//$("#grid_"+submodulnya).datagrid('reload');								
+					}else{
+						$.messager.alert(nama_apps,"Gagal Memverifikasi Data "+resp,'error');
+					}
+					
+					$.LoadingOverlay("hide", true);
+				});	
+            }
+        });
+    });
 </script>

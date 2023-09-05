@@ -3,13 +3,22 @@
         <table class="table table-borderless">
             <tr>
                 <td colspan="3">
-                    <font color="blue" style="font-weight: bold;font-size:18px;">DETAIL TRANSAKSI</font>
+                    <font color="blue" style="font-weight: bold;font-size:18px;">DETAIL TRANSAKSI PENAWARAN</font>
                 </td>
             </tr>
             <tr>
-                <td width="40%">Penawaran</td>
+                <td width="30%">No. Transaksi</td>
                 <td width="5%">:</td>
-                <td width="55%">{$order.penawaran|default:'-'}</td>
+                <td width="65%">{$order.nomor|default:'-'}</td>
+            </tr>
+            <tr>
+                <td >
+                    Title
+                </td>
+                <td >:</td>
+                <td >
+                    {$order.penawaran|default:'-'}
+                </td>
             </tr>
             <tr>
                 <td >
@@ -41,7 +50,7 @@
             <tr>
                 <td >Total Penawaran</td>
                 <td >:</td>
-                <td >{$order.totalPenawaran|default:'-'}</td>
+                <td >{$order.totalPenawaran|number_format:0:",":"."|default:'0'}</td>
             </tr>
         </table>
         
@@ -54,31 +63,31 @@
                 </td>
             </tr>
             <tr>
-                <td width="40%">Total Bayar</td>
+                <td width="35%">Total Bayar</td>
                 <td width="5%">:</td>
-                <td width="55%">{$order.totalBayar|default:'-'}</td>
+                <td width="60%">{$order.totalBayar|number_format:0:",":"."|default:'0'}</td>
             </tr>
             <tr>
                 <td >
                     Total Fee
                 </td>
                 <td >:</td>
-                <td >{$order.totalFee|default:'-'}</td>
+                <td >{$order.totalFee|number_format:0:",":"."|default:'0'}</td>
             </tr>
             <tr>
                 <td >Total Komisi Penjual</td>
                 <td >:</td>
-                <td >{$order.totalKomisiPenjual|default:'-'}</td>
+                <td >{$order.totalKomisiPenjual|number_format:0:",":"."|default:'0'}</td>
             </tr>
             <tr>
                 <td >Persentase Komisi Onan</td>
                 <td >:</td>
-                <td >{$order.persentaseKomisiOnan|default:'-'}</td>
+                <td >{$order.persentaseKomisiOnan|default:'0'} %</td>
             </tr>
             <tr>
                 <td >Total Komisi Onan</td>
                 <td >:</td>
-                <td >{$order.totalKomisiOnan|default:'-'}</td>
+                <td >{$order.totalKomisiOnan|number_format:0:",":"."|default:'0'}</td>
             </tr>
 
         </table>

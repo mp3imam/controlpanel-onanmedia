@@ -39,24 +39,29 @@
                                             <a href="javascript:void(0);" class="btn btn-info btn-sm" id="reload_btn" >Reload</a>
                                         </div>
                                         <div class="col-sm-6 text-right">
-                                            {if $mod eq 'onan_tender'}
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_tender', '{$mod}', '{$acak}');" >Lihat Detail</a>
+                                            {if $mod eq 'coa'}
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformFinance('add', '{$mod}', '{$acak}');" >Tambah</a>
+                                                &nbsp;
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformFinance('edit', '{$mod}', '{$acak}');" >Edit</a>
+                                                &nbsp;
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformFinance('delete', '{$mod}', '{$acak}');" >Hapus</a>
                                             {/if}
-                                            {if $mod eq 'onan_transaksi'}
+                                            {if $mod eq 'kas_bank'}
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_transaksi', '{$mod}', '{$acak}');" >Lihat Detail</a>
                                             {/if}
+
                                             {if $mod eq 'onan_user'}
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_user', '{$mod}', '{$acak}');" >Lihat Detail</a>
                                             {/if}
-                                            {if $mod eq 'onan_transaksi'}
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_transaksi', '{$mod}', '{$acak}');" >Lihat Detail</a>
-                                            {/if}
-                                            {if $mod eq 'onan_tender'}
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_tender', '{$mod}', '{$acak}');" >Lihat Detail</a>
-                                            {/if}
+
                                             {if $mod eq 'onan_produk_jasa'}
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_jasa', '{$mod}', '{$acak}');" >Lihat Detail</a>
                                             {/if}
+
+                                            {if $mod eq 'onan_transaksi'}
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_transaksi', '{$mod}', '{$acak}');" >Lihat Detail</a>
+                                            {/if}
+
                                             {if $mod eq 'onan_cairdana'}
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" onClick="genformOnan('lihat_detail_cairdana', '{$mod}', '{$acak}');" >Lihat Detail</a>
                                             {/if}

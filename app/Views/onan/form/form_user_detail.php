@@ -37,6 +37,7 @@
                 <td >:</td>
                 <td >{$user.leveluser|default:'-'}</td>
             </tr>
+
         </table>
 
     </div>
@@ -44,7 +45,7 @@
         <table class="table table-borderless">
             <tr>
                 <td colspan="3" align="right">
-                    {if $user.status|default:'' eq '0'}
+                    {if $user.sellerStatus|default:'' eq '2'}
                         {include file="components/button_save.php" text="Aktifkan User" id_na="aktivkan" style_btn="btn-success"  btn_goyz="true"}
                         &nbsp;
                     {/if}
@@ -84,11 +85,16 @@
                 <td >
                     {if $user.sellerStatus|default:'' eq '1'}
                         <img width="10%" title="Sudah Terdaftar Sebagai Seller" src="{$baseurl}assets/images/ok.png" />
-                    {else}
+                    {elseif $user.sellerStatus|default:'' eq '2'}
+                        <img width="10%" title="Sudah Terdaftar Sebagai Seller" src="{$baseurl}assets/images/pengajuan.png" />
+                    {elseif $user.sellerStatus|default:'' eq '3'}
+                        <img width="10%" title="Sudah Terdaftar Sebagai Seller" src="{$baseurl}assets/images/reject.png" />
+                    {elseif $user.sellerStatus|default:'' eq '0'}
                         <img width="10%" title="Belum Terdaftar Sebagai Seller" src="{$baseurl}assets/images/not-ok.png" />
                     {/if}
                 </td>
             </tr>
+            {*
             <tr>
                 <td >
                     Aktivasi By Admin
@@ -102,7 +108,7 @@
                     {/if}
                 </td>
             </tr>
-
+            *}
         </table>
     </div>
     

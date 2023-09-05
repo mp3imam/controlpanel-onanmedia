@@ -297,6 +297,17 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 				{field:'email',title:'Email',width:200, halign:'center',align:'left'},
 				{field:'phone',title:'No. Handphone',width:150, halign:'center',align:'center'},
 				{field:'username',title:'Username',width:150, halign:'center',align:'left'},
+				/*
+				{field:'status',title:'Status User',width:150, halign:'center',align:'center',
+					formatter:function(value,rowData,rowIndex){
+						if(value == 1){
+							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
+						}else{
+							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
+						}
+					}
+				},
+				*/
 				{field:'isEmailVerified',title:'Verifikasi Email',width:150, halign:'center',align:'center',
 					formatter:function(value,rowData,rowIndex){
 						if(value == 1){
@@ -319,16 +330,11 @@ function genGridOnan(modnya, divnya, lebarnya, tingginya){
 					formatter:function(value,rowData,rowIndex){
 						if(value == 1){
 							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
-						}else{
-							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
-						}
-					}
-				},
-				{field:'status',title:'Aktivasi Admin',width:150, halign:'center',align:'center',
-					formatter:function(value,rowData,rowIndex){
-						if(value == 1){
-							return '<img width="15%" src="'+host+'assets/images/ok.png" />';
-						}else{
+						}else if(value == 2){
+							return '<img width="15%" src="'+host+'assets/images/pengajuan.png" />';
+						}else if(value == 3){
+							return '<img width="15%" src="'+host+'assets/images/reject.png" />';
+						}else if(value == 0){
 							return '<img width="15%" src="'+host+'assets/images/not-ok.png" />';
 						}
 					}
@@ -763,9 +769,6 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 			}
 		break;
 
-		case "lihat_detail_transaksi":
-			
-		break;
 		case "lihat_detail_user":
 			var row = $("#grid_"+modulnya).datagrid('getSelected');
 			if(row){
@@ -800,11 +803,9 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				// });
 
 			}else{
-
+				$.messager.alert(nama_apps,"Pilih Data Yang Akan Diproses",'error');
 			}
 		
-		
-			
 		break;
 
 		case "lihat_detail_transaksi":
@@ -819,7 +820,7 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				});
 				
 			}else{
-
+				$.messager.alert(nama_apps,"Pilih Data Yang Akan Diproses",'error');
 			}
 			
 		break;
@@ -836,7 +837,7 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				});
 				
 			}else{
-
+				$.messager.alert(nama_apps,"Pilih Data Yang Akan Diproses",'error');
 			}
 			
 		break;
@@ -853,7 +854,7 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				});
 				
 			}else{
-
+				$.messager.alert(nama_apps,"Pilih Data Yang Akan Diproses",'error');
 			}
 			
 		break;
@@ -870,7 +871,7 @@ function genformOnan(type, modulnya, submodulnya, stswindow, p1, p2, p3){
 				});
 				
 			}else{
-
+				$.messager.alert(nama_apps,"Pilih Data Yang Akan Diproses",'error');
 			}
 			
 		break;

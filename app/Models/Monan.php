@@ -371,9 +371,13 @@ class Monan extends Model{
 		}
 
         switch($table){
+            case "onanjasa_aktifkan":
+                $table = 'public.Jasa';
+                $update = $this->db->table($table)->where('id', $id)->update(['msStatusJasaId'=>1]);
+            break;
             case "onanuser_aktifkan":
                 $table = 'public.User';
-                $update = $this->db->table($table)->where('id', $id)->update(['status'=>1]);
+                $update = $this->db->table($table)->where('id', $id)->update(['sellerStatus'=>1]);
             break;
         }
 

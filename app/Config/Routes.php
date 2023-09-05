@@ -53,6 +53,26 @@ $routes->group('master', static function ($routes) {
 
 });
 
+// Routing Modul Finance
+$routes->group('finance', static function ($routes) {
+    $routes->post('datagrid/([a-zA-Z0-9_]+)', 'Finance::get_data_grid/$1');
+    $routes->get('grid/([a-zA-Z0-9_]+)', 'Finance::get_grid/$1');
+    $routes->post('form/([a-zA-Z0-9_]+)', 'Finance::get_form/$1');
+    $routes->post('display/([a-zA-Z0-9_]+)', 'Finance::getdisplay/$1');
+    $routes->post('simpan/([a-zA-Z0-9_]+)', 'Finance::simpandata/$1');
+
+});
+
+// Routing Modul HRD
+$routes->group('hrd', static function ($routes) {
+    $routes->post('datagrid/([a-zA-Z0-9_]+)', 'Hrd::get_data_grid/$1');
+    $routes->get('grid/([a-zA-Z0-9_]+)', 'Hrd::get_grid/$1');
+    $routes->post('form/([a-zA-Z0-9_]+)', 'Hrd::get_form/$1');
+    $routes->post('display/([a-zA-Z0-9_]+)', 'Hrd::getdisplay/$1');
+    $routes->post('simpan/([a-zA-Z0-9_]+)', 'Hrd::simpandata/$1');
+
+});
+
 //$routes->get('/login-user', 'Login::process');
 
 /*

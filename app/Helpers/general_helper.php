@@ -52,6 +52,7 @@ function assetJs($type="")
         'assets/dist/js/fungsi.js',
         'assets/dist/js/fungsi-onan.js',
         'assets/dist/js/fungsi-master.js',
+        'assets/dist/js/fungsi-finance.js',
         'assets/dist/js/demo.js',
       ];
     break;
