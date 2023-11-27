@@ -115,6 +115,9 @@ class Onan extends BaseController
             break;
 
             case "dana_detail":
+
+                //echo FCPATH;exit;
+
                 $temp = 'onan/form/form_dana_detail.php';
                 $id = $this->request->getPost('id');
 

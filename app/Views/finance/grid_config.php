@@ -83,7 +83,7 @@ $(function(){
     });
     heighttree = (getClientHeight()-255)+'px';
 
-    genGridMaster('{$mod}','grid_{$mod}', '', '');
+    genGridFinance('{$mod}','grid_{$mod}', '', '');
 
     $('#reload_btn').click(function() {
         $('#search_input').val('');

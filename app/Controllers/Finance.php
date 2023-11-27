@@ -12,7 +12,7 @@ class Finance extends BaseController
 
     function __construct()
     {
-        $this->Mmaster = new Mmaster();
+        $this->Mfinance = new Mfinance();
         $this->db = \Config\Database::connect();
     }
 
@@ -54,7 +54,7 @@ class Finance extends BaseController
 
     function get_grid($mod)
     {
-        $temp = 'master/grid_config.php';
+        $temp = 'finance/grid_config.php';
         $tombol_std = "true";
         $filter = $this->combo_option($mod);
         $cekmenu = $this->db->table('panel.tbl_user_menu')->getWhere(['ref_tbl' => $mod])->getRowArray();
@@ -79,7 +79,7 @@ class Finance extends BaseController
 
     function get_data_grid($type)
     {
-        echo $this->Mmaster->getdata($type, 'json_grid');
+        echo $this->Mfinance->getdata($type, 'json_grid');
     }
 
     function simpandata($p1 = "", $p2 = "")
@@ -105,7 +105,7 @@ class Finance extends BaseController
             unset($post['editstatus']);
         } else $editstatus = $p2;
 
-        $simpannya = $this->Mmaster->simpandata($p1, $post, $editstatus);
+        $simpannya = $this->Mfinance->simpandata($p1, $post, $editstatus);
 
         $respon = array(
             "respons" => $simpannya
@@ -126,7 +126,7 @@ class Finance extends BaseController
         switch($type){
 
             case "kategori":
-                $data = $this->Mmaster->getdata('kategori_combo', 'result_array');
+                $data = $this->Mfinance->getdata('kategori_combo', 'result_array');
             break;
 
             // case "filter_status_rab_user":

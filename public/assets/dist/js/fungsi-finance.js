@@ -30,6 +30,37 @@ function genGridFinance(modnya, divnya, lebarnya, tingginya){
 	
     switch(modnya){
 
+		case "coa":
+			judulnya = "";
+			urlnya = "finance_coa";
+			fitnya = true;
+			row_number=true;
+			nowrap_nya = false;
+
+			frozen[modnya] = [
+				{field:'kdreknya',title:'Kode Rekening',width:150, halign:'center',align:'left'},
+			];
+			kolom[modnya] = [
+				{field:'type',title:'Tipe COA',width:150, halign:'center',align:'center'},
+				{field:'uraian',title:'Uraian',width:400, halign:'center',align:'left'},
+
+
+				/*
+				{field:'nilai',title:'Nilai',width:200, halign:'center',align:'center',
+					formatter: function (value, row) {
+						return formatNumber(value);
+					}
+				},
+				{field:'jenis',title:'Jenis',width:200, halign:'center',align:'center'},
+				{field:'namaRekening',title:'Nama Rekening',width:200, halign:'center',align:'center'},
+				{field:'rekening',title:'No Rekening',width:200, halign:'center',align:'center'},
+				{field:'msbankid',title:'ID Bank',width:200, halign:'center',align:'center'},
+				{field:'status',title:'Status',width:200, halign:'center',align:'center'},
+				{field:'keterangan',title:'Keterangan',width:200, halign:'center',align:'center'},
+				*/
+			];
+		break;
+
 		case "onan_cairdana":
 			judulnya = "";
 			urlnya = "onan_cairdana";
@@ -102,7 +133,11 @@ function genGridFinance(modnya, divnya, lebarnya, tingginya){
 		},
 		toolbar: '#tb_'+modnya,
 		rowStyler: function(index,row){
-			
+			if(modnya == 'coa'){
+				if(row.type == 'H'){
+					return 'background-color:#2DFF72;';
+				}
+			}
 		},
 		onLoadSuccess: function(data){
 			var $panel = $(this).datagrid('getPanel');
