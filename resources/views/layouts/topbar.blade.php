@@ -1,6 +1,6 @@
 <header id="page-topbar">
     @php
-        $notif = Module::notif();
+        // $notif = Module::notif();
     @endphp
     <div class="layout-width">
         <div class="navbar-header">
@@ -83,22 +83,6 @@
 
                             <div class="tab-pane fade show active py-2 ps-2 " id="messages-tab" role="tabpanel" aria-labelledby="messages-tab">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                {{-- @dd($notif) --}}
-                                <div class="empty-notification-elem">
-                                    <div class="w-25 w-sm-50 pt-3 mx-auto">
-                                        <img src="{{ URL::asset('assets/images/svg/bell.svg') }}" class="img-fluid" alt="user-pic">
-                                    </div>
-                                    <div class="text-center pb-5 mt-2">
-                                        <h6 class="fs-18 fw-semibold lh-base">Anda tidak memiliki notifikasi apapun.</h6>
-                                    </div>
-                                </div>
-                                    {{-- @role('super-admin') --}}
-                                        <div class="my-3 text-center">
-                                            <a href="{{ route('notif.index') }}" class="btn btn-soft-success waves-effect waves-light">Lihat Semua<i class="ri-arrow-right-line align-middle"></i></a>
-                                        </div>
-                                    {{-- @else --}}
-
-                                    {{-- @endrole --}}
                                 </div>
                             </div>
                             <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab"></div>

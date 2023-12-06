@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // TmModuleSeeder::class,
             PermissionTableSeeder::class,
+            ClcoaSeeder::class,
+            TblDataKaryawanGajiSeeder::class,
         ]);
         // $this->call(ProvinsiSeeder::class);
         // $this->call(SatkerSeeder::class);

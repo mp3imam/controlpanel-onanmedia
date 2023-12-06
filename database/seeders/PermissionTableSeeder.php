@@ -25,10 +25,10 @@ class PermissionTableSeeder extends Seeder
 
             // Dashboard
             Permission::create(['name' => 'Dashboard','module_icon' => 'ri-dashboard-fill','module_url' => 'dashboard','module_parent' =>0, 'module_position' => 1,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'Users','module_icon' => 'ri-file-user-fill','module_url' =>'users','module_parent' =>0, 'module_position' => 2,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'Bahasa','module_icon' => 'ri-file-user-fill','module_url' =>'bahasa','module_parent' =>0, 'module_position' => 3,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'Kategori','module_icon' => 'ri-file-user-fill','module_url' =>'kategori','module_parent' =>0, 'module_position' => 4,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'SubKategori','module_icon' => 'ri-file-user-fill','module_url' =>'sub_kategori','module_parent' =>0, 'module_position' => 5,'module_description' => '', 'module_status' =>1]);
+            Permission::create(['name' => 'Onan Apps','module_icon' => 'ri-file-user-fill','module_url' =>'sideOnanApps','module_parent' =>0, 'module_position' => 2,'module_description' => '', 'module_status' =>1]);
+            Permission::create(['name' => 'User','module_icon' => 'ri-file-user-fill','module_url' =>'bahasa','module_parent' =>2, 'module_position' => 1,'module_description' => '', 'module_status' =>1]);
+            Permission::create(['name' => 'Kategori','module_icon' => 'ri-file-user-fill','module_url' =>'kategori','module_parent' =>2, 'module_position' => 2,'module_description' => '', 'module_status' =>1]);
+            Permission::create(['name' => 'SubKategori','module_icon' => 'ri-file-user-fill','module_url' =>'sub_kategori','module_parent' =>2, 'module_position' => 3,'module_description' => '', 'module_status' =>1]);
 
             $administratorRole = Role::create(['name' => 'administrator']);
             $administratorRole->givePermissionTo(Permission::all());

@@ -123,8 +123,6 @@
         var user = username ?? ''
         var nama = nama_lengkap ?? ''
 
-        console.log(username);
-
         $('#modal_content').html(`
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
@@ -132,36 +130,92 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                        <div class="col-xxl-12" id="modal_username_append">
-                            <label for="username" class="form-label">Username</label>
-                            <input hidden class="form-control" id="id_edit" value="`+id+`">
-                            <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
-                        </div>
-                        <div class="col-xxl-12">
-                            <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                            <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
-                        </div>
-                        <div class="col-xxl-12">
-                            <label for="role" class="form-label">Role</label>
-                            <select id="modal_roles_id" class="form-control"></select>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary add">Submit</button>
-                            </div>
+                    <div class="col-xxl-12" id="modal_username_append">
+                        <label for="username" class="form-label">Username</label>
+                        <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
+                    </div>
+                    <div class="col-xxl-12">
+                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+                        <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
+                    </div>
+                    <div class="col-xxl-12">
+                        <label for="role" class="form-label">Role</label>
+                        <input class="form-control" id="nama_role" hidden>
+                        <select id="modal_roles_id" class="form-control"></select>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
                         </div>
                     </div>
+                </div>
             </div>
         `)
 
 
-        if (id !== null){
+        if (id !== undefined){
             var datarole = {id: role_id,text: role_name, selected: true};
             var newOptionrole = new Option(datarole.text, datarole.id, false, false)
             $('#modal_roles_id').append(newOptionrole).trigger('change')
             $('#modal_roles_id').select2()
+
+            $('#row'+id).removeClass('add')
+            $('#row'+id).removeClass('btn-primary')
+            $('#row'+id).addClass('edit')
+            $('#row'+id).addClass('btn-warning')
+        }else{
+            $('#rowundefined').removeClass('edit')
+            $('#rowundefined').addClass('add')
+            $('#rowundefined').removeClass('btn-warning')
+            $('#rowundefined').addClass('btn-primary')
         }
+
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('.add').on('click', function() {
+            var data = new FormData()
+            data.append('username', $('#modal_username').val())
+            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
+            data.append('role', $('#nama_role').val())
+            $.ajax({
+                type: "post",
+                url: "{{ url('users') }}",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.status == 200){
+                        Swal.fire({
+                            title: 'Add!',
+                            text: 'Your file has been add.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.remove_username').remove()
+                        $('.remove_nama_lengkap').remove()
+                        $('.remove_role').remove()
+                        // if (result.)
+                        $('.modal_username_append').append(`
+                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+
+                    }
+
+                }
+            });
+
+        })
 
         $("#modal_roles_id").select2({
             allowClear: true,
@@ -184,35 +238,35 @@
             dropdownParent: $("#modal_content")
         });
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+        $('#modal_roles_id').change(function() {
+            $("#nama_role").val($("#modal_roles_id option:selected").text());
+            console.log();
         });
 
-        $('.add').on('click', function() {
+
+        $('.edit').on('click', function() {
             var data = new FormData()
+            data.append('_method', 'PUT')
+            data.append('id', id)
             data.append('username', $('#modal_username').val())
             data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#modal_roles_id').text())
-            console.log(data);
+            data.append('role', $('#nama_role').val())
             $.ajax({
-                type: "post",
-                url: "{{ url('users') }}",
+                url: "{{ url('users') }}/" + id,
+                type: "POST",
                 data: data,
                 processData: false,
                 contentType: false,
                 success: function (result) {
                     if (result.status == 200){
                         Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
+                            title: 'Edit!',
+                            text: 'Your file has been edit.',
                             icon: 'success',
                             confirmButtonClass: 'btn btn-primary w-xs mt-2',
                             buttonsStyling: false
                         }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
+                            location.reload();
                         });
                     }else{
                         $('.remove_username').remove()

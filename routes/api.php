@@ -26,21 +26,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('mail',[MailController::class, 'getIndex']);
+// Route::get('mail',[MailController::class, 'getIndex']);
 
-Route::post('image',[BeritaController::class, 'imageStore']);
-Route::get('berita',[BeritaController::class, 'getBerita']);
-Route::post('berita/add',[BeritaController::class, 'store']);
-Route::post('berita/{id}/show',[BeritaController::class, 'show']);
-Route::post('berita/{id}/update',[BeritaController::class, 'update']);
-Route::delete('berita/{id}/delete',[BeritaController::class, 'destroy']);
-Route::get('berita/category',[BeritaController::class, 'byCategory']);
+// Route::post('image',[BeritaController::class, 'imageStore']);
+// Route::get('berita',[BeritaController::class, 'getBerita']);
+// Route::post('berita/add',[BeritaController::class, 'store']);
+// Route::post('berita/{id}/show',[BeritaController::class, 'show']);
+// Route::post('berita/{id}/update',[BeritaController::class, 'update']);
+// Route::delete('berita/{id}/delete',[BeritaController::class, 'destroy']);
+// Route::get('berita/category',[BeritaController::class, 'byCategory']);
 
 
-Route::post('/register', [AuthController::class, 'register']);
-//API route for login user
-Route::post('/login', [AuthController::class, 'login'])->middleware('logs_activities');
-Route::get('/v1/satker', [DocsAPIController::class, 'index']);
+// Route::post('/register', [AuthController::class, 'register']);
+// //API route for login user
+// Route::post('/login', [AuthController::class, 'login'])->middleware('logs_activities');
+// Route::get('/v1/satker', [DocsAPIController::class, 'index']);
 //Protecting Routes['middleware' => ['auth', 'logs_activities']]
 Route::group(['middleware' => ['auth:sanctum','logs_activities']], function () {
     Route::get('/profile', function(Request $request) {
@@ -48,7 +48,7 @@ Route::group(['middleware' => ['auth:sanctum','logs_activities']], function () {
     });
 
     // API route for logout user
-    Route::post('/logout', [AuthController::class, 'logout']);
+    // Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 // Simpan Antrian Web dan Mobile
@@ -89,5 +89,5 @@ Route::post('/ubah_jadwal', [C2::class, 'ubah_jadwal']);
 Route::post('/membatalkan', [C2::class, 'membatalkan_booking']);
 
 // Menu Question Rating
-Route::get('/get_questions', [RatingController::class,'index'])->name('api.get_questions');
-Route::post('/answers_rating', [RatingController::class,'store'])->name('api.answers_rating');
+// Route::get('/get_questions', [RatingController::class,'index'])->name('api.get_questions');
+// Route::post('/answers_rating', [RatingController::class,'store'])->name('api.answers_rating');

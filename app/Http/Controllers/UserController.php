@@ -153,29 +153,49 @@ class UserController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'provinsi_id' => 'required',
-            'satker'      => 'required',
-            'kode_satker' => 'nullable',
-            'address'     => 'nullable',
+            'id'           => 'required',
+            'username'     => 'required',
+            'nama_lengkap' => 'required',
+            'role'         => 'required',
         ];
+
         $validator = Validator::make($request->all(), $validasi);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'    => Response::HTTP_BAD_REQUEST,
-                'message'   => $validator->messages()
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $validator->messages()
             ]);
         }
 
-        User::findOrFail($id)->update([
-            'provinsi_id' => $request->provinsi_id,
-            'name'        => $request->satker,
-            'kode_satker' => $request->kode_satker,
-            'address'     => $request->address
-        ]);
-        LogActivity::addToLog("Mengubah Satker");
+        $user = 'Data Tidak Tersimpan';
+        DB::beginTransaction();
+        try{
+            // Store your file into directory and db
+            $update = [
+                'username'          => $request->username,
+                'name'              => $request->nama_lengkap,
+                'cl_perusahaan_id'  => 1,
+                'cl_user_group_id'  => 1,
+                'status'            => 1,
+                'update_date'       => Carbon::now(),
+                'update_by'         => 'Administrator',
+            ];
 
-        return redirect('users');
+            $role = Role::whereName($request->role)->first();
+            $user = User::findOrFail($id)->update($update);
+            DB::table('model_has_roles')
+            ->where('model_id', $id)
+            ->update(['role_id' =>  $role->id]);
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+        }
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $user
+        ]);
     }
 
     /**
