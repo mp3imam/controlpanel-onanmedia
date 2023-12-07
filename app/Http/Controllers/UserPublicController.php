@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\UserPublic;
+use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
-class UserController extends Controller
+class UserPublicController extends Controller
 {
     private $title = 'Data Users';
     private $li_1 = 'Index';
@@ -26,14 +23,15 @@ class UserController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:Users Panel');
+        //  $this->middleware('permission:Users Public');
+        // dd(DB::connection('pgsql2')->table('user'));
     }
 
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('users.index', $title);
+        return view('users_public.index', $title);
     }
 
     /**
@@ -42,24 +40,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request){
-        return
-        DataTables::of($this->models($request))
-        ->addColumn('role', function ($row){
-            return $row->roles[0]->name;
-        })
-        ->addColumn('action', function ($row){
-            $actionBtn ='
-                <button href="'.route('users.edit', $row->id).'" class="btn btn-warning btn-sm button" onclick="modal_crud(`ubah`, '.$row->id.',`'.$row->username.'`,`'.$row->nama_lengkap.'`,`'.$row->roles[0]->id.'`,`'.$row->roles[0]->name.'`)" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                    Ubah
-                </button>
-                <a href="#" type="button" onclick="alert_delete('.$row->id.',`'.$row->username.'`)" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger btn-sm buttonDestroy">
-                    Hapus
-                </a>
-                ';
-            return $actionBtn;
-        })
-        ->rawColumns(['role','action'])
-        ->make(true);
+        return DataTables::of($this->models($request))->make(true);
     }
 
     /**
@@ -206,12 +187,12 @@ class UserController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => User::findOrFail($id)->delete()
+            'message' => UserPublicModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return User::query()
+        return UserPublicModel::query()
         ->when($request->username_id, function($q) use($request){
             $q->where('username','like', '%'.$request->username_id.'%');
         })
@@ -244,5 +225,4 @@ class UserController extends Controller
 
         return $pdf->download('Laporan-users-PDF');
     }
-
 }

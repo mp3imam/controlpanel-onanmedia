@@ -35,6 +35,9 @@ use App\Http\Controllers\SistemAnalistController;
 use App\Http\Controllers\UploadBannersController;
 use App\Http\Controllers\UploadVideoController;
 use App\Http\Controllers\TestPrintController;
+use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\UserPublicController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,6 +103,8 @@ Route::group(['middleware' => ['auth']], function() {
     // Route::get('listActiveLayanan', [ActiveLayananUsersController::class,'list'])->name('listActiveLayanan');
     // Route::get('listLayanan', [ActiveLayananUsersController::class,'listLayanan'])->name('listLayanan');
     Route::resource('users', UserController::class);
+    Route::resource('users_public', UserPublicController::class);
+    Route::resource('transaksi', TransactionsController::class);
 
     // Route::get('theme', [MasterThemeController::class, 'index'])->name('theme.index');
     // Route::resource('export_users', ExportUserController::class)->except(['show']);

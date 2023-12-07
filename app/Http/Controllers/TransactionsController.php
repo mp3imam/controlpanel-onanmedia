@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\OrderModel;
+use App\Models\UserPublic;
+use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
-class UserController extends Controller
+class TransactionsController extends Controller
 {
     private $title = 'Data Users';
     private $li_1 = 'Index';
@@ -26,14 +24,15 @@ class UserController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:Users Panel');
+        //  $this->middleware('permission:Users Public');
+        // dd(DB::connection('pgsql2')->table('user'));
     }
 
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('users.index', $title);
+        return view('transaction.index', $title);
     }
 
     /**
@@ -44,21 +43,10 @@ class UserController extends Controller
     public function create(Request $request){
         return
         DataTables::of($this->models($request))
-        ->addColumn('role', function ($row){
-            return $row->roles[0]->name;
+        ->addColumn('tawaran', function ($row){
+            return strip_tags($row->penawaran);
         })
-        ->addColumn('action', function ($row){
-            $actionBtn ='
-                <button href="'.route('users.edit', $row->id).'" class="btn btn-warning btn-sm button" onclick="modal_crud(`ubah`, '.$row->id.',`'.$row->username.'`,`'.$row->nama_lengkap.'`,`'.$row->roles[0]->id.'`,`'.$row->roles[0]->name.'`)" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                    Ubah
-                </button>
-                <a href="#" type="button" onclick="alert_delete('.$row->id.',`'.$row->username.'`)" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger btn-sm buttonDestroy">
-                    Hapus
-                </a>
-                ';
-            return $actionBtn;
-        })
-        ->rawColumns(['role','action'])
+        ->rawColumns(['tawaran'])
         ->make(true);
     }
 
@@ -206,27 +194,16 @@ class UserController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => User::findOrFail($id)->delete()
+            'message' => UserPublicModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return User::query()
-        ->when($request->username_id, function($q) use($request){
-            $q->where('username','like', '%'.$request->username_id.'%');
-        })
-        ->when($request->roles_id, function($q) use($request){
-            return $q->whereIn('id', is_array($request->roles_id) ? $request->roles_id : explode(',', $request->roles_id));
-        })
-        ->when($request->order, function($q) use($request){
-            switch ($request->order[0]['column']) {
-                case '2': $order = 'id'; break;
-                case '3': $order = 'username'; break;
-                case '4': $order = 'nama_lengkap'; break;
-                default: $order = 'id'; break;
-            }
-            return $q->orderBy($order ,$request->order[0]['dir']);
-        })
+        return OrderModel::query()
+        ->select('Order.*', 'MsAktifitas.nama as aktifitas', 'penjual.name AS penjual', 'pembeli.name AS pembeli', DB::raw('to_char("Order"."createdAt", \'DD-MM-YYYY\') AS tanggal_order'))
+        ->leftJoin('MsAktifitas', 'MsAktifitas.id', '=', 'Order.msAktifitasId')
+        ->leftJoin('User AS penjual', 'penjual.id', '=', 'Order.userIdPenjual')
+        ->leftJoin('User AS pembeli', 'pembeli.id', '=', 'Order.userIdPembeli')
         ->get();
     }
 
@@ -244,5 +221,4 @@ class UserController extends Controller
 
         return $pdf->download('Laporan-users-PDF');
     }
-
 }

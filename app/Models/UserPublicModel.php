@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class logUserModel extends Model
+class UserPublicModel extends Model
 {
     use HasFactory;
-    protected $table = "telescope_entries";
-
+    protected $connection = 'pgsql2';
+    protected $table = 'User';
 }

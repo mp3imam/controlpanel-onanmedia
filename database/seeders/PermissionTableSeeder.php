@@ -23,39 +23,277 @@ class PermissionTableSeeder extends Seeder
 
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-            // Dashboard
-            Permission::create(['name' => 'Dashboard','module_icon' => 'ri-dashboard-fill','module_url' => 'dashboard','module_parent' =>0, 'module_position' => 1,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'Onan Apps','module_icon' => 'ri-file-user-fill','module_url' =>'sideOnanApps','module_parent' =>0, 'module_position' => 2,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'User','module_icon' => 'ri-file-user-fill','module_url' =>'bahasa','module_parent' =>2, 'module_position' => 1,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'Kategori','module_icon' => 'ri-file-user-fill','module_url' =>'kategori','module_parent' =>2, 'module_position' => 2,'module_description' => '', 'module_status' =>1]);
-            Permission::create(['name' => 'SubKategori','module_icon' => 'ri-file-user-fill','module_url' =>'sub_kategori','module_parent' =>2, 'module_position' => 3,'module_description' => '', 'module_status' =>1]);
+            $menu = [
+                [
+                    'name'                  => 'Dashboard',
+                    'module_icon'           => 'ri-dashboard-fill',
+                    'module_url'            => 'dashboard',
+                    'module_parent'         => 0,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'OnanApps',
+                    'module_icon'           => 'ri-dashboard-fill',
+                    'module_url'            => 'onanApps',
+                    'module_parent'         => 0,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Users Panel',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'users',
+                    'module_parent'         => 2,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Users',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'users_public',
+                    'module_parent'         => 2,
+                    'module_position'       => 3,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Transaksi',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'transaksi',
+                    'module_parent'         => 2,
+                    'module_position'       => 4,
+                    'module_description'    => '',
+                    'module_status'         => 1
 
-            $administratorRole = Role::create(['name' => 'administrator']);
+                ],[
+                    'name'                  => 'Daftar Tender',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'daftar_tender',
+                    'module_parent'         => 2,
+                    'module_position'       => 5,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Daftar Product Jasa',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'daftar_product_jasa',
+                    'module_parent'         => 2,
+                    'module_position'       => 6,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Request Pencarian Dana',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'request_pencarian_dana',
+                    'module_parent'         => 2,
+                    'module_position'       => 7,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Finance',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'sideOnanApps',
+                    'module_parent'         => 0,
+                    'module_position'       => 3,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Master Coa',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'master_coa',
+                    'module_parent'         => 9,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Master Bank & Cash',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'master_bank_cash',
+                    'module_parent'         => 9,
+                    'module_position'       => 2,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Master Kas',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'master_kas',
+                    'module_parent'         => 9,
+                    'module_position'       => 3,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Master Belanja',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'master_belanja',
+                    'module_parent'         => 9,
+                    'module_position'       => 4,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'HRD',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'hrd',
+                    'module_parent'         => 0,
+                    'module_position'       => 4,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Data Karyawan',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'data_karyawan',
+                    'module_parent'         => 14,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Data Absensi',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'data_absensi',
+                    'module_parent'         => 14,
+                    'module_position'       => 2,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Master Data',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'master_data',
+                    'module_parent'         => 0,
+                    'module_position'       => 5,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Bahasa',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'bahsasa',
+                    'module_parent'         => 17,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Kategory',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'kategory',
+                    'module_parent'         => 17,
+                    'module_position'       => 2,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'SubKategory',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'subkategory',
+                    'module_parent'         => 17,
+                    'module_position'       => 3,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Pekerjaan',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'pekerjaan',
+                    'module_parent'         => 17,
+                    'module_position'       => 4,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Pendidikan',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'pendidikan',
+                    'module_parent'         => 17,
+                    'module_position'       => 5,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'Pengaturan',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'pengaturan',
+                    'module_parent'         => 0,
+                    'module_position'       => 6,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ]
+            ];
+
+            foreach ($menu as $m) {
+                Permission::create($m);
+            }
+
+            $role = [
+                ['name'=>'administrator'],
+                ['name'=>'finance'],
+                ['name'=>'hrd'],
+                ['name'=>'customer_service'],
+            ];
+
+            $users = [
+                [
+                    'id' => 1,
+                    'username' => 'Administrator',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'susan',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ],[
+                    'id' => 2,
+                    'username' => 'Finance',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'susan',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ],[
+                    'id' => 3,
+                    'username' => 'Hrd',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'susan',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ],[
+                    'id' => 4,
+                    'username' => 'Customer Service',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'susan',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ]
+            ];
+
+            // create user administrator & roles
+            $administratorRole = Role::create($role[0]);
+            $administratorUser = User::create($users[0]);
             $administratorRole->givePermissionTo(Permission::all());
-
-            $administratorUser = User::create(['id' => 1,'username' => 'administrator','password' => bcrypt('12345678'),'status' => 1,'nama_lengkap' => 'susan','cl_perusahaan_id' => 1,'cl_user_group_id' => 1,'update_date' => '2023-11-14','update_by' => 'administrator', ]);
             $administratorUser->assignRole($administratorRole);
+            // end
 
-            // create roles and for finance
-            $financeRole = Role::create(['name' => 'finance']);
-            $financeRole->givePermissionTo('Dashboard');
-
-            $financeUser = User::create(['id' => 2,'username' => 'finance','status' => 1,'password' => bcrypt('12345678'),'nama_lengkap' => 'fina','cl_perusahaan_id' => 1,'cl_user_group_id' => 1,'update_date' => '2023-11-14','update_by' => 'administrator', ]);
+            // create user Finance & roles
+            $financeRole = Role::create($role[1]);
+            $financeUser = User::create($users[1]);
+            $financeRole->givePermissionTo(['Dashboard','OnanApps','Users']);
             $financeUser->assignRole($financeRole);
+            // end
 
-            // create roles and for hrd
-            $hrdRole = Role::create(['name' => 'hrd']);
+            // create user HRD & roles
+            $hrdRole = Role::create($role[2]);
+            $hrdUser = User::create($users[2]);
             $hrdRole->givePermissionTo('Dashboard');
-
-            $hrdUser = User::create(['id' => 3,'username' => 'hrd','status' => 1,'cl_user_group_id' => 1,'nama_lengkap' => 'hana','cl_perusahaan_id' => 1,'update_date' => '2023-11-14','update_by' => 'administrator','password' => bcrypt('12345678'), ]);
             $hrdUser->assignRole($hrdRole);
+            // end
 
-            // create roles and for cs
-            $csRole = Role::create(['name' => 'cs']);
+            // create user Costumer Service & roles
+            $csRole = Role::create($role[3]);
+            $csUser = User::create($users[3]);
             $csRole->givePermissionTo('Dashboard');
-
-            $csUser = User::create(['id' => 4,'username' => 'cs','status' => 1,'cl_user_group_id' => 1,'cl_perusahaan_id' => 1,'nama_lengkap' => 'cus','update_date' => '2023-11-14','update_by' => 'administrator','password' => bcrypt('12345678') ]);
             $csUser->assignRole($csRole);
+            // end
 
             DB::commit();
         }catch(\Exception $e){

@@ -25,6 +25,8 @@
 <link rel="stylesheet" href="{{ URL::asset('assets/libs/@simonwep/@simonwep.min.css') }}" /> <!-- 'classic' theme -->
 <link href="{{ URL::asset('assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
 <script src="https://themesbrand.com/velzon/html/default/assets/js/pages/form-input-spin.init.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
+
 <style>
     .select2-selection__choice__display {
         color: black !important;
