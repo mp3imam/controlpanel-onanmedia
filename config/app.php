@@ -161,7 +161,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -175,10 +174,8 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\TelescopeServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         // RealRashid\SweetAlert\SweetAlertServiceProvider::class,
-        Sarfraznawaz2005\BackupManager\ServiceProvider::class,
         ZBrettonYe\Geetest\GeetestServiceProvider::class
     ],
 
@@ -236,11 +233,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Module' => App\Helpers\Module::class,
         // 'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
-        'BackupManager' => Sarfraznawaz2005\BackupManager\Facades\BackupManager::class,
         'LogActivity' => App\Helpers\LogActivity::class,
-        'Agent' => Jenssegers\Agent\Facades\Agent::class,
-        'Geetest' => ZBrettonYe\Geetest\Facades\Geetest::class,
-        'Pusher' => Pusher\Pusher::class,
 
 
 

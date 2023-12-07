@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\LogActivity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -243,7 +242,6 @@ class UserController extends Controller
             ]
         )->setPaper('F4');
 
-        LogActivity::addToLog('Donwload users');
         return $pdf->download('Laporan-users-PDF');
     }
 
