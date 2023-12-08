@@ -43,12 +43,11 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm " cellspacing="0"
-                            width="100%">
+                            <table id="dataTable" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th width="5px">Nomor</th>
-                                        <th width="50px">Nama Lengkap</th>
+                                        <th width="100px">Nama Lengkap</th>
                                         <th width="30px">Nomor Hanphone</th>
                                         <th width="30px">Username</th>
                                         <th width="30px">Verifikasi Email</th>
@@ -63,9 +62,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content" id="modal_content">
-                        </div>
+                    <div class="modal-dialog" id="modal_content">
                     </div>
                 </div>
             </div>
@@ -77,6 +74,8 @@
 
 @section('script')
 <script type="text/javascript">
+    var img_ok = `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">`
+    var img_not_ok = `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
@@ -98,6 +97,9 @@
                 },{
                     data: 'name',
                     name: 'Nama Lengkap',
+                    render: function (data, type, row) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit', '`+row.uuid+`', '`+row.name+`', '`+row.email+`', '`+row.phone+`', '`+row.isEmailVerified+`', '`+row.isPhoneVerified+`', '`+row.sellerStatus+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
+                    }
                 },{
                     data: 'email',
                     name: 'Email'
@@ -108,19 +110,19 @@
                     data: 'isEmailVerified',
                     name: 'Verifikasi Email',
                     render: function (data) {
-                        return data ? `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">` : `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`;
+                        return data ? img_ok : img_not_ok;
                     }
                 },{
                     data: 'isPhoneVerified',
                     name: 'Verifikasi No Handphone',
                     render: function (data) {
-                        return data ? `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">` : `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`;
+                        return data ? img_ok : img_not_ok;
                     }
                 },{
                     data: 'sellerStatus',
                     name: 'Terdaftar Seller',
                     render: function (data) {
-                        return data ? `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">` : `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`;
+                        return data ? img_ok : img_not_ok;
                     }
                 }
             ]
@@ -135,58 +137,111 @@
         });
     });
 
-    function modal_crud(data, id, username, nama_lengkap, role_id, role_name){
-        var user = username ?? ''
-        var nama = nama_lengkap ?? ''
+    function modal_crud(data, id, name, email, phone, isEmailVerified, isPhoneVerified, sellerStatus){
+        console.log(data, id, name, email, phone, isEmailVerified, isPhoneVerified, sellerStatus);
+        var warna = id ? 'warning' : 'success';
+        var nama = name ?? '';
+        var email_modal = email ?? '';
+        var phone_modal = phone ?? '';
+        var isEmailVerified_modal = isEmailVerified == 1 ? img_ok : img_not_ok;
+        var isPhoneVerified_modal = isPhoneVerified == 1 ? img_ok : img_not_ok;
+        var sellerStatus_modal = sellerStatus == 1 ? img_ok : img_not_ok;
+        var botton_hapus = id ? `<button type="button" target="_blank" onclick="konfirmasi_hapus(${id})" class="btn btn-danger">Delete</button>` : ``
 
         $('#modal_content').html(`
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_username_append">
-                        <label for="username" class="form-label">Username</label>
-                        <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="role" class="form-label">Role</label>
-                        <input class="form-control" id="nama_role" hidden>
-                        <select id="modal_roles_id" class="form-control"></select>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
+            <div class="modal-content">
+                <div class="modal-header text-white pb-3 bg-${warna}">
+                    <h5 class="modal-title text-white" id="exampleModalgridLabel">${data} Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-xxl-12">
+                            <label for="modal_nama_lengkap" class="form-label">Nama Lengkap</label>
+                            <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="${nama}">
+                        </div>
+                        <div class="col-xxl-12">
+                            <label for="modal_email" class="form-label">Email</label>
+                            <input class="form-control" id="modal_email" placeholder="Enter Email" value="${email_modal}">
+                        </div>
+                        <div class="col-xxl-12">
+                            <label for="modal_phone" class="form-label">Phone</label>
+                            <input class="form-control" id="modal_phone" placeholder="Enter Phone" value="${phone_modal}">
+                        </div>
+                        <div class="col-xxl-12">
+                            <label for="modal_isEmail" class="form-label">Verifikasi Email</label>
+                            ${isEmailVerified_modal}
+                        </div>
+                        <div class="col-xxl-12">
+                            <label for="modal_isEmail" class="form-label">Verifikasi Phone</label>
+                            ${isPhoneVerified_modal}
+                        </div>
+                        <div class="col-xxl-12">
+                            <label for="modal_isEmail" class="form-label">Terdaftar Seller</label>
+                            ${sellerStatus_modal}
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row align-self-center">
+                                <div class="col-sm-7 align-self-start">
+                                    ${botton_hapus}
+                                </div>
+                                <div class="col-sm-5 text-end">
+                                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary add btn-${warna}" id="row${id}">Submit</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-        `)
+        `);
+
+
+
+        function konfirmasi_hapus(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ url('users_public') }}" + '/' + id,
+                        data: {
+                            "_method": 'DELETE',
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        success: function (result) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Your file has been deleted.',
+                                icon: 'success',
+                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                                timer: 1500,
+                                buttonsStyling: false
+                            }).then(function(){
+                                $('#dataTable').DataTable().ajax.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        }
 
 
         if (id !== undefined){
-            var datarole = {id: role_id,text: role_name, selected: true};
-            var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-            $('#modal_roles_id').append(newOptionrole).trigger('change')
-            $('#modal_roles_id').select2()
-
             $('#row'+id).removeClass('add')
-            $('#row'+id).removeClass('btn-primary')
             $('#row'+id).addClass('edit')
-            $('#row'+id).addClass('btn-warning')
         }else{
             $('#rowundefined').removeClass('edit')
             $('#rowundefined').addClass('add')
-            $('#rowundefined').removeClass('btn-warning')
-            $('#rowundefined').addClass('btn-primary')
         }
-
 
         $.ajaxSetup({
             headers: {
@@ -256,9 +311,8 @@
 
         $('#modal_roles_id').change(function() {
             $("#nama_role").val($("#modal_roles_id option:selected").text());
-            console.log();
         });
-
+        $("#nama_role").val($("#modal_roles_id option:selected").text());
 
         $('.edit').on('click', function() {
             var data = new FormData()
@@ -320,42 +374,6 @@
             }
         }
     });
-
-    function alert_delete(id, nama){
-        Swal.fire({
-        title: `Hapus Data Satker`,
-        text: "Apakah anda yakin untuk menghapus data Satker '"+nama+"'",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Iya',
-        cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "delete",
-                    url: "{{ url('users') }}" + '/' + id,
-                    data: {
-                        "_method": 'delete',
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function (result) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'Your file has been deleted.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                        });
-                    }
-                });
-            }
-
-        });
-    }
 
     $('.btn-pdf').on('click', function(){
         $('#modal_content').html(`

@@ -26,6 +26,8 @@ class Permission extends Model implements PermissionContract
     use RefreshesPermissionCache;
 
     protected $guarded = [];
+    protected $table= 'panel.Permission';
+
 
     public function __construct(array $attributes = [])
     {

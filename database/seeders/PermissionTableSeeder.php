@@ -41,10 +41,10 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Users Panel',
+                    'name'                  => 'Role Users',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'users',
-                    'module_parent'         => 2,
+                    'module_parent'         => 23,
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1

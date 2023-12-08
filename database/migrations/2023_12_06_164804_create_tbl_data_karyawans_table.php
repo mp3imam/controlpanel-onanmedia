@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_data_karyawan', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('tbl_data_karyawan', function (Blueprint $table) {
             $table->id();
             $table->date('create_date')->nullable();
             $table->string('create_by')->nullable();
@@ -44,6 +44,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_data_karyawan');
+        Schema::connection('pgsql')->dropIfExists('tbl_data_karyawan');
     }
 };

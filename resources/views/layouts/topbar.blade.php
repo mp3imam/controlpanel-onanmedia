@@ -110,7 +110,7 @@
                         <!-- item-->
                         <h6 class="dropdown-header">Welcome {{ Session::get('username') }} !</h6>
                         <a class="dropdown-item" href="profile"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
-                        <a class="dropdown-item" href="{{ route('change.password') }}"><i class="mdi mdi-form-textbox-password text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Ubah Sandi</span></a>
+                        <a class="dropdown-item" href="#"><i class="mdi mdi-form-textbox-password text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Ubah Sandi</span></a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                      <a class="dropdown-item " href="javascript:void();" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bx bx-power-off font-size-16 align-middle me-1"></i> <span key="t-logout">@lang('translation.logout')</span></a>

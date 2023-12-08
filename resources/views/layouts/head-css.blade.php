@@ -32,8 +32,8 @@
         color: black !important;
     }
 
-    .dtfc-fixed-right {
-        background-color: rgb(214, 210, 210) !important;
+    .dtfc-fixed-left {
+        background-color: rgb(255, 255, 255) !important;
     }
 </style>
 

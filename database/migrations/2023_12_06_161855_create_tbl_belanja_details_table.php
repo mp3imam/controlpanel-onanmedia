@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_belanja_detail', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('tbl_belanja_detail', function (Blueprint $table) {
             $table->string('id')->primary()->autoIncrement(true);
             $table->string('kdrek', 20)->nullable();
             $table->float('nilai_total')->nullable();
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_belanja_detail');
+        Schema::connection('pgsql')->dropIfExists('tbl_belanja_detail');
     }
 };

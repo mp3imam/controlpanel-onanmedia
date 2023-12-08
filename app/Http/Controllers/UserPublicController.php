@@ -193,21 +193,7 @@ class UserPublicController extends Controller
 
     public function models($request){
         return UserPublicModel::query()
-        ->when($request->username_id, function($q) use($request){
-            $q->where('username','like', '%'.$request->username_id.'%');
-        })
-        ->when($request->roles_id, function($q) use($request){
-            return $q->whereIn('id', is_array($request->roles_id) ? $request->roles_id : explode(',', $request->roles_id));
-        })
-        ->when($request->order, function($q) use($request){
-            switch ($request->order[0]['column']) {
-                case '2': $order = 'id'; break;
-                case '3': $order = 'username'; break;
-                case '4': $order = 'nama_lengkap'; break;
-                default: $order = 'id'; break;
-            }
-            return $q->orderBy($order ,$request->order[0]['dir']);
-        })
+        ->orderBy('id')
         ->get();
     }
 

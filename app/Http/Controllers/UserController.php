@@ -16,7 +16,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Data Role Users';
     private $li_1 = 'Index';
 
     /**
@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:Users Panel');
+        //  $this->middleware('permission:Users Panel');
     }
 
     public function index(){
@@ -173,11 +173,7 @@ class UserController extends Controller
             // Store your file into directory and db
             $update = [
                 'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
+                'nama_lengkap'      => $request->nama_lengkap,
                 'update_by'         => 'Administrator',
             ];
 

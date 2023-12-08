@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_belanja_header', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('tbl_belanja_header', function (Blueprint $table) {
             $table->string('id')->primary()->autoIncrement(true);
             $table->date('create_date')->nullable();
             $table->integer('id_karyawan', 4)->autoIncrement(false)->nullable();
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_belanja_header');
+        Schema::connection('pgsql')->dropIfExists('tbl_belanja_header');
     }
 };

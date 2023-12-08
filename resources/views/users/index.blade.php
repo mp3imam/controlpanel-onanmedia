@@ -240,9 +240,8 @@
 
         $('#modal_roles_id').change(function() {
             $("#nama_role").val($("#modal_roles_id option:selected").text());
-            console.log();
         });
-
+        $("#nama_role").val($("#modal_roles_id option:selected").text());
 
         $('.edit').on('click', function() {
             var data = new FormData()

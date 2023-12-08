@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable("cl_coa"))
-        Schema::create('cl_coa', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("cl_coa"))
+        Schema::connection('pgsql')->create('cl_coa', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('kdrek1');
             $table->string('kdrek2');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cl_coa');
+        Schema::connection('pgsql')->dropIfExists('cl_coa');
     }
 };

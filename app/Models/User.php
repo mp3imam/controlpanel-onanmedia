@@ -12,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-    protected $table = "tbl_user";
+    protected $table = "panel.tbl_user";
     protected $guarded = ['id'];
     public $timestamps = false;
 

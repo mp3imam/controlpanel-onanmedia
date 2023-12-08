@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrderModel;
-use App\Models\UserPublic;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;

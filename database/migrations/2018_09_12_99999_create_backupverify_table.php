@@ -13,7 +13,7 @@ class CreateBackupVerifyTable extends Migration
      */
     public function up()
     {
-        Schema::create('verifybackup', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('verifybackup', function (Blueprint $table) {
             $table->increments('id');
             $table->string('verify_status');
         });
@@ -26,6 +26,6 @@ class CreateBackupVerifyTable extends Migration
      */
     public function down()
     {
-        Schema::drop('verifybackup');
+        Schema::connection('pgsql')->drop('verifybackup');
     }
 }

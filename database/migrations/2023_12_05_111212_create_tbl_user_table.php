@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_user', function (Blueprint $table) {
+        Schema::connection('pgsql')->create('tbl_user', function (Blueprint $table) {
             $table->string('id')->primary()->autoIncrement(true);
             $table->string('username', 100);
             $table->string('password', 200);
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_user');
+        Schema::connection('pgsql')->dropIfExists('tbl_user');
     }
 };
