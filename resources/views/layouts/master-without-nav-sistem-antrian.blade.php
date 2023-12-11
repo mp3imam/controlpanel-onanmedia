@@ -7,7 +7,7 @@
         <meta name="description" content="{{ config('app.name') }}" />
         <meta name="author" content="{{ config('app.name') }}" />
         <!-- App favicon -->
-        <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/favicon-kejaksaan.png') }}">
+        <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/logo.png') }}">
         @include('layouts.head-css')
     </head>
 

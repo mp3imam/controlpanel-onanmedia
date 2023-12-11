@@ -164,7 +164,7 @@ class PermissionTableSeeder extends Seeder
                 ],[
                     'name'                  => 'Bahasa',
                     'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'bahsasa',
+                    'module_url'            => 'bahasa',
                     'module_parent'         => 17,
                     'module_position'       => 1,
                     'module_description'    => '',
@@ -172,7 +172,7 @@ class PermissionTableSeeder extends Seeder
                 ],[
                     'name'                  => 'Kategory',
                     'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'kategory',
+                    'module_url'            => 'kategori',
                     'module_parent'         => 17,
                     'module_position'       => 2,
                     'module_description'    => '',
@@ -180,7 +180,7 @@ class PermissionTableSeeder extends Seeder
                 ],[
                     'name'                  => 'SubKategory',
                     'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'subkategory',
+                    'module_url'            => 'subkategori',
                     'module_parent'         => 17,
                     'module_position'       => 3,
                     'module_description'    => '',

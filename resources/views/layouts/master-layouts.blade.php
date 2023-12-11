@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/favicon-kejaksaan.png') }}">
+    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/logo.png') }}">
     @include('layouts.head-css')
 </head>
 
@@ -26,22 +26,22 @@
                         <div class="navbar-brand-box horizontal-logo ">
                             <a href="{{ URL('/') }}" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt=""
+                                    <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt=""
                                         height="100">
                                 </span>
                                 <span class="logo-lg mb-4">
-                                    <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt=""
+                                    <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt=""
                                         width="90" height="90">
                                 </span>
                             </a>
 
                             <a href="{{ URL('/') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt=""
+                                    <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt=""
                                         height="100">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt=""
+                                    <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt=""
                                         width="100" height="100">
                                 </span>
                             </a>
@@ -83,7 +83,7 @@
                                 case 'Sat':
                                     $hari = 'Sabtu';
                                     break;
-                            
+
                                 default:
                                     $hari = 'Minggu';
                                     break;

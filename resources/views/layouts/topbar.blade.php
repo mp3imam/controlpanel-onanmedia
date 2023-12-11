@@ -9,19 +9,19 @@
                 <div class="navbar-brand-box horizontal-logo">
                     <a href="{{ URL('/') }}" class="logo logo-dark">
                         <span class="logo-sm">
-                            <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt="" height="50">
+                            <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" height="50">
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt="" width="50" height="50">
+                            <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" width="50" height="50">
                         </span>
                     </a>
 
                     <a href="{{ URL('/') }}" class="logo logo-light">
                         <span class="logo-sm">
-                            <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt="" height="50">
+                            <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" height="50">
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ URL::asset('assets/images/logo/kejaksaan-logo.png') }}" alt="" width="50" height="50">
+                            <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" width="50" height="50">
                         </span>
                     </a>
                 </div>
