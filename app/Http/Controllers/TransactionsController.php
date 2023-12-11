@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderJasaModel;
 use App\Models\OrderModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -205,6 +206,16 @@ class TransactionsController extends Controller
         ->leftJoin('User AS pembeli', 'pembeli.id', '=', 'Order.userIdPembeli')
         ->get();
     }
+
+    public function transaksi_product(Request $request){
+        return DataTables::of(
+            OrderJasaModel::query()
+            ->select('OrderJasa.*', 'Jasa.nama as namaJasa')
+            ->leftJoin('Jasa','Jasa.id','=','OrderJasa.jasaId')
+            ->where('orderId',$request->id)->get()
+            )->make(true);
+    }
+
 
     public function pdf(Request $request){
         $datas = $this->models($request);

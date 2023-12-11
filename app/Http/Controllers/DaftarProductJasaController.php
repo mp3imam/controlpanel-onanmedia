@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DaftarPricingModel;
 use App\Models\DaftarProductJasaModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -200,6 +201,15 @@ class DaftarProductJasaController extends Controller
         ->leftJoin('MsSubkategori', 'MsSubkategori.id', '=', 'Jasa.msSubkategoriId')
         ->leftJoin('MsStatusJasa', 'MsStatusJasa.id', '=', 'Jasa.msStatusJasaId')
         ->get();
+    }
+
+    public function daftar_pricing(Request $request){
+        return DataTables::of(
+            DaftarPricingModel::query()
+            ->select('JasaPricing.*', 'Jasa.nama as namaJasa')
+            ->leftJoin('Jasa','Jasa.id','=','JasaPricing.jasaId')
+            ->where('jasaId',$request->id)->get()
+            )->make(true);
     }
 
     public function pdf(Request $request){

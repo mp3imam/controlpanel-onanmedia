@@ -10,4 +10,6 @@ class BahasaModel extends Model
     use HasFactory;
     protected $connection = 'pgsql2';
     protected $table = 'MsBahasa';
+    protected $guarded = ['id'];
+    public $timestamps = false;
 }

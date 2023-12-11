@@ -11,10 +11,6 @@
         <div class="card">
             <div class="card-body">
                 <div id="customerList">
-                    <div class="col-sm-auto mb-3">
-                    <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                        Tambah
-                    </button>
                     <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
@@ -34,10 +30,6 @@
                             <div class="col-xxl-4 col-md-6 p-3">
                                 <label>Filter UserName</label>
                                 <input id='username_id' name="username_id" />
-                            </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
-                                <label>Filter Role</label>
-                                <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
                             </div>
                         </div>
                     </div>
@@ -64,7 +56,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content" id="modal_content">
                         </div>
                     </div>
@@ -108,6 +100,9 @@
                 },{
                     data: 'userid',
                     name: 'Nama User',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.userId+`', '`+row.nilai+`', '`+row.namaRekening+`', '`+row.rekening+`', '`+row.msbankid+`', '`+row.status+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
                 },{
                     data: 'nilai',
                     name: 'Nilai'
@@ -142,58 +137,66 @@
         });
     });
 
-    function modal_crud(data, id, username, nama_lengkap, role_id, role_name){
-        var user = username ?? ''
-        var nama = nama_lengkap ?? ''
-
+    function modal_crud(id, userId, nilai, namaRekening, rekening, msbankid, status){
         $('#modal_content').html(`
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
+                <h5 class="modal-title" id="exampleModalgridLabel">Details Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_username_append">
-                        <label for="username" class="form-label">Username</label>
-                        <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">Nama User</div>
+                                <div class="col-md-8">: ${userId}</div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">Nilai</div>
+                                <div class="col-md-8">: ${nilai}</div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">Jenis</div>
+                                <div class="col-md-8">: -</div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">Nama Rekening</div>
+                                <div class="col-md-8">: ${userId}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xxl-12">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="role" class="form-label">Role</label>
-                        <input class="form-control" id="nama_role" hidden>
-                        <select id="modal_roles_id" class="form-control"></select>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
+                    <div class="col-md-6">
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">No. Rekening</div>
+                                <div class="col-md-8">: ${rekening}</div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">ID Bank</div>
+                                <div class="col-md-8">: ${msbankid}</div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <div class="row">
+                                <div class="col-md-4">Status</div>
+                                <div class="col-md-8">: ${status}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+            </div>
         `)
-
-
-        if (id !== undefined){
-            var datarole = {id: role_id,text: role_name, selected: true};
-            var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-            $('#modal_roles_id').append(newOptionrole).trigger('change')
-            $('#modal_roles_id').select2()
-
-            $('#row'+id).removeClass('add')
-            $('#row'+id).removeClass('btn-primary')
-            $('#row'+id).addClass('edit')
-            $('#row'+id).addClass('btn-warning')
-        }else{
-            $('#rowundefined').removeClass('edit')
-            $('#rowundefined').addClass('add')
-            $('#rowundefined').removeClass('btn-warning')
-            $('#rowundefined').addClass('btn-primary')
-        }
-
 
         $.ajaxSetup({
             headers: {
@@ -201,132 +204,7 @@
             }
         });
 
-        $('.add').on('click', function() {
-            var data = new FormData()
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                type: "post",
-                url: "{{ url('users') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-
-        $("#modal_roles_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.roles') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            },
-            dropdownParent: $("#modal_content")
-        });
-
-        $('#modal_roles_id').change(function() {
-            $("#nama_role").val($("#modal_roles_id option:selected").text());
-            console.log();
-        });
-
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                url: "{{ url('users') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            location.reload();
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
     }
-
-    $('#roles_id').select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.roles') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
 
     function alert_delete(id, nama){
         Swal.fire({

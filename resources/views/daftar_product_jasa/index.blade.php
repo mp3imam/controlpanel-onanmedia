@@ -35,10 +35,6 @@
                                 <label>Filter UserName</label>
                                 <input id='username_id' name="username_id" />
                             </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
-                                <label>Filter Role</label>
-                                <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
-                            </div>
                         </div>
                     </div>
                     <div class="card">
@@ -55,6 +51,10 @@
                                         <th>SubKategory</th>
                                         <th>Tags</th>
                                         <th>Jumlah View</th>
+                                        <th hidden>is</th>
+                                        <th hidden>is</th>
+                                        <th hidden>is</th>
+                                        <th hidden>is</th>
                                         <th>Gambar Product</th>
                                         <th>Harga Termurah</th>
                                         <th>Harga Termahal</th>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content" id="modal_content">
                         </div>
                     </div>
@@ -82,6 +82,8 @@
 @section('script')
 <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
 <script type="text/javascript">
+    var img_ok = `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">`
+    var img_not_ok = `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
@@ -111,6 +113,9 @@
                 },{
                     data: 'UserPosting',
                     name: 'User Posting',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.nama+`', '`+row.subkategori+`', '`+row.kategori+`', '`+row.impresi+`', '`+row.klik+`', '`+row.UserPosting+`', '`+row.tags+`', '`+row.deskripsi+`', '`+row.msStatusJasaId+`', '`+row.slug+`', '`+row.cover+`', '`+row.hargaTermahal+`', '`+row.hargaTermurah+`', '`+row.statusjasa+`', '`+row.isPengambilan+`', '`+row.isPengiriman+`', '`+row.isUnggulan+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
                 },{
                     data: 'nama',
                     name: 'Nama Jasa'
@@ -132,6 +137,18 @@
                 },{
                     data: 'klik',
                     name: 'Jumlah View'
+                },{
+                    data: 'impresi',
+                    visible: false
+                },{
+                    data: 'isPengambilan',
+                    visible: false
+                },{
+                    data: 'isPengiriman',
+                    visible: false
+                },{
+                    data: 'isUnggulan',
+                    visible: false
                 },{
                     data: 'cover',
                     name: 'Gambar Product',
@@ -163,191 +180,183 @@
         });
     });
 
-    function modal_crud(data, id, username, nama_lengkap, role_id, role_name){
-        var user = username ?? ''
-        var nama = nama_lengkap ?? ''
-
+    function modal_crud(id, nama, subkategori, kategori, impresi, klik, UserPosting, tags, deskripsi, msStatusJasaId, slug, cover, hargaTermahal, hargaTermurah, statusjasa, isPengambilan, isPengiriman, isUnggulan){
+        isPengambilanModal = isPengambilan == 1 ? img_ok : img_not_ok
+        isPengirimanModal = isPengiriman == 1 ? img_ok : img_not_ok
+        isUnggulanModal = isUnggulan == 1 ? img_ok : img_not_ok
+        msStatusJasaIdModal = msStatusJasaId == 1 ? img_ok : img_not_ok
         $('#modal_content').html(`
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
+                <h5 class="modal-title" id="exampleModalgridLabel">Detail Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_username_append">
-                        <label for="username" class="form-label">Username</label>
-                        <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="role" class="form-label">Role</label>
-                        <input class="form-control" id="nama_role" hidden>
-                        <select id="modal_roles_id" class="form-control"></select>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
+                <div class="row">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Nama</div>
+                                        <div class="col-md-8">: ${nama}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">SubKategori</div>
+                                        <div class="col-md-8">: ${subkategori}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Kategori</div>
+                                        <div class="col-md-8">: ${kategori}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Impresi</div>
+                                        <div class="col-md-8">: ${impresi}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">klik</div>
+                                        <div class="col-md-8">: ${klik}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Nama User</div>
+                                        <div class="col-md-8">: ${UserPosting}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Tags</div>
+                                        <div class="col-md-8">: ${tags}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Deskripsi</div>
+                                        <div class="col-md-8">: ${deskripsi}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Status Verifikasi Jasa</div>
+                                        <div class="col-md-8">: ${msStatusJasaIdModal}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Slug</div>
+                                        <div class="col-md-8">: ${slug}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Harga Termahal</div>
+                                        <div class="col-md-8">: ${hargaTermahal}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Harga Termurah</div>
+                                        <div class="col-md-8">: ${hargaTermurah}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Status Jasa</div>
+                                        <div class="col-md-8">: ${statusjasa}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Pengambilan</div>
+                                        <div class="col-md-8">: ${isPengambilanModal}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Pengiriman</div>
+                                        <div class="col-md-8">: ${isPengirimanModal}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Unggulan</div>
+                                        <div class="col-md-8">: ${isUnggulanModal}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Cover</div>
+                                        <div class="col-md-8">: <img src="${cover}" width="100px" height="100px"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
+                <hr>
+                <h1>Jasa Pricing</h1>
+                <table id="jasaPricing" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th width="100px">Nama Jasa</th>
+                            <th width="100px">Nama Pricing</th>
+                            <th width="30px">Deskripsi</th>
+                            <th width="30px">Periode</th>
+                            <th width="30px">Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
+
+
         `)
 
-
-        if (id !== undefined){
-            var datarole = {id: role_id,text: role_name, selected: true};
-            var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-            $('#modal_roles_id').append(newOptionrole).trigger('change')
-            $('#modal_roles_id').select2()
-
-            $('#row'+id).removeClass('add')
-            $('#row'+id).removeClass('btn-primary')
-            $('#row'+id).addClass('edit')
-            $('#row'+id).addClass('btn-warning')
-        }else{
-            $('#rowundefined').removeClass('edit')
-            $('#rowundefined').addClass('add')
-            $('#rowundefined').removeClass('btn-warning')
-            $('#rowundefined').addClass('btn-primary')
-        }
-
+        var table = $('#jasaPricing').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('daftar_pricing_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'namaJasa',
+                    name: 'Nama Jasa'
+                },{
+                    data: 'nama',
+                    name: 'Nama Pricing'
+                },{
+                    data: 'deskripsi',
+                    name: 'Deskripsi'
+                },{
+                    data: 'periode',
+                    name: 'Periode'
+                },{
+                    data: 'harga',
+                    name: 'Harga'
+                }
+            ]
+        });
 
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-        $('.add').on('click', function() {
-            var data = new FormData()
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                type: "post",
-                url: "{{ url('users') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-
-        $("#modal_roles_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.roles') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            },
-            dropdownParent: $("#modal_content")
-        });
-
-        $('#modal_roles_id').change(function() {
-            $("#nama_role").val($("#modal_roles_id option:selected").text());
-            console.log();
-        });
-
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                url: "{{ url('users') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            location.reload();
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
     }
-
-    $('#roles_id').select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.roles') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
 
     function alert_delete(id, nama){
         Swal.fire({

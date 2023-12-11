@@ -12,9 +12,9 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                    <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
+                    {{-- <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
                         Tambah
-                    </button>
+                    </button> --}}
                     <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                    <div class="modal-dialog" id="modal_content">
+                    <div class="modal-dialog modal-xl" id="modal_content">
                     </div>
                 </div>
             </div>
@@ -76,6 +76,7 @@
 <script type="text/javascript">
     var img_ok = `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">`
     var img_not_ok = `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`
+    var img_pengajuan = `<img src="{{ URL::asset('assets/images/logo/pengajuan.png') }}" alt=""height="30px">`
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
@@ -98,7 +99,7 @@
                     data: 'name',
                     name: 'Nama Lengkap',
                     render: function (data, type, row) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit', '`+row.uuid+`', '`+row.name+`', '`+row.email+`', '`+row.phone+`', '`+row.isEmailVerified+`', '`+row.isPhoneVerified+`', '`+row.sellerStatus+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit', '`+row.id+`', '`+row.name+`', '`+row.email+`', '`+row.phone+`', '`+row.isEmailVerified+`', '`+row.isPhoneVerified+`', '`+row.sellerStatus+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
                     }
                 },{
                     data: 'email',
@@ -122,7 +123,7 @@
                     data: 'sellerStatus',
                     name: 'Terdaftar Seller',
                     render: function (data) {
-                        return data ? img_ok : img_not_ok;
+                        return data == 2 ? img_pengajuan : data == 1 ? img_ok : img_not_ok;
                     }
                 }
             ]
@@ -138,56 +139,133 @@
     });
 
     function modal_crud(data, id, name, email, phone, isEmailVerified, isPhoneVerified, sellerStatus){
-        console.log(data, id, name, email, phone, isEmailVerified, isPhoneVerified, sellerStatus);
         var warna = id ? 'warning' : 'success';
-        var nama = name ?? '';
-        var email_modal = email ?? '';
-        var phone_modal = phone ?? '';
         var isEmailVerified_modal = isEmailVerified == 1 ? img_ok : img_not_ok;
         var isPhoneVerified_modal = isPhoneVerified == 1 ? img_ok : img_not_ok;
-        var sellerStatus_modal = sellerStatus == 1 ? img_ok : img_not_ok;
-        var botton_hapus = id ? `<button type="button" target="_blank" onclick="konfirmasi_hapus(${id})" class="btn btn-danger">Delete</button>` : ``
+        var sellerStatus_modal = sellerStatus == 1 ? img_ok : sellerStatus == 2 ? img_pengajuan : img_not_ok;
+        var aktifSeller_modal = sellerStatus == 2 ? `<button type="button" target="_blank" onclick="aktifkan_seller('${id}','${name}')" class="btn btn-warning">Aktifkan User</button>` : ``;
 
         $('#modal_content').html(`
             <div class="modal-content">
-                <div class="modal-header text-white pb-3 bg-${warna}">
-                    <h5 class="modal-title text-white" id="exampleModalgridLabel">${data} Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header text-white pb-1 bg-success">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5 class="modal-title text-white" id="exampleModalgridLabel">Detail Data</h5>
+                            </div>
+                            <div class="col-sm-6 text-end">
+                                ${aktifSeller_modal}
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-                        <div class="col-xxl-12">
+                        <div class="col-xxl-4">
                             <label for="modal_nama_lengkap" class="form-label">Nama Lengkap</label>
-                            <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="${nama}">
+                            <input class="form-control" id="modal_nama_lengkap" disabled value="${name}">
                         </div>
-                        <div class="col-xxl-12">
+                        <div class="col-xxl-4">
                             <label for="modal_email" class="form-label">Email</label>
-                            <input class="form-control" id="modal_email" placeholder="Enter Email" value="${email_modal}">
+                            <input class="form-control" id="modal_email" disabled value="${email}">
                         </div>
-                        <div class="col-xxl-12">
+                        <div class="col-xxl-4">
                             <label for="modal_phone" class="form-label">Phone</label>
-                            <input class="form-control" id="modal_phone" placeholder="Enter Phone" value="${phone_modal}">
+                            <input class="form-control" id="modal_phone" disabled value="${phone}">
                         </div>
-                        <div class="col-xxl-12">
+                        <div class="col-xxl-4">
                             <label for="modal_isEmail" class="form-label">Verifikasi Email</label>
-                            ${isEmailVerified_modal}
+                            <div>${isEmailVerified_modal}</div>
                         </div>
-                        <div class="col-xxl-12">
+                        <div class="col-xxl-4">
                             <label for="modal_isEmail" class="form-label">Verifikasi Phone</label>
-                            ${isPhoneVerified_modal}
+                            <div>${isPhoneVerified_modal}</div>
                         </div>
-                        <div class="col-xxl-12">
+                        <div class="col-xxl-4">
                             <label for="modal_isEmail" class="form-label">Terdaftar Seller</label>
-                            ${sellerStatus_modal}
+                            <div>${sellerStatus_modal}</div>
                         </div>
+                        <hr>
+                        <h1>Product Jasa</h1>
+                        <table id="productJasa" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Nama Product</th>
+                                    <th width="100px">Kategori</th>
+                                    <th width="30px">Sub Kategori</th>
+                                    <th width="30px">Impresi Halaman</th>
+                                    <th width="30px">Jumlah Klik</th>
+                                    <th width="30px">Harga Termurah</th>
+                                    <th width="30px">Harga Termahal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+
+                        <hr>
+                        <h1>Keahlian</h1>
+                        <table id="keahlian" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="50px">Nama Keahlian</th>
+                                    <th width="100px">Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                        <hr>
+                        <h1>Pendidikan</h1>
+                        <table id="pendidikan" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Tingkat Pendidikan</th>
+                                    <th width="100px">Negara</th>
+                                    <th width="100px">Institusi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                        <hr>
+                        <h1>Keahlian Bahasa</h1>
+                        <table id="bahasa" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Bahasa</th>
+                                    <th width="100px">Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                        <hr>
+                        <h1>Alamat</h1>
+                        <table id="alamat" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Alamat</th>
+                                    <th width="100px">Catatan Kurir</th>
+                                    <th width="100px">Nama Penerima</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
                         <div class="col-lg-12">
                             <div class="row align-self-center">
-                                <div class="col-sm-7 align-self-start">
-                                    ${botton_hapus}
+                                <div class="col-sm-6 align-self-start">
+                                    ${aktifSeller_modal}
                                 </div>
-                                <div class="col-sm-5 text-end">
+                                <div class="col-sm-6 text-end">
                                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary add btn-${warna}" id="row${id}">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -197,183 +275,161 @@
             </div>
         `);
 
-
-
-        function konfirmasi_hapus(id) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: "{{ url('users_public') }}" + '/' + id,
-                        data: {
-                            "_method": 'DELETE',
-                            "_token": "{{ csrf_token() }}"
-                        },
-                        success: function (result) {
-                            Swal.fire({
-                                title: 'Deleted!',
-                                text: 'Your file has been deleted.',
-                                icon: 'success',
-                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                                timer: 1500,
-                                buttonsStyling: false
-                            }).then(function(){
-                                $('#dataTable').DataTable().ajax.reload();
-                            });
-                        }
-                    });
-                }
-            });
-        }
-
-
-        if (id !== undefined){
-            $('#row'+id).removeClass('add')
-            $('#row'+id).addClass('edit')
-        }else{
-            $('#rowundefined').removeClass('edit')
-            $('#rowundefined').addClass('add')
-        }
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        $('.add').on('click', function() {
-            var data = new FormData()
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                type: "post",
-                url: "{{ url('users') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
+        var table = $('#productJasa').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('user_product_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'nama',
+                    name: 'Nama Product'
+                },{
+                    data: 'kategori',
+                    name: 'Kategori'
+                },{
+                    data: 'subkategori',
+                    name: 'Sub Kategori'
+                },{
+                    data: 'impresi',
+                    name: 'Impresi Halaman'
+                },{
+                    data: 'klik',
+                    name: 'Jumlah Klik'
+                },{
+                    data: 'hargaTermurah',
+                    name: 'Harga Termurah'
+                },{
+                    data: 'hargaTermahal',
+                    name: 'Harga Termahal'
+                }
+            ]
+        });
+
+        var table = $('#keahlian').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('user_keahlian_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'nama',
+                    name: 'Nama Keahlian'
+                },{
+                    data: 'level',
+                    name: 'Level'
+                }
+            ]
+        });
+
+        var table = $('#pendidikan').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('user_pendidikan_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'institusi',
+                    name: 'Tingkat Pendidikan'
+                },{
+                    data: 'negara',
+                    name: 'Negara'
+                },{
+                    data: 'tingkat',
+                    name: 'Institusi'
+                }
+            ]
+        });
+
+        var table = $('#bahasa').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('user_bahasa_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'bahasa',
+                    name: 'Bahasa'
+                },{
+                    data: 'level',
+                    name: 'Level'
+                }
+            ]
+        });
+
+        var table = $('#alamat').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('user_alamat_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'alamat',
+                    name: 'Alamat'
+                },{
+                    data: 'catatanKurir',
+                    name: 'Catatan Kurir'
+                },{
+                    data: 'namaPenerima',
+                    name: 'Nama Penerima'
+                }
+            ]
+        });
+
+        function aktifkan_seller(id, name){
+            aktifkan_seller(id, name)
+        }
+    }
+
+    function aktifkan_seller(id, name){
+        Swal.fire({
+        title: `Konfirmasi`,
+        text: "Apakah anda yakin untuk menjadikan Seller '"+name+"'",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Iya',
+        cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var data = new FormData();
+                data.append('id', id);
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('aktifkan_seller') }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
                         Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
+                            title: 'Seller!',
+                            text: 'Your file has been Seller.',
                             icon: 'success',
                             confirmButtonClass: 'btn btn-primary w-xs mt-2',
                             buttonsStyling: false
                         }).then(function(){
                             $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
+                            $('#exampleModalgrid').modal('hide');
                         });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
                     }
+                });
+            }
 
-                }
-            });
-
-        })
-
-        $("#modal_roles_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.roles') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            },
-            dropdownParent: $("#modal_content")
         });
-
-        $('#modal_roles_id').change(function() {
-            $("#nama_role").val($("#modal_roles_id option:selected").text());
-        });
-        $("#nama_role").val($("#modal_roles_id option:selected").text());
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                url: "{{ url('users') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            location.reload();
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
     }
 
-    $('#roles_id').select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.roles') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
 
     $('.btn-pdf').on('click', function(){
         $('#modal_content').html(`

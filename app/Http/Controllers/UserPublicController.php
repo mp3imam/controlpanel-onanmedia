@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JasaModel;
+use App\Models\UserAlamatModel;
+use App\Models\UserBahasaModel;
+use App\Models\UserKeahlianModel;
+use App\Models\UserPendidikanModel;
 use App\Models\UserPublic;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -108,6 +113,57 @@ class UserPublicController extends Controller
 
         return view('users.detail', $title, compact(['detail']));
     }
+
+    public function user_product(Request $request){
+        return DataTables::of(
+            JasaModel::query()
+            ->select('Jasa.*', 'MsKategori.nama as kategori', 'MsSubkategori.nama as subkategori')
+            ->leftJoin('MsKategori','MsKategori.id','=','Jasa.msKategoriId')
+            ->leftJoin('MsSubkategori','MsSubkategori.id','=','Jasa.msSubkategoriId')
+            ->where('userId',$request->id)->get()
+            )->make(true);
+    }
+
+    public function user_keahlian(Request $request){
+        return DataTables::of(UserKeahlianModel::where('userId',$request->id)->get())->make(true);
+    }
+
+    public function user_pendidikan(Request $request){
+        return DataTables::of(
+            UserPendidikanModel::query()
+            ->select('UserEdukasi.*', 'MsNegara.nama as negara', 'MsTingkatEdukasi.nama as tingkat')
+            ->leftJoin('MsNegara','MsNegara.id','=','UserEdukasi.msNegaraId')
+            ->leftJoin('MsTingkatEdukasi','MsTingkatEdukasi.id','=','UserEdukasi.msTingkatEdukasiId')
+            ->where('userId',$request->id)
+            ->get()
+        )->make(true);
+    }
+
+    public function user_bahasa(Request $request){
+        return DataTables::of(
+            UserBahasaModel::query()
+            ->select('UserBahasa.*', 'MsBahasa.nama as bahasa')
+            ->leftJoin('MsBahasa','MsBahasa.id','=','UserBahasa.msBahasaId')
+            ->where('userId',$request->id)
+            ->get()
+        )->make(true);
+    }
+
+    public function user_alamat(Request $request){
+        return DataTables::of(
+            UserAlamatModel::query()
+            ->where('userId',$request->id)
+            ->get()
+        )->make(true);
+    }
+
+    public function aktifkan_seller(Request $request){
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => UserPublicModel::findOrFail($request->id)->update(['sellerStatus' => 1])
+        ]);
+    }
+
 
     /**
      * Show the form for editing the specified resource.

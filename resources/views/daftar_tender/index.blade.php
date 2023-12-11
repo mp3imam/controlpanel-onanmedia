@@ -11,7 +11,6 @@
         <div class="card">
             <div class="card-body">
                 <div id="customerList">
-                    <div class="col-sm-auto mb-3">
                     <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
@@ -28,36 +27,28 @@
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-4 p-3">
+                            <div class="col-xxl-4 col-md-6 p-3">
                                 <label>Filter UserName</label>
                                 <input id='username_id' name="username_id" />
-                            </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
-                                <label>Filter Role</label>
-                                <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
                             </div>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm " cellspacing="0"
+                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
                             width="100%">
                                 <thead>
                                     <tr>
-                                        <th width="5px">No</th>
-                                        <th width="50px">Nomor Transaksi</th>
-                                        <th width="50px">Title</th>
-                                        <th width="50px">Aktifitas</th>
-                                        <th width="50px">Tgl. Order</th>
-                                        <th width="50px">User Penjual</th>
-                                        <th width="50px">User Pembeli</th>
-                                        <th width="50px">Jumlah Termin</th>
-                                        <th width="50px">Total Order</th>
-                                        <th width="50px">Biaya Aplikasi</th>
-                                        <th width="50px">Total Bayar</th>
-                                        <th width="50px">Komisi Onan</th>
-                                        <th width="50px">Dana Penjual</th>
-                                        <th hidden>Persentase Komisi Onan</th>
+                                        <th>No</th>
+                                        <th width="30px">Nama Tender</th>
+                                        <th>User Posting</th>
+                                        <th>Tgl Posting</th>
+                                        <th>Skill</th>
+                                        <th>Kategori</th>
+                                        <th>Durasi</th>
+                                        <th>Lingkup Pekerjaan</th>
+                                        <th>Metode Pembayaran</th>
+                                        <th>Nilai Tender</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,6 +73,8 @@
 @section('script')
 <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
 <script type="text/javascript">
+    var img_ok = `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">`
+    var img_not_ok = `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
@@ -96,7 +89,7 @@
                 targets: 10
             },
             ajax: {
-                url: "{{ route('transaksi.create') }}",
+                url: "{{ route('daftar_tender.create') }}",
                 data: function (d) {
                     d.username_id = $('#username_id').val()
                     d.roles_id = $('#roles_id').val()
@@ -109,47 +102,35 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },{
-                    data: 'nomor',
-                    name: 'Nomor Transaksi',
+                    data: 'nama',
+                    name: 'Nama Tender',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.nomor+`', '`+row.tawaran+`', '`+row.aktifitas+`', '`+row.penjual+`', '`+row.pembeli+`', '`+row.jumlahTermin+`', '`+row.totalPenawaran+`', '`+row.totalFee+`', '`+row.totalBayar+`', '`+row.totalKomisiOnan+`', '`+row.totalKomisiPenjual+`', '`+row.persentaseKomisiOnan+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.nama+`', '`+row.subkategori+`', '`+row.kategori+`', '`+row.impresi+`', '`+row.klik+`', '`+row.UserPosting+`', '`+row.tags+`', '`+row.deskripsi+`', '`+row.msStatusJasaId+`', '`+row.slug+`', '`+row.cover+`', '`+row.hargaTermahal+`', '`+row.hargaTermurah+`', '`+row.statusjasa+`', '`+row.isPengambilan+`', '`+row.isPengiriman+`', '`+row.isUnggulan+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
                     }
                 },{
-                    data: 'tawaran',
-                    name: 'Penawaran'
+                    data: 'UserPosting',
+                    name: 'User Posting'
                 },{
-                    data: 'aktifitas',
-                    name: 'Nama Aktifitas'
+                    data: 'tanggal_posting',
+                    name: 'Tgl Posting'
                 },{
-                    data: 'tanggal_order',
-                    name: 'Tgl. Order'
+                    data: 'skills',
+                    name: 'Skill'
                 },{
-                    data: 'penjual',
-                    name: 'User Penjual'
+                    data: 'kategori',
+                    name: 'Kategori'
                 },{
-                    data: 'pembeli',
-                    name: 'User Pembeli'
+                    data: 'durasiKontrak',
+                    name: 'Durasi'
                 },{
-                    data: 'jumlahTermin',
-                    name: 'Jumlah Termin'
+                    data: 'lingkupPekerjaan',
+                    name: 'Lingkup Pekerjaan'
                 },{
-                    data: 'totalPenawaran',
-                    name: 'Total Order'
+                    data: 'metodePembayaran',
+                    name: 'Metode Pembayaran'
                 },{
-                    data: 'totalFee',
-                    name: 'Biaya Aplikasi'
-                },{
-                    data: 'totalBayar',
-                    name: 'Total Bayar'
-                },{
-                    data: 'totalKomisiOnan',
-                    name: 'Komisi Onan'
-                },{
-                    data: 'totalKomisiPenjual',
-                    name: 'Dana Penjual'
-                },{
-                    data: 'persentaseKomisiOnan',
-                    visible: false
+                    data: 'budget',
+                    name: 'Nilai Tender'
                 }
             ]
         });
@@ -163,9 +144,12 @@
         });
     });
 
-    function modal_crud(id, nomor, tawaran, aktifitas, penjual, pembeli, jumlahTermin, totalPenawaran, totalFee, totalBayar, totalKomisiOnan, totalKomisiPenjual, persentaseKomisiOnan) {
-        const modalContent = `
-        <div class="modal-content">
+    function modal_crud(id, nama, subkategori, kategori, impresi, klik, UserPosting, tags, deskripsi, msStatusJasaId, slug, cover, hargaTermahal, hargaTermurah, statusjasa, isPengambilan, isPengiriman, isUnggulan){
+        isPengambilanModal = isPengambilan == 1 ? img_ok : img_not_ok
+        isPengirimanModal = isPengiriman == 1 ? img_ok : img_not_ok
+        isUnggulanModal = isUnggulan == 1 ? img_ok : img_not_ok
+        msStatusJasaIdModal = msStatusJasaId == 1 ? img_ok : img_not_ok
+        $('#modal_content').html(`
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalgridLabel">Detail Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -175,100 +159,160 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">No. Transaksi:</label>
-                                    <input class="form-control" value="${nomor}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Nama</div>
+                                        <div class="col-md-8">: ${nama}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Title:</label>
-                                    <input class="form-control" value="${tawaran}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">SubKategori</div>
+                                        <div class="col-md-8">: ${subkategori}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Penjual:</label>
-                                    <input class="form-control" value="${penjual}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Kategori</div>
+                                        <div class="col-md-8">: ${kategori}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Nama:</label>
-                                    <input class="form-control" value="${pembeli}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Impresi</div>
+                                        <div class="col-md-8">: ${impresi}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Aktivitas:</label>
-                                    <input class="form-control" value="${aktifitas}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">klik</div>
+                                        <div class="col-md-8">: ${klik}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Nama User</div>
+                                        <div class="col-md-8">: ${UserPosting}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Tags</div>
+                                        <div class="col-md-8">: ${tags}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Deskripsi</div>
+                                        <div class="col-md-8">: ${deskripsi}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Status Verifikasi Jasa</div>
+                                        <div class="col-md-8">: ${msStatusJasaIdModal}</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Total Bayar:</label>
-                                    <input class="form-control money" value="${totalBayar}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Slug</div>
+                                        <div class="col-md-8">: ${slug}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Total Fee:</label>
-                                    <input class="form-control money" value="${totalFee}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Harga Termahal</div>
+                                        <div class="col-md-8">: ${hargaTermahal}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Total Komisi Penjual:</label>
-                                    <input class="form-control money" value="${totalKomisiPenjual}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Harga Termurah</div>
+                                        <div class="col-md-8">: ${hargaTermurah}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Persentase Komisi Onan</label>
-                                    <input class="form-control" value="${persentaseKomisiOnan}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Status Jasa</div>
+                                        <div class="col-md-8">: ${statusjasa}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Total Komisi Onan:</label>
-                                    <input class="form-control money" value="${totalKomisiOnan}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Pengambilan</div>
+                                        <div class="col-md-8">: ${isPengambilanModal}</div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label">Total Penawaran:</label>
-                                    <input class="form-control money" value="${totalPenawaran}" disabled>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Pengiriman</div>
+                                        <div class="col-md-8">: ${isPengirimanModal}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Unggulan</div>
+                                        <div class="col-md-8">: ${isUnggulanModal}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="row">
+                                        <div class="col-md-4">Cover</div>
+                                        <div class="col-md-8">: <img src="${cover}" width="100px" height="100px"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+
                 <hr>
-                <h1>Product Jasa</h1>
-                <table id="productJasa" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                <h1>Jasa Pricing</h1>
+                <table id="jasaPricing" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th width="100px">Nama</th>
-                            <th width="100px">Deskripsi</th>
-                            <th width="30px">Nama Pricing</th>
-                            <th width="30px">Jasa</th>
-                            <th width="30px">Nilai</th>
+                            <th width="100px">Nama Jasa</th>
+                            <th width="100px">Nama Pricing</th>
+                            <th width="30px">Deskripsi</th>
+                            <th width="30px">Periode</th>
+                            <th width="30px">Harga</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
             </div>
-            <div class="modal-footer">
-                <div class="col-lg-12">
-                    <div class="row align-self-center">
-                        <div class="col-sm-6 align-self-start">
-                        </div>
-                        <div class="col-sm-6 text-end">
-                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `;
 
-        $('#modal_content').html(modalContent);
-        $(document).ready(function(){
-            $('.money').inputmask({
-                alias: 'numeric',
-                radixPoint: '.',
-                groupSeparator: ',',
-                autoGroup: true,
-                digits: 0,
-                digitsOptional: false,
-                prefix: 'Rp ', // Isi dengan simbol mata uang yang kamu inginkan
-                placeholder: '0',
-                rightAlign: false
-            });
+
+        `)
+
+        var table = $('#jasaPricing').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('daftar_pricing_datatable') }}/?id="+id,
+            },
+            columns: [{
+                    data: 'namaJasa',
+                    name: 'Nama Jasa'
+                },{
+                    data: 'nama',
+                    name: 'Nama Pricing'
+                },{
+                    data: 'deskripsi',
+                    name: 'Deskripsi'
+                },{
+                    data: 'periode',
+                    name: 'Periode'
+                },{
+                    data: 'harga',
+                    name: 'Harga'
+                }
+            ]
         });
 
         $.ajaxSetup({
@@ -276,60 +320,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-        var table = $('#productJasa').DataTable({
-            dom: 'lrtip',
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('transaksi_product_datatable') }}/?id="+id,
-            },
-            columns: [{
-                    data: 'nama',
-                    name: 'Nama'
-                },{
-                    data: 'deskripsi',
-                    name: 'Deskripsi'
-                },{
-                    data: 'namaPricing',
-                    name: 'Nama Pricing'
-                },{
-                    data: 'namaJasa',
-                    name: 'Jasa'
-                },{
-                    data: 'nilai',
-                    name: 'Nilai'
-                }
-            ]
-        });
-
-
-
     }
-
-
-
-
-
-    $('#roles_id').select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.roles') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
 
     function alert_delete(id, nama){
         Swal.fire({

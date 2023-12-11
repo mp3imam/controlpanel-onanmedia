@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BahasaModel;
-use App\Models\MasterCoaModel;
-use App\Models\RequestPencarianDanaModel;
+use App\Models\DaftarPricingModel;
+use App\Models\DaftarProductJasaModel;
+use App\Models\DaftarTenderModel;
+use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class BahasaController extends Controller
+class DaftarTenderController extends Controller
 {
     private $title = 'Data Users';
     private $li_1 = 'Index';
@@ -30,12 +30,10 @@ class BahasaController extends Controller
     }
 
     public function index(){
-        // dd(MasterCoaModel::query()->first());
-
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('bahasa.index', $title);
+        return view('daftar_tender.index', $title);
     }
 
     /**
@@ -47,19 +45,11 @@ class BahasaController extends Controller
         return
         DataTables::of(
             $this->models($request)
-        )->addColumn('actions', function ($row){
-            $actionBtn ='
-                <button href="'.route('users.edit', $row->id).'" class="btn btn-warning btn-sm button" onclick="modal_crud(`ubah`, '.$row->id.',`'.$row->nama.'`)" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                    Ubah
-                </button>
-                <a href="#" type="button" onclick="alert_delete('.$row->id.',`'.$row->name.'`)" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger btn-sm buttonDestroy">
-                    Hapus
-                </a>
-                ';
-            return $actionBtn;
+        )
+        ->addColumn('tanggal_posting', function ($row){
+            return Carbon::parse($row->createdAt);
         })
-        ->rawColumns(['actions'])
-
+        ->rawColumns(['tanggal_posting'])
         ->make(true);
     }
 
@@ -71,7 +61,9 @@ class BahasaController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'nama'     => 'required',
+            'username'     => 'required',
+            'nama_lengkap' => 'required',
+            'role'         => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -86,10 +78,21 @@ class BahasaController extends Controller
         $user = 'Data Tidak Tersimpan';
         DB::beginTransaction();
         try{
-            $input = $request->input();
-            $input['id'] = BahasaModel::orderBy('id','desc')->first()->id+1;
-            BahasaModel::insert($input);
+            // Store your file into directory and db
+            $input = $request->only(['username','nama_lengkap']);
+            $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
+            $input['cl_perusahaan_id'] = 1;
+            $input['cl_user_group_id'] = 1;
+            $input['status']           = 1;
+            $input['update_date']      = Carbon::now();
+            $input['update_by']        = 'Administrator';
+            $input['password']         = Hash::make('12345678');
+            User::insert($input);
 
+            $role = Role::whereName($request->role)->first();
+            $user = User::whereId($input['id'])->first();
+
+            $user->assignRole($role);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -140,8 +143,10 @@ class BahasaController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'   => 'required',
-            'nama' => 'required',
+            'id'           => 'required',
+            'username'     => 'required',
+            'nama_lengkap' => 'required',
+            'role'         => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -153,13 +158,25 @@ class BahasaController extends Controller
             ]);
         }
 
-        $data = 'Data Tidak Tersimpan';
+        $user = 'Data Tidak Tersimpan';
         DB::beginTransaction();
         try{
-            $data = BahasaModel::findOrFail($request->id)->update([
-                'nama' => $request->nama,
-            ]);
+            // Store your file into directory and db
+            $update = [
+                'username'          => $request->username,
+                'name'              => $request->nama_lengkap,
+                'cl_perusahaan_id'  => 1,
+                'cl_user_group_id'  => 1,
+                'status'            => 1,
+                'update_date'       => Carbon::now(),
+                'update_by'         => 'Administrator',
+            ];
 
+            $role = Role::whereName($request->role)->first();
+            $user = User::findOrFail($id)->update($update);
+            DB::table('model_has_roles')
+            ->where('model_id', $id)
+            ->update(['role_id' =>  $role->id]);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -167,7 +184,7 @@ class BahasaController extends Controller
 
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => $data
+            'message' => $user
         ]);
     }
 
@@ -180,12 +197,25 @@ class BahasaController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => BahasaModel::findOrFail($id)->delete()
+            'message' => UserPublicModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return BahasaModel::query()->where('isAktif',1)->get();
+        return
+        DaftarTenderModel::query()
+        ->select('Tender.*', 'User.name as namaUser')
+        ->leftJoin('User','User.id','=','Tender.userId')
+        ->where('userId',$request->id)->get();
+    }
+
+    public function daftar_pricing(Request $request){
+        return DataTables::of(
+            DaftarTenderModel::query()
+            ->select('Tender.*', 'Jasa.nama as UserPosting')
+            ->leftJoin('User','User.id','=','JasaPricing.userId')
+            ->where('userId',$request->id)->get()
+            )->make(true);
     }
 
     public function pdf(Request $request){
