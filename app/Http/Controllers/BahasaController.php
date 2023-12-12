@@ -100,12 +100,17 @@ class BahasaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $id){
-        $title['title'] = $this->title;
-        $title['li_1'] = $this->li_1;
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => BahasaModel::findOrFail($request->id)->update(['status' => $request->status])
+        ]);
+    }
 
-        $detail = User::findOrFail($id)->first();
-
-        return view('users.detail', $title, compact(['detail']));
+    public function bahasa_status(Request $request) {
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => BahasaModel::findOrFail($request->id)->update(['isAktif' => $request->status])
+        ]);
     }
 
     /**
@@ -177,7 +182,7 @@ class BahasaController extends Controller
     }
 
     public function models($request){
-        return BahasaModel::query()->where('isAktif',1)->get();
+        return BahasaModel::query()->get();
     }
 
     public function pdf(Request $request){

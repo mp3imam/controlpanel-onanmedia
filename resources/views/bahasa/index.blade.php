@@ -45,6 +45,7 @@
                                     <tr>
                                         <th width="40px">No</th>
                                         <th>Bahasa</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,6 +101,19 @@
                     name: 'Bahasa',
                     render: function (data, type, row, meta) {
                         return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit','`+row.id+`', '`+row.nama+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
+                },{
+                    data: 'isAktif',
+                    name: 'Status',
+                    render: function (data, type, row, meta) {
+                        status = data == 1 ? "Aktif" : "Tidak Aktif"
+                        checked = data == 1 ? "Checked" : ""
+                        return `
+                        <div class="form-check form-switch form-switch-success mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" ${checked} id="swicth${row.id}" onclick="modal_status(${row.id})">
+                            <label class="form-check-label" for="SwitchCheck3">${status}</label>
+                        </div>
+                        `
                     }
                 }
             ]
@@ -238,6 +252,37 @@
         })
     }
 
+    function modal_status (id){
+        var status = $('#swicth'+id).is(':checked') ? 1 : 0
+
+        console.log($('#swicth'.id).is(':checked'), id);
+        Fdata = new FormData()
+        Fdata.append('id', id )
+        Fdata.append('status', status )
+        Fdata.append('_token', "{{ csrf_token() }}" )
+
+        $.ajax({
+            type: "POST",
+            url: "{{ url('bahasa.status') }}",
+            data: Fdata,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                Swal.fire({
+                    title: 'Berhasil diubah!',
+                    text: 'Your file has been change.',
+                    icon: 'success',
+                    confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                    buttonsStyling: false,
+                    timer: 1500
+                }).then(function(){
+                    $('#dataTable').DataTable().ajax.reload()
+                });
+
+            }
+        });
+    }
+
     function alert_delete(id, nama){
         Swal.fire({
         title: `Hapus Data`,
@@ -263,7 +308,8 @@
                             text: 'Your file has been deleted.',
                             icon: 'success',
                             confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
+                            buttonsStyling: false,
+                            timer: 1500
                         }).then(function(){
                             $('#dataTable').DataTable().ajax.reload()
                         });

@@ -41,8 +41,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
     Route::resource('users', UserController::class);
 
-
-
     Route::resource('users_public', UserPublicController::class);
     Route::get('user_product_datatable', [UserPublicController::class,'user_product'])->name('user_product_datatable');
     Route::get('user_keahlian_datatable', [UserPublicController::class,'user_keahlian'])->name('user_keahlian_datatable');
@@ -51,34 +49,26 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('user_alamat_datatable', [UserPublicController::class,'user_alamat'])->name('user_alamat_datatable');
     Route::post('aktifkan_seller', [UserPublicController::class,'aktifkan_seller'])->name('aktifkan_seller');
 
-
-
     Route::resource('transaksi', TransactionsController::class);
     Route::get('transaksi_product_datatable', [TransactionsController::class,'transaksi_product'])->name('transaksi_product_datatable');
 
-
-
     Route::resource('daftar_tender', DaftarTenderController::class);
-
 
     Route::resource('daftar_product_jasa', DaftarProductJasaController::class);
     Route::get('daftar_pricing_datatable', [DaftarProductJasaController::class,'daftar_pricing'])->name('daftar_pricing_datatable');
-
 
     Route::resource('request_pencarian_dana', RequestPencarianDanaController::class);
 
     // Finance
     Route::resource('master_coa', MasterCoaController::class);
 
-
     // HRD
-
 
     // Master Data
     Route::resource('bahasa', BahasaController::class);
+    Route::post('bahasa.status', [BahasaController::class,'bahasa_status'])->name('bahasa.status');
     Route::resource('kategori', KategoriController::class);
     Route::resource('subkategori', SubKategoriController::class);
     Route::resource('pekerjaan', PekerjaanController::class);
     Route::resource('pendidikan', PendidikanController::class);
-
 });
