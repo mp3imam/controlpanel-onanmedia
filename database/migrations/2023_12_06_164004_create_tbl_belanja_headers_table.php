@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (!Schema::connection('pgsql')->hasTable("tbl_belanja_header"))
         Schema::connection('pgsql')->create('tbl_belanja_header', function (Blueprint $table) {
             $table->string('id')->primary()->autoIncrement(true);
             $table->date('create_date')->nullable();
@@ -28,7 +29,6 @@ return new class extends Migration
             $table->integer('cl_perusahaan_id', 4)->autoIncrement(false)->nullable();
             $table->string('guid', 100)->nullable();
             $table->string('ket')->nullable();
-
         });
     }
 

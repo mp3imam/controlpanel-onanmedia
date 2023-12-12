@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (!Schema::connection('pgsql')->hasTable("tbl_belanja_detail"))
         Schema::connection('pgsql')->create('tbl_belanja_detail', function (Blueprint $table) {
             $table->string('id')->primary()->autoIncrement(true);
             $table->string('kdrek', 20)->nullable();

@@ -13,6 +13,7 @@ class CreateFailedJobsTable extends Migration
      */
     public function up()
     {
+        if (!Schema::connection('pgsql')->hasTable("failed_jobs"))
         Schema::connection('pgsql')->create('failed_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();

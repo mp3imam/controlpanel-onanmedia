@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (!Schema::connection('pgsql')->hasTable("tbl_data_karyawan"))
         Schema::connection('pgsql')->create('tbl_data_karyawan', function (Blueprint $table) {
             $table->id();
             $table->date('create_date')->nullable();

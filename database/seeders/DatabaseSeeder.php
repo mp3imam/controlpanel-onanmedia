@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\TmModule;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,6 +18,8 @@ class DatabaseSeeder extends Seeder
             // TmModuleSeeder::class,
             PermissionTableSeeder::class,
             ClcoaSeeder::class,
+            // AccountSeeder::class,
+            JasaSeeder::class,
             TblDataKaryawanGajiSeeder::class,
         ]);
         // $this->call(ProvinsiSeeder::class);

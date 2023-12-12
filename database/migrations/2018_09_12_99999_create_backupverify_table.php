@@ -13,6 +13,7 @@ class CreateBackupVerifyTable extends Migration
      */
     public function up()
     {
+        if (!Schema::connection('pgsql')->hasTable("verifybackup"))
         Schema::connection('pgsql')->create('verifybackup', function (Blueprint $table) {
             $table->increments('id');
             $table->string('verify_status');

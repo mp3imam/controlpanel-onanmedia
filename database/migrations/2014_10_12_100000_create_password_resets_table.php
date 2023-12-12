@@ -13,6 +13,7 @@ class CreatePasswordResetsTable extends Migration
      */
     public function up()
     {
+        if (!Schema::connection('pgsql')->hasTable("password_resets"))
         Schema::connection('pgsql')->create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
