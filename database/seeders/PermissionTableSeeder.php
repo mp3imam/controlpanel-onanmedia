@@ -170,7 +170,7 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Kategory',
+                    'name'                  => 'Kategori',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'kategori',
                     'module_parent'         => 17,
@@ -178,7 +178,7 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'SubKategory',
+                    'name'                  => 'SubKategori',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'subkategori',
                     'module_parent'         => 17,

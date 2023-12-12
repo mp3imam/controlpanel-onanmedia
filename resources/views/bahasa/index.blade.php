@@ -43,9 +43,8 @@
                             width="100%">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <th width="40px">No</th>
                                         <th>Bahasa</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -99,8 +98,9 @@
                 },{
                     data: 'nama',
                     name: 'Bahasa',
-                },{
-                    data: 'actions'
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit','`+row.id+`', '`+row.nama+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
                 }
             ]
         });
@@ -116,20 +116,24 @@
 
     function modal_crud(data, id, nama){
         nama_lengkap = nama ?? '';
+        button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
         $('#modal_content').html(`
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
+                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-xxl-12" id="modal_username_append">
-                        <label for="username" class="form-label">Username</label>
-                        <input class="form-control" id="modal_nama" placeholder="Enter Username" value="`+ nama_lengkap +`">
+                        <label for="Bahasa" class="form-label">Masukan Bahasa</label>
+                        <input class="form-control" id="modal_nama" placeholder="Enter Username" value="${nama_lengkap}">
                     </div>
-                    <div class="col-lg-12">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <div class="col-lg-12 d-flex justify-content-between">
+                        <div class="d-flex">
+                            ${button_hapus}
+                        </div>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;
                             <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
                         </div>
                     </div>

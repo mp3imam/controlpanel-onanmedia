@@ -35,10 +35,6 @@
                                 <label>Filter UserName</label>
                                 <input id='username_id' name="username_id" />
                             </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
-                                <label>Filter Role</label>
-                                <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
-                            </div>
                         </div>
                     </div>
                     <div class="card">
@@ -49,7 +45,9 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Kategori</th>
-                                        <th>Url</th>
+                                        <th>SubKategori</th>
+                                        <th>URL</th>
+                                        <th hidden>KategoriId</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -101,11 +99,20 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },{
-                    data: 'nama',
+                    data: 'kategori',
                     name: 'Kategori',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit','`+row.id+`', '`+row.msKategoriId+`', '`+row.kategori+`', '`+row.nama+`', '`+row.url+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
+                },{
+                    data: 'nama',
+                    name: 'SubKategori',
                 },{
                     data: 'url',
-                    name: 'Url',
+                    name: 'URl',
+                },{
+                    data: 'msKategoriId',
+                    visible: false,
                 }
             ]
         });
@@ -119,33 +126,38 @@
         });
     });
 
-    function modal_crud(data, id, username, nama_lengkap, role_id, role_name){
-        var user = username ?? ''
-        var nama = nama_lengkap ?? ''
+    function modal_crud(data, id, kategoriId, kategori, subkategori , url){
+        var kategori_modal = kategori ?? ''
+        var subkategori_modal = subkategori ?? ''
+        var url_modal = url ?? ''
+
+        button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${subkategori }')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
 
         $('#modal_content').html(`
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
+                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_username_append">
-                        <label for="username" class="form-label">Username</label>
-                        <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
+                    <div class="col-xxl-12" id="modal_kategori_append">
+                        <label for="kategori" class="form-label">Kategori</label>
+                        <select id="modal_kategori_id" class="form-control"></select>
                     </div>
                     <div class="col-xxl-12">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
+                        <label for="subkategori" class="form-label">SubKategori</label>
+                        <input class="form-control" id="modal_subkategori" placeholder="Enter SubKategori" value="${subkategori_modal}">
                     </div>
                     <div class="col-xxl-12">
-                        <label for="role" class="form-label">Role</label>
-                        <input class="form-control" id="nama_role" hidden>
-                        <select id="modal_roles_id" class="form-control"></select>
+                        <label for="role" class="form-label">URL</label>
+                        <input class="form-control" id="modal_url" placeholder="Enter URL" value="${url_modal}">
                     </div>
-                    <div class="col-lg-12">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <div class="col-lg-12 d-flex justify-content-between">
+                        <div class="d-flex">
+                            ${button_hapus}
+                        </div>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;
                             <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
                         </div>
                     </div>
@@ -155,10 +167,10 @@
 
 
         if (id !== undefined){
-            var datarole = {id: role_id,text: role_name, selected: true};
+            var datarole = {id: kategoriId,text: kategori, selected: true};
             var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-            $('#modal_roles_id').append(newOptionrole).trigger('change')
-            $('#modal_roles_id').select2()
+            $('#modal_kategori_id').append(newOptionrole).trigger('change')
+            $('#modal_kategori_id').select2()
 
             $('#row'+id).removeClass('add')
             $('#row'+id).removeClass('btn-primary')
@@ -171,6 +183,32 @@
             $('#rowundefined').addClass('btn-primary')
         }
 
+        $("#modal_kategori_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_kategori') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
+            },
+            dropdownParent: $("#modal_content")
+        });
+
+        $('#modal_kategori_id').change(function() {
+            $("#nama_kategori").val($("#modal_kategori_id option:selected").text());
+        });
+        $("#nama_kategori").val($("#modal_kategori_id option:selected").text());
+
 
         $.ajaxSetup({
             headers: {
@@ -180,12 +218,12 @@
 
         $('.add').on('click', function() {
             var data = new FormData()
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
+            data.append('kategori_id', $('#modal_kategori_id').val())
+            data.append('subkategori', $('#modal_subkategori').val())
+            data.append('url', $('#modal_url').val())
             $.ajax({
                 type: "post",
-                url: "{{ url('users') }}",
+                url: "{{ url('subkategori') }}",
                 data: data,
                 processData: false,
                 contentType: false,
@@ -217,42 +255,15 @@
 
         })
 
-        $("#modal_roles_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.roles') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            },
-            dropdownParent: $("#modal_content")
-        });
-
-        $('#modal_roles_id').change(function() {
-            $("#nama_role").val($("#modal_roles_id option:selected").text());
-            console.log();
-        });
-
-
         $('.edit').on('click', function() {
             var data = new FormData()
             data.append('_method', 'PUT')
             data.append('id', id)
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
+            data.append('kategori_id', $('#modal_kategori_id').val())
+            data.append('subkategori', $('#modal_subkategori').val())
+            data.append('url', $('#modal_url').val())
             $.ajax({
-                url: "{{ url('users') }}/" + id,
+                url: "{{ url('subkategori') }}/" + id,
                 type: "POST",
                 data: data,
                 processData: false,
@@ -266,7 +277,8 @@
                             confirmButtonClass: 'btn btn-primary w-xs mt-2',
                             buttonsStyling: false
                         }).then(function(){
-                            location.reload();
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
                         });
                     }else{
                         $('.remove_username').remove()
@@ -285,26 +297,6 @@
         })
     }
 
-    $('#roles_id').select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.roles') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
-
     function alert_delete(id, nama){
         Swal.fire({
         title: `Hapus Data Satker`,
@@ -319,7 +311,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     type: "delete",
-                    url: "{{ url('users') }}" + '/' + id,
+                    url: "{{ url('subkategori') }}" + '/' + id,
                     data: {
                         "_method": 'delete',
                         "_token": "{{ csrf_token() }}"

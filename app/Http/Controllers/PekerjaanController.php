@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BahasaModel;
-use App\Models\KategoriModel;
-use App\Models\MasterCoaModel;
 use App\Models\PekerjaanModel;
-use App\Models\RequestPencarianDanaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class PekerjaanController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Data Pekerjaan';
     private $li_1 = 'Index';
 
     /**
@@ -26,13 +22,10 @@ class PekerjaanController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+         $this->middleware('permission:Pekerjaan');
     }
 
     public function index(){
-        // dd(MasterCoaModel::query()->first());
-
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -58,9 +51,7 @@ class PekerjaanController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'pekerjaan' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -76,20 +67,12 @@ class PekerjaanController extends Controller
         DB::beginTransaction();
         try{
             // Store your file into directory and db
-            $input = $request->only(['username','nama_lengkap']);
-            $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
-            $input['cl_perusahaan_id'] = 1;
-            $input['cl_user_group_id'] = 1;
-            $input['status']           = 1;
-            $input['update_date']      = Carbon::now();
-            $input['update_by']        = 'Administrator';
-            $input['password']         = Hash::make('12345678');
-            User::insert($input);
+            $user = new PekerjaanModel();
+            $user->id     = PekerjaanModel::orderBy('id','desc')->first()->id+1;
+            $user->nama   = $request->pekerjaan;
+            $user->status = 1;
+            $user->save();
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::whereId($input['id'])->first();
-
-            $user->assignRole($role);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -140,10 +123,7 @@ class PekerjaanController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'           => 'required',
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'pekerjaan' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -160,20 +140,9 @@ class PekerjaanController extends Controller
         try{
             // Store your file into directory and db
             $update = [
-                'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
-                'update_by'         => 'Administrator',
+                'nama' => $request->pekerjaan,
             ];
-
-            $role = Role::whereName($request->role)->first();
-            $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
+            $user = PekerjaanModel::findOrFail($id)->update($update);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -194,7 +163,7 @@ class PekerjaanController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => UserPublicModel::findOrFail($id)->delete()
+            'message' => PekerjaanModel::findOrFail($id)->delete()
         ]);
     }
 

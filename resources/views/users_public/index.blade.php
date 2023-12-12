@@ -35,10 +35,6 @@
                                 <label>Filter UserName</label>
                                 <input id='username_id' name="username_id" />
                             </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
-                                <label>Filter Role</label>
-                                <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
-                            </div>
                         </div>
                     </div>
                     <div class="card">

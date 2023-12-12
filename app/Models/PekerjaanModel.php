@@ -10,4 +10,6 @@ class PekerjaanModel extends Model
     use HasFactory;
     protected $connection = 'pgsql2';
     protected $table = 'MsPekerjaan';
+    protected $guarded = ['id'];
+    public $timestamps = false;
 }

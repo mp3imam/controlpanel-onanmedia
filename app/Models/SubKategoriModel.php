@@ -9,5 +9,11 @@ class SubKategoriModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
-    protected $table = 'MsSubKategori';
+    protected $table = 'MsSubkategori';
+    protected $guarded = ['id'];
+    public $timestamps = false;
+
+    public function scopeActive($q){
+        $q->where('MsSubkategori.isAktif',1);
+    }
 }

@@ -10,4 +10,11 @@ class KategoriModel extends Model
     use HasFactory;
     protected $connection = 'pgsql2';
     protected $table = 'MsKategori';
+    protected $guarded = ['id'];
+    public $timestamps = false;
+
+    public function scopeActive($q){
+        $q->where('MsKategori.isAktif',1);
+    }
+
 }

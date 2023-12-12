@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BahasaModel;
-use App\Models\KategoriModel;
-use App\Models\MasterCoaModel;
-use App\Models\RequestPencarianDanaModel;
 use App\Models\SubKategoriModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class SubKategoriController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Data SubKategori';
     private $li_1 = 'Index';
 
     /**
@@ -26,13 +23,10 @@ class SubKategoriController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+        $this->middleware('permission:SubKategori');
     }
 
     public function index(){
-        // dd(MasterCoaModel::query()->first());
-
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -58,9 +52,9 @@ class SubKategoriController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'kategori_id' => 'required',
+            'subkategori' => 'required',
+            'url'         => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -76,20 +70,16 @@ class SubKategoriController extends Controller
         DB::beginTransaction();
         try{
             // Store your file into directory and db
-            $input = $request->only(['username','nama_lengkap']);
-            $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
-            $input['cl_perusahaan_id'] = 1;
-            $input['cl_user_group_id'] = 1;
-            $input['status']           = 1;
-            $input['update_date']      = Carbon::now();
-            $input['update_by']        = 'Administrator';
-            $input['password']         = Hash::make('12345678');
-            User::insert($input);
+            $user               = new SubKategoriModel();
+            $user->id           = SubKategoriModel::orderBy('id','desc')->first()->id +1;
+            $user->msKategoriId = $request->kategori_id;
+            $user->nama         = $request->subkategori;
+            $user->url          = $request->url;
+            $user->icon         = '/icons/kategori/pemasaran-digital.png';
+            $user->background   = '/icons/subkategori/background/data-analis.png';
+            $user->isAktif      = 1;
+            $user->save();
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::whereId($input['id'])->first();
-
-            $user->assignRole($role);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -140,10 +130,10 @@ class SubKategoriController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'           => 'required',
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'id'          => 'required',
+            'kategori_id' => 'required',
+            'subkategori' => 'required',
+            'url'         => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -160,20 +150,12 @@ class SubKategoriController extends Controller
         try{
             // Store your file into directory and db
             $update = [
-                'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
-                'update_by'         => 'Administrator',
+                'msKategoriId'  => $request->kategori_id,
+                'nama'          => $request->subkategori,
+                'url'           => $request->url,
             ];
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
+            $user = SubKategoriModel::findOrFail($id)->update($update);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -194,14 +176,15 @@ class SubKategoriController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => UserPublicModel::findOrFail($id)->delete()
+            'message' => SubKategoriModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
         return SubKategoriModel::query()
-        ->leftJoin('Kategori','Kategori.id','SubKategori.kategoriId')
-        ->where('SubKategori.isAktif',1)->get();
+        ->select('MsSubkategori.*','MsKategori.nama as kategori')
+        ->leftJoin('MsKategori','MsKategori.id','MsSubkategori.msKategoriId')
+        ->active()->get();
     }
 
     public function pdf(Request $request){

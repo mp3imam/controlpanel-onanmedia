@@ -15,7 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class BahasaController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Data Bahasa';
     private $li_1 = 'Index';
 
     /**
@@ -25,13 +25,10 @@ class BahasaController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+         $this->middleware('permission:Bahasa');
     }
 
     public function index(){
-        // dd(MasterCoaModel::query()->first());
-
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -49,12 +46,7 @@ class BahasaController extends Controller
             $this->models($request)
         )->addColumn('actions', function ($row){
             $actionBtn ='
-                <button href="'.route('users.edit', $row->id).'" class="btn btn-warning btn-sm button" onclick="modal_crud(`ubah`, '.$row->id.',`'.$row->nama.'`)" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                    Ubah
-                </button>
-                <a href="#" type="button" onclick="alert_delete('.$row->id.',`'.$row->name.'`)" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger btn-sm buttonDestroy">
-                    Hapus
-                </a>
+
                 ';
             return $actionBtn;
         })

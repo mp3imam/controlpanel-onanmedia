@@ -12,10 +12,7 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                    <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                        Tambah
-                    </button>
-                    <a type="button" class="btn btn-primary btn-label btn-pdf">
+                        <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>

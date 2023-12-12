@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class KategoriController extends Controller
@@ -25,13 +26,10 @@ class KategoriController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+         $this->middleware('permission:Kategori');
     }
 
     public function index(){
-        // dd(MasterCoaModel::query()->first());
-
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -57,9 +55,8 @@ class KategoriController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'kategori'  => 'required',
+            'url'       => 'required'
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -75,20 +72,13 @@ class KategoriController extends Controller
         DB::beginTransaction();
         try{
             // Store your file into directory and db
-            $input = $request->only(['username','nama_lengkap']);
-            $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
-            $input['cl_perusahaan_id'] = 1;
-            $input['cl_user_group_id'] = 1;
-            $input['status']           = 1;
-            $input['update_date']      = Carbon::now();
-            $input['update_by']        = 'Administrator';
-            $input['password']         = Hash::make('12345678');
-            User::insert($input);
-
-            $role = Role::whereName($request->role)->first();
-            $user = User::whereId($input['id'])->first();
-
-            $user->assignRole($role);
+            $user = new KategoriModel();
+            $user->id       = KategoriModel::orderBy('id','desc')->first()->id +1;
+            $user->nama     = $request->kategori;
+            $user->url      = $request->url;
+            $user->icon     = '/icons/kategori/pemasaran-digital.png';
+            $user->isAktif  = 1;
+            $user->save();
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -139,10 +129,9 @@ class KategoriController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'           => 'required',
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'id'       => 'required',
+            'kategori' => 'required',
+            'url'      => 'required'
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -159,20 +148,11 @@ class KategoriController extends Controller
         try{
             // Store your file into directory and db
             $update = [
-                'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
-                'update_by'         => 'Administrator',
+                'nama' => $request->kategori,
+                'url'  => $request->url,
             ];
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
+            $user = KategoriModel::findOrFail($id)->update($update);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -193,7 +173,7 @@ class KategoriController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => UserPublicModel::findOrFail($id)->delete()
+            'message' => KategoriModel::findOrFail($id)->delete()
         ]);
     }
 
