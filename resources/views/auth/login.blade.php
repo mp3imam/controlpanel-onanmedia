@@ -3,133 +3,44 @@
     @lang('translation.signin')
 @endsection
 @section('content')
-    <div class="auth-page-wrapper pt-5">
-        <!-- auth page content -->
-        <div class="auth-page-content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="text-center mt-sm-5 mb-2 text-white-50">
-                            <div>
-                                <a href="index" class="d-inline-block auth-logo">
-                                    <img src="{{ URL::asset('assets/images/logo/logo.png') }}" alt=""
-                                        height="100">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-
-                <div class="row justify-content-center">
-                    <div class="col-md-8 col-lg-6 col-xl-5">
-                        <div class="card mt-4 card-bg-fill">
-                            <div class="card-body p-4">
-                                <div class="text-center mt-2">
-                                    <h5 class="text-primary">AIS</h5>
-                                    <p class="text-muted">Application Information System</p>
-                                </div>
-
-                                @error('wrong')
-                                    <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow  fade show mb-xl-0"
-                                        role="alert">
-                                        <i class="ri-error-warning-line label-icon"></i><strong>Oopps!</strong>
-                                        - {{ $errors->first('wrong') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                    </div>
-                                @enderror
-                                @error('locked')
-                                    <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow  fade show mb-xl-0"
-                                        role="alert">
-                                        <i class="ri-forbid-fill label-icon"></i><strong>Oopps!</strong>
-                                        - {{ $errors->first('locked') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                    </div>
-                                @enderror
-                                @error('notfound')
-                                    <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show"
-                                        role="alert">
-                                        <i class="ri-alert-line label-icon"></i><strong>Oopps!</strong>
-                                        - {{ $errors->first('notfound') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                    </div>
-                                @enderror
-                                <div class="p-2 mt-4">
-                                    <form action="{{ route('login.post') }}" method="POST">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label">Username</label>
-                                            <input type="text"
-                                                class="form-control @if ($errors->first('username', ':message')) is-invalid @endif"
-                                                id="username" name="username" placeholder="Enter username">
-                                            @if ($errors->has('username'))
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('username') }}
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="float-end">
-                                            </div>
-                                            <label class="form-label" for="password-input">Password</label>
-                                            <div class="position-relative auth-pass-inputgroup mb-3">
-                                                <input type="password"
-                                                    class="form-control pe-5 password-input @if ($errors->first('password', ':message')) is-invalid @endif"
-                                                    name="password" placeholder="Enter password" id="password-input">
-                                                <button
-                                                    class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-                                                    type="button" id="password-addon"><i
-                                                        class="ri-eye-fill align-middle"></i></button>
-                                                @if ($errors->has('password'))
-                                                    <div class="invalid-feedback">
-                                                        {{ $errors->first('password') }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        {{-- {!! Geetest::render() !!} --}}
-                                        <div class="mt-4">
-                                            <button class="btn btn-primary w-100" type="submit">Sign In</button>
-                                        </div>
-
-                                        <div class="mt-4 text-center">
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- end card body -->
-                        </div>
-                        <!-- end card -->
-
-                    </div>
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
+<div class="row vh-100 g-0">
+    <div class="col-lg-6">
+        <div class="vh-100 gv-0">
+            <img src="{{ URL::asset('assets/images/logo/OnanMediaLogin.png') }}" height="100%" width="100%" />
+            <div style="position: absolute; top: 320px; left: 40px; font-family: 'Poppins-Black'; url({{ URL::asset('assets/fonts/Poppins-Bold.ttf') }}) format('truetype') transform: translate(-50px, -50px);" class="text-white fs-48 text-uppercase">SOLUSI KEBUTUHAN</div>
+            <div style="position: absolute; top: 380px; left: 40px;  font-family: 'Poppins-Black'; url({{ URL::asset('assets/fonts/Poppins-Bold.ttf') }}) format('truetype') transform: translate(-50px, -50px);" class="text-white fs-48 text-uppercase">harian anda</div>
         </div>
-        <!-- end auth page content -->
+    </div>
+    <!-- end col -->
 
-        <!-- footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="text-center">
-                            <p class="mb-0 text-muted">&copy;
-                                <script>
-                                    document.write(new Date().getFullYear())
-                                </script> AIS
+    <div class="col-lg-6">
+        <div class="p-lg-5 pt-5 my-5">
+            <div class="mt-5 text-center">
+                <img src="{{ URL::asset('assets/images/logo/onanmedia-login.png') }}">
+            </div>
+
+            <div class="mt-4">
+                <form action="{{ route('login.post') }}" method="POST">
+                    @csrf
+                    <div class="mb-4">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                    </div>
+                    <div class="mb-5">
+                        <div class="position-relative auth-pass-inputgroup mb-3">
+                            <input type="password" class="form-control pe-5 password-input" placeholder="Password" id="password-input" name="password">
+                            <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
                         </div>
                     </div>
-                </div>
+                    <div class="mt-4">
+                        <button class="btn w-100 btn-secondary" style="background-color: #4E36E2;" type="submit">Masuk</button>
+                    </div>
+                </form>
             </div>
-        </footer>
-        <!-- end Footer -->
+        </div>
     </div>
+    <!-- end col -->
+</div>
+</div>
 @endsection
 
 @section('script')
