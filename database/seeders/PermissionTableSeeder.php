@@ -277,21 +277,22 @@ class PermissionTableSeeder extends Seeder
             // create user Finance & roles
             $financeRole = Role::create($role[1]);
             $financeUser = User::create($users[1]);
-            $financeRole->givePermissionTo(['Dashboard','OnanApps','Users']);
+            $financeRole->givePermissionTo(['Dashboard','Finance','Master Coa','Master Bank & Cash','Master Kas','Master Belanja','Pengaturan','Role Users']);
             $financeUser->assignRole($financeRole);
             // end
 
             // create user HRD & roles
             $hrdRole = Role::create($role[2]);
             $hrdUser = User::create($users[2]);
-            $hrdRole->givePermissionTo('Dashboard');
+            $hrdRole->givePermissionTo(['Dashboard','HRD','Data Karyawan','Data Absensi','Pengaturan','Role Users']);
             $hrdUser->assignRole($hrdRole);
             // end
 
             // create user Costumer Service & roles
             $csRole = Role::create($role[3]);
             $csUser = User::create($users[3]);
-            $csRole->givePermissionTo('Dashboard');
+            $csRole->givePermissionTo(['Dashboard','Pengaturan','Role Users']);
+
             $csUser->assignRole($csRole);
             // end
 
