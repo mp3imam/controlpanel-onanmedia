@@ -2,6 +2,8 @@
 
 namespace Spatie\Permission\Models;
 
+use App\Models\PagesModel;
+use App\Models\PagesRoleModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Contracts\Role as RoleContract;
@@ -195,14 +197,9 @@ class Role extends Model implements RoleContract
         return $this->permissions->contains($permission->getKeyName(), $permission->getKey());
     }
 
-    public function satker()
+    public function pages()
     {
-        return $this->belongsTo(SatkerModel::class, 'satker_id', 'id');
-    }
-
-    public function provinsi()
-    {
-        return $this->belongsTo(ProvinsiModel::class, 'provinsi_id', 'id');
+        return $this->belongsTo(PagesRoleModel::class, 'id', 'role_id');
     }
 
 }

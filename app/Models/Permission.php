@@ -2,6 +2,7 @@
 
 namespace Spatie\Permission\Models;
 
+use App\Models\PagesRoleModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -26,7 +27,7 @@ class Permission extends Model implements PermissionContract
     use RefreshesPermissionCache;
 
     protected $guarded = [];
-    protected $table= 'panel.Permission';
+    protected $table= 'Permission';
 
 
     public function __construct(array $attributes = [])
@@ -156,4 +157,11 @@ class Permission extends Model implements PermissionContract
     {
         return static::getPermissions($params, true)->first();
     }
+
+    public function rolePage()
+    {
+        return $this->hasMany(PagesRoleModel::class, 'permission_id');
+    }
+
+
 }

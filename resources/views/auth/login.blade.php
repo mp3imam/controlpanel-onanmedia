@@ -3,12 +3,15 @@
     @lang('translation.signin')
 @endsection
 @section('content')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap" rel="stylesheet">
 <div class="row vh-100 g-0">
     <div class="col-lg-6">
         <div class="vh-100 gv-0">
             <img src="{{ URL::asset('assets/images/logo/OnanMediaLogin.png') }}" height="100%" width="100%" />
-            <div style="position: absolute; top: 320px; left: 40px; font-family: 'Poppins-Black'; url({{ URL::asset('assets/fonts/Poppins-Bold.ttf') }}) format('truetype') transform: translate(-50px, -50px);" class="text-white fs-48 text-uppercase">SOLUSI KEBUTUHAN</div>
-            <div style="position: absolute; top: 380px; left: 40px;  font-family: 'Poppins-Black'; url({{ URL::asset('assets/fonts/Poppins-Bold.ttf') }}) format('truetype') transform: translate(-50px, -50px);" class="text-white fs-48 text-uppercase">harian anda</div>
+            <div style="position: absolute; top: 380px; left: 140px; font-family: 'Poppins', sans-serif; transform: translate(-50px, -50px);" class="fw-bold text-white fs-48 text-uppercase">SOLUSI KEBUTUHAN</div>
+            <div style="position: absolute; top: 450px; left: 140px;  font-family: 'Poppins', sans-serif; transform: translate(-50px, -50px);" class="fw-bold text-white fs-48 text-uppercase">harian anda</div>
         </div>
     </div>
     <!-- end col -->

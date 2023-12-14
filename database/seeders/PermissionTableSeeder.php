@@ -209,6 +209,14 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 6,
                     'module_description'    => '',
                     'module_status'         => 1
+                ],[
+                    'name'                  => 'Role Page',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'users_role_page',
+                    'module_parent'         => 23,
+                    'module_position'       => 2,
+                    'module_description'    => '',
+                    'module_status'         => 1
                 ]
             ];
 

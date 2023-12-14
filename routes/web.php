@@ -17,6 +17,7 @@ use App\Http\Controllers\RequestPencarianDanaController;
 use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UserPublicController;
+use App\Http\Controllers\UserRolePageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +39,6 @@ Route::get('/', [HomeController::class, 'root'])->name('root');
 Route::group(['middleware' => ['auth']], function() {
     Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');;
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
-    Route::resource('users', UserController::class);
 
     Route::resource('users_public', UserPublicController::class);
     Route::get('user_product_datatable', [UserPublicController::class,'user_product'])->name('user_product_datatable');
@@ -71,4 +70,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('subkategori', SubKategoriController::class);
     Route::resource('pekerjaan', PekerjaanController::class);
     Route::resource('pendidikan', PendidikanController::class);
+
+    // Pengaturan
+    Route::resource('users', UserController::class);
+    Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
+    Route::resource('users_role_page', UserRolePageController::class);
+
 });
