@@ -163,5 +163,9 @@ class Permission extends Model implements PermissionContract
         return $this->hasMany(PagesRoleModel::class, 'permission_id');
     }
 
+    public function roleUser()
+    {
+        return $this->hasMany(Role::class, 'role_id');
+    }
 
 }

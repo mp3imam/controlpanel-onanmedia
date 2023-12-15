@@ -50,32 +50,6 @@
 @yield('script')
 @stack('scripts')
 @yield('script-bottom')
-
-<script>
-    $(document).ready(function () {
-        $("#btnFetch").click(function () {
-            // disable button
-            $(this).prop("disabled", true);
-            // add spinner to button
-            $(this).html(
-                ` <span class="d-flex align-items-center">
-                                <span class="spinner-border flex-shrink-0" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </span>
-                                <span class="flex-grow-1 ms-2">
-                                    Loading...
-                                </span>
-                            </span>`
-            );
-            setTimeout(function(){
-            $(this).button('reset');
-            $('#myForm').submit();
-            },1000)
-        });
-    });
-</script>
-
-<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
   <script>
     // var notificationsWrapper   = $('.dropdown-item');
     // var notificationsToggle    = notificationsWrapper.find('a[data-toggle]');

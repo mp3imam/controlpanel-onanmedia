@@ -95,7 +95,7 @@
                     data: 'name',
                     name: 'User',
                     render: function (data, type, row) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`', '`+row.email+`', '`+row.phone+`', '`+row.isEmailVerified+`', '`+row.isPhoneVerified+`', '`+row.sellerStatus+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
                     }
                 },{
                     data: 'pages',
@@ -154,8 +154,8 @@
                         checked = data !== null ? "Checked" : ""
                         return `
                         <div class="form-check form-switch form-switch-success mb-3">
-                            <input class="form-check-input" type="checkbox" role="switch" ${checked} id="swicth${row.id}" onclick="modal_role_status(${row.id})">
-                            <label class="form-check-label" for="SwitchCheck3">${status}</label>
+                            <input class="form-check-input" type="checkbox" role="switch" ${checked} id="swicth${row.id}" onclick="modal_role_status(${id},${row.id})">
+                            <label class="form-check-label" for="SwitchCheck3" id="labelSwicth${row.id}">${status}</label>
                         </div>
                         `
                     }
@@ -171,12 +171,14 @@
 
     }
 
-    function modal_role_status (permissions_id){
-        var status = $('#swicth'+id).is(':checked') ? 1 : 0
+    function modal_role_status(role_id, permission_id){
+        var status = $('#swicth'+permission_id).is(':checked') ? 1 : 0
+
+        status ? $('#labelSwicth'+permission_id).text('Aktif') : $('#labelSwicth'+permission_id).text('Tidak Aktif')
 
         Fdata = new FormData()
-        Fdata.append('role_id', {{ Auth::user()->id }} )
-        Fdata.append('permissions_id', permissions_id )
+        Fdata.append('role_id', role_id )
+        Fdata.append('permission_id', permission_id )
         Fdata.append('status', status )
         Fdata.append('_token', "{{ csrf_token() }}" )
 

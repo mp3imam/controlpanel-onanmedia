@@ -66,12 +66,17 @@ class UserRolePageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        dd($request->all());
-        $save = PagesRoleModel::firstOrNew([
-            'role_id'  => $request->get('role_id')
-        ]);
-        $save->status = $request->get('status');
-        $save->save();
+        $save = $request->status ?
+            PagesRoleModel::insert([
+                'permission_id'  => $request->get('permission_id'),
+                'role_id'  => $request->get('role_id'),
+            ])
+        :
+            PagesRoleModel::wherePermissionId($request->get('permission_id'))
+            ->whereRoleId($request->get('role_id'))
+            ->delete();
+
+
 
         return response()->json([
             'status'    => Response::HTTP_OK,
@@ -177,6 +182,7 @@ class UserRolePageController extends Controller
 
     public function models($request){
         return Role::with(['pages.rolePage'])
+        // ->select('Role.*, ')
         ->when($request->username_id, function($q) use($request){
             $q->where('username','like', '%'.$request->username_id.'%');
         })
