@@ -217,6 +217,14 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
+                ],[
+                    'name'                  => 'Help Desk',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'helpdesk',
+                    'module_parent'         => 0,
+                    'module_position'       => 7,
+                    'module_description'    => '',
+                    'module_status'         => 1
                 ]
             ];
 

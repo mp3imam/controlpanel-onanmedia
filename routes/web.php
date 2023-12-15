@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DaftarProductJasaController;
 use App\Http\Controllers\DaftarTenderController;
 use App\Http\Controllers\DasboardController;
+use App\Http\Controllers\HelpdeskController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MasterCoaController;
 use App\Http\Controllers\NotificationController;
@@ -70,6 +71,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('subkategori', SubKategoriController::class);
     Route::resource('pekerjaan', PekerjaanController::class);
     Route::resource('pendidikan', PendidikanController::class);
+
+    // HelpDesk
+    Route::resource('helpdesk', HelpdeskController::class);
 
     // Pengaturan
     Route::resource('users', UserController::class);
