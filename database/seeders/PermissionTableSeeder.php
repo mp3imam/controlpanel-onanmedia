@@ -225,6 +225,22 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 7,
                     'module_description'    => '',
                     'module_status'         => 1
+                ],[
+                    'name'                  => 'Dashboard Helpdesk',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'helpdesk_dashboard',
+                    'module_parent'         => 25,
+                    'module_position'       => 1,
+                    'module_description'    => '',
+                    'module_status'         => 1
+                ],[
+                    'name'                  => 'List Helpdest',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'helpdesk_list',
+                    'module_parent'         => 25,
+                    'module_position'       => 2,
+                    'module_description'    => '',
+                    'module_status'         => 1
                 ]
             ];
 

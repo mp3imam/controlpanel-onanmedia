@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('jasa_id');
             $table->string('order_id');
+            $table->string('user_id');
             $table->string('admin_id')->nullable();
             $table->string('admin_name')->nullable();
             $table->string('nomor_keluhan');

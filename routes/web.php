@@ -73,7 +73,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('pendidikan', PendidikanController::class);
 
     // HelpDesk
-    Route::resource('helpdesk', HelpdeskController::class);
+    Route::resource('helpdesk_list', HelpdeskController::class);
 
     // Pengaturan
     Route::resource('users', UserController::class);

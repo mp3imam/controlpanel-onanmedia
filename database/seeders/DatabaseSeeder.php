@@ -17,10 +17,14 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // TmModuleSeeder::class,
             PermissionTableSeeder::class,
-            ClcoaSeeder::class,
+            HelpdeskStatusSeeder::class,
+            HelpdeskSeeder::class,
+            HelpdeskDetailSeeder::class,
+            HelpdeskFileDetailSeeder::class,
             // AccountSeeder::class,
-            JasaSeeder::class,
+            // JasaSeeder::class,
             TblDataKaryawanGajiSeeder::class,
+            ClcoaSeeder::class,
         ]);
         // $this->call(ProvinsiSeeder::class);
         // $this->call(SatkerSeeder::class);

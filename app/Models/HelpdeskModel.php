@@ -10,4 +10,9 @@ class HelpdeskModel extends Model
     use HasFactory;
     protected $table = 'helpdesks';
     protected $guarded = ['id'];
+
+    public function keluhan_name()
+    {
+        return $this->hasOne(User::class, 'user_id');
+    }
 }

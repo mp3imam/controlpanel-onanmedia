@@ -16,6 +16,7 @@ class HelpdeskSeeder extends Seeder
         HelpdeskModel::create([
             'jasa_id' => 'clm5zx4ig000cjneydvysqrsh',
             'order_id' => 'clm607oz50010jneyyb7kuhfk',
+            'user_id' => 'clme9wnb9008ojneyrl98tp72',
             'nomor_keluhan' => 'OII/230905/TRX/0000134',
             'keluhan' => 'Seller ga ada kabar',
             'pesan' => 'Hi Onanmedia!

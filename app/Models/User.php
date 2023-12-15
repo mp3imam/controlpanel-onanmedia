@@ -25,4 +25,8 @@ class User extends Authenticatable
         'password'
     ];
 
+    public function keluhan_name()
+    {
+        return $this->belongsTo(HelpdeskModel::class, 'userId');
+    }
 }
