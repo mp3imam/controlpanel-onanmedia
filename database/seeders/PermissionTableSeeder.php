@@ -241,6 +241,14 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
+                ],[
+                    'name'                  => 'Menu Pages',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'menu_page',
+                    'module_parent'         => 23,
+                    'module_position'       => 3,
+                    'module_description'    => '',
+                    'module_status'         => 1
                 ]
             ];
 

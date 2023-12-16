@@ -11,6 +11,7 @@ use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\HelpdeskController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MasterCoaController;
+use App\Http\Controllers\MenuPageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PekerjaanController;
 use App\Http\Controllers\PendidikanController;
@@ -79,5 +80,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('users', UserController::class);
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
     Route::resource('users_role_page', UserRolePageController::class);
+    Route::resource('menu_page', MenuPageController::class);
 
 });

@@ -14,6 +14,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
     protected $table = "tbl_user";
     protected $guarded = ['id'];
+    protected $connection = 'pgsql';
     public $timestamps = false;
 
     /**

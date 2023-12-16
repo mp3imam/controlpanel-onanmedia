@@ -2,13 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\AntrianModel;
-use App\Models\MasterModule;
 use DB, Auth;
-use App\Models\Notification;
-
 use Spatie\Permission\Models\Permission;
-use Illuminate\Notifications\DatabaseNotification;
 
 class Module
 {
@@ -18,7 +13,12 @@ class Module
             'menu' => Permission::select('permissions.*')
                                 ->join('role_has_permissions', 'permissions.id','=', 'role_has_permissions.permission_id')
                                 ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
-                                ->where('roles.id', $id)->where('module_parent', 0)->orderBy('module_position', 'ASC')->get(),
+                                ->where('roles.id', $id)
+                                ->where('module_parent', 0)
+                                ->where('module_status', 1)
+                                ->orderBy('module_parent', 'ASC')
+                                ->orderBy('module_position', 'ASC')
+                                ->get(),
         ];
 
         return $module;
@@ -30,6 +30,7 @@ class Module
                                 ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
                                 ->where('roles.id', $id)
                                 ->where('module_parent', $parent)
+                                ->where('module_status', 1)
                                 ->orderBy('module_position', 'ASC')->get();
     }
 
@@ -38,6 +39,7 @@ class Module
                                 ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
                                 ->where('roles.id', $id)
                                 ->where('module_parent', $parent)
+                                ->where('module_status', 1)
                                 ->orderBy('module_position', 'ASC')->get('module_url')->toArray();
 
         $collect = collect();
@@ -58,10 +60,12 @@ class Module
     }
 
     public static function permission(){
-        $permission = Permission::get();
+        $permission = Permission::where('module_status', 1)->
+        get();
 
         return $permission;
     }
+
     public static function rolehas(){
         $id = Auth::user()->roles[0]->id;
 
@@ -88,8 +92,4 @@ class Module
     //     return $notifications;
     // }
 
-    public function monitor(Request $request)
-    {
-        return AntrianModel::whereTanggalHadir(date('Y-m-d'))->where('status','=',"3")->first();
-    }
 }
