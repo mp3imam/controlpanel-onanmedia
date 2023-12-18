@@ -36,3 +36,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::get('/roles', [OnanmediaAPIController::class,'roles'])->name('api.roles');
 Route::get('get_select2_kategori', [OnanmediaAPIController::class,'select2_kategori'])->name('api.get_select2_kategori');
 Route::get('get_select2_menu_parent', [OnanmediaAPIController::class,'select2_parent'])->name('api.get_select2_parent');
+Route::get('get_select2_divisi', [OnanmediaAPIController::class,'select2_divisi'])->name('api.get_select2_divisi');

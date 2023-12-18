@@ -16,6 +16,12 @@ class User extends Authenticatable
     protected $guarded = ['id'];
     protected $connection = 'pgsql';
     public $timestamps = false;
+    public $incrementing = false;
+    public $keyType = 'string';
+
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -26,8 +32,4 @@ class User extends Authenticatable
         'password'
     ];
 
-    public function keluhan_name()
-    {
-        return $this->belongsTo(HelpdeskModel::class, 'userId');
-    }
 }

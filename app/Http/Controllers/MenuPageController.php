@@ -43,7 +43,12 @@ class MenuPageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request){
-        return DataTables::of($this->models($request))->make(true);
+        return DataTables::of($this->models($request))
+        ->addColumn('parents', function ($row){
+            return Permission::whereId($row->module_parent)->first()->name ?? '-';
+        })
+        ->rawColumns(['parents'])
+        ->make(true);
     }
 
     /**

@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable("helpdesk_statuses"))
-        Schema::create('helpdesk_statuses', function (Blueprint $table) {
+        Schema::create('agama', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('slug');
-            $table->string('status');
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('helpdesk_statuses');
+        Schema::dropIfExists('agama');
     }
 };

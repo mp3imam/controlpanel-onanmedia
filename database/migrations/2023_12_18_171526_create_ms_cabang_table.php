@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable("helpdesk_file_details"))
-        Schema::create('helpdesk_file_details', function (Blueprint $table) {
+        Schema::create('ms_cabang', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('helpdesk_detail_id');
-            $table->string('file_path');
+            $table->string('nama');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('helpdesk_file_details');
+        Schema::dropIfExists('ms_cabang');
     }
 };

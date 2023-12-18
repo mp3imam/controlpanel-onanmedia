@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HelpdeskModel;
+use App\Models\TblDataKaryawan;
+use App\Models\UserPublicModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
-class HelpdeskController extends Controller
+class HrdController extends Controller
 {
-    private $title = 'Data Helpdesk';
+    private $title = 'Data Karyawan';
     private $li_1 = 'Index';
 
     /**
@@ -19,15 +24,30 @@ class HelpdeskController extends Controller
      */
     function __construct()
     {
-        // dd(HelpdeskModel::with(['status'])->get());
-        $this->middleware('permission:Dashboard Helpdesk');
+        $this->middleware('permission:HRD');
     }
 
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('helpdesk.index', $title);
+        return view('hrd.index', $title);
+    }
+
+    function get_datatable(Request $request){
+        return DataTables::of($this->models($request))
+        ->addColumn('divisis', function ($row){
+            return $row->divisis->nama;
+        })
+        ->addColumn('gaji', function ($row){
+            return $row->gaji->gaji;
+        })
+        ->addColumn('tanggal_masuk', function ($row){
+            return Carbon::parse($row->created_at)->format('d-m-Y');
+        })
+        ->rawColumns(['divisis','gaji','tanggal_masuk'])
+
+        ->make(true);
     }
 
     /**
@@ -36,23 +56,10 @@ class HelpdeskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request){
-        return
-        DataTables::of($this->models($request))
-        ->addColumn('keluhan_nama', function ($row){
-            return $row->keluhan_user->name;
-        })
-        ->addColumn('keluhan_email', function ($row){
-            return $row->keluhan_user->email;
-        })
-        ->addColumn('tanggal_keluhan', function ($row){
-            return Carbon::parse($row->created_at)->format('d-m-Y');
-        })
-        ->addColumn('status', function ($row){
-            return $row->status->nama;
-        })
-        ->rawColumns(['keluhan_nama','keluhan_email','tanggal_keluhan','status'])
+        $title['title'] = $this->title;
+        $title['li_1'] = $this->li_1;
 
-        ->make(true);
+        return view('hrd.create', $title);
     }
 
     /**
@@ -63,7 +70,15 @@ class HelpdeskController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'pendidikan' => 'required',
+            'nama' => 'required',
+            'email' => 'required',
+            'divisis' => 'required',
+            'no_hp' => 'required',
+            'no_rek' => 'required',
+            'create_date' => 'required',
+            'kontrak' => 'required',
+            'gaji' => 'required',
+            'alamat' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -79,10 +94,18 @@ class HelpdeskController extends Controller
         // DB::beginTransaction();
         // try{
             // Store your file into directory and db
-            $user = new PendidikanModel();
-            $user->id     = PendidikanModel::orderBy('id','desc')->first()->id+1;
-            $user->nama   = $request->pendidikan;
-            $user->status = 1;
+            $user = new TblDataKaryawan();
+            $user->id     = TblDataKaryawan::orderBy('id','desc')->first()->id+1;
+            $user->nama             = $request->nama;
+            $user->email            = $request->email;
+            $user->divisis          = $request->divisis;
+            $user->no_hp            = $request->no_hp;
+            $user->no_rek           = $request->no_rek;
+            $user->create_date      = $request->create_date;
+            $user->kontrak          = $request->kontrak;
+            $user->gaji             = $request->gaji;
+            $user->alamat           = $request->alamat;
+            $user->status_pegawai   = 1;
             $user->save();
 
         //     DB::commit();
@@ -106,7 +129,7 @@ class HelpdeskController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id)->first();
+        $detail = UserPublicModel::findOrFail($id)->first();
 
         return view('users.detail', $title, compact(['detail']));
     }
@@ -121,9 +144,9 @@ class HelpdeskController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id);
+        $detail = UserPublicModel::findOrFail($id);
 
-        return view('users.edit', $title, compact(['detail']));
+        return view('hrd.edit', $title, compact(['detail']));
     }
 
     /**
@@ -135,8 +158,15 @@ class HelpdeskController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'         => 'required',
-            'pendidikan' => 'required',
+            'nama' => 'required',
+            'email' => 'required',
+            'divisis' => 'required',
+            'no_hp' => 'required',
+            'no_rek' => 'required',
+            'create_date' => 'required',
+            'kontrak' => 'required',
+            'gaji' => 'required',
+            'alamat' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -156,7 +186,7 @@ class HelpdeskController extends Controller
                 'nama' => $request->pendidikan,
             ];
 
-            $user = PendidikanModel::findOrFail($id)->update($update);
+            $user = UserPublicModel::findOrFail($id)->update($update);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -177,12 +207,16 @@ class HelpdeskController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => PendidikanModel::findOrFail($id)->delete()
+            'message' => UserPublicModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return HelpdeskModel::with(['keluhan_user'])->get();
+        return TblDataKaryawan::with(['divisis','gaji'])
+        ->when($request->cari, function($q) use($request){
+            $q->where('nama','like', '%'.$request->cari.'%');
+        })
+        ->get();
     }
 
     public function pdf(Request $request){

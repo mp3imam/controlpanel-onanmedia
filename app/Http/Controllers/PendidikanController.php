@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\IdStringRandom;
 use App\Models\PendidikanModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -23,6 +24,7 @@ class PendidikanController extends Controller
      */
     function __construct()
     {
+        // dd(IdStringRandom::stringRandom());
          $this->middleware('permission:Pendidikan');
     }
 

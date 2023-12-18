@@ -12,5 +12,15 @@ class JasaModel extends Model
     protected $table = 'Jasa';
 
     public $incrementing = false;
-    protected $keyType = 'string';
+    public $keyType = 'string';
+
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    public function jasas()
+    {
+        return $this->hasOne(HelpdeskModel::class, 'jasa_id');
+    }
+
 }

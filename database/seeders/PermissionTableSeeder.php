@@ -37,7 +37,7 @@ class PermissionTableSeeder extends Seeder
                     'module_icon'           => 'ri-dashboard-fill',
                     'module_url'            => 'onanApps',
                     'module_parent'         => 0,
-                    'module_position'       => 1,
+                    'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[

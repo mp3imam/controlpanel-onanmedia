@@ -11,4 +11,8 @@ class HelpdeskStatusModel extends Model
     protected $table = 'helpdesk_statuses';
     protected $guarded = ['id'];
 
+    public function status()
+    {
+        return $this->hasOne(HelpdeskModel::class, 'id');
+    }
 }

@@ -11,4 +11,9 @@ class TblDataKaryawanGajiModel extends Model
     protected $table = 'tbl_data_karyawan_gaji';
     public $timestamps = false;
     protected $guarded = ['id'];
+
+    public function gaji(){
+        return $this->belongsTo(TblDataKaryawan::class, 'id');
+    }
+
 }

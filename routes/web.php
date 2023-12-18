@@ -9,6 +9,7 @@ use App\Http\Controllers\DaftarProductJasaController;
 use App\Http\Controllers\DaftarTenderController;
 use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\HelpdeskController;
+use App\Http\Controllers\HrdController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MasterCoaController;
 use App\Http\Controllers\MenuPageController;
@@ -64,6 +65,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('master_coa', MasterCoaController::class);
 
     // HRD
+    Route::resource('data_karyawan', HrdController::class);
+    Route::get('getDataTableKaryawan', [HrdController::class, 'get_datatable'])->name('getDataTableKaryawan');
 
     // Master Data
     Route::resource('bahasa', BahasaController::class);

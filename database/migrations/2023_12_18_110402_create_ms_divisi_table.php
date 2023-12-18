@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable("helpdesk_detail"))
-        Schema::create('helpdesk_detail', function (Blueprint $table) {
+        Schema::create('MsDivisi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('helpdesk_id');
-            $table->string('user_id');
-            $table->text('description')->nullable();
+            $table->string('nama');
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('helpdesk_detail');
+        Schema::dropIfExists('MsDivisi');
     }
 };

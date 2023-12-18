@@ -11,8 +11,18 @@ class HelpdeskModel extends Model
     protected $table = 'helpdesks';
     protected $guarded = ['id'];
 
-    public function keluhan_name()
+    public function jasas()
     {
-        return $this->hasOne(User::class, 'user_id');
+        return $this->belongsTo(JasaModel::class, 'id');
+    }
+
+    public function keluhan_user()
+    {
+        return $this->belongsTo(UserPublicModel::class, 'user_id', 'id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(HelpdeskStatusModel::class, 'status_helpdesk', 'id');
     }
 }

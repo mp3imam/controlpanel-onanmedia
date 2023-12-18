@@ -12,7 +12,8 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                    <a type="button" class="btn btn-primary btn-label btn-pdf">
+                        <a href="{{ route('data_karyawan.create') }}" class="btn btn-success waves-effect waves-light text-right">Tambah</a>
+                        <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
@@ -43,9 +44,14 @@
                                         <th width="50px">No</th>
                                         <th>Nama</th>
                                         <th>Email</th>
-                                        <th>Di Kerjakan Oleh</th>
-                                        <th>Keluhan</th>
-                                        <th>Tanggal</th>
+                                        <th hidden>Divisi Id</th>
+                                        <th>Divisi</th>
+                                        <th>Telepon</th>
+                                        <th>Rekening Bank</th>
+                                        <th>Tanggal Masuk</th>
+                                        <th>Kontrak</th>
+                                        <th>Gaji</th>
+                                        <th>Alamat</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -56,7 +62,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content" id="modal_content">
                         </div>
                     </div>
@@ -85,7 +91,7 @@
                 targets: 10
             },
             ajax: {
-                url: "{{ route('helpdesk_list.create') }}",
+                url: "{{ route('getDataTableKaryawan') }}",
                 data: function (d) {
                     d.username_id = $('#username_id').val()
                     d.roles_id = $('#roles_id').val()
@@ -98,29 +104,45 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },{
-                    data: 'keluhan_nama',
+                    data: 'nama',
                     name: 'Nama',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit','`+row.id+`', '`+row.nama+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        return `<a href="{{ url('data_karyawan/') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
                     }
                 },{
-                    data: 'keluhan_email',
+                    data: 'email',
                     name: 'Email',
                 },{
-                    data: 'admin_id',
-                    name: 'Di Kerjakan Oleh',
-                    render: function (data, type, row, meta) {
-                        return data ?? '-';
-                    }
+                    data: 'cl_divisi_id',
+                    visible: false
                 },{
-                    data: 'keluhan',
-                    name: 'Keluhan',
+                    data: 'divisis',
+                    name: 'Divisi'
                 },{
-                    data: 'tanggal_keluhan',
-                    name: 'Tanggal',
+                    data: 'no_hp',
+                    name: 'Telepon',
                 },{
-                    data: 'status',
+                    data: 'no_rek',
+                    name: 'Rekening Bank',
+                },{
+                    data: 'create_date',
+                    name: 'Tanggal Masuk',
+                },{
+                    data: 'kontrak',
+                    name: 'Kontrak',
+                },{
+                    data: 'gaji',
+                    name: 'Gaji',
+                },{
+                    data: 'alamat',
+                    name: 'Alamat',
+                },{
+                    data: 'status_pegawai',
                     name: 'Status',
+                    render: function (data) {
+                        status = data == 0 ? `<span class="badge bg-danger-subtle text-danger badge-border">${data}</span>` : `<span class="badge bg-danger-subtle text-success badge-border">${data}</span>`
+                        return status;
+                    }
                 }
             ]
         });
@@ -133,131 +155,6 @@
             table.draw();
         });
     });
-
-    function modal_crud(data, id, nama){
-        var nama_modal = nama ?? ''
-        button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
-
-        $('#modal_content').html(`
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_Pekerjaan_append">
-                        <label for="Pekerjaan" class="form-label">Nama Pekerjaan</label>
-                        <input class="form-control" id="modal_pendidikan" placeholder="Enter Pekerjaan" value="${nama_modal}">
-                    </div>
-                    <div class="col-lg-12 d-flex justify-content-between">
-                        <div class="d-flex">
-                            ${button_hapus}
-                        </div>
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;
-                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `)
-
-
-        if (id !== undefined){
-            $('#row'+id).removeClass('add')
-            $('#row'+id).removeClass('btn-primary')
-            $('#row'+id).addClass('edit')
-            $('#row'+id).addClass('btn-warning')
-        }else{
-            $('#rowundefined').removeClass('edit')
-            $('#rowundefined').addClass('add')
-            $('#rowundefined').removeClass('btn-warning')
-            $('#rowundefined').addClass('btn-primary')
-        }
-
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $('.add').on('click', function() {
-            var data = new FormData()
-            data.append('pendidikan', $('#modal_pendidikan').val())
-            $.ajax({
-                type: "post",
-                url: "{{ url('pendidikan') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('pendidikan', $('#modal_pendidikan').val())
-            $.ajax({
-                url: "{{ url('pendidikan') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-    }
 
     function alert_delete(id, nama){
         Swal.fire({
@@ -273,7 +170,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     type: "delete",
-                    url: "{{ url('pendidikan') }}" + '/' + id,
+                    url: "{{ url('data_karyawan') }}" + '/' + id,
                     data: {
                         "_method": 'delete',
                         "_token": "{{ csrf_token() }}"

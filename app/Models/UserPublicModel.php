@@ -12,8 +12,18 @@ class UserPublicModel extends Model
     protected $table = 'User';
 
     public $incrementing = false;
-    protected $keyType = 'string';
     protected $guarded = ['id'];
     public $timestamps = false;
+    public $keyType = 'string';
+
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+
+    public function keluhan_user()
+    {
+        return $this->hasOne(HelpdeskModel::class, 'user_id', 'id');
+    }
 
 }

@@ -110,8 +110,14 @@
                     data: 'module_url',
                     name: 'Url'
                 },{
-                    data: 'module_parent',
-                    name: 'Parent'
+                    data: 'parents',
+                    name: 'Parent',
+                    render: function (data) {
+                        btn = data !== '-' ? `
+                        <span class="badge badge-label bg-primary"><i class="mdi mdi-circle-medium"></i> ${data}</span>
+                        ` : `<span class="badge badge-label bg-danger"><i class="mdi mdi-circle-medium"></i> ${data}</span>`
+                        return btn
+                    }
                 },{
                     data: 'module_position',
                     name: 'Posisi'
@@ -196,7 +202,7 @@
         `)
 
         if (id !== undefined){
-            var dataParent = {id: id, text: nama, selected: true};
+            var dataParent = {id: module_parent, text: nama, selected: true};
             var newOptionParent = new Option(dataParent.text, dataParent.id, false, false)
             $('#modal_parent_id').append(newOptionParent).trigger('change')
             $('#modal_parent_id').select2()
