@@ -52,6 +52,7 @@
                                         <th width="20%">Pengamanan</th>
                                         <th width="20%">Icon</th>
                                         <th width="20%">Url</th>
+                                        <th hidden>Parent_Id</th>
                                         <th width="20%">Parent</th>
                                         <th width="20%">Posisi</th>
                                         <th width="20%">Status</th>
@@ -98,7 +99,7 @@
                     data: 'name',
                     name: 'User',
                     render: function (data, type, row) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`', '`+row.guard_name+`', '`+row.module_icon+`', '`+row.module_url+`', '`+row.module_parent+`', '`+row.module_position+`', '`+row.module_status+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`', '`+row.module_url+`', '`+row.module_parent+`', '`+row.parents+`', '`+row.module_position+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
                     }
                 },{
                     data: 'guard_name',
@@ -109,6 +110,9 @@
                 },{
                     data: 'module_url',
                     name: 'Url'
+                },{
+                    data: 'module_parent',
+                    visible: false
                 },{
                     data: 'parents',
                     name: 'Parent',
@@ -147,11 +151,15 @@
         });
     });
 
-    function modal_crud(id, nama, guard_name, module_icon, module_url, module_parent, module_position, module_status){
-        status = module_status == 1 ? "Aktif" : "Tidak Aktif"
-        checked = module_status == 1 ? "Checked" : ""
+    function modal_crud(id, nama, module_url, module_parent_id, module_parent, module_position){
         button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
-        module_parent_modal = module_parent !== '0' ? `<div class="col-xxl-12" id="modal_parent_append"><label for="parent" class="form-label">Parent</label><select id="modal_parent_id" class="form-control"></select></div>` : ''
+        module_parent_modal = module_parent_id !== '0' ? `
+        <div class="col-xxl-12" id="modal_parent_append">
+            <label for="parent" class="form-label">Parent</label>
+            <input class="form-control" id="modal_parent" hidden>
+            <select id="modal_parent_id" class="form-control">
+            </select>
+        </div>` : ''
 
         $('#modal_content').html(`
             <div class="modal-header">
@@ -160,33 +168,18 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_nama_append">
+                    <div class="col-xxl-6" id="modal_nama_append">
                         <label for="nama" class="form-label">Nama Page</label>
                         <input class="form-control" id="modal_nama" placeholder="Enter nama" value="${nama}">
                     </div>
-                    <div class="col-xxl-12" id="modal_pengamanan_append">
-                        <label for="pengamanan" class="form-label">Pengamanan</label>
-                        <input class="form-control" id="modal_pengamanan" placeholder="Enter Pengamanan" value="${guard_name}">
-                    </div>
-                    <div class="col-xxl-12" id="modal_icon_append">
-                        <label for="icon" class="form-label">Icon</label>
-                        <input class="form-control" id="modal_icon" placeholder="Enter Icon" value="${module_icon}">
-                    </div>
-                    <div class="col-xxl-12" id="modal_url_append">
+                    <div class="col-xxl-6" id="modal_url_append">
                         <label for="url" class="form-label">Url</label>
                         <input class="form-control" id="modal_url" placeholder="Enter Url" value="${module_url}">
                     </div>
                     ${module_parent_modal}
-                    <div class="col-xxl-12" id="modal_posisi_append">
+                    <div class="col-xxl-6" id="modal_posisi_append">
                         <label for="posisi" class="form-label">Posisi</label>
                         <input class="form-control" id="modal_posisi" placeholder="Enter Posisi" value="${module_position}">
-                    </div>
-                    <div class="col-xxl-12" id="modal_status_append">
-                        <label for="status" class="form-label">Status</label>
-                        <div class="form-check form-switch form-switch-success mb-3">
-                            <input class="form-check-input" type="checkbox" role="switch" ${checked} id="swicth${id}" onclick="modal_status(${id})">
-                            <label class="form-check-label" for="SwitchCheck3">${status}</label>
-                        </div>
                     </div>
                     <div class="col-lg-12 d-flex justify-content-between">
                         <div class="d-flex">
@@ -202,7 +195,7 @@
         `)
 
         if (id !== undefined){
-            var dataParent = {id: module_parent, text: nama, selected: true};
+            var dataParent = {id: module_parent_id, text: module_parent, selected: true};
             var newOptionParent = new Option(dataParent.text, dataParent.id, false, false)
             $('#modal_parent_id').append(newOptionParent).trigger('change')
             $('#modal_parent_id').select2()
@@ -238,6 +231,53 @@
             },
             dropdownParent: $("#modal_content")
         });
+
+        $('#modal_parent_id').change(function() {
+            $("#modal_parent").val($("#modal_parent_id option:selected").text());
+        });
+        $("#modal_parent").val($("#modal_parent_id option:selected").text());
+
+
+        $('.edit').on('click', function() {
+            var data = new FormData()
+            data.append('id', id)
+            data.append('name', $('#modal_nama').val())
+            data.append('modal_parent_id', $('#modal_parent_id').val())
+            data.append('modal_parent', $('#modal_parent').val())
+            data.append('module_url', $('#modal_url').val())
+            data.append('module_position', $('#modal_posisi').val())
+            $.ajax({
+                url: "{{ url('update_menu') }}",
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.status == 200){
+                        Swal.fire({
+                            title: 'Edit!',
+                            text: 'Your file has been edit.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            location.reload();
+                        });
+                    }else{
+                        $('.remove_username').remove()
+                        $('.remove_nama_lengkap').remove()
+                        $('.remove_role').remove()
+                        // if (result.)
+                        $('.modal_username_append').append(`
+                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+
+                    }
+
+                }
+            });
+
+        })
 
         $.ajaxSetup({
             headers: {

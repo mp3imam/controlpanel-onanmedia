@@ -26,7 +26,7 @@ class Permission extends Model implements PermissionContract
     use HasRoles;
     use RefreshesPermissionCache;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
     protected $table= 'Permission';
 
 

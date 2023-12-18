@@ -84,5 +84,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
     Route::resource('users_role_page', UserRolePageController::class);
     Route::resource('menu_page', MenuPageController::class);
+    Route::post('update_menu', [MenuPageController::class,'update_menu'])->name('update_menu');
 
 });
