@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             // Data HRD
             AgamaSeeder::class,
             BankSeeder::class,
-            CabangSeeder::class,
+            // CabangSeeder::class,
             DepartementSeeder::class,
             JabatanSeeder::class,
             ModeAbsensiSeeder::class,

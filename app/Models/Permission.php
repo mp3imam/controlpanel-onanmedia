@@ -26,9 +26,9 @@ class Permission extends Model implements PermissionContract
     use HasRoles;
     use RefreshesPermissionCache;
 
+    protected $connection = 'pgsql';
     protected $guarded = ['id'];
     protected $table= 'Permission';
-
 
     public function __construct(array $attributes = [])
     {

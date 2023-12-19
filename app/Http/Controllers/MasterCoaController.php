@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterCoaModel;
-use App\Models\RequestPencarianDanaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -185,9 +181,11 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
-        MasterCoaModel::findOrFail($id)->delete();
-        return redirect('master_coa')->withSuccess('Data Berhasil dihapus');
-    }
+        return response()->json([
+            'status'  => Response::HTTP_BAD_REQUEST,
+            'message' => MasterCoaModel::findOrFail($id)->delete()
+        ]);
+}
 
     public function models($request){
         return MasterCoaModel::query()->get();

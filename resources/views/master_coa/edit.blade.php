@@ -11,16 +11,12 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="row">
+                    <div class="row justify-content-between">
                         <div class="col-md-8">
                             <h4 class="card-title mb-0">Edit Rekening Bank</h4>
                         </div>
-                        <div class="col-md-4">
-                            <form action="{{ url('master_coa', $detail->id) }}" method="post">
-                                @method('DELETE')
-                                @csrf
-                                <button class="btn btn-danger text-right">Hapus</button>
-                            </form>
+                        <div class="col-md-4 d-flex justify-content-md-end">
+                            <button id="deleteButton" class="btn btn-danger">Hapus</button>
                         </div>
                     </div>
                 </div><!-- end card header -->
@@ -62,4 +58,63 @@
     </div>
     <!--end row-->
 @endsection
-@
+@section('script')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        $('#deleteButton').click(function(e) {
+            e.preventDefault(); // Prevent the default click behavior
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika pengguna mengonfirmasi
+                    $.ajax({
+                        url: '{{ url('master_coa', $detail->id) }}',
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            let timerInterval;
+                            Swal.fire({
+                            title: "Berhasil!",
+                            html: "Hapus",
+                            timer: 2000,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                const timer = Swal.getPopup().querySelector("b");
+                                timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                }, 100);
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval);
+                            }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    window.location = "{{ route('master_coa.index') }}"
+                                }
+                            });
+                        },
+                        error: function(xhr) {
+                            // Tindakan jika penghapusan gagal
+                            console.log('Gagal menghapus data.');
+                            // Tambahkan kode lain yang Anda perlukan jika penghapusan gagal
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+@endsection
