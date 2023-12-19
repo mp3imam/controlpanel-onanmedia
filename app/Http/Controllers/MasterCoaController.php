@@ -9,11 +9,14 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class MasterCoaController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Master Rekening Bank';
     private $li_1 = 'Index';
 
     /**
@@ -23,17 +26,25 @@ class MasterCoaController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+        $this->middleware('permission:'.Permission::whereId(10)->first()->name);
     }
 
     public function index(){
-        // dd(MasterCoaModel::query()->first());
-
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
         return view('master_coa.index', $title);
+    }
+
+    function get_datatable(Request $request){
+        return
+        DataTables::of($this->models($request))
+        ->addColumn('rekening', function ($row){
+            return $row->kdrek1.$row->kdrek2.$row->kdrek3.$row->kdrek;
+        })
+        ->rawColumns(['rekening'])
+        ->make(true);
+
     }
 
     /**
@@ -42,13 +53,10 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request){
-        return
-        DataTables::of($this->models($request))
-        ->addColumn('rekening', function ($row){
-            return $row->kdrek1.".".$row->kdrek2.".".$row->kdrek3.".".$row->kdrek;
-        })
-        ->rawColumns(['rekening'])
-        ->make(true);
+        $title['title'] = $this->title;
+        $title['li_1'] = $this->li_1;
+
+        return view('master_coa.create', $title);
     }
 
     /**
@@ -59,9 +67,12 @@ class MasterCoaController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'uraian'        => 'required',
+            'rekening_bank' => 'required',
+            'alamat_bank'   => 'required',
+            'nama_bank'     => 'required',
+            'account_name'  => 'required',
+            'swift_code'    => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -73,33 +84,23 @@ class MasterCoaController extends Controller
             ]);
         }
 
-        $user = 'Data Tidak Tersimpan';
-        DB::beginTransaction();
-        try{
-            // Store your file into directory and db
-            $input = $request->only(['username','nama_lengkap']);
-            $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
-            $input['cl_perusahaan_id'] = 1;
-            $input['cl_user_group_id'] = 1;
-            $input['status']           = 1;
-            $input['update_date']      = Carbon::now();
-            $input['update_by']        = 'Administrator';
-            $input['password']         = Hash::make('12345678');
-            User::insert($input);
+        // Store your file into directory and db
+        $input = $request->except(['_token']);
+        $input['id']            = MasterCoaModel::getMaxIdRecord()->first()->id+1;
+        $input['kdrek1']        = 1;
+        $input['kdrek2']        = 1;
+        $input['kdrek3']        = 1;
+        $input['kdrek']         = 1;
+        $input['type']          = "H";
+        $input['uraian']        = $request->uraian;
+        $input['rekening_bank'] = $request->rekening_bank;
+        $input['alamat_bank']   = $request->alamat_bank;
+        $input['nama_bank']     = $request->nama_bank;
+        $input['account_name']  = $request->account_name;
+        $input['swift_code']    = $request->swift_code;
+        MasterCoaModel::insert($input);
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::whereId($input['id'])->first();
-
-            $user->assignRole($role);
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
-
-        return response()->json([
-            'status'  => Response::HTTP_OK,
-            'message' => $user
-        ]);
+        return redirect('master_coa');
     }
 
     /**
@@ -112,9 +113,9 @@ class MasterCoaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id)->first();
+        $detail = MasterCoaModel::findOrFail($id)->first();
 
-        return view('users.detail', $title, compact(['detail']));
+        return view('master_coa.detail', $title, compact(['detail']));
     }
 
     /**
@@ -127,9 +128,9 @@ class MasterCoaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id);
+        $detail = MasterCoaModel::findOrFail($id);
 
-        return view('users.edit', $title, compact(['detail']));
+        return view('master_coa.edit', $title, compact(['detail']));
     }
 
     /**
@@ -141,10 +142,12 @@ class MasterCoaController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'           => 'required',
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'uraian'        => 'required',
+            'rekening_bank' => 'required',
+            'alamat_bank'   => 'required',
+            'nama_bank'     => 'required',
+            'account_name'  => 'required',
+            'swift_code'    => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -156,34 +159,23 @@ class MasterCoaController extends Controller
             ]);
         }
 
-        $user = 'Data Tidak Tersimpan';
-        DB::beginTransaction();
-        try{
-            // Store your file into directory and db
-            $update = [
-                'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
-                'update_by'         => 'Administrator',
-            ];
+        // Store your file into directory and db
+        $update = [
+            'kdrek1'        => 1,
+            'kdrek2'        => 1,
+            'kdrek3'        => 1,
+            'kdrek'         => 1,
+            'type'          => "H",
+            'uraian'        => $request->uraian,
+            'rekening_bank' => $request->rekening_bank,
+            'alamat_bank'   => $request->alamat_bank,
+            'nama_bank'     => $request->nama_bank,
+            'account_name'  => $request->account_name,
+            'swift_code'    => $request->swift_code,
+        ];
+        MasterCoaModel::find($id)->update($update);
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
-
-        return response()->json([
-            'status'  => Response::HTTP_OK,
-            'message' => $user
-        ]);
+        return redirect('master_coa');
     }
 
     /**
@@ -193,10 +185,8 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
-        return response()->json([
-            'status'  => Response::HTTP_OK,
-            'message' => UserPublicModel::findOrFail($id)->delete()
-        ]);
+        MasterCoaModel::findOrFail($id)->delete();
+        return redirect('master_coa')->withSuccess('Data Berhasil dihapus');
     }
 
     public function models($request){

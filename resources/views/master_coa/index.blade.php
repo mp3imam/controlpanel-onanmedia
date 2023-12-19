@@ -12,10 +12,10 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                    <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                        Tambah
-                    </button>
-                    <a type="button" class="btn btn-primary btn-label btn-pdf">
+                        <a href="{{ route('master_coa.create') }}" type="button" class="btn btn-success" >
+                            Tambah
+                        </a>
+                        <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
@@ -31,26 +31,29 @@
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
-                            </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
-                                <label>Filter Role</label>
-                                <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
+                            <div class="col-xxl-12 col-md-6 p-3">
+                                <label>Filter</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                                    <span class="input-group-text"><i class="ri-search-line"></i></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
                             <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="100%">
+                            width="200%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th width="100px">Kode Rekening</th>
-                                        <th>Tipe COA</th>
-                                        <th>Uraian</th>
+                                        <th class="text-uppercase" width="10%">No.Coa</th>
+                                        <th class="text-uppercase">Uraian Coa</th>
+                                        <th class="text-uppercase">Nama Bank</th>
+                                        <th class="text-uppercase">Nama Account</th>
+                                        <th class="text-uppercase">Swift Code</th>
+                                        <th class="text-uppercase">Rekening Bank</th>
+                                        <th class="text-uppercase">Alamat Bank</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,7 +92,7 @@
                 targets: 10
             },
             ajax: {
-                url: "{{ route('master_coa.create') }}",
+                url: "{{ route('getDataTableCoa') }}",
                 data: function (d) {
                     d.username_id = $('#username_id').val()
                     d.roles_id = $('#roles_id').val()
@@ -104,12 +107,27 @@
                 },{
                     data: 'rekening',
                     name: 'Kode Rekening',
-                },{
-                    data: 'type',
-                    name: 'Tipe COA'
+                    render: function (data, type, row, meta) {
+                        return `<a href="{{ url('master_coa') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                    }
                 },{
                     data: 'uraian',
-                    name: 'Uraian'
+                    name: 'Uraian Coa'
+                },{
+                    data: 'nama_bank',
+                    name: 'Nama Bank'
+                },{
+                    data: 'account_name',
+                    name: 'Nama Account'
+                },{
+                    data: 'swift_code',
+                    name: 'Swift Code'
+                },{
+                    data: 'rekening_bank',
+                    name: 'Rekening Bank'
+                },{
+                    data: 'alamat_bank',
+                    name: 'Alamat'
                 }
             ]
         });
@@ -122,228 +140,6 @@
             table.draw();
         });
     });
-
-    function modal_crud(data, id, username, nama_lengkap, role_id, role_name){
-        var user = username ?? ''
-        var nama = nama_lengkap ?? ''
-
-        $('#modal_content').html(`
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_username_append">
-                        <label for="username" class="form-label">Username</label>
-                        <input class="form-control" id="modal_username" placeholder="Enter Username" value="`+ user +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input class="form-control" id="modal_nama_lengkap" placeholder="Enter Nama Lengkap" value="`+ nama +`">
-                    </div>
-                    <div class="col-xxl-12">
-                        <label for="role" class="form-label">Role</label>
-                        <input class="form-control" id="nama_role" hidden>
-                        <select id="modal_roles_id" class="form-control"></select>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `)
-
-
-        if (id !== undefined){
-            var datarole = {id: role_id,text: role_name, selected: true};
-            var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-            $('#modal_roles_id').append(newOptionrole).trigger('change')
-            $('#modal_roles_id').select2()
-
-            $('#row'+id).removeClass('add')
-            $('#row'+id).removeClass('btn-primary')
-            $('#row'+id).addClass('edit')
-            $('#row'+id).addClass('btn-warning')
-        }else{
-            $('#rowundefined').removeClass('edit')
-            $('#rowundefined').addClass('add')
-            $('#rowundefined').removeClass('btn-warning')
-            $('#rowundefined').addClass('btn-primary')
-        }
-
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $('.add').on('click', function() {
-            var data = new FormData()
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                type: "post",
-                url: "{{ url('users') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-
-        $("#modal_roles_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.roles') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            },
-            dropdownParent: $("#modal_content")
-        });
-
-        $('#modal_roles_id').change(function() {
-            $("#nama_role").val($("#modal_roles_id option:selected").text());
-        });
-        $("#nama_role").val($("#modal_roles_id option:selected").text());
-
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('username', $('#modal_username').val())
-            data.append('nama_lengkap', $('#modal_nama_lengkap').val())
-            data.append('role', $('#nama_role').val())
-            $.ajax({
-                url: "{{ url('users') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            location.reload();
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-    }
-
-    $('#roles_id').select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.roles') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
-
-    function alert_delete(id, nama){
-        Swal.fire({
-        title: `Hapus Data Satker`,
-        text: "Apakah anda yakin untuk menghapus data Satker '"+nama+"'",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Iya',
-        cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "delete",
-                    url: "{{ url('users') }}" + '/' + id,
-                    data: {
-                        "_method": 'delete',
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function (result) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'Your file has been deleted.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                        });
-                    }
-                });
-            }
-
-        });
-    }
 
     $('.btn-pdf').on('click', function(){
         $('#modal_content').html(`
@@ -410,11 +206,5 @@
             $('#exampleModal').modal('hide')
         });
     })
-
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
 </script>
 @endsection

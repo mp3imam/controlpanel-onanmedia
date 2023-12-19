@@ -157,7 +157,7 @@ class BankSeeder extends Seeder
         ];
 
         foreach ($data as $d) {
-            BankModel::insert($d);
+            BankModel::create($d);
         }
 
     }

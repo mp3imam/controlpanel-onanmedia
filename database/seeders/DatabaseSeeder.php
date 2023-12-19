@@ -17,24 +17,27 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // TmModuleSeeder::class,
             PermissionTableSeeder::class,
-            HelpdeskStatusSeeder::class,
-            HelpdeskSeeder::class,
-            HelpdeskDetailSeeder::class,
-            HelpdeskFileDetailSeeder::class,
+            // HelpdeskStatusSeeder::class,
+            // HelpdeskSeeder::class,
+            // HelpdeskDetailSeeder::class,
+            // HelpdeskFileDetailSeeder::class,
+
+            // Data HRD
+            AgamaSeeder::class,
+            BankSeeder::class,
+            CabangSeeder::class,
+            DepartementSeeder::class,
+            JabatanSeeder::class,
+            ModeAbsensiSeeder::class,
+            MsCostSeeder::class,
+            StatusKontrakSeeder::class,
+            TipePajakSeeder::class,
+
+
             // AccountSeeder::class,
             // JasaSeeder::class,
             TblDataKaryawanGajiSeeder::class,
             ClcoaSeeder::class,
         ]);
-        // $this->call(ProvinsiSeeder::class);
-        // $this->call(SatkerSeeder::class);
-        // $this->call(PermissionTableSeeder::class);
-        // $this->call(CategoryBeritaSeeder::class);
-        // $this->call(MenuNotifSeeder::class);
-        // $this->call(ActiveModelSeeder::class);
-        // $this->call(FAQSeeder::class);
-        // $this->call([PermissionTableSeeder::class,
-        // ProvinsiSeeder::class,
-        // SatkerSeeder::class]);
     }
 }

@@ -98,7 +98,7 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Coa',
+                    'name'                  => 'Rekening Bank',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_coa',
                     'module_parent'         => 9,

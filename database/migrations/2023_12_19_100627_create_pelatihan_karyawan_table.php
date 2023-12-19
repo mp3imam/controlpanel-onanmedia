@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ms_bank', function (Blueprint $table) {
+        Schema::create('pelatihan_karyawan', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('data_karyawan_id');
             $table->string('nama');
-            $table->string('kode');
-            $table->string('isAktif')->default(1);
-            $table->string('icon')->default('-');
+            $table->date('tanggal');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ms_bank');
+        Schema::dropIfExists('pelatihan_karyawan');
     }
 };

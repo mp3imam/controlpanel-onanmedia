@@ -11,32 +11,37 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Satker</h4>
+                    <h4 class="card-title mb-0">Tambah Rekening Bank</h4>
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('satkers.store') }}" method="POST">
+                    <form action="{{ route('master_coa.store') }}" method="POST">
                         @csrf
-                        <input type="checkbox" id="chkall" /> selectAll
                         <div class="col-md-12 mb-4">
-                            <label for="provinsi_id" class="form-label">Provinsi</label>
-                            <select id='provinsi_id' name="provinsi_id" multiple="multiple"></select>
+                            <label for="uraian" class="form-label">Uraian</label>
+                            <input class="form-control" id="uraian" name="uraian" />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="rekening_bank" class="form-label">Rekening Bank</label>
+                            <input class="form-control" id="rekening_bank" name="rekening_bank" />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="alamat_bank" class="form-label">Alamat Bank</label>
+                            <textarea class="form-control" id="alamat_bank" name="alamat_bank"></textarea>
                         </div>
                         <div class="col-md-12 mb-4">
-                            <label for="satker" class="form-label">Satker</label>
-                            <input id="satker" name="satker" class="form-control"
-                                placeholder="Masukan Nama Satker Baru" />
+                            <label for="nama_bank" class="form-label">Nama Bank</label>
+                            <input class="form-control" id="nama_bank" name="nama_bank" />
                         </div>
                         <div class="col-md-12 mb-4">
-                            <label for="kode_satker" class="form-label">Kode</label>
-                            <input id="kode_satker" name="kode_satker" class="form-control"
-                                placeholder="Masukan Kode Satker" />
+                            <label for="account_name" class="form-label">Account Name</label>
+                            <input class="form-control" id="account_name" name="account_name" />
                         </div>
                         <div class="col-md-12 mb-4">
-                            <label for="address" class="form-label">Alamat</label>
-                            <input id="address" name="address" class="form-control" placeholder="Masukan Alamat" />
+                            <label for="swift_code" class="form-label">Swift Code</label>
+                            <input class="form-control" id="swift_code" name="swift_code" />
                         </div>
-                        <button class="btn btn-success form-control"><i
+                        <button class="btn btn-success form-control text-white" style="background-color: #4E36E2"><i
                                 class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
                     </form>
                 </div><!-- end card -->
@@ -46,34 +51,4 @@
         <!-- end col -->
     </div>
     <!--end row-->
-@endsection
-@section('script')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#provinsi_id').select2({
-                ajax: {
-                    url: "{{ route('api.provinsi') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data.data, function(item) {
-                                return {
-                                    text: item.name,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            $('#chkall').on('click', function() {
-                var $select2 = $('#provinsi_id');
-                $select2.find('li').prop('selected', true);
-                $select2.trigger('change');
-            });
-        });
-    </script>
 @endsection

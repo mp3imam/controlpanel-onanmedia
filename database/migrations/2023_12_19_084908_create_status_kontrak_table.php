@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ms_bank', function (Blueprint $table) {
+        Schema::create('status_kontrak', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('kode');
-            $table->string('isAktif')->default(1);
-            $table->string('icon')->default('-');
+            $table->string('aktif')->default(1);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ms_bank');
+        Schema::dropIfExists('status_kontrak');
     }
 };

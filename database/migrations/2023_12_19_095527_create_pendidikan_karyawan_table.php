@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ms_bank', function (Blueprint $table) {
+        Schema::create('pendidikan_karyawan', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('data_karyawan_id');
             $table->string('nama');
-            $table->string('kode');
-            $table->string('isAktif')->default(1);
-            $table->string('icon')->default('-');
+            $table->string('jurusan')->nullable();
+            $table->string('IPK')->nullable();
+            $table->year('tahun_lulus');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ms_bank');
+        Schema::dropIfExists('pendidikan_karyawan');
     }
 };

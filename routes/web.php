@@ -63,6 +63,8 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Finance
     Route::resource('master_coa', MasterCoaController::class);
+    Route::get('getDataTableCoa', [MasterCoaController::class, 'get_datatable'])->name('getDataTableCoa');
+    Route::resource('rekening_bank', MasterCoaController::class);
 
     // HRD
     Route::resource('data_karyawan', HrdController::class);
