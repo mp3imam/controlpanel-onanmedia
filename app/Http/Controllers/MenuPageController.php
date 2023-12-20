@@ -8,10 +8,7 @@ use App\Models\PagesRoleModel;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
 class MenuPageController extends Controller
@@ -67,8 +64,6 @@ class MenuPageController extends Controller
             PagesRoleModel::wherePermissionId($request->get('permission_id'))
             ->whereRoleId($request->get('role_id'))
             ->delete();
-
-
 
         return response()->json([
             'status'    => Response::HTTP_OK,
@@ -128,9 +123,10 @@ class MenuPageController extends Controller
             'name' => $request->name,
             'module_url' => $request->module_url,
             'module_position' => $request->module_position,
+            'module_icon' => $request->modal_icon,
         ];
 
-        if (isset($request->modal_parent_id))
+        if (isset($request->modal_parent_id) && $request->modal_parent_id !== 'undefined')
         $update['module_parent'] = $request->modal_parent_id;
 
         return response()->json([

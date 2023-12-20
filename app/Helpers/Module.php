@@ -2,47 +2,49 @@
 
 namespace App\Helpers;
 
-use DB, Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class Module
 {
     public static function getModule($id)
     {
-        $module = [
+        return [
             'menu' => Permission::select('permissions.*')
-                                ->join('role_has_permissions', 'permissions.id','=', 'role_has_permissions.permission_id')
-                                ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
-                                ->where('roles.id', $id)
-                                ->where('module_parent', 0)
-                                ->where('module_status', 1)
-                                ->orderBy('module_parent', 'ASC')
-                                ->orderBy('module_position', 'ASC')
-                                ->get(),
+            ->join('role_has_permissions', 'permissions.id','=', 'role_has_permissions.permission_id')
+            ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
+            ->where('roles.id', $id)
+            ->where('module_parent', 0)
+            ->where('module_status', 1)
+            ->orderBy('module_parent', 'ASC')
+            ->orderBy('module_position', 'ASC')
+            ->get(),
         ];
-
-        return $module;
     }
 
     public static function getSubModule($id, $parent){
         return Permission::select('permissions.*')
-                                ->join('role_has_permissions', 'permissions.id','=', 'role_has_permissions.permission_id')
-                                ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
-                                ->where('roles.id', $id)
-                                ->where('module_parent', $parent)
-                                ->where('module_status', 1)
-                                ->orderBy('module_parent', 'ASC')
-                                ->orderBy('module_position', 'ASC')->get();
+        ->join('role_has_permissions', 'permissions.id','=', 'role_has_permissions.permission_id')
+        ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
+        ->where('roles.id', $id)
+        ->where('module_parent', $parent)
+        ->where('module_status', 1)
+        ->orderBy('module_parent', 'ASC')
+        ->orderBy('module_position', 'ASC')
+        ->get();
     }
 
     public static function getSubModuleUrl($id, $parent){
         $data = Permission::join('role_has_permissions', 'permissions.id','=', 'role_has_permissions.permission_id')
-                                ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
-                                ->where('roles.id', $id)
-                                ->where('module_parent', $parent)
-                                ->where('module_status', 1)
-                                ->orderBy('module_parent', 'ASC')
-                                ->orderBy('module_position', 'ASC')->get('module_url')->toArray();
+        ->join('roles','role_has_permissions.role_id', '=', 'roles.id')
+        ->where('roles.id', $id)
+        ->where('module_parent', $parent)
+        ->where('module_status', 1)
+        ->orderBy('module_parent', 'ASC')
+        ->orderBy('module_position', 'ASC')
+        ->get('module_url')
+        ->toArray();
 
         $collect = collect();
         foreach ($data as $d) {
@@ -54,44 +56,17 @@ class Module
 
     public static function getMenu()
     {
-        $path = storage_path() . "/app/admin.txt";
-
-        $json = json_decode(file_get_contents($path), true);
-        // dd($json);
-        return $json;
+        return json_decode(file_get_contents(storage_path() . "/app/admin.txt"), true);
     }
 
     public static function permission(){
-        $permission = Permission::where('module_status', 1)->
-        get();
-
-        return $permission;
+        return Permission::where('module_status', 1)->get();
     }
 
     public static function rolehas(){
-        $id = Auth::user()->roles[0]->id;
-
-        $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
-            ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
-            ->all();
-
-        return $rolePermissions;
+        return DB::table("role_has_permissions")
+        ->where("role_has_permissions.role_id", Auth::user()->roles[0]->id)
+        ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
+        ->all();
     }
-
-    // public static function notif(){
-
-    //     // $notifications = auth()->user()->unreadNotifications;
-    //     if(auth()->user()->name === 'Superadmin'){
-    //         $notifications =   DatabaseNotification::orderBy('created_at','DESC')->limit(5)->get();
-
-    //     }
-    //     else{
-    //         $id_satker = auth()->user()->satker_id;
-    //         $satker = DatabaseNotification::where('satker_id', $id_satker)->get();
-    //         $notifications = auth()->user()->unreadNotifications->union($satker);
-    //     }
-
-    //     return $notifications;
-    // }
-
 }

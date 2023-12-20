@@ -99,7 +99,7 @@
                     data: 'name',
                     name: 'User',
                     render: function (data, type, row) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`', '`+row.module_url+`', '`+row.module_parent+`', '`+row.parents+`', '`+row.module_position+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`', '`+row.module_icon+`', '`+row.module_url+`', '`+row.module_parent+`', '`+row.parents+`', '`+row.module_position+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
                     }
                 },{
                     data: 'guard_name',
@@ -151,7 +151,7 @@
         });
     });
 
-    function modal_crud(id, nama, module_url, module_parent_id, module_parent, module_position){
+    function modal_crud(id, nama, icon, module_url, module_parent_id, module_parent, module_position){
         button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
         module_parent_modal = module_parent_id !== '0' ? `
         <div class="col-xxl-12" id="modal_parent_append">
@@ -171,6 +171,13 @@
                     <div class="col-xxl-6" id="modal_nama_append">
                         <label for="nama" class="form-label">Nama Page</label>
                         <input class="form-control" id="modal_nama" placeholder="Enter nama" value="${nama}">
+                    </div>
+                    <div class="col-xxl-6" id="modal_nama_append">
+                        <label for="nama" class="form-label"><i class="${icon}"></i> ${nama} Icon </label>
+                        <div class="input-group">
+                            <input type="text" id="modal_icon" class="form-control" aria-describedby="button-addon2" value="${icon}">
+                            <button class="btn btn-outline-success" target="_blank" type="button" onclick="javascript:window.open('https://themesbrand.com/velzon/html/default/icons-remix.html', '_blank');" id="button-addon2"><i class="ri-search-line"></i></button>
+                        </div>
                     </div>
                     <div class="col-xxl-6" id="modal_url_append">
                         <label for="url" class="form-label">Url</label>
@@ -244,6 +251,7 @@
             data.append('name', $('#modal_nama').val())
             data.append('modal_parent_id', $('#modal_parent_id').val())
             data.append('modal_parent', $('#modal_parent').val())
+            data.append('modal_icon', $('#modal_icon').val())
             data.append('module_url', $('#modal_url').val())
             data.append('module_position', $('#modal_posisi').val())
             $.ajax({
