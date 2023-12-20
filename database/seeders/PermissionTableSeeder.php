@@ -106,7 +106,7 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Bank & Cash',
+                    'name'                  => 'Master Kas',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_bank_cash',
                     'module_parent'         => 9,
@@ -114,17 +114,17 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Kas',
+                    'name'                  => 'Master Belanja',
                     'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'master_kas',
+                    'module_url'            => 'master_kas_belanja',
                     'module_parent'         => 9,
                     'module_position'       => 3,
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Belanja',
+                    'name'                  => 'Master Jurnal',
                     'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'master_belanja',
+                    'module_url'            => 'master_jurnal',
                     'module_parent'         => 9,
                     'module_position'       => 4,
                     'module_description'    => '',

@@ -13,6 +13,8 @@ use App\Http\Controllers\HrdController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MasterBankCashController;
 use App\Http\Controllers\MasterCoaController;
+use App\Http\Controllers\MasterKasBelanjaController;
+use App\Http\Controllers\MasterKasController;
 use App\Http\Controllers\MenuPageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PekerjaanController;
@@ -67,6 +69,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getDataTableCoa', [MasterCoaController::class, 'get_datatable'])->name('getDataTableCoa');
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
+    Route::resource('master_bank_cash', MasterBankCashController::class);
+    Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
+    Route::resource('master_kas_belanja', MasterKasBelanjaController::class);
+    Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
 
     // HRD
     Route::resource('data_karyawan', HrdController::class);

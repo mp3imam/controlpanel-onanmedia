@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MasterBankCash;
-use App\Models\MasterBankCashModel;
+use App\Models\MasterKasBelanja;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
-class MasterBankCashController extends Controller
+class MasterKasBelanjaController extends Controller
 {
     private $title = 'Master Transaksi Kas';
     private $li_1 = 'Index';
@@ -23,14 +22,14 @@ class MasterBankCashController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
+        $this->middleware('permission:'.Permission::whereId(12)->active()->first()->name);
     }
 
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_bank_cash.index', $title);
+        return view('master_kas_belanja.index', $title);
     }
 
     function get_datatable(Request $request){
@@ -39,10 +38,7 @@ class MasterBankCashController extends Controller
         ->addColumn('banks', function ($row){
             return $row->banks->nama;
         })
-        ->addColumn('user', function ($row){
-            return $row->users_bank_cash->name;
-        })
-        ->rawColumns(['banks','user'])
+        ->rawColumns(['banks'])
         ->make(true);
 
     }
@@ -52,11 +48,11 @@ class MasterBankCashController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request){
+    public function create(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_bank_cash.create', $title);
+        return view('master_kas_belanja.create', $title);
     }
 
     /**
@@ -71,7 +67,6 @@ class MasterBankCashController extends Controller
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
             'jenis_transaksi'   => 'required',
-            'user_id'           => 'required',
             'nilai'             => 'required',
         ];
 
@@ -82,9 +77,9 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        MasterBankCashModel::create($request->except('_token'));
+        MasterKasBelanja::create($request->except('_token'));
 
-        return redirect('master_bank_cash');
+        return redirect('master_kas_belanja');
     }
 
     /**
@@ -97,9 +92,9 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterBankCashModel::findOrFail($id)->first();
+        $detail = MasterKasBelanja::findOrFail($id)->first();
 
-        return view('master_bank_cash.detail', $title, compact(['detail']));
+        return view('master_kas_belanja.detail', $title, compact(['detail']));
     }
 
     /**
@@ -112,10 +107,10 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterBankCashModel::with(['banks','users_bank_cash'])->findOrFail($id);
+        $detail = MasterKasBelanja::with(['banks'])->findOrFail($id);
         // dd($detail);
 
-        return view('master_bank_cash.edit', $title, compact(['detail']));
+        return view('master_kas_belanja.edit', $title, compact(['detail']));
     }
 
     /**
@@ -130,15 +125,14 @@ class MasterBankCashController extends Controller
             'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
-            'user_id'           => 'required',
             'jenis_transaksi'   => 'required',
             'nilai'             => 'required',
         ]);
 
         // Store your file into directory and db
-        MasterBankCashModel::find($id)->update($request->except(['_token','_method']));
+        MasterKasBelanja::find($id)->update($request->except(['_token','_method']));
 
-        return redirect('master_bank_cash');
+        return redirect('master_kas_belanja');
     }
 
     /**
@@ -150,12 +144,12 @@ class MasterBankCashController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterBankCashModel::findOrFail($id)->delete()
+            'message' => MasterKasBelanja::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return MasterBankCashModel::with(['banks','users_bank_cash'])
+        return MasterKasBelanja::with(['banks'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             // ->orWhere('tanggal_transaksi', $request->cari)
@@ -163,9 +157,6 @@ class MasterBankCashController extends Controller
                 $q->where('nama','%'.$request->cari."%");
             })
             ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhereHas('users_bank_cash', function($q) use($request){
-            //     $q->where('name','%'.$request->cari."%");
-            // })
             ->orWhere('nilai', 'like','%'.$request->cari."%")
             ->orWhere('keterangan', 'like','%'.$request->cari."%");
         })

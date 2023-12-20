@@ -148,6 +148,10 @@ class Permission extends Model implements PermissionContract
             ->getPermissions($params, $onlyOne);
     }
 
+    function scopeActive($q){
+        return $q->whereModuleStatus(1);
+    }
+
     /**
      * Get the current cached first permission.
      *

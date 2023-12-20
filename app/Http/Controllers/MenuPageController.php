@@ -124,7 +124,6 @@ class MenuPageController extends Controller
     }
 
     function update_menu(Request $request) {
-
         $update = [
             'name' => $request->name,
             'module_url' => $request->module_url,
@@ -132,7 +131,7 @@ class MenuPageController extends Controller
         ];
 
         if (isset($request->modal_parent_id))
-        $update['parent_id'] = $request->modal_parent_id;
+        $update['module_parent'] = $request->modal_parent_id;
 
         return response()->json([
             'status'  => Response::HTTP_OK,
