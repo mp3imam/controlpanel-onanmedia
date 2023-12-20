@@ -5,8 +5,12 @@
 @section('content')
 
 @include('components.breadcrumb')
-@include('sweetalert::alert')
-<div class="row">
+@section('css')
+    <link href="{{ URL::asset('assets/libs/swiper/swiper.min.css') }}" rel="stylesheet">
+@endsection
+@section('content')
+    @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
+    <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">

@@ -11,6 +11,7 @@ use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\HelpdeskController;
 use App\Http\Controllers\HrdController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\MasterBankCashController;
 use App\Http\Controllers\MasterCoaController;
 use App\Http\Controllers\MenuPageController;
 use App\Http\Controllers\NotificationController;
@@ -64,7 +65,8 @@ Route::group(['middleware' => ['auth']], function() {
     // Finance
     Route::resource('master_coa', MasterCoaController::class);
     Route::get('getDataTableCoa', [MasterCoaController::class, 'get_datatable'])->name('getDataTableCoa');
-    Route::resource('rekening_bank', MasterCoaController::class);
+    Route::resource('master_bank_cash', MasterBankCashController::class);
+    Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
 
     // HRD
     Route::resource('data_karyawan', HrdController::class);

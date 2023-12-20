@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MasterCoaModel;
+use App\Models\MasterBankCash;
+use App\Models\MasterBankCashModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,9 +11,9 @@ use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
-class MasterCoaController extends Controller
+class MasterBankCashController extends Controller
 {
-    private $title = 'Master Rekening Bank';
+    private $title = 'Master Transaksi Kas';
     private $li_1 = 'Index';
 
     /**
@@ -22,23 +23,26 @@ class MasterCoaController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(10)->first()->name);
+        $this->middleware('permission:'.Permission::whereId(11)->first()->name);
     }
 
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_coa.index', $title);
+        return view('master_bank_cash.index', $title);
     }
 
     function get_datatable(Request $request){
         return
         DataTables::of($this->models($request))
-        ->addColumn('rekening', function ($row){
-            return $row->kdrek1.$row->kdrek2.$row->kdrek3.$row->kdrek;
+        ->addColumn('banks', function ($row){
+            return $row->banks->nama;
         })
-        ->rawColumns(['rekening'])
+        ->addColumn('user', function ($row){
+            return $row->users_bank_cash->name;
+        })
+        ->rawColumns(['banks','user'])
         ->make(true);
 
     }
@@ -52,7 +56,7 @@ class MasterCoaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_coa.create', $title);
+        return view('master_bank_cash.create', $title);
     }
 
     /**
@@ -62,13 +66,15 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // $request['nomor_transaksi'] = isset(MasterBankCashModel::latest()->first()->id) == null ?? 1;
         $validasi = [
-            'uraian'        => 'required',
-            'rekening_bank' => 'required',
-            'alamat_bank'   => 'required',
-            'nama_bank'     => 'required',
-            'account_name'  => 'required',
-            'swift_code'    => 'required',
+            'nomor_transaksi'   => 'required',
+            'tanggal_transaksi' => 'required',
+            'bank_id'           => 'required',
+            'user_id'           => 'required',
+            'jenis_transaksi'   => 'required',
+            'user_id'           => 'required',
+            'nilai'             => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -78,22 +84,9 @@ class MasterCoaController extends Controller
         }
 
         // Store your file into directory and db
-        $input = $request->except(['_token']);
-        $input['id']            = MasterCoaModel::getMaxIdRecord()->first()->id+1;
-        $input['kdrek1']        = 1;
-        $input['kdrek2']        = 1;
-        $input['kdrek3']        = 1;
-        $input['kdrek']         = 1;
-        $input['type']          = "H";
-        $input['uraian']        = $request->uraian;
-        $input['rekening_bank'] = $request->rekening_bank;
-        $input['alamat_bank']   = $request->alamat_bank;
-        $input['nama_bank']     = $request->nama_bank;
-        $input['account_name']  = $request->account_name;
-        $input['swift_code']    = $request->swift_code;
-        MasterCoaModel::insert($input);
+        MasterBankCashModel::create($request->except('_token'));
 
-        return redirect('master_coa');
+        return redirect('master_bank_cash');
     }
 
     /**
@@ -106,9 +99,9 @@ class MasterCoaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterCoaModel::findOrFail($id)->first();
+        $detail = MasterBankCashModel::findOrFail($id)->first();
 
-        return view('master_coa.detail', $title, compact(['detail']));
+        return view('master_bank_cash.detail', $title, compact(['detail']));
     }
 
     /**
@@ -121,9 +114,10 @@ class MasterCoaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterCoaModel::findOrFail($id);
+        $detail = MasterBankCashModel::with(['banks','users_bank_cash'])->findOrFail($id);
+        // dd($detail);
 
-        return view('master_coa.edit', $title, compact(['detail']));
+        return view('master_bank_cash.edit', $title, compact(['detail']));
     }
 
     /**
@@ -135,31 +129,19 @@ class MasterCoaController extends Controller
      */
     public function update(Request $request, $id){
         $request->validate([
-            'uraian'        => 'required',
-            'rekening_bank' => 'required',
-            'alamat_bank'   => 'required',
-            'nama_bank'     => 'required',
-            'account_name'  => 'required',
-            'swift_code'    => 'required',
+            'nomor_transaksi'   => 'required',
+            'tanggal_transaksi' => 'required',
+            'bank_id'           => 'required',
+            'user_id'           => 'required',
+            'jenis_transaksi'   => 'required',
+            'user_id'           => 'required',
+            'nilai'             => 'required',
         ]);
 
         // Store your file into directory and db
-        $update = [
-            'kdrek1'        => 1,
-            'kdrek2'        => 1,
-            'kdrek3'        => 1,
-            'kdrek'         => 1,
-            'type'          => "H",
-            'uraian'        => $request->uraian,
-            'rekening_bank' => $request->rekening_bank,
-            'alamat_bank'   => $request->alamat_bank,
-            'nama_bank'     => $request->nama_bank,
-            'account_name'  => $request->account_name,
-            'swift_code'    => $request->swift_code,
-        ];
-        MasterCoaModel::find($id)->update($update);
+        MasterBankCashModel::find($id)->update($request->except(['_token','_method']));
 
-        return redirect('master_coa');
+        return redirect('master_bank_cash');
     }
 
     /**
@@ -171,12 +153,12 @@ class MasterCoaController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterCoaModel::findOrFail($id)->delete()
+            'message' => MasterBankCashModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return MasterCoaModel::query()->get();
+        return MasterBankCashModel::with(['banks','users_bank_cash'])->get();
     }
 
     public function pdf(Request $request){

@@ -26,4 +26,8 @@ class UserPublicModel extends Model
         return $this->hasOne(HelpdeskModel::class, 'user_id', 'id');
     }
 
+    public function users_bank_cash(){
+        return $this->belongsTo(MasterBankCashModel::class, 'id');
+    }
+
 }

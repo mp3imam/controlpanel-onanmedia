@@ -31,6 +31,7 @@ class Module
                                 ->where('roles.id', $id)
                                 ->where('module_parent', $parent)
                                 ->where('module_status', 1)
+                                ->orderBy('module_parent', 'ASC')
                                 ->orderBy('module_position', 'ASC')->get();
     }
 
@@ -40,6 +41,7 @@ class Module
                                 ->where('roles.id', $id)
                                 ->where('module_parent', $parent)
                                 ->where('module_status', 1)
+                                ->orderBy('module_parent', 'ASC')
                                 ->orderBy('module_position', 'ASC')->get('module_url')->toArray();
 
         $collect = collect();

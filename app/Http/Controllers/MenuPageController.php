@@ -124,14 +124,19 @@ class MenuPageController extends Controller
     }
 
     function update_menu(Request $request) {
+
+        $update = [
+            'name' => $request->name,
+            'module_url' => $request->module_url,
+            'module_position' => $request->module_position,
+        ];
+
+        if (isset($request->modal_parent_id))
+        $update['parent_id'] = $request->modal_parent_id;
+
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => Permission::findOrFail($request->id)->update([
-                'name' => $request->name,
-                'module_parent' => $request->modal_parent_id,
-                'module_url' => $request->module_url,
-                'module_position' => $request->module_position,
-            ])
+            'message' => Permission::findOrFail($request->id)->update($update)
         ]);
 
     }
