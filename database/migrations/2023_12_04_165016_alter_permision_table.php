@@ -28,8 +28,8 @@ return new class extends Migration
         Schema::connection('pgsql')->create($tableNames['permissions'], function (Blueprint $table) {
             $table->bigIncrements('id'); // permission id
             $table->string('name');       // For MySQL 8.0 use string('name', 125);
-            $table->string('guard_name'); // For MySQL 8.0 use string('guard_name', 125);
-            $table->string('module_icon');
+            $table->string('guard_name')->default('web'); // For MySQL 8.0 use string('guard_name', 125);
+            $table->string('module_icon')->default('ri-dashboard-fill');
             $table->string('module_url');
             $table->integer('module_parent')->default(0)->nullable();
             $table->integer('module_position')->default(0)->nullable();

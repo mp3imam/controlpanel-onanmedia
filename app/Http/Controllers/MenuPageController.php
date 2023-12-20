@@ -92,7 +92,7 @@ class MenuPageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id){
+    public function edit($id){
         return
         DataTables::of(
             Permission::leftJoin('role_has_permissions', function($join) use ($id) {
@@ -151,7 +151,6 @@ class MenuPageController extends Controller
 
     public function models($request){
         return Permission::query()
-        // ->where('module_parent', 0)
         ->when($request->username_id, function($q) use($request){
             $q->where('username','like', '%'.$request->username_id.'%');
         })
