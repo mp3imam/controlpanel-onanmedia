@@ -37,10 +37,12 @@
                         <div class="row mt-4">
                             <div class="col-xxl-12 col-md-6 p-3">
                                 <label>Filter</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                                    <span class="input-group-text"><i class="ri-search-line"></i></span>
-                                </div>
+                                <form action="{{ route('master_coa.index') }}">
+                                    <div class="input-group">
+                                            <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                        <button class="input-group-text"><i class="ri-search-line"></i>&nbsp;Cari</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -98,8 +100,7 @@
             ajax: {
                 url: "{{ route('getDataTableCoa') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
-                    d.roles_id = $('#roles_id').val()
+                    d.cari = $('#cari').val()
                 }
             },
             columns: [{
@@ -134,14 +135,6 @@
                     name: 'Alamat'
                 }
             ]
-        });
-
-        $('#username_id').keyup(function () {
-            table.draw();
-        });
-
-        $('#roles_id').change(function () {
-            table.draw();
         });
     });
 

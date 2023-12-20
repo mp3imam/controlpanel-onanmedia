@@ -158,21 +158,32 @@ class MasterBankCashController extends Controller
     }
 
     public function models($request){
-        return MasterBankCashModel::with(['banks','users_bank_cash'])->get();
+        return MasterBankCashModel::with(['banks','users_bank_cash'])
+        ->when($request->cari, function($q) use($request){
+            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
+            // ->orWhere('tanggal_transaksi', $request->cari)
+            ->orWhereHas('banks', function($q) use($request){
+                $q->where('nama','%'.$request->cari."%");
+            })
+            ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
+            // ->orWhereHas('users_bank_cash', function($q) use($request){
+            //     $q->where('name','%'.$request->cari."%");
+            // })
+            ->orWhere('nilai', 'like','%'.$request->cari."%")
+            ->orWhere('keterangan', 'like','%'.$request->cari."%");
+        })
+        ->get();
     }
 
     public function pdf(Request $request){
         $datas = $this->models($request);
-        $satker['name']     = "Kejati DKI Jakarta";
-        $satker['address']  = "Jl. H. R. Rasuna Said No.2, RT.5/RW.4, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950";
 
         $pdf = Pdf::loadview('users.pdf',[
-                'name'  => 'Data Satker',
-                'satker' => $satker,
+                'name'  => 'Data Master Bank Cash',
                 'datas' => $datas
             ]
         )->setPaper('F4');
 
-        return $pdf->download('Laporan-users-PDF');
+        return $pdf->download('Laporan-Master-Bank-Cash-PDF');
     }
 }

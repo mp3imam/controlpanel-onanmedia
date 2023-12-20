@@ -7,7 +7,7 @@
 @include('components.breadcrumb')
 @section('content')
     @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
-    <ul class="nav nav-tabs nav-justified card-header-tabs mb-3" role="tablist">
+    <ul class="nav nav-tabs nav-justified nav-border-bottom animation-nav" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" data-bs-toggle="tab" href="#base-justified-home" role="tab" aria-selected="false" tabindex="-1">
                 Isi Saldo Kasir
@@ -48,10 +48,12 @@
                                     <div class="row mt-4">
                                         <div class="col-xxl-12 col-md-6 p-3">
                                             <label>Filter</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                                                <span class="input-group-text"><i class="ri-search-line"></i></span>
-                                            </div>
+                                            <form action="{{ route('master_bank_cash.index') }}">
+                                                <div class="input-group">
+                                                        <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                    <button class="input-group-text"><i class="ri-search-line"></i>&nbsp;Cari</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -116,8 +118,7 @@
             ajax: {
                 url: "{{ route('getDataTableBankCash') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
-                    d.roles_id = $('#roles_id').val()
+                    d.cari = $('#cari').val()
                 }
             },
             columns: [{
@@ -152,14 +153,6 @@
                     name: 'KETERANGAN'
                 }
             ]
-        });
-
-        $('#username_id').keyup(function () {
-            table.draw();
-        });
-
-        $('#roles_id').change(function () {
-            table.draw();
         });
     });
 

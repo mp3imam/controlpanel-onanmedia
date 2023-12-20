@@ -33,8 +33,7 @@ class MasterCoaController extends Controller
     }
 
     function get_datatable(Request $request){
-        return
-        DataTables::of($this->models($request))
+        return DataTables::of($this->models($request))
         ->addColumn('rekening', function ($row){
             return $row->kdrek1.$row->kdrek2.$row->kdrek3.$row->kdrek;
         })
@@ -176,7 +175,18 @@ class MasterCoaController extends Controller
     }
 
     public function models($request){
-        return MasterCoaModel::query()->get();
+        return MasterCoaModel::query()
+        ->when($request->cari, function($q) use($request){
+            $q->where('uraian', 'like','%'.$request->cari."%")
+            ->orWhere('type', 'like','%'.$request->cari."%")
+            ->orWhere('metode_penyusutan', 'like','%'.$request->cari."%")
+            ->orWhere('rekening_bank', 'like','%'.$request->cari."%")
+            ->orWhere('alamat_bank', 'like','%'.$request->cari."%")
+            ->orWhere('nama_bank', 'like','%'.$request->cari."%")
+            ->orWhere('account_name', 'like','%'.$request->cari."%")
+            ->orWhere('swift_code', 'like','%'.$request->cari."%");
+        })
+        ->get();
     }
 
     public function pdf(Request $request){
