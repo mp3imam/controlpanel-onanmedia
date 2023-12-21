@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             StatusKontrakSeeder::class,
             TipePajakSeeder::class,
 
+            // Finance
+            MataUangSeeder::class,
 
             // AccountSeeder::class,
             // JasaSeeder::class,

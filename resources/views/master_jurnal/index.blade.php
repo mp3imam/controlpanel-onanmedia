@@ -51,10 +51,12 @@
                                     <tr>
                                         <th>No</th>
                                         <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                        <th class="text-uppercase">TGL. TRANSAKSI</th>
-                                        <th class="text-uppercase">SUMBER</th>
-                                        <th class="text-uppercase">JENIS TRANSAKSI</th>
-                                        <th class="text-uppercase">NILAI</th>
+                                        <th class="text-uppercase">TGL. Jurnal</th>
+                                        <th class="text-uppercase">Dokumen</th>
+                                        <th class="text-uppercase">Rekening</th>
+                                        <th class="text-uppercase">Uraian</th>
+                                        <th class="text-uppercase">Debet</th>
+                                        <th class="text-uppercase">Kredit</th>
                                         <th class="text-uppercase">KETERANGAN</th>
                                     </tr>
                                 </thead>
@@ -114,14 +116,20 @@
                     data: 'tanggal_transaksi',
                     name: 'TGL. TRANSAKSI'
                 },{
+                    data: 'nomor_transaksi',
+                    name: 'Documen'
+                },{
                     data: 'banks',
-                    name: 'SUMBER'
+                    name: 'Rekening'
                 },{
-                    data: 'jenis_transaksi',
-                    name: 'JENIS TRANSAKSI'
+                    data: 'uraian',
+                    name: 'Uraian'
                 },{
-                    data: 'nilai',
-                    name: 'NILAI'
+                    data: 'debet',
+                    name: 'Debet'
+                },{
+                    data: 'kredit',
+                    name: 'Kredit'
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'

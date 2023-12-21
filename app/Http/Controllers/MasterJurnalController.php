@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,6 +27,7 @@ class MasterJurnalController extends Controller
     }
 
     public function index(){
+        dd(MasterJurnal::total()->get());
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -37,9 +40,11 @@ class MasterJurnalController extends Controller
         ->addColumn('banks', function ($row){
             return $row->banks->nama;
         })
+        ->addColumn('debet', function ($row){
+            return count($row->details);
+        })
         ->rawColumns(['banks'])
         ->make(true);
-
     }
 
     /**
@@ -76,7 +81,7 @@ class MasterJurnalController extends Controller
         }
 
         // Store your file into directory and db
-        MasterKasBelanja::create($request->except('_token'));
+        MasterJurnal::create($request->except('_token'));
 
         return redirect('master_jurnal');
     }
@@ -91,7 +96,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::findOrFail($id)->first();
+        $detail = MasterJurnal::findOrFail($id)->first();
 
         return view('master_jurnal.detail', $title, compact(['detail']));
     }
@@ -106,7 +111,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['banks'])->findOrFail($id);
+        $detail = MasterJurnal::with(['banks'])->findOrFail($id);
         // dd($detail);
 
         return view('master_jurnal.edit', $title, compact(['detail']));
@@ -129,7 +134,7 @@ class MasterJurnalController extends Controller
         ]);
 
         // Store your file into directory and db
-        MasterKasBelanja::find($id)->update($request->except(['_token','_method']));
+        MasterJurnal::find($id)->update($request->except(['_token','_method']));
 
         return redirect('master_jurnal');
     }
@@ -143,23 +148,12 @@ class MasterJurnalController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterKasBelanja::findOrFail($id)->delete()
+            'message' => MasterJurnal::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return MasterKasBelanja::with(['banks'])
-        ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhere('tanggal_transaksi', $request->cari)
-            ->orWhereHas('banks', function($q) use($request){
-                $q->where('nama','%'.$request->cari."%");
-            })
-            ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            ->orWhere('nilai', 'like','%'.$request->cari."%")
-            ->orWhere('keterangan', 'like','%'.$request->cari."%");
-        })
-        ->get();
+        return MasterJurnal::total()->get();
     }
 
     public function pdf(Request $request){
