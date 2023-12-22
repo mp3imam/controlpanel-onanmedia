@@ -26,6 +26,7 @@ class PermissionTableSeeder extends Seeder
             $menu = [
                 [
                     'name'                  => 'Dashboard',
+                    'alias'                 => 'Dashboard',
                     'module_icon'           => 'ri-dashboard-fill',
                     'module_url'            => 'dashboard',
                     'module_parent'         => 0,
@@ -34,6 +35,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'OnanApps',
+                    'alias'                 => 'OnanApps',
                     'module_icon'           => 'ri-dashboard-fill',
                     'module_url'            => 'onanApps',
                     'module_parent'         => 0,
@@ -42,6 +44,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Role Users',
+                    'alias'                 => 'Role Users',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'users',
                     'module_parent'         => 23,
@@ -50,6 +53,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Users',
+                    'alias'                 => 'Users',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'users_public',
                     'module_parent'         => 2,
@@ -58,6 +62,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Transaksi',
+                    'alias'                 => 'Transaksi',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'transaksi',
                     'module_parent'         => 2,
@@ -67,6 +72,7 @@ class PermissionTableSeeder extends Seeder
 
                 ],[
                     'name'                  => 'Daftar Tender',
+                    'alias'                 => 'Daftar Tender',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'daftar_tender',
                     'module_parent'         => 2,
@@ -75,6 +81,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Daftar Product Jasa',
+                    'alias'                 => 'Daftar Product Jasa',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'daftar_product_jasa',
                     'module_parent'         => 2,
@@ -83,6 +90,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Request Pencarian Dana',
+                    'alias'                 => 'Request Pencarian Dana',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'request_pencarian_dana',
                     'module_parent'         => 2,
@@ -91,6 +99,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Finance',
+                    'alias'                 => 'Finance',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'sideOnanApps',
                     'module_parent'         => 0,
@@ -99,6 +108,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Rekening Bank',
+                    'alias'                 => 'Rekening Bank',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_coa',
                     'module_parent'         => 9,
@@ -106,7 +116,8 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Kas',
+                    'name'                  => 'Transaksi Kas',
+                    'alias'                 => 'Transaksi Kas',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_bank_cash',
                     'module_parent'         => 9,
@@ -114,7 +125,8 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Belanja',
+                    'name'                  => 'Transaksi Belanja',
+                    'alias'                 => 'Transaksi Belanja',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_kas_belanja',
                     'module_parent'         => 9,
@@ -122,7 +134,8 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
                 ],[
-                    'name'                  => 'Master Jurnal',
+                    'name'                  => 'Jurnal Umum',
+                    'alias'                 => 'Jurnal Umum',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_jurnal',
                     'module_parent'         => 9,
@@ -131,6 +144,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'HRD',
+                    'alias'                 => 'HRD',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'hrd',
                     'module_parent'         => 0,
@@ -139,6 +153,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Data Karyawan',
+                    'alias'                 => 'Data Karyawan',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'data_karyawan',
                     'module_parent'         => 14,
@@ -147,6 +162,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Data Absensi',
+                    'alias'                 => 'Data Absensi',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'data_absensi',
                     'module_parent'         => 14,
@@ -155,6 +171,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Master Data',
+                    'alias'                 => 'Master Data',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'master_data',
                     'module_parent'         => 0,
@@ -163,6 +180,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Bahasa',
+                    'alias'                 => 'Bahasa',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'bahasa',
                     'module_parent'         => 17,
@@ -171,6 +189,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Kategori',
+                    'alias'                 => 'Kategori',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'kategori',
                     'module_parent'         => 17,
@@ -179,6 +198,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'SubKategori',
+                    'alias'                 => 'SubKategori',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'subkategori',
                     'module_parent'         => 17,
@@ -187,6 +207,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Pekerjaan',
+                    'alias'                 => 'Pekerjaan',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'pekerjaan',
                     'module_parent'         => 17,
@@ -195,6 +216,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Pendidikan',
+                    'alias'                 => 'Pendidikan',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'pendidikan',
                     'module_parent'         => 17,
@@ -203,6 +225,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Pengaturan',
+                    'alias'                 => 'Pengaturan',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'pengaturan',
                     'module_parent'         => 0,
@@ -211,6 +234,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Role Page',
+                    'alias'                 => 'Role Page',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'users_role_page',
                     'module_parent'         => 23,
@@ -219,6 +243,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Help Desk',
+                    'alias'                 => 'Help Desk',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'helpdesk',
                     'module_parent'         => 0,
@@ -227,6 +252,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Dashboard Helpdesk',
+                    'alias'                 => 'Dashboard Helpdesk',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'helpdesk_dashboard',
                     'module_parent'         => 25,
@@ -235,6 +261,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'List Helpdest',
+                    'alias'                 => 'List Helpdest',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'helpdesk_list',
                     'module_parent'         => 25,
@@ -243,6 +270,7 @@ class PermissionTableSeeder extends Seeder
                     'module_status'         => 1
                 ],[
                     'name'                  => 'Menu Pages',
+                    'alias'                 => 'Menu Pages',
                     'module_icon'           => 'ri-file-user-fill',
                     'module_url'            => 'menu_page',
                     'module_parent'         => 23,

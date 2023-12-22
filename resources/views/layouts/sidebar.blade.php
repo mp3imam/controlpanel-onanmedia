@@ -54,7 +54,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link menu-link {{ Request::is('' . $data->module_url . '*') ? 'active' : '' }}"
                                         aria-expanded="false" href="{{ URL($data['module_url']) }}">
-                                        <i class="{{ $data->module_icon }}"></i> <span>{{ $data->name }}</span>
+                                        <i class="{{ $data->module_icon }}"></i> <span>{{ $data->alias }}</span>
                                     </a>
                                 </li>
                             @else
@@ -62,7 +62,7 @@
                                     <a class="nav-link menu-link collapse {{ Request::is('' . $data->module_url . '*') ? 'active' : '' }} "
                                         href="#{{ $data->module_url }}" data-bs-toggle="collapse" role="button"
                                         aria-expanded="false" aria-controls="{{ $data->module_url }}">
-                                        <i class="{{ $data->module_icon }}"></i> <span>{{ $data->name }}</span>
+                                        <i class="{{ $data->module_icon }}"></i> <span>{{ $data->alias }}</span>
                                     </a>
                                     <div class="menu-dropdown collapse {{ Request::is($subMenuURL) ? 'show' : '' }}"
                                         id="{{ $data->module_url }}" style="">
@@ -71,7 +71,7 @@
                                                 <li class="nav-item">
                                                     <a href="{{ URL('' . $sub->module_url . '') }}"
                                                         class="nav-link {{ Request::is('' . $sub->module_url . '*') ? 'active' : '' }}"
-                                                        data-key="t-one-page">{{ $sub->name }}</a>
+                                                        data-key="t-one-page">{{ $sub->alias }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>

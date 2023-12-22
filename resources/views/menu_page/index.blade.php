@@ -96,10 +96,10 @@
                     data: "id",
                     sortable: false
                 },{
-                    data: 'name',
+                    data: 'alias',
                     name: 'User',
                     render: function (data, type, row) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.name+`', '`+row.module_icon+`', '`+row.module_url+`', '`+row.module_parent+`', '`+row.parents+`', '`+row.module_position+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.alias+`', '`+row.module_icon+`', '`+row.module_url+`', '`+row.module_parent+`', '`+row.parents+`', '`+row.module_position+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data.trim()+`</button>`;
                     }
                 },{
                     data: 'guard_name',

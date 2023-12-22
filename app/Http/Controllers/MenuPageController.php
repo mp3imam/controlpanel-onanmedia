@@ -120,7 +120,7 @@ class MenuPageController extends Controller
 
     function update_menu(Request $request) {
         $update = [
-            'name' => $request->name,
+            'alias' => $request->name,
             'module_url' => $request->module_url,
             'module_position' => $request->module_position,
             'module_icon' => $request->modal_icon,
