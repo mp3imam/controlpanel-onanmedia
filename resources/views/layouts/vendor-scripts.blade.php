@@ -28,7 +28,7 @@
 <script src="{{ URL::asset('assets/js/pages/modal.init.js') }}"></script>
 <script src="{{ URL::asset('assets/js/pages/form-validation.init.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/sortablejs/sortablejs.min.js') }}"></script>
-<script src="{{ URL::asset('assets/js/pages/nestable.init.js') }}"></script>
+<script src="{{ URL::asset('assets/js/jquery.maskMoney.js') }}"></script>
 
 <script src="{{ URL::asset('assets/js/app.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/jquery.nestable.js') }}"></script>

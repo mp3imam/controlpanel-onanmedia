@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('master_bank_cashes', function (Blueprint $table) {
+        Schema::create('transaksi_kas', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_transaksi');
-            $table->date('tanggal_transaksi');
+            $table->date('tanggal_transaksi')->default(Carbon::now()->format('Y-m-d'));
             $table->unsignedBigInteger('bank_id');
-            $table->string('jenis_transaksi');
-            $table->string('user_id');
-            $table->string('nilai');
+            $table->string('jenis_transaksi')->default(1);
+            // $table->string('user_id');
+            $table->string('nominal')->default(0);
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('master_bank_cashes');
+        Schema::dropIfExists('transaksi_kas');
     }
 };

@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('master_jurnals', function (Blueprint $table) {
+        Schema::create('jurnals_umum', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_transaksi');
-            $table->string('tanggal_transaksi');
-            $table->unsignedBigInteger('dokumen');
-            $table->string('rekening')->nullable();
+            $table->date('tanggal_transaksi');
+            $table->unsignedBigInteger('dokumen')->nullable();
+            $table->unsignedBigInteger('bank_id');
             $table->string('uraian')->nullable();
+            $table->string('debet')->nullable();
+            $table->string('kredit')->nullable();
             $table->string('keterangan')->nullable();
-            $table->unsignedBigInteger('jenis_mata_uang');
+            $table->string('tipe')->default(0);
+            $table->unsignedBigInteger('jenis_mata_uang')->default(1);
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('master_jurnals');
+        Schema::dropIfExists('jurnals_umum');
     }
 };

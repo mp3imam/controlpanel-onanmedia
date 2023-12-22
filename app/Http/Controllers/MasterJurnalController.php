@@ -27,7 +27,6 @@ class MasterJurnalController extends Controller
     }
 
     public function index(){
-        dd(MasterJurnal::total()->get());
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -38,11 +37,15 @@ class MasterJurnalController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->banks->nama;
+            return $row->jurnal_banks->nama;
         })
-        ->addColumn('debet', function ($row){
-            return count($row->details);
-        })
+        // ->addColumn('kredits', function ($row){
+        //     return count($row->total->kredit);
+        // })
+        // ->addColumn('debets', function ($row){
+        //     return count($row->total->debet);
+        // })
+        // ->rawColumns(['banks','kredit','debet'])
         ->rawColumns(['banks'])
         ->make(true);
     }
@@ -153,7 +156,11 @@ class MasterJurnalController extends Controller
     }
 
     public function models($request){
-        return MasterJurnal::total()->get();
+        return MasterJurnal::
+        // with(['jurnal_banks'])
+        // ->total()
+        // ->
+        get();
     }
 
     public function pdf(Request $request){

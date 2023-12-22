@@ -7,10 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\PagesRoleModel;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -51,7 +49,7 @@ class UserRolePageController extends Controller
             $data = collect();
             foreach($row->pages as $page){
                 $data->push(
-                    $page->rolePage->name
+                    $page->rolePage->alias
                 );
             }
             return $data->implode('|');

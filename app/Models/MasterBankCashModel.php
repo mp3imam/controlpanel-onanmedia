@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MasterBankCashModel extends Model
 {
     use HasFactory;
-    protected $table = "master_bank_cashes";
+    protected $table = "transaksi_kas";
     protected $guarded = ['id'];
 
     public function banks(){

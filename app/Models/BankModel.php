@@ -14,4 +14,8 @@ class BankModel extends Model
     public function banks(){
         return $this->belongsTo(MasterBankCashModel::class, 'bank_id');
     }
+
+    public function jurnal_banks(){
+        return $this->belongsTo(MasterJurnal::class, 'id');
+    }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jurnal_umum_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('jurnal_umum_id');
-            $table->unsignedBigInteger('rekening');
+            $table->unsignedBigInteger('bank_id');
             $table->string('keterangan')->nullable();
             $table->bigInteger('debet')->nullable();
             $table->bigInteger('kredit')->nullable();

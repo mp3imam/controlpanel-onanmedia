@@ -9,10 +9,15 @@ class MasterJurnal extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql';
+    protected $table = "jurnals_umum";
     protected $guarded = ['id'];
 
     public function details(){
         return $this->hasMany(JurnalUmumDetail::class, 'jurnal_umum_id');
+    }
+
+    public function jurnal_banks(){
+        return $this->hasOne(BankModel::class, 'id', 'bank_id');
     }
 
     public function scopeTotal($q){

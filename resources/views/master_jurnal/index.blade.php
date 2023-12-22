@@ -58,6 +58,7 @@
                                         <th class="text-uppercase">Debet</th>
                                         <th class="text-uppercase">Kredit</th>
                                         <th class="text-uppercase">KETERANGAN</th>
+                                        <th hidden>tipe</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -95,7 +96,7 @@
                 targets: 10
             },
             ajax: {
-                url: "{{ route('getDataTableMasterKasBelanja') }}",
+                url: "{{ route('getDataTableMasterJurnal') }}",
                 data: function (d) {
                     d.cari = $('#cari').val()
                 }
@@ -110,7 +111,8 @@
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function (data, type, row, meta) {
-                        return `<a href="{{ url('master_kas_belanja') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                        btn = row.tipe == 0 ? data : `<a href="{{ url('master_kas_belanja') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`
+                        return btn
                     }
                 },{
                     data: 'tanggal_transaksi',
@@ -133,6 +135,9 @@
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'
+                },{
+                    data: 'tipe',
+                    visible: false
                 }
             ]
         });

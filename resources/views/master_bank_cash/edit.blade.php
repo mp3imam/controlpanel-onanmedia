@@ -25,11 +25,6 @@
                         @csrf
                         @method('PUT')
                         <div class="col-md-12 mb-4">
-                            <label for="nomor_transaksi" class="form-label">No. Transaksi</label>
-                            <input class="form-control" id="nomor_transaksi" name="nomor_transaksi" value="{{ $detail->nomor_transaksi }}" />
-                        </div>
-
-                        <div class="col-md-12 mb-4">
                             <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
                             <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" />
                         </div>
@@ -44,14 +39,14 @@
                             <input class="form-control" id="jenis_transaksi" name="jenis_transaksi" value="{{ $detail->jenis_transaksi }}" />
                         </div>
 
-                        <div class="col-md-12 mb-4">
+                        {{-- <div class="col-md-12 mb-4">
                             <label for="user_pelaksana" class="form-label">USER PELAKSANA</label>
                             <select id="modal_user_id" name="user_id" class="form-control"></select>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-12 mb-4">
-                            <label for="nilai" class="form-label">NILAI</label>
-                            <input type="number" class="form-control" id="nilai" name="nilai" value="{{ $detail->nilai }}" />
+                            <label for="nominal" class="form-label text-uppercase">Nominal</label>
+                            <input class="form-control" id="nominal" name="nominal" value="{{ $detail->nominal }}" />
                         </div>
 
                         <div class="col-md-12 mb-4">
@@ -126,27 +121,32 @@
                     });
                 }
             });
+
         });
 
-        $("#modal_user_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_users') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            }
+        $(document).ready(function(){
+            $("#nominal").maskMoney({prefix: 'Rp. ', affixesStay: false, precision: 0});
         });
+
+        // $("#modal_user_id").select2({
+        //     allowClear: true,
+        //     width: '100%',
+        //     ajax: {
+        //         url: "{{ route('api.get_select2_users') }}",
+        //         dataType: 'json',
+        //         delay: 250,
+        //         processResults: function(data) {
+        //         return {
+        //             results: $.map(data.data, function(item) {
+        //                 return {
+        //                     id: item.id,
+        //                     text: item.name
+        //                 }
+        //             })
+        //         };
+        //         }
+        //     }
+        // });
 
         $("#modal_bank_id").select2({
             allowClear: true,
@@ -170,18 +170,18 @@
     });
 
     var dataId = "{{ $detail->bank_id }}"
-        var dataName = "{{ $detail->banks->nama }}"
-        var dataBank = {id: dataId,text: dataName, selected: true};
-        var newOptionBank = new Option(dataBank.text, dataBank.id, false, false)
-        $('#modal_bank_id').append(newOptionBank).trigger('change')
-        $('#modal_bank_id').select2()
+    var dataName = "{{ $detail->banks->nama }}"
+    var dataBank = {id: dataId,text: dataName, selected: true};
+    var newOptionBank = new Option(dataBank.text, dataBank.id, false, false)
+    $('#modal_bank_id').append(newOptionBank).trigger('change')
+    $('#modal_bank_id').select2()
 
-        var dataId = "{{ $detail->user_id }}"
-        var dataName = "{{ $detail->users_bank_cash->name }}"
-        var datarole = {id: dataId,text: dataName, selected: true};
-        var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-        $('#modal_user_id').append(newOptionrole).trigger('change')
-        $('#modal_user_id').select2()
+    // var dataId = "{{ $detail->bank_id }}"
+    // var dataName = "{{ $detail->banks->nama }}"
+    // var datarole = {id: dataId,text: dataName, selected: true};
+    // var newOptionrole = new Option(datarole.text, datarole.id, false, false)
+    // $('#modal_user_id').append(newOptionrole).trigger('change')
+    // $('#modal_user_id').select2()
 
 
 </script>

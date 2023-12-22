@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\MasterBankCash;
 use App\Models\MasterBankCashModel;
+use App\Models\MasterJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,6 +26,7 @@ class MasterBankCashController extends Controller
      */
     function __construct()
     {
+        // dd(MasterBankCashModel::with(['banks'])->get());
         $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
     }
 
@@ -39,10 +43,10 @@ class MasterBankCashController extends Controller
         ->addColumn('banks', function ($row){
             return $row->banks->nama;
         })
-        ->addColumn('user', function ($row){
-            return $row->users_bank_cash->name;
+        ->addColumn('jenis', function ($row){
+            return $row->jenis_transaksi ? "Transfer" : "Cash";
         })
-        ->rawColumns(['banks','user'])
+        ->rawColumns(['banks','jenis'])
         ->make(true);
 
     }
@@ -52,7 +56,7 @@ class MasterBankCashController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request){
+    public function create(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -67,12 +71,10 @@ class MasterBankCashController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
             'jenis_transaksi'   => 'required',
-            'user_id'           => 'required',
-            'nilai'             => 'required',
+            'nominal'           => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -82,7 +84,22 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        MasterBankCashModel::create($request->except('_token'));
+        $model = MasterBankCashModel::latest()->first();
+        $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+        $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
+        $request['nominal'] = str_replace(",","",$request->nominal);
+        DB::beginTransaction();
+        try {
+        //     //code...
+            MasterBankCashModel::create($request->except('_token'));
+            $request['debet'] = $request->nominal;
+            MasterJurnal::create($request->except('_token'));
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
 
         return redirect('master_bank_cash');
     }
@@ -112,7 +129,7 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterBankCashModel::with(['banks','users_bank_cash'])->findOrFail($id);
+        $detail = MasterBankCashModel::with(['banks'])->findOrFail($id);
         // dd($detail);
 
         return view('master_bank_cash.edit', $title, compact(['detail']));
@@ -155,7 +172,7 @@ class MasterBankCashController extends Controller
     }
 
     public function models($request){
-        return MasterBankCashModel::with(['banks','users_bank_cash'])
+        return MasterBankCashModel::with(['banks'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             // ->orWhere('tanggal_transaksi', $request->cari)
@@ -163,7 +180,7 @@ class MasterBankCashController extends Controller
                 $q->where('nama','%'.$request->cari."%");
             })
             ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhereHas('users_bank_cash', function($q) use($request){
+            // ->orWhereHa', function($q) use($request){
             //     $q->where('name','%'.$request->cari."%");
             // })
             ->orWhere('nilai', 'like','%'.$request->cari."%")

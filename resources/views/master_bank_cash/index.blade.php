@@ -60,7 +60,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                                        width="200%">
+                                        width="100%">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
@@ -68,8 +68,8 @@
                                                     <th class="text-uppercase">TGL. TRANSAKSI</th>
                                                     <th class="text-uppercase">SUMBER</th>
                                                     <th class="text-uppercase">JENIS TRANSAKSI</th>
-                                                    <th class="text-uppercase">USER PELAKSANA</th>
-                                                    <th class="text-uppercase">NILAI</th>
+                                                    {{-- <th class="text-uppercase">USER PELAKSANA</th> --}}
+                                                    <th class="text-uppercase">Nominal</th>
                                                     <th class="text-uppercase">KETERANGAN</th>
                                                 </tr>
                                             </thead>
@@ -140,14 +140,14 @@
                     data: 'banks',
                     name: 'SUMBER'
                 },{
-                    data: 'jenis_transaksi',
+                    data: 'jenis',
                     name: 'JENIS TRANSAKSI'
                 },{
-                    data: 'user',
-                    name: 'USER PELAKSANA'
-                },{
-                    data: 'nilai',
-                    name: 'NILAI'
+                //     data: 'user',
+                //     name: 'USER PELAKSANA'
+                // },{
+                    data: 'nominal',
+                    name: 'Nilai'
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'

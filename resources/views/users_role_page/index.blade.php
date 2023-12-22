@@ -144,7 +144,7 @@
                 url: url,
             },
             columns: [{
-                    data: 'name',
+                    data: 'alias',
                     name: 'Nama Pages'
                 },{
                     data: 'role_id',
