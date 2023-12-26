@@ -68,12 +68,6 @@
                     cache: true
                 }
             });
-
-            $('#chkall').on('click', function() {
-                var $select2 = $('#provinsi_id');
-                $select2.find('li').prop('selected', true);
-                $select2.trigger('change');
-            });
         });
     </script>
 @endsection

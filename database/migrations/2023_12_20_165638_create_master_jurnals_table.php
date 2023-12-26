@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('tanggal_transaksi');
             $table->unsignedBigInteger('dokumen')->nullable();
             $table->unsignedBigInteger('bank_id');
+            $table->integer('jenis_sumber')->default(0);
             $table->string('uraian')->nullable();
             $table->string('debet')->nullable();
             $table->string('kredit')->nullable();

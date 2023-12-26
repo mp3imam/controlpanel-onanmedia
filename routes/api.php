@@ -40,3 +40,4 @@ Route::get('get_select2_divisi', [OnanmediaAPIController::class,'select2_divisi'
 Route::get('get_select2_users', [OnanmediaAPIController::class,'select2_users'])->name('api.get_select2_users');
 Route::get('get_select2_banks', [OnanmediaAPIController::class,'select2_banks'])->name('api.get_select2_banks');
 Route::get('get_select2_banks_gabungan_kasir', [OnanmediaAPIController::class,'select2_banks_gabungan_kasir'])->name('api.get_select2_banks_gabungan_kasir');
+Route::get('get_select2_mata_uangs', [OnanmediaAPIController::class,'select2_mata_uangs'])->name('api.get_select2_mata_uangs');

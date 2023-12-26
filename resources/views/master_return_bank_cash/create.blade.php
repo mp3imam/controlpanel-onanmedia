@@ -11,11 +11,11 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Tambah Kas Belanja</h4>
+                    <h4 class="card-title mb-0">Tambah Isi Saldo Kasir</h4>
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('master_kas_belanja.store') }}" method="POST">
+                    <form action="{{ route('master_return_bank_cash.store') }}" method="POST">
                         @csrf
                         <div class="col-md-12 mb-4">
                             <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
@@ -24,7 +24,6 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="bank_id" class="form-label">SUMBER</label>
-                            <input hidden class="form-control" id="jenis_sumber" name="jenis_sumber"/>
                             <select id="modal_bank_id" name="bank_id" class="form-control" required></select>
                         </div>
 
@@ -94,7 +93,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_banks_gabungan_kasir') }}",
+                url: "{{ route('api.get_select2_banks') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -102,15 +101,12 @@
                     results: $.map(data.data, function(item) {
                         return {
                             id: item.id,
-                            text: item.name,
-                            item: item.data
+                            text: item.name
                         }
                     })
                 };
                 }
             }
-        }).on('select2:select', function (e) {
-            $("#jenis_sumber").val(e.params.data.item);
         });
     })
 </script>

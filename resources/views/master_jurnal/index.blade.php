@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                        <a href="{{ route('master_kas_belanja.create') }}" type="button" class="btn btn-success" >
+                        <a href="{{ route('master_jurnal.create') }}" type="button" class="btn btn-success" >
                             Tambah
                         </a>
                         <a type="button" class="btn btn-primary btn-label btn-pdf">
@@ -46,7 +46,7 @@
                     <div class="card">
                         <div class="card-body">
                             <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="200%">
+                            width="100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>

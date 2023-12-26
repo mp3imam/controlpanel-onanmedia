@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterJurnal;
 use App\Models\MasterKasBelanja;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -36,7 +39,10 @@ class MasterKasBelanjaController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->banks->nama;
+            return $row->jenis_sumber == "0" ? $row->banks_belanja->nama : $row->coa_belanja->uraian;
+        })
+        ->addColumn('jenis_transaksi', function ($row){
+            return $row->jenis_transaksi ? "Transfer" : "Cash";
         })
         ->rawColumns(['banks'])
         ->make(true);
@@ -63,11 +69,10 @@ class MasterKasBelanjaController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
             'jenis_transaksi'   => 'required',
-            'nilai'             => 'required',
+            'nominal'           => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -76,8 +81,25 @@ class MasterKasBelanjaController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
-        // Store your file into directory and db
-        MasterKasBelanja::create($request->except('_token'));
+        DB::beginTransaction();
+        try {
+            $model = MasterKasBelanja::latest()->whereYear('created_at','=',Carbon::now()->years())->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.Carbon::now()->format('Y');
+            $request['nominal'] = str_replace(",","",$request->nominal);
+
+            // Store your file into directory and db
+            MasterKasBelanja::create($request->except('_token'));
+
+            $jenis_sumber = $request->jenis_sumber ? 'kredit' : 'debet';
+            $request[$jenis_sumber] = $request->nominal;
+            MasterJurnal::create($request->except('_token'));
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
 
         return redirect('master_kas_belanja');
     }
@@ -149,11 +171,10 @@ class MasterKasBelanjaController extends Controller
     }
 
     public function models($request){
-        return MasterKasBelanja::with(['banks'])
+        return MasterKasBelanja::with(['banks_belanja','coa_belanja'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhere('tanggal_transaksi', $request->cari)
-            ->orWhereHas('banks', function($q) use($request){
+            ->orWhereHas('banks_belanja', function($q) use($request){
                 $q->where('nama','%'.$request->cari."%");
             })
             ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")

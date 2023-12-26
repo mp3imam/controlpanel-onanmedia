@@ -21,4 +21,9 @@ class MasterCoaModel extends Model
         ->limit(1)
         ->get();
     }
+
+    public function coa_belanja(){
+        return $this->belongsTo(MasterBankCashModel::class, 'bank_id');
+    }
+
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\MasterCoaController;
 use App\Http\Controllers\MasterJurnalController;
 use App\Http\Controllers\MasterKasBelanjaController;
 use App\Http\Controllers\MasterKasController;
+use App\Http\Controllers\MasterReturnBankCashController;
 use App\Http\Controllers\MenuPageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PekerjaanController;
@@ -70,8 +71,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getDataTableCoa', [MasterCoaController::class, 'get_datatable'])->name('getDataTableCoa');
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
-    Route::resource('master_bank_cash', MasterBankCashController::class);
-    Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
+    Route::resource('master_return_bank_cash', MasterReturnBankCashController::class);
+    Route::get('getDataTableReturnBankCash', [MasterReturnBankCashController::class, 'get_datatable'])->name('getDataTableReturnBankCash');
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class);
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
     Route::resource('master_jurnal', MasterJurnalController::class);

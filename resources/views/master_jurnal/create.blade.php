@@ -11,44 +11,98 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Tambah Isi Saldo Kasir</h4>
+                    <h4 class="card-title mb-0">Tambah Jurnal Umum</h4>
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('master_kas_belanja.store') }}" method="POST">
+                    <form action="{{ route('master_jurnal.store') }}" method="POST">
                         @csrf
-                        <div class="col-md-12 mb-4">
-                            <label for="nomor_transaksi" class="form-label">No. Transaksi</label>
-                            <input class="form-control" id="nomor_transaksi" name="nomor_transaksi" />
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="jenis_transaksi" class="form-label">JENIS TRANSAKSI</label>
+                                <select class="form-control" name="jenis_transaksi" required>
+                                    <option value="1" selected>Transfer</option>
+                                    <option value="2">Cash</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="keterangan" class="form-label">KETERANGAN</label>
+                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1"></textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="keterangan" class="form-label">Jenis Mata Uang</label>
+                                <select id="modal_mata_uang_id" name="mata_uang_id" class="form-control" required></select>
+                            </div>
                         </div>
 
-                        <div class="col-md-12 mb-4">
-                            <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
-                            <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" />
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 class="card-title mb-0">Detail Jurnal</h6>
+                                        </div>
+                                        <div class="col-md-6">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body tambah_detail">
+                                    <div class="card-header">
+                                        <div class="row font-weight-bold">
+                                            <div class="col-md-3">Rekening</div>
+                                            <div class="col">Keterangan</div>
+                                            <div class="col">Debet</div>
+                                            <div class="col">Kredit</div>
+                                            <div class="col text-center">Action</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row delete_detail1">
+                                            <div class="col-md-3">
+                                                <input id="rekening[]" name="rekening[]" class="form-control" required />
+                                            </div>
+                                            <div class="col">
+                                                <input id="keterangan[]" name="keterangan[]" class="form-control" />
+                                            </div>
+                                            <div class="col">
+                                                <input type="text" id="debet[]" name="debet[]" onkeypress="countDebet()" />
+                                            </div>
+                                            <div class="col">
+                                                <input type="text" id="kredit[]" name="kredit[]" onkeypress="countKredit()" />
+                                            </div>
+                                            <div class="col text-center">
+                                                <i class="ri-delete-bin-line text-danger ri-2x" onclick="hapus_detail(1)"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row delete_detail1">
+                                            <div class="col-md-3">
+                                            </div>
+                                            <div class="col">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-control" id="debetAll">0</label>
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-control" id="kreditAll">0</label>
+                                            </div>
+                                            <div class="col text-center">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="bank_id" class="form-label">SUMBER</label>
-                            <select id="modal_bank_id" name="bank_id" class="form-control"></select>
-                        </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="jenis_transaksi" class="form-label">JENIS TRANSAKSI</label>
-                            <input class="form-control" id="jenis_transaksi" name="jenis_transaksi" />
-                        </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="nilai" class="form-label">NILAI</label>
-                            <input type="number" class="form-control" id="nilai" name="nilai" />
-                        </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="keterangan" class="form-label">KETERANGAN</label>
-                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3"></textarea>
-                        </div>
-
-                        <button class="btn btn-success form-control text-white" style="background-color: #4E36E2"><i
-                                class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
+                        <button class="btn form-control text-white rounded-pill" type="button" onclick="tambah_baris()" style="background-color: #4E36E2">Tambah Data Baris</button>
+                        <button class="btn btn-success float-end mt-4"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
                     </form>
                 </div><!-- end card -->
             </div>
@@ -61,11 +115,11 @@
 @section('script')
 <script type="text/javascript">
     $(function () {
-        $("#modal_bank_id").select2({
+        $("#modal_mata_uang_id").select2({
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_banks') }}",
+                url: "{{ route('api.get_select2_mata_uangs') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -73,7 +127,7 @@
                     results: $.map(data.data, function(item) {
                         return {
                             id: item.id,
-                            text: item.name
+                            text: item.nama
                         }
                     })
                 };

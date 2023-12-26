@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MasterBankCash;
 use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -26,7 +25,6 @@ class MasterBankCashController extends Controller
      */
     function __construct()
     {
-        // dd(MasterBankCashModel::with(['banks'])->get());
         $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
     }
 
@@ -84,7 +82,7 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        $model = MasterBankCashModel::latest()->first();
+        $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->years())->first();
         $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
         $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
         $request['nominal'] = str_replace(",","",$request->nominal);

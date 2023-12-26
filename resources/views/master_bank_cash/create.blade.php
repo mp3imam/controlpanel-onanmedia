@@ -15,7 +15,7 @@
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('master_bank_cash.store') }}" method="POST">
+                    <form action="{{ route('master_kas_belanja.store') }}" method="POST">
                         @csrf
                         <div class="col-md-12 mb-4">
                             <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>

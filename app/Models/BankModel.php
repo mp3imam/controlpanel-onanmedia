@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BankModel extends Model
 {
     use HasFactory;
+    protected $connection = 'pgsql';
     protected $table = "ms_bank";
     protected $guarded = ['id'];
 
@@ -18,4 +19,9 @@ class BankModel extends Model
     public function jurnal_banks(){
         return $this->belongsTo(MasterJurnal::class, 'id');
     }
+
+    public function banks_belanja(){
+        return $this->belongsTo(MasterKasBelanja::class, 'id');
+    }
+
 }

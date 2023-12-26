@@ -54,7 +54,7 @@
                                         <th class="text-uppercase">TGL. TRANSAKSI</th>
                                         <th class="text-uppercase">SUMBER</th>
                                         <th class="text-uppercase">JENIS TRANSAKSI</th>
-                                        <th class="text-uppercase">NILAI</th>
+                                        <th class="text-uppercase">Nominal</th>
                                         <th class="text-uppercase">KETERANGAN</th>
                                     </tr>
                                 </thead>
@@ -120,7 +120,7 @@
                     data: 'jenis_transaksi',
                     name: 'JENIS TRANSAKSI'
                 },{
-                    data: 'nilai',
+                    data: 'nominal',
                     name: 'NILAI'
                 },{
                     data: 'keterangan',

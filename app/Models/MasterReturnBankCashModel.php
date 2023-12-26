@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MasterBankCashModel extends Model
+class MasterReturnBankCashModel extends Model
 {
     use HasFactory;
     protected $connection = "pgsql";
-    protected $table = "transaksi_kas";
+    protected $table = "transaksi_return_kas";
     protected $guarded = ['id'];
 
     public function banks(){

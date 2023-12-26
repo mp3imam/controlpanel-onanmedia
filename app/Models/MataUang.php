@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MataUang extends Model
 {
     use HasFactory;
+    protected $connection = "pgsql";
+    protected $table = "mata_uangs";
 }

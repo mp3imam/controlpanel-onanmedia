@@ -7,15 +7,17 @@ use App\Models\BankModel;
 use App\Models\DivisiModel;
 use App\Models\KategoriModel;
 use App\Models\MasterCoaModel;
+use App\Models\MataUang;
 use App\Models\UserPublicModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class OnanmediaAPIController extends Controller
 {
-    public function datas(Request $request){
+    public function roles(Request $request){
         $datas = Role::query()->select('id', 'name')
         ->when($request->id, function($q) use($request) {
             return $q->whereIn('id',$request->id);
@@ -125,8 +127,8 @@ class OnanmediaAPIController extends Controller
         return response()->json($data);
     }
 
-    public function select2_banks_gabungan_kasir(Request $request){
-        $datas = BankModel::select('id', 'nama as name')
+    public function select2_mata_uangs(Request $request){
+        $datas = MataUang::select('id','nama')
         ->when($request->id, function($q) use($request) {
             return $q->whereIn('id',$request->id);
         })
@@ -134,28 +136,35 @@ class OnanmediaAPIController extends Controller
             return $q->where('name','like','%'.$request->q.'%');
         })
         ->get();
-
-        $datas1 = MasterCoaModel::select('id', 'uraian as name')
-        ->when($request->id, function($q) use($request) {
-            return $q->whereIn('id',$request->id);
-        })
-        ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
-        })
-        ->get();
-        dd($datas, $datas1, MasterCoaModel::select('id', 'uraian as name')
-        ->when($request->id, function($q) use($request) {
-            return $q->whereIn('id',$request->id);
-        })
-        ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
-        })
-        ->get()->merge($datas));
-        // $datas->union
 
         $data = [
             'status' => Response::HTTP_OK,
             'data'   => $datas->all()
+        ];
+
+        return response()->json($data);
+    }
+
+    public function select2_banks_gabungan_kasir(Request $request){
+        $dataBank = BankModel::selectRaw('id, nama as name, 0 as data')
+        ->when($request->id, function($q) use($request) {
+            return $q->whereIn('id',$request->id);
+        })
+        ->when($request->q, function($q) use($request) {
+            return $q->where('name','like','%'.$request->q.'%');
+        });
+
+        $bankMergeCoa = MasterCoaModel::selectRaw('CAST(id as integer), uraian as name, 1 as data')
+        ->when($request->id, function($q) use($request) {
+            return $q->whereIn('id',$request->id);
+        })
+        ->when($request->q, function($q) use($request) {
+            return $q->where('name','like','%'.$request->q.'%');
+        })->unionAll($dataBank)->get();
+
+        $data = [
+            'status' => Response::HTTP_OK,
+            'data'   => $bankMergeCoa->all()
         ];
 
         return response()->json($data);

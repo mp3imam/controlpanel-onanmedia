@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterJurnal;
+use App\Models\MasterReturnBankCashModel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
-class MasterJurnalController extends Controller
+class MasterReturnBankCashController extends Controller
 {
     private $title = 'Master Transaksi Kas';
     private $li_1 = 'Index';
@@ -22,31 +25,28 @@ class MasterJurnalController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(13)->active()->first()->name);
+        $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
     }
 
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_jurnal.index', $title);
+        return view('master_bank_cash.index', $title);
     }
 
     function get_datatable(Request $request){
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->jurnal_banks->nama;
+            return $row->banks->nama;
         })
-        // ->addColumn('kredits', function ($row){
-        //     return count($row->total->kredit);
-        // })
-        // ->addColumn('debets', function ($row){
-        //     return count($row->total->debet);
-        // })
-        // ->rawColumns(['banks','kredit','debet'])
-        ->rawColumns(['banks'])
+        ->addColumn('jenis', function ($row){
+            return $row->jenis_transaksi ? "Transfer" : "Cash";
+        })
+        ->rawColumns(['banks','jenis'])
         ->make(true);
+
     }
 
     /**
@@ -58,7 +58,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_jurnal.create', $title);
+        return view('master_return_bank_cash.create', $title);
     }
 
     /**
@@ -68,12 +68,12 @@ class MasterJurnalController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // dd($request->all());
         $validasi = [
-            'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
             'jenis_transaksi'   => 'required',
-            'nilai'             => 'required',
+            'nominal'           => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -83,9 +83,24 @@ class MasterJurnalController extends Controller
         }
 
         // Store your file into directory and db
-        MasterJurnal::create($request->except('_token'));
+        $model = MasterReturnBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->years())->first();
+        $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+        $request['nomor_transaksi'] = $nomor.'/TRAN/KMB/'.Carbon::now()->format('Y');
+        $request['nominal'] = str_replace(",","",$request->nominal);
+        DB::beginTransaction();
+        try {
+        //     //code...
+            MasterReturnBankCashModel::create($request->except('_token'));
+            $request['kredit'] = $request->nominal;
+            MasterJurnal::create($request->except('_token'));
 
-        return redirect('master_jurnal');
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+
+        return redirect('master_bank_cash');
     }
 
     /**
@@ -98,9 +113,9 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::findOrFail($id)->first();
+        $detail = MasterReturnBankCashModel::findOrFail($id)->first();
 
-        return view('master_jurnal.detail', $title, compact(['detail']));
+        return view('master_bank_cash.detail', $title, compact(['detail']));
     }
 
     /**
@@ -113,10 +128,10 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::with(['banks'])->findOrFail($id);
+        $detail = MasterReturnBankCashModel::with(['banks'])->findOrFail($id);
         // dd($detail);
 
-        return view('master_jurnal.edit', $title, compact(['detail']));
+        return view('master_bank_cash.edit', $title, compact(['detail']));
     }
 
     /**
@@ -128,7 +143,6 @@ class MasterJurnalController extends Controller
      */
     public function update(Request $request, $id){
         $request->validate([
-            'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
             'jenis_transaksi'   => 'required',
@@ -136,9 +150,9 @@ class MasterJurnalController extends Controller
         ]);
 
         // Store your file into directory and db
-        MasterJurnal::find($id)->update($request->except(['_token','_method']));
+        MasterReturnBankCashModel::find($id)->update($request->except(['_token','_method']));
 
-        return redirect('master_jurnal');
+        return redirect('master_bank_cash');
     }
 
     /**
@@ -150,16 +164,26 @@ class MasterJurnalController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterJurnal::findOrFail($id)->delete()
+            'message' => MasterReturnBankCashModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return MasterJurnal::
-        // with(['jurnal_banks'])
-        // ->total()
-        // ->
-        get();
+        return MasterReturnBankCashModel::with(['banks'])
+        ->when($request->cari, function($q) use($request){
+            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
+            // ->orWhere('tanggal_transaksi', $request->cari)
+            ->orWhereHas('banks', function($q) use($request){
+                $q->where('nama','%'.$request->cari."%");
+            })
+            ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
+            // ->orWhereHa', function($q) use($request){
+            //     $q->where('name','%'.$request->cari."%");
+            // })
+            ->orWhere('nilai', 'like','%'.$request->cari."%")
+            ->orWhere('keterangan', 'like','%'.$request->cari."%");
+        })
+        ->get();
     }
 
     public function pdf(Request $request){
