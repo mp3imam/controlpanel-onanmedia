@@ -24,6 +24,7 @@ class MasterJurnalController extends Controller
      */
     function __construct()
     {
+        dd(MasterJurnal::total()->get());
         $this->middleware('permission:'.Permission::whereId(13)->active()->first()->name);
     }
 
@@ -89,25 +90,6 @@ class MasterJurnalController extends Controller
 
         return redirect('master_jurnal');
     }
-
-    public function upload_foto(Request $request){
-        if($request->hasFile('attachment')){
-            $file = $request->file('attachment');
-            $filename = date('YmdHis') . "." . $file->getClientOriginalExtension();
-            $folder = 'public/jurnal_umum';
-            Session::put('folder', $folder); //save session  folder
-            Session::put('filename', $filename);
-            $file->storeAs($folder, $filename);
-
-            TemporaryFileUpload::create([
-                'folder' => $folder,
-                'filename' => $filename
-            ]);
-            return $folder;
-        }
-        return 'success';
-    }
-
 
     /**
      * Display the specified resource.

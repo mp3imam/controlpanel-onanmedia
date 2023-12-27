@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi_kas_detail', function (Blueprint $table) {
+        Schema::create('transaksi_kas_belanja_detail', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('kas_id');
             $table->unsignedBigInteger('account_id');
             $table->string('keterangan');
-            $table->string('nominal');
+            $table->bigInteger('nominal');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaksi_kas_detail');
+        Schema::dropIfExists('transaksi_kas_belanja_detail');
     }
 };

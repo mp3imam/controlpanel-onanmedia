@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('folder');
             $table->string('filename');
+            $table->enum('status',[0,1])->default("0");
+            // $table->integer('created_by');
             $table->timestamps();
         });
     }

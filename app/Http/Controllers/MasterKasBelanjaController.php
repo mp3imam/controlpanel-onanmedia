@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JurnalUmumDetail;
 use App\Models\MasterJurnal;
 use App\Models\MasterKasBelanja;
+use App\Models\MasterKasBelanjaDetail;
+use App\Models\MasterKasBelanjaFile;
+use App\Models\TemporaryFileUpload;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,6 +31,7 @@ class MasterKasBelanjaController extends Controller
      */
     function __construct()
     {
+        // dd(MasterKasBelanja::with('belanja_detail')->total()->get());
         $this->middleware('permission:'.Permission::whereId(12)->active()->first()->name);
     }
 
@@ -39,7 +46,11 @@ class MasterKasBelanjaController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->jenis_sumber == "0" ? $row->banks_belanja->nama : $row->coa_belanja->uraian;
+            return $row->coa_belanja->uraian;
+        })
+        ->addColumn('nominal', function ($row){
+            // dd($row->belanja_detail);
+            return $row->belanja_detail->sum('nominal');
         })
         ->addColumn('jenis_transaksi', function ($row){
             return $row->jenis_transaksi ? "Transfer" : "Cash";
@@ -70,30 +81,61 @@ class MasterKasBelanjaController extends Controller
     public function store(Request $request){
         $validasi = [
             'tanggal_transaksi' => 'required',
-            'bank_id'           => 'required',
-            'jenis_transaksi'   => 'required',
-            'nominal'           => 'required',
+            'account_id'        => 'required',
+            // 'jenis_transaksi'   => 'required',
+            'nilai'             => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->messages());
-        }
+        if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
         DB::beginTransaction();
         try {
-            $model = MasterKasBelanja::latest()->whereYear('created_at','=',Carbon::now()->years())->first();
+            $model = MasterKasBelanja::latest()->whereYear('created_at', '=', Carbon::now()->format('Y'))->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.Carbon::now()->format('Y');
-            $request['nominal'] = str_replace(",","",$request->nominal);
+            // $request['keterangan_kas'] = $request->keterangan ?? '-';
 
             // Store your file into directory and db
-            MasterKasBelanja::create($request->except('_token'));
+            $kas = MasterKasBelanja::create($request->except('_token'));
 
-            $jenis_sumber = $request->jenis_sumber ? 'kredit' : 'debet';
-            $request[$jenis_sumber] = $request->nominal;
-            MasterJurnal::create($request->except('_token'));
+            foreach ($request->akun_belanja as $akun => $a) {
+                $data = [
+                    'kas_id'     => $kas->id,
+                    'account_id' => $a,
+                    'keterangan' => $request->keterangan[$akun] ?? '',
+                    'nominal'    => $request->nilai[$akun],
+                ];
+                MasterKasBelanjaDetail::create($data);
+            }
+
+            $files = TemporaryFileUpload::query()
+            ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
+            ->whereStatus("0")
+            ->get();
+            foreach ($files as $file) {
+                $data = [
+                    'kas_id'   => $kas->id,
+                    'filename' => $file->filename
+                ];
+                MasterKasBelanjaFile::create($data);
+            }
+            // TemporaryFileUpload::update(1);
+
+            // Create Master Jurnal
+            $masterJurnal = MasterJurnal::create($request->except('_token'));
+
+            // Create Master Jurnal Detail
+            foreach ($request->akun_belanja as $akun => $a) {
+                $data = [
+                    'jurnal_umum_id' => $masterJurnal->id,
+                    'account_id'     => $a,
+                    'keterangan'     => $request->keterangan[$akun] ?? '',
+                    'debet'          => $request->nilai[$akun],
+                ];
+                JurnalUmumDetail::create($data);
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -102,6 +144,26 @@ class MasterKasBelanjaController extends Controller
         }
 
         return redirect('master_kas_belanja');
+    }
+
+
+    public function upload_foto(Request $request){
+        // if($request->hasFile('attachment')){
+            foreach ($request->file('attachment') as $file) {
+                $filename = date('YmdHis') . "." . $file->getClientOriginalExtension();
+                $folder = 'public/jurnal_umum';
+                $file->storeAs($folder, $filename);
+
+                TemporaryFileUpload::create([
+                    'folder' => $folder,
+                    'filename' => $filename,
+                    // 'status' => "0",
+                    // 'created_by' => (int)Auth::user()->id
+                ]);
+            }
+            return $folder;
+        // }
+        // return 'success';
     }
 
     /**
@@ -171,7 +233,7 @@ class MasterKasBelanjaController extends Controller
     }
 
     public function models($request){
-        return MasterKasBelanja::with(['banks_belanja','coa_belanja'])
+        return MasterKasBelanja::with(['coa_belanja','belanja_detail'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             ->orWhereHas('banks_belanja', function($q) use($request){

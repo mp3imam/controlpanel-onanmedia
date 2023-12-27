@@ -16,6 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_transaksi');
             $table->date('tanggal_transaksi')->default(Carbon::now()->format('Y-m-d'));
+            $table->unsignedBigInteger('bank_id');
+            $table->string('jenis_transaksi')->default(1);
+            // $table->string('user_id');
+            $table->string('nominal')->default(0);
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

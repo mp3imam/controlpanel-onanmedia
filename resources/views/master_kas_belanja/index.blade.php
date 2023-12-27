@@ -123,7 +123,7 @@
                     data: 'nominal',
                     name: 'NILAI'
                 },{
-                    data: 'keterangan',
+                    data: 'keterangan_kas',
                     name: 'KETERANGAN'
                 }
             ]

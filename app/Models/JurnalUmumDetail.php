@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class JurnalUmumDetail extends Model
 {
     use HasFactory;
+    protected $guarded = ['id'];
 
     public function details(){
-        return $this->belongsTo(JurnalUmumDetail::class, 'id', 'jurnal_umum_id');
+        return $this->belongsTo(MasterJurnal::class, 'id', 'jurnal_umum_id');
     }
 }

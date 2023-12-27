@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('nomor_transaksi');
             $table->date('tanggal_transaksi');
             $table->unsignedBigInteger('dokumen')->nullable();
-            $table->unsignedBigInteger('bank_id');
+            // $table->unsignedBigInteger('bank_id');
             $table->integer('jenis_sumber')->default(0);
             $table->string('uraian')->nullable();
-            $table->string('debet')->nullable();
-            $table->string('kredit')->nullable();
-            $table->string('keterangan')->nullable();
-            $table->string('tipe')->default(0);
+            // $table->string('debet')->nullable();
+            // $table->string('kredit')->nullable();
+            // $table->string('tipe')->default(0);
+            $table->string('keterangan_jurnal_umum')->nullable()->default('-');
             $table->unsignedBigInteger('jenis_mata_uang')->default(1);
             $table->timestamps();
         });

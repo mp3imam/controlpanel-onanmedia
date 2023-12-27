@@ -82,7 +82,7 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->years())->first();
+        $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->format('Y'))->first();
         $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
         $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
         $request['nominal'] = str_replace(",","",$request->nominal);

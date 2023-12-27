@@ -42,6 +42,16 @@ if (document.querySelector("#cleave-numeral")) {
     });
 }
 
+if (document.querySelector(".money-rp")) {
+    var cleaveNumeral = new Cleave('.money-rp', {
+        numeral: true,
+        delimiter: '·',
+        blocks: [4, 4, 4, 4],
+        prefix: 'Rp. ',
+        numeralThousandsGroupStyle: 'thousand'
+    });
+}
+
 if (document.querySelector("#cleave-ccard")) {
     var cleaveBlocks = new Cleave('#cleave-ccard', {
         blocks: [4, 4, 4, 4],

@@ -169,4 +169,23 @@ class OnanmediaAPIController extends Controller
 
         return response()->json($data);
     }
+
+    public function select2_belanja(Request $request){
+        $bankMergeCoa = MasterCoaModel::select('id','uraian as name')
+        ->where('kdrek1',5)
+        ->where('type','D')
+        ->when($request->id, function($q) use($request) {
+            return $q->whereIn('id',$request->id);
+        })
+        ->when($request->q, function($q) use($request) {
+            return $q->where('name','like','%'.$request->q.'%');
+        })->get();
+
+        $data = [
+            'status' => Response::HTTP_OK,
+            'data'   => $bankMergeCoa->all()
+        ];
+
+        return response()->json($data);
+    }
 }
