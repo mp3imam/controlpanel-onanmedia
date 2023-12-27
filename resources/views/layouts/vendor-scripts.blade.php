@@ -61,15 +61,15 @@
     //   }
 
 
-    var pusher = new Pusher('bd06cb9f99e8566439e1', {
-      cluster: 'ap1'
-    });
+    // var pusher = new Pusher('bd06cb9f99e8566439e1', {
+    //   cluster: 'ap1'
+    // });
 
-    var channel = pusher.subscribe('status-liked');
-    channel.bind('App\\Events\\MessageSent', function(data) {
-        // notificationsCount += 1;
-        // notificationsCountElem.attr('data-count', notificationsCount);
-        // notificationsCount.show();
-        console.log(data.count());
-    });
+    // var channel = pusher.subscribe('status-liked');
+    // channel.bind('App\\Events\\MessageSent', function(data) {
+    //     // notificationsCount += 1;
+    //     // notificationsCountElem.attr('data-count', notificationsCount);
+    //     // notificationsCount.show();
+    //     console.log(data.count());
+    // });
   </script>

@@ -77,6 +77,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
     Route::resource('master_jurnal', MasterJurnalController::class);
     Route::get('getDataTableMasterJurnal', [MasterJurnalController::class, 'get_datatable'])->name('getDataTableMasterJurnal');
+    Route::post('upload_foto_jurnal_umum', [MasterJurnalController::class, 'upload_foto'])->name('upload_foto_jurnal_umum');
 
     // HRD
     Route::resource('data_karyawan', HrdController::class);

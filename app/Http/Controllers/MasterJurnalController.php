@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterJurnal;
+use App\Models\TemporaryFileUpload;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -87,6 +89,25 @@ class MasterJurnalController extends Controller
 
         return redirect('master_jurnal');
     }
+
+    public function upload_foto(Request $request){
+        if($request->hasFile('attachment')){
+            $file = $request->file('attachment');
+            $filename = date('YmdHis') . "." . $file->getClientOriginalExtension();
+            $folder = 'public/jurnal_umum';
+            Session::put('folder', $folder); //save session  folder
+            Session::put('filename', $filename);
+            $file->storeAs($folder, $filename);
+
+            TemporaryFileUpload::create([
+                'folder' => $folder,
+                'filename' => $filename
+            ]);
+            return $folder;
+        }
+        return 'success';
+    }
+
 
     /**
      * Display the specified resource.

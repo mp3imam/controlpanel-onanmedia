@@ -40,6 +40,17 @@
                                 <label for="keterangan" class="form-label">Jenis Mata Uang</label>
                                 <select id="modal_mata_uang_id" name="mata_uang_id" class="form-control" required></select>
                             </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="row mb-3">
+                                    <div class="col-lg-3">
+                                        <label for="nameInput" class="form-label">Gambar</label>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="file" name="attachment" id="attachment">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col">
@@ -112,6 +123,10 @@
     </div>
     <!--end row-->
 @endsection
+<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+<script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 @section('script')
 <script type="text/javascript">
     $(function () {
@@ -134,6 +149,26 @@
                 }
             }
         });
+
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+
+        const inputElement = document.querySelector('input[id="attachment"]');
+        const pond = FilePond.create(inputElement);
+        const pondBox = document.querySelector('.filepond--root');
+        pondBox.addEventListener('FilePond:addfile', e => {
+            console.log('file added event', e.detail);
+            var fileName = pond.getFile().filename;
+            console.log(fileName);
+        });
+
+        FilePond.setOptions({
+            allowMultiple: true,
+            server: {
+                process: "/upload_foto_jurnal_umum",
+                headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
+            }
+        });
+
     })
 </script>
 @endsection
