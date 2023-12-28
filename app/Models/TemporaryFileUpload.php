@@ -10,6 +10,6 @@ class TemporaryFileUpload extends Model
     use HasFactory;
 
     protected $table = 'temporary_file_upload';
-    protected $fillable = ['folder', 'filename'];
+    protected $guarded = ['id'];
 
 }

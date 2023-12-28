@@ -53,12 +53,12 @@
                                         <th class="text-uppercase" width="10%">No. Transaksi</th>
                                         <th class="text-uppercase">TGL. Jurnal</th>
                                         <th class="text-uppercase">Dokumen</th>
-                                        <th class="text-uppercase">Rekening</th>
+                                        {{-- <th class="text-uppercase">Rekening</th> --}}
                                         <th class="text-uppercase">Uraian</th>
                                         <th class="text-uppercase">Debet</th>
                                         <th class="text-uppercase">Kredit</th>
                                         <th class="text-uppercase">KETERANGAN</th>
-                                        <th hidden>tipe</th>
+                                        {{-- <th hidden>tipe</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,9 +121,9 @@
                     data: 'nomor_transaksi',
                     name: 'Documen'
                 },{
-                    data: 'banks',
-                    name: 'Rekening'
-                },{
+                //     data: 'banks',
+                //     name: 'Rekening'
+                // },{
                     data: 'uraian',
                     name: 'Uraian'
                 },{
@@ -133,11 +133,11 @@
                     data: 'kredit',
                     name: 'Kredit'
                 },{
-                    data: 'keterangan',
+                    data: 'keterangan_jurnal_umum',
                     name: 'KETERANGAN'
-                },{
-                    data: 'tipe',
-                    visible: false
+                // },{
+                //     data: 'tipe',
+                //     visible: false
                 }
             ]
         });

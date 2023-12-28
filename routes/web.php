@@ -73,11 +73,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
     Route::resource('master_return_bank_cash', MasterReturnBankCashController::class);
     Route::get('getDataTableReturnBankCash', [MasterReturnBankCashController::class, 'get_datatable'])->name('getDataTableReturnBankCash');
+    Route::post('upload_foto_jurnal_umum', [MasterKasBelanjaController::class, 'upload_foto'])->name('upload_foto_jurnal_umum');
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class);
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
+    Route::post('hapus_foto_kas_belanja', [MasterKasBelanjaController::class, 'hapus_foto'])->name('hapus_foto_kas_belanja');
     Route::resource('master_jurnal', MasterJurnalController::class);
     Route::get('getDataTableMasterJurnal', [MasterJurnalController::class, 'get_datatable'])->name('getDataTableMasterJurnal');
-    Route::post('upload_foto_jurnal_umum', [MasterKasBelanjaController::class, 'upload_foto'])->name('upload_foto_jurnal_umum');
+    // End Finance
 
     // HRD
     Route::resource('data_karyawan', HrdController::class);

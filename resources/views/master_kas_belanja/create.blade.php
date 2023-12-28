@@ -18,7 +18,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Tambah Jurnal Umum</h4>
+                    <h4 class="card-title mb-0">Tambah Kas Belanja</h4>
                 </div><!-- end card header -->
 
                 <div class="card-body">
@@ -27,7 +27,7 @@
                         <div class="row">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <input type="file" name="attachment[]" id="attachment" multiple>
+                                    <input type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
                                 </div>
                             </div>
                             <div class="col-md-12 mb-4">
@@ -54,7 +54,7 @@
                                             <h6 class="card-title mb-0">Detail Jurnal</h6>
                                         </div>
                                         <div class="col-md-6">
-                                            <button class="btn float-end text-white rounded-pill" type="button" onclick="tambah_detail()" style="background-color: #4E36E2">Tambah Data Baris</button>
+                                            <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
                                         </div>
                                     </div>
                                 </div>
@@ -76,9 +76,9 @@
                                                 <input id="keterangan[]" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col-md-3">
-                                                <input class="form-control nilai" number="nilai[]" name="nilai[]" onkeyup="countNilai()" />
+                                                <input class="form-control nilai" number="nilai[]" name="nilai[]" value="0" onkeyup="countNilai()" required/>
                                             </div>
-                                            <div class="col-md-3 text-center hapus_detail">
+                                            <div class="col-md-3 text-center float-end hapus_detail">
                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>
                                             </div>
                                         </div>
@@ -90,16 +90,18 @@
                                             <div class="col-md-3 text-uppercase">TOTAL
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="total" id="total_nilai">0</label>
+                                                <input class="form-control total bg-gradient" value="0" id="total_nilai" name="total_nilai" readonly/>
                                             </div>
                                             <div class="col-md-3 text-center">
+                                                <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-success float-end mt-4"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
+                        <button class="btn btn-success mt-4 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
+                            ></i> Simpan</button>
                     </form>
                 </div><!-- end card -->
             </div>
@@ -112,11 +114,21 @@
 @section('script')
 
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script>
     FilePond.registerPlugin(FilePondPluginImagePreview);
+    FilePond.registerPlugin(FilePondPluginFileValidateType);
 
-    const inputElement = document.querySelector('input[id="attachment"]');
+    const inputElement = document.querySelector('input[id="attachment"]', {
+        acceptedFileTypes: ['image/*'],
+        fileValidateTypeDetectType: (source, type) =>
+            new Promise((resolve, reject) => {
+                // Do custom type detection here and return with promise
+
+                resolve(type);
+            }),
+    });
     const pond = FilePond.create(inputElement);
     const pondBox = document.querySelector('.filepond--root');
     pondBox.addEventListener('FilePond:addfile', e => {
@@ -184,7 +196,7 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <input class="form-control nilai" id="nilai" name="nilai[]" onkeyup="countNilai()" />
+                    <input class="form-control nilai" id="nilai" name="nilai[]" value="0" onkeyup="countNilai()" required />
                 </div>
                 <div class="col-md-3 text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -220,7 +232,7 @@
             countNilai()
         });
 
-        $(".nilai").maskMoney({prefix: 'Rp. ', affixesStay: false, precision: 0});
+        $(".nilai").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     }
 
@@ -232,24 +244,15 @@
     function countNilai() {
         var sum_value = 0;
         $('.nilai').each(function(){
-            sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","");
-            $('#total_nilai').text(sum_value);
+            console.log(sum_value);
+            sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
+            $('#total_nilai').val(sum_value);
         })
 
-        $('#total_nilai').priceFormat({
-            prefix: 'Rp. ',
-            centsSeparator: ',',
-            thousandsSeparator: '.',
-            centsLimit: 0
-        });
+        $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
-    $(".nilai").maskMoney({prefix: 'Rp. ', affixesStay: false, precision: 0});
-    $('#total_nilai').priceFormat({
-        prefix: 'Rp. ',
-        centsSeparator: ',',
-        thousandsSeparator: '.',
-        centsLimit: 0
-    });
+    $(".nilai").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 </script>
 @endsection

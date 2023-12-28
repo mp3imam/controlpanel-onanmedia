@@ -13,6 +13,6 @@ class MasterKasBelanjaFile extends Model
     protected $guarded = ['id'];
 
     public function kas_file(){
-        return $this->hasOne(MasterKasBelanja::class, 'id', 'kas_id');
+        return $this->belongsTo(MasterKasBelanja::class, 'id', 'kas_id');
     }
 }

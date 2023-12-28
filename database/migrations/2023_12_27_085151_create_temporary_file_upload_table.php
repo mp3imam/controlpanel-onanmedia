@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('folder');
             $table->string('filename');
             $table->enum('status',[0,1])->default("0");
-            // $table->integer('created_by');
+            $table->unsignedBigInteger('created_by');
+            $table->string('token');
             $table->timestamps();
         });
     }

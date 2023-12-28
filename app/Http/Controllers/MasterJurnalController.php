@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterJurnal;
-use App\Models\TemporaryFileUpload;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -24,7 +22,7 @@ class MasterJurnalController extends Controller
      */
     function __construct()
     {
-        dd(MasterJurnal::total()->get());
+        // dd(MasterJurnal::with(['details'])->get());
         $this->middleware('permission:'.Permission::whereId(13)->active()->first()->name);
     }
 
@@ -38,17 +36,16 @@ class MasterJurnalController extends Controller
     function get_datatable(Request $request){
         return
         DataTables::of($this->models($request))
-        ->addColumn('banks', function ($row){
-            return $row->jurnal_banks->nama;
+        // ->addColumn('banks', function ($row){
+        //     return $row->jurnal_banks->nama;
+        // })
+        ->addColumn('kredits', function ($row){
+            return $row->details->sum('kredit');
         })
-        // ->addColumn('kredits', function ($row){
-        //     return count($row->total->kredit);
-        // })
-        // ->addColumn('debets', function ($row){
-        //     return count($row->total->debet);
-        // })
-        // ->rawColumns(['banks','kredit','debet'])
-        ->rawColumns(['banks'])
+        ->addColumn('debets', function ($row){
+            return $row->details->sum('debet');
+        })
+        ->rawColumns(['banks','kredit','debet'])
         ->make(true);
     }
 
@@ -158,11 +155,7 @@ class MasterJurnalController extends Controller
     }
 
     public function models($request){
-        return MasterJurnal::
-        // with(['jurnal_banks'])
-        // ->total()
-        // ->
-        get();
+        return MasterJurnal::with(['details'])->get();
     }
 
     public function pdf(Request $request){

@@ -14,7 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
@@ -31,7 +32,6 @@ class MasterKasBelanjaController extends Controller
      */
     function __construct()
     {
-        // dd(MasterKasBelanja::with('belanja_detail')->total()->get());
         $this->middleware('permission:'.Permission::whereId(12)->active()->first()->name);
     }
 
@@ -50,7 +50,7 @@ class MasterKasBelanjaController extends Controller
         })
         ->addColumn('nominal', function ($row){
             // dd($row->belanja_detail);
-            return $row->belanja_detail->sum('nominal');
+            return number_format($row->belanja_detail->sum('nominal'), 0);
         })
         ->addColumn('jenis_transaksi', function ($row){
             return $row->jenis_transaksi ? "Transfer" : "Cash";
@@ -95,44 +95,58 @@ class MasterKasBelanjaController extends Controller
             $model = MasterKasBelanja::latest()->whereYear('created_at', '=', Carbon::now()->format('Y'))->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.Carbon::now()->format('Y');
-            // $request['keterangan_kas'] = $request->keterangan ?? '-';
+            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
             // Store your file into directory and db
             $kas = MasterKasBelanja::create($request->except('_token'));
 
             foreach ($request->akun_belanja as $akun => $a) {
+                $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+
                 $data = [
                     'kas_id'     => $kas->id,
                     'account_id' => $a,
                     'keterangan' => $request->keterangan[$akun] ?? '',
-                    'nominal'    => $request->nilai[$akun],
+                    'nominal'    => $nominal,
                 ];
                 MasterKasBelanjaDetail::create($data);
             }
 
-            $files = TemporaryFileUpload::query()
-            ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
-            ->whereStatus("0")
-            ->get();
-            foreach ($files as $file) {
-                $data = [
-                    'kas_id'   => $kas->id,
-                    'filename' => $file->filename
-                ];
-                MasterKasBelanjaFile::create($data);
+            if ($request->attachment){
+                $files = TemporaryFileUpload::query()
+                ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
+                ->whereStatus("0")
+                ->whereCreatedBy(Auth::user()->id)
+                ->whereToken($request->_token)
+                ->get();
+
+                foreach ($files as $file) {
+                    $data = [
+                        'kas_id'     => $kas->id,
+                        'filename'   => $file->filename,
+                    ];
+                    MasterKasBelanjaFile::create($data);
+
+                    // update foto status menjadi 1
+                    TemporaryFileUpload::findOrFail($file->id)->update(['status' => 1]);
+                }
             }
-            // TemporaryFileUpload::update(1);
 
             // Create Master Jurnal
+            $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
+            $request['sumber_data'] = 1;
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
             $masterJurnal = MasterJurnal::create($request->except('_token'));
 
             // Create Master Jurnal Detail
             foreach ($request->akun_belanja as $akun => $a) {
+                $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+
                 $data = [
                     'jurnal_umum_id' => $masterJurnal->id,
                     'account_id'     => $a,
                     'keterangan'     => $request->keterangan[$akun] ?? '',
-                    'debet'          => $request->nilai[$akun],
+                    'kredit'         => $nominal,
                 ];
                 JurnalUmumDetail::create($data);
             }
@@ -146,39 +160,21 @@ class MasterKasBelanjaController extends Controller
         return redirect('master_kas_belanja');
     }
 
-
     public function upload_foto(Request $request){
-        // if($request->hasFile('attachment')){
-            foreach ($request->file('attachment') as $file) {
-                $filename = date('YmdHis') . "." . $file->getClientOriginalExtension();
-                $folder = 'public/jurnal_umum';
-                $file->storeAs($folder, $filename);
+        foreach ($request->file('attachment') as $file) {
+            $path = public_path('jurnal_umum/');
+            !is_dir($path) && mkdir($path, 0777, true);
 
-                TemporaryFileUpload::create([
-                    'folder' => $folder,
-                    'filename' => $filename,
-                    // 'status' => "0",
-                    // 'created_by' => (int)Auth::user()->id
-                ]);
-            }
-            return $folder;
-        // }
-        // return 'success';
-    }
+            $imageName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move($path, $imageName);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request, $id){
-        $title['title'] = $this->title;
-        $title['li_1'] = $this->li_1;
-
-        $detail = MasterKasBelanja::findOrFail($id)->first();
-
-        return view('master_kas_belanja.detail', $title, compact(['detail']));
+            TemporaryFileUpload::create([
+                'folder' => $path,
+                'filename' => $imageName,
+                'token' => $request->header('X-Csrf-Token'),
+                'created_by' => (int)Auth::user()->id
+            ]);
+        }
     }
 
     /**
@@ -191,8 +187,7 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['banks'])->findOrFail($id);
-        // dd($detail);
+        $detail = MasterKasBelanja::with(['belanja_detail','kas_file'])->findOrFail($id);
 
         return view('master_kas_belanja.edit', $title, compact(['detail']));
     }
@@ -229,6 +224,13 @@ class MasterKasBelanjaController extends Controller
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
             'message' => MasterKasBelanja::findOrFail($id)->delete()
+        ]);
+    }
+
+    public function hapus_foto(Request $request){
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => MasterKasBelanjaFile::findOrFail($request->id)->delete()
         ]);
     }
 

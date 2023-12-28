@@ -46,7 +46,7 @@
                     <div class="card">
                         <div class="card-body">
                             <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="200%">
+                            width="100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -121,7 +121,10 @@
                     name: 'JENIS TRANSAKSI'
                 },{
                     data: 'nominal',
-                    name: 'NILAI'
+                    name: 'NILAI',
+                    render: function (data, type, row, meta) {
+                        return `Rp. <div class="float-end">${data}</div>`;
+                    }
                 },{
                     data: 'keterangan_kas',
                     name: 'KETERANGAN'

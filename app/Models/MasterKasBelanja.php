@@ -21,7 +21,7 @@ class MasterKasBelanja extends Model
     }
 
     public function kas_file(){
-        return $this->belongsTo(MasterKasBelanjaFile::class, 'id', 'kas_id');
+        return $this->hasMany(MasterKasBelanjaFile::class, 'kas_id');
     }
 
     public function belanja_detail(){
@@ -34,5 +34,4 @@ class MasterKasBelanja extends Model
             ->groupBy('kas_id');
         }]);
     }
-
 }
