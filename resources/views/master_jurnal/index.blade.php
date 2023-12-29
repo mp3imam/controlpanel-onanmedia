@@ -111,7 +111,7 @@
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function (data, type, row, meta) {
-                        btn = row.tipe == 0 ? data : `<a href="{{ url('master_kas_belanja') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`
+                        btn = row.tipe == 0 ? data : `<a href="{{ url('master_jurnal') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`
                         return btn
                     }
                 },{

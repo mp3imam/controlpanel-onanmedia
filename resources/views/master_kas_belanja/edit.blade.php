@@ -25,6 +25,7 @@
                     @method('PUT')
                         <div class="row">
                             <div class="row mb-3">
+                                @if ($detail->kas_file->isNotEmpty())
                                 <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
                                     <div class="carousel-indicators">
                                         @foreach ($detail->kas_file as $foto => $f)
@@ -52,38 +53,11 @@
                                         <span class="visually-hidden">Next</span>
                                     </button>
                                 </div>
+                            @endif
+
 
                                 <div class="col-md-12">
                                     <input type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
-                                    @if ($detail->kas_file->isEmpty())
-                                        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
-                                            <div class="carousel-indicators">
-                                                @foreach ($detail->kas_file as $foto => $f)
-                                                    <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
-                                                @endforeach
-                                            </div>
-                                            <div class="carousel-inner">
-                                                @foreach ($detail->kas_file as $foto => $f)
-                                                    <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
-                                                        <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('jurnal_umum').'/'.$f->filename }}" >
-                                                        <div class="carousel-caption d-none d-md-block">
-                                                            <a href="{{ asset('jurnal_umum').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
-                                                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Previous</span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Next</span>
-                                            </button>
-                                        </div>
-                                    @endif
                                 </div>
                             </div>
                             <div class="col-md-6 mb-4">
@@ -146,7 +120,7 @@
                                             <div class="col-md-3"></div>
                                             <div class="col-md-3 text-uppercase">TOTAL</div>
                                             <div class="col-md-3">
-                                                <input class="form-control total bg-gradient" value="0" id="total_nilai" name="total_nilai" readonly/>
+                                                <input class="form-control total bg-gradient" id="total_nilai" name="total_nilai" readonly/>
                                             </div>
                                             <div class="col-md-3 text-center">
                                                 <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
@@ -240,12 +214,18 @@
         });
     }
 
-    console.log("{{ $detail->banks_belanja->id }}","{{ $detail->banks_belanja->nama }}");
     var data = {id: "{{ $detail->banks_belanja->id }}",text: "{{ $detail->banks_belanja->nama }}", selected: true};
     var newOption = new Option(data.text, data.id, false, false)
     $('#modal_account_id').append(newOption).trigger('change')
     $('#modal_account_id').select2()
 
+    var f = {!! json_encode($detail->belanja_detail) !!}
+    $.each(f, function(i, item) {
+        var data = {id: item.account_id,text: item.coa_belanja.uraian, selected: true};
+        var newOption = new Option(data.text, data.id, false, false)
+        $('#akun_belanja'+item.id).append(newOption).trigger('change')
+        $('#akun_belanja'+item.id).select2()
+    });
 
     $(function(){
         $("#modal_account_id").select2({
@@ -292,14 +272,6 @@
 
 
     })
-    var f = {!! json_encode($detail->belanja_detail) !!}
-
-    $.each(f, function(i, item) {
-        var data = {id: item.kas_id,text: item.coa_belanja.uraian, selected: true};
-        var newOption = new Option(data.text, data.id, false, false)
-        $('#akun_belanja'+item.id).append(newOption).trigger('change')
-        $('#akun_belanja'+item.id).select2()
-    });
 
     var count = 1
     function tambah_detail() {
@@ -312,7 +284,7 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <input class="form-control nilai" id="nilai" name="nilai[]" value="0" onkeyup="countNilai()" required />
+                    <input class="form-control nilai" id="nilai" name="nilai[]" onkeyup="countNilai()" required />
                 </div>
                 <div class="col-md-3 text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -362,7 +334,6 @@
     function countNilai() {
         var sum_value = 0;
         $('.nilai').each(function(){
-            console.log(sum_value);
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
             $('#total_nilai').val(sum_value);
         })

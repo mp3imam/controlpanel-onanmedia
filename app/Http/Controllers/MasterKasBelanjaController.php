@@ -48,14 +48,14 @@ class MasterKasBelanjaController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->coa_belanja->uraian;
+            return $row->banks_belanja->nama;
         })
         ->addColumn('nominal', function ($row){
             // dd($row->belanja_detail);
             return number_format($row->belanja_detail->sum('nominal'), 0);
         })
         ->addColumn('jenis_transaksi', function ($row){
-            return $row->jenis_transaksi ? "Transfer" : "Cash";
+            return $row->jenis_transaksi ? "Cash" : "Transfer";
         })
         ->rawColumns(['banks'])
         ->make(true);
@@ -94,9 +94,10 @@ class MasterKasBelanjaController extends Controller
 
         DB::beginTransaction();
         try {
-            $model = MasterKasBelanja::latest()->whereYear('created_at', '=', Carbon::now()->format('Y'))->first();
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterKasBelanja::latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
-            $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.Carbon::now()->format('Y');
+            $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.$tahun;
             $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
             // Store your file into directory and db
@@ -262,8 +263,11 @@ class MasterKasBelanjaController extends Controller
         }
 
         // Edit Jurnal Umum, hapus detail dan file Jurnal Umum
-        $nomor = MasterKasBelanja::whereId($id)->first();
-        MasterJurnal::whereNomorTransaksi($nomor->nomor_transaksi)->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
+        $request['keterangan_jurnal_umum'] = $request->keterangan_kas;
+        $request['kredit'] = $request->total_nilai;
+        $nomor = MasterJurnal::whereId($id)->first();
+        $nomor->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
+        $nomor->fresh();
         JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
         MasterJurnalFile::whereJurnalUmumId($nomor->id)->delete();
 
