@@ -20,6 +20,7 @@ Homestead.json
 /node_modules
 # /public/hot
 # /public/storage
+/public/jurnal_umum/*
 /storage/*.key
 /vendor
 .env
