@@ -21,6 +21,7 @@ Homestead.json
 # /public/hot
 # /public/storage
 /public/jurnal_umum/*
+/public/sql/*
 /storage/*.key
 /vendor
 .env
