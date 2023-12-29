@@ -40,4 +40,7 @@ public/.DS_Store
 public/assets/.DS_Store
 config/image.php
 bootstrap/cache/
+storage/app/*
 storage/logs/*
+storage/debuger/*
+storage/framework/*
