@@ -46,3 +46,6 @@ storage/app/*
 storage/logs/*
 storage/debuger/*
 storage/framework/*
+composer.json
+composer.lock
+package-lock.json
