@@ -26,4 +26,8 @@ class MasterJurnal extends Model
             ->groupBy('jurnal_umum_id');
         }]);
     }
+
+    public function jurnal_file(){
+        return $this->hasMany(MasterJurnalFile::class, 'id', 'jurnal_umum_id');
+    }
 }

@@ -13,63 +13,92 @@
 />
 @endsection
 @include('components.breadcrumb')
-
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title mb-0">Edit Kas Belanja</h4>
                 </div><!-- end card header -->
-
                 <div class="card-body">
-                    <form action="{{ route('master_kas_belanja.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('master_kas_belanja.update', $detail->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                         <div class="row">
                             <div class="row mb-3">
+                                <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        @foreach ($detail->kas_file as $foto => $f)
+                                            <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
+                                        @endforeach
+                                    </div>
+                                    <div class="carousel-inner">
+                                        @foreach ($detail->kas_file as $foto => $f)
+                                            <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
+                                                <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('jurnal_umum').'/'.$f->filename }}" >
+                                                <div class="carousel-caption d-none d-md-block">
+                                                    <a href="{{ asset('jurnal_umum').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
+                                                    <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+
                                 <div class="col-md-12">
                                     <input type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
-                                    <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
-                                        <div class="carousel-indicators">
-                                            @foreach ($detail->kas_file as $foto => $f)
-                                                <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
-                                            @endforeach
-                                        </div>
-                                        <div class="carousel-inner">
-                                            @foreach ($detail->kas_file as $foto => $f)
-                                                <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
-                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('jurnal_umum').'/'.$f->filename }}" >
-                                                    <div class="carousel-caption d-none d-md-block">
-                                                        <a href="{{ asset('jurnal_umum').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
-                                                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
+                                    @if ($detail->kas_file->isEmpty())
+                                        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                            <div class="carousel-indicators">
+                                                @foreach ($detail->kas_file as $foto => $f)
+                                                    <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
+                                                @endforeach
+                                            </div>
+                                            <div class="carousel-inner">
+                                                @foreach ($detail->kas_file as $foto => $f)
+                                                    <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
+                                                        <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('jurnal_umum').'/'.$f->filename }}" >
+                                                        <div class="carousel-caption d-none d-md-block">
+                                                            <a href="{{ asset('jurnal_umum').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
+                                                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                                @endforeach
+                                            </div>
 
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                    </div>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
-                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" required/>
                             </div>
 
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="account_id" class="form-label">SUMBER</label>
                                 <select id="modal_account_id" name="account_id" class="form-control" required></select>
                             </div>
 
                             <div class="col-md-12 mb-4">
                                 <label for="keterangan_kas" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="1"></textarea>
+                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="3">{{ $detail->keterangan_kas }}</textarea>
                             </div>
                         </div>
 
@@ -94,28 +123,28 @@
                                             <div class="col-md-3 text-center"></div>
                                         </div>
                                     </div>
-                                    <div class="card-body tambah_detail">
-                                        <div class="row delete_detail">
-                                            <div class="col-md-3">
-                                                <select id="akun_belanja" name="akun_belanja[]" class="form-control akun_belanja" required ></select>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input id="keterangan[]" name="keterangan[]" class="form-control" />
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input class="form-control nilai" number="nilai[]" name="nilai[]" value="0" onkeyup="countNilai()" required/>
-                                            </div>
-                                            <div class="col-md-3 text-center float-end hapus_detail">
-                                                <i class="ri-delete-bin-line text-danger ri-2x"></i>
+                                    @foreach ($detail->belanja_detail as $belanja => $b)
+                                        <div class="card-body {{ $loop->last ? "tambah_detail" : "" }} ">
+                                            <div class="row delete_detail">
+                                                <div class="col-md-3">
+                                                    <select id="akun_belanja{{ $b->id }}" name="akun_belanja[]" class="form-control akun_belanja" required ></select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input id="keterangan[]" name="keterangan[]" class="form-control" value="{{ $b->keterangan }}" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input class="form-control nilai" number="nilai[]" name="nilai[]" value="{{ $b->nominal }}" onkeyup="countNilai()"  required/>
+                                                </div>
+                                                <div class="col-md-3 text-center float-end hapus_detail">
+                                                    <i class="ri-delete-bin-line text-danger ri-2x"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endforeach
                                     <div class="card-footer">
                                         <div class="row">
-                                            <div class="col-md-3">
-                                            </div>
-                                            <div class="col-md-3 text-uppercase">TOTAL
-                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3 text-uppercase">TOTAL</div>
                                             <div class="col-md-3">
                                                 <input class="form-control total bg-gradient" value="0" id="total_nilai" name="total_nilai" readonly/>
                                             </div>
@@ -138,6 +167,7 @@
     </div>
     <!--end row-->
 @endsection
+
 @section('script')
 
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
@@ -156,10 +186,19 @@
                 resolve(type);
             }),
     });
+
     const pond = FilePond.create(inputElement);
     const pondBox = document.querySelector('.filepond--root');
     pondBox.addEventListener('FilePond:addfile', e => {
         var fileName = pond.getFile();
+    });
+
+    FilePond.setOptions({
+        allowMultiple: true,
+        server: {
+            process: "/upload_foto_jurnal_umum",
+            headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
+        }
     });
 
     function hapus_gambar(id) {
@@ -201,54 +240,65 @@
         });
     }
 
-    FilePond.setOptions({
-        allowMultiple: true,
-        server: {
-            process: "/upload_foto_jurnal_umum",
-            headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
-        }
-    });
+    console.log("{{ $detail->banks_belanja->id }}","{{ $detail->banks_belanja->nama }}");
+    var data = {id: "{{ $detail->banks_belanja->id }}",text: "{{ $detail->banks_belanja->nama }}", selected: true};
+    var newOption = new Option(data.text, data.id, false, false)
+    $('#modal_account_id').append(newOption).trigger('change')
+    $('#modal_account_id').select2()
 
-    $("#modal_account_id").select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.get_select2_banks') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
-            }
-        }
-    });
 
-    $(".akun_belanja").select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.get_select2_belanja') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
+    $(function(){
+        $("#modal_account_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_banks') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
             }
-        }
-    }).on('select2:select', function (e) {
-        $("#jenis_sumber").val(e.params.data.item);
+        });
+
+        $(".akun_belanja").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_belanja') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
+            }
+        }).on('select2:select', function (e) {
+            $("#jenis_sumber").val(e.params.data.item);
+        });
+
+
+    })
+    var f = {!! json_encode($detail->belanja_detail) !!}
+
+    $.each(f, function(i, item) {
+        var data = {id: item.kas_id,text: item.coa_belanja.uraian, selected: true};
+        var newOption = new Option(data.text, data.id, false, false)
+        $('#akun_belanja'+item.id).append(newOption).trigger('change')
+        $('#akun_belanja'+item.id).select2()
     });
 
     var count = 1
@@ -306,6 +356,8 @@
         $(this).closest('.delete_detail').remove();
         countNilai()
     })
+
+    countNilai()
 
     function countNilai() {
         var sum_value = 0;

@@ -15,4 +15,12 @@ class MasterKasBelanjaDetail extends Model
     public function belanja_detail(){
         return $this->belongsTo(MasterKasBelanja::class, 'id', 'kas_id');
     }
+
+    public function coa_belanja(){
+        return $this->hasOne(MasterCoaModel::class, 'id', 'account_id');
+    }
+
+    public function banks_belanja(){
+        return $this->hasOne(BankModel::class, 'id', 'account_id');
+    }
 }

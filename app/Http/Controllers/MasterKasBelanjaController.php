@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterJurnal;
+use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\MasterKasBelanjaFile;
@@ -32,6 +33,7 @@ class MasterKasBelanjaController extends Controller
      */
     function __construct()
     {
+        // dd(MasterKasBelanja::with(['coa_belanja','belanja_detail','belanja_detail'])->get());
         $this->middleware('permission:'.Permission::whereId(12)->active()->first()->name);
     }
 
@@ -128,7 +130,10 @@ class MasterKasBelanjaController extends Controller
                     MasterKasBelanjaFile::create($data);
 
                     // update foto status menjadi 1
-                    TemporaryFileUpload::findOrFail($file->id)->update(['status' => 1]);
+                    TemporaryFileUpload::findOrFail($file->id)->update([
+                        'kas_id' => $kas->id,
+                        'status' => 1,
+                    ]);
                 }
             }
 
@@ -149,6 +154,14 @@ class MasterKasBelanjaController extends Controller
                     'kredit'         => $nominal,
                 ];
                 JurnalUmumDetail::create($data);
+            }
+
+            foreach (MasterKasBelanjaFile::whereKasId($kas->id)->get() as $file) {
+                $dataFile = [
+                    'jurnal_umum_id' => $masterJurnal->id,
+                    'path'           => $file->filename
+                ];
+                MasterJurnalFile::create($dataFile);
             }
 
             DB::commit();
@@ -187,7 +200,7 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['belanja_detail','kas_file'])->findOrFail($id);
+        $detail = MasterKasBelanja::with(['belanja_detail.coa_belanja','banks_belanja','kas_file'])->findOrFail($id);
 
         return view('master_kas_belanja.edit', $title, compact(['detail']));
     }
@@ -200,16 +213,80 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        $request->validate([
-            'nomor_transaksi'   => 'required',
+        $validasi = [
             'tanggal_transaksi' => 'required',
-            'bank_id'           => 'required',
-            'jenis_transaksi'   => 'required',
+            'account_id'        => 'required',
+            // 'jenis_transaksi'   => 'required',
             'nilai'             => 'required',
-        ]);
+        ];
+
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
         // Store your file into directory and db
         MasterKasBelanja::find($id)->update($request->except(['_token','_method']));
+
+        MasterKasBelanjaDetail::whereKasId($id)->delete();
+
+        // Create New Detail and File Kas Belanja
+        foreach ($request->akun_belanja as $akun => $a) {
+            $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+
+            $data = [
+                'kas_id'     => $id,
+                'account_id' => $a,
+                'keterangan' => $request->keterangan[$akun] ?? '',
+                'nominal'    => $nominal,
+            ];
+            MasterKasBelanjaDetail::create($data);
+        }
+
+        $files = TemporaryFileUpload::query()
+        ->whereStatus("0")
+        ->get();
+
+        foreach ($files as $file) {
+            $data = [
+                'kas_id'     => $id,
+                'filename'   => $file->filename,
+            ];
+            MasterKasBelanjaFile::create($data);
+
+            // update foto status menjadi 1
+            TemporaryFileUpload::findOrFail($file->id)->update([
+                'kas_id' => $id,
+                'status' => 1,
+            ]);
+
+        }
+
+        // Edit Jurnal Umum, hapus detail dan file Jurnal Umum
+        $nomor = MasterKasBelanja::whereId($id)->first();
+        MasterJurnal::whereNomorTransaksi($nomor->nomor_transaksi)->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
+        JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
+        MasterJurnalFile::whereJurnalUmumId($nomor->id)->delete();
+
+        // Create Master Jurnal Detail
+        foreach ($request->akun_belanja as $akun => $a) {
+            $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+
+            $data = [
+                'jurnal_umum_id' => $nomor->id,
+                'account_id'     => $a,
+                'keterangan'     => $request->keterangan[$akun] ?? '',
+                'kredit'         => $nominal,
+            ];
+            JurnalUmumDetail::create($data);
+        }
+
+        foreach (MasterKasBelanjaFile::whereKasId($id)->get() as $file) {
+            $dataFile = [
+                'jurnal_umum_id' => $nomor->id,
+                'path'           => $file->filename
+            ];
+            MasterJurnalFile::create($dataFile);
+        }
 
         return redirect('master_kas_belanja');
     }
@@ -235,7 +312,7 @@ class MasterKasBelanjaController extends Controller
     }
 
     public function models($request){
-        return MasterKasBelanja::with(['coa_belanja','belanja_detail'])
+        return MasterKasBelanja::with(['coa_belanja','belanja_detail','banks_belanja'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             ->orWhereHas('banks_belanja', function($q) use($request){
