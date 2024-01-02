@@ -44,25 +44,25 @@ Route::post('post-register', [AuthController::class, 'postregister'])->name('reg
 
 Route::get('/', [HomeController::class, 'root'])->name('root');
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth']], function () {
     Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');;
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('users_public', UserPublicController::class);
-    Route::get('user_product_datatable', [UserPublicController::class,'user_product'])->name('user_product_datatable');
-    Route::get('user_keahlian_datatable', [UserPublicController::class,'user_keahlian'])->name('user_keahlian_datatable');
-    Route::get('user_pendidikan_datatable', [UserPublicController::class,'user_pendidikan'])->name('user_pendidikan_datatable');
-    Route::get('user_bahasa_datatable', [UserPublicController::class,'user_bahasa'])->name('user_bahasa_datatable');
-    Route::get('user_alamat_datatable', [UserPublicController::class,'user_alamat'])->name('user_alamat_datatable');
-    Route::post('aktifkan_seller', [UserPublicController::class,'aktifkan_seller'])->name('aktifkan_seller');
+    Route::get('user_product_datatable', [UserPublicController::class, 'user_product'])->name('user_product_datatable');
+    Route::get('user_keahlian_datatable', [UserPublicController::class, 'user_keahlian'])->name('user_keahlian_datatable');
+    Route::get('user_pendidikan_datatable', [UserPublicController::class, 'user_pendidikan'])->name('user_pendidikan_datatable');
+    Route::get('user_bahasa_datatable', [UserPublicController::class, 'user_bahasa'])->name('user_bahasa_datatable');
+    Route::get('user_alamat_datatable', [UserPublicController::class, 'user_alamat'])->name('user_alamat_datatable');
+    Route::post('aktifkan_seller', [UserPublicController::class, 'aktifkan_seller'])->name('aktifkan_seller');
 
     Route::resource('transaksi', TransactionsController::class);
-    Route::get('transaksi_product_datatable', [TransactionsController::class,'transaksi_product'])->name('transaksi_product_datatable');
+    Route::get('transaksi_product_datatable', [TransactionsController::class, 'transaksi_product'])->name('transaksi_product_datatable');
 
     Route::resource('daftar_tender', DaftarTenderController::class);
 
     Route::resource('daftar_product_jasa', DaftarProductJasaController::class);
-    Route::get('daftar_pricing_datatable', [DaftarProductJasaController::class,'daftar_pricing'])->name('daftar_pricing_datatable');
+    Route::get('daftar_pricing_datatable', [DaftarProductJasaController::class, 'daftar_pricing'])->name('daftar_pricing_datatable');
 
     Route::resource('request_pencarian_dana', RequestPencarianDanaController::class);
 
@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getDataTableReturnBankCash', [MasterReturnBankCashController::class, 'get_datatable'])->name('getDataTableReturnBankCash');
     Route::post('upload_foto_jurnal_umum', [MasterKasBelanjaController::class, 'upload_foto'])->name('upload_foto_jurnal_umum');
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class);
+    Route::post('softdelete_kas_belanja', [MasterKasBelanjaController::class, 'softdelete_kas_belanja'])->name('softdelete_kas_belanja');
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
     Route::post('hapus_foto_kas_belanja', [MasterKasBelanjaController::class, 'hapus_foto'])->name('hapus_foto_kas_belanja');
     Route::resource('master_jurnal', MasterJurnalController::class);
@@ -87,7 +88,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     // Master Data
     Route::resource('bahasa', BahasaController::class);
-    Route::post('bahasa.status', [BahasaController::class,'bahasa_status'])->name('bahasa.status');
+    Route::post('bahasa.status', [BahasaController::class, 'bahasa_status'])->name('bahasa.status');
     Route::resource('kategori', KategoriController::class);
     Route::resource('subkategori', SubKategoriController::class);
     Route::resource('pekerjaan', PekerjaanController::class);
@@ -101,6 +102,5 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
     Route::resource('users_role_page', UserRolePageController::class);
     Route::resource('menu_page', MenuPageController::class);
-    Route::post('update_menu', [MenuPageController::class,'update_menu'])->name('update_menu');
-
+    Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
 });

@@ -18,7 +18,12 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Tambah Kas Belanja</h4>
+                    <div class="col-md-11">
+                        <h4 class="card-title">Tambah Kas Belanja</h4>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
+                    </div>
                 </div><!-- end card header -->
 
                 <div class="card-body">
@@ -27,12 +32,38 @@
                         <div class="row">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <input type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
+                                    <input class="bg-success" type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
                                 </div>
                             </div>
                             <div class="col-md-12 mb-4">
-                                <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
+                                <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
+                            </div>
+
+                            {{-- <div class="col-md-6 mb-4">
+                                <label for="account_id" class="form-label">Jenis Pembayaran</label>
+                                <select id="modal_pembayaran_id" name="pembayaran_id" class="form-control" required>
+                                    <option value="1" selected>Transfer</option>
+                                    <option value="2">Cash</option>
+                                </select>
+                            </div> --}}
+
+                            <div class="col-md-12 mb-4">
+                                <div>
+                                    <p class="text-muted fw-medium">Jenis Pembayaran</p>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_1" value="1" checked="">
+                                        <label class="form-check-label" for="jenis_transaksi_1">
+                                            Transfer
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_2" value="2">
+                                        <label class="form-check-label" for="jenis_transaksi_2">
+                                            Cash
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-md-12 mb-4">
@@ -51,7 +82,7 @@
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <h6 class="card-title mb-0">Detail Jurnal</h6>
+                                            <h6 class="card-title mb-0">Detail Belanja</h6>
                                         </div>
                                         <div class="col-md-6">
                                             <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
@@ -100,8 +131,12 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-success mt-4 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
-                            ></i> Simpan</button>
+                        <div class="float-end">
+                            <button class="btn bg-animation btn-success mr-5 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
+                                ></i> Simpan</button>
+                                &nbsp;&nbsp;&nbsp;
+                            <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
+                        </div>
                     </form>
                 </div><!-- end card -->
             </div>
@@ -147,7 +182,7 @@
         allowClear: true,
         width: '100%',
         ajax: {
-            url: "{{ route('api.get_select2_banks') }}",
+            url: "{{ route('api.get_select2_banks_coa') }}",
             dataType: 'json',
             delay: 250,
             processResults: function(data) {

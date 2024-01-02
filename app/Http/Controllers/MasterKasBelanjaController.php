@@ -15,15 +15,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class MasterKasBelanjaController extends Controller
 {
-    private $title = 'Master Transaksi Kas';
+    private $title = 'Master Pembayaran Kas';
     private $li_1 = 'Index';
 
     /**
@@ -31,10 +29,8 @@ class MasterKasBelanjaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct()
-    {
-        // dd(MasterKasBelanja::with(['coa_belanja','belanja_detail','belanja_detail'])->get());
-        $this->middleware('permission:'.Permission::whereId(12)->active()->first()->name);
+    function __construct(){
+        $this->middleware('permission:'.Permission::findOrFail(12)->active()->first()->name);
     }
 
     public function index(){
@@ -48,14 +44,13 @@ class MasterKasBelanjaController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->banks_belanja->nama;
+            return $row->coa_belanja->uraian;
         })
-        ->addColumn('nominal', function ($row){
-            // dd($row->belanja_detail);
-            return number_format($row->belanja_detail->sum('nominal'), 0);
-        })
+        // ->addColumn('nominal', function ($row){
+        //     return number_format($row->belanja_detail->sum('nominal'), 0);
+        // })
         ->addColumn('jenis_transaksi', function ($row){
-            return $row->jenis_transaksi ? "Cash" : "Transfer";
+            return $row->jenis == 1 ? "Transfer" : "Cash";
         })
         ->rawColumns(['banks'])
         ->make(true);
@@ -84,7 +79,7 @@ class MasterKasBelanjaController extends Controller
         $validasi = [
             'tanggal_transaksi' => 'required',
             'account_id'        => 'required',
-            // 'jenis_transaksi'   => 'required',
+            'jenis'             => 'required',
             'nilai'             => 'required',
         ];
 
@@ -95,9 +90,10 @@ class MasterKasBelanjaController extends Controller
         DB::beginTransaction();
         try {
             $tahun = Carbon::now()->format('Y');
-            $model = MasterKasBelanja::latest()->whereYear('created_at', '=', $tahun)->first();
+            $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.$tahun;
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
             $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
             // Store your file into directory and db
@@ -191,6 +187,31 @@ class MasterKasBelanjaController extends Controller
         }
     }
 
+    public function softdelete_kas_belanja(Request $request){
+        DB::beginTransaction();
+        try {
+            $date = Carbon::now();
+            MasterKasBelanja::findOrFail($request->id)->update([
+                'deleted_at' => $date,
+                'alasan' => $request->alasan
+            ]);
+
+            MasterJurnal::whereNomorTransaksi(MasterKasBelanja::withTrashed()->whereId($request->id)->first()->nomor_transaksi)->update([
+                'deleted_at' => $date,
+                'alasan' => $request->alasan
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -217,7 +238,7 @@ class MasterKasBelanjaController extends Controller
         $validasi = [
             'tanggal_transaksi' => 'required',
             'account_id'        => 'required',
-            // 'jenis_transaksi'   => 'required',
+            'jenis'             => 'required',
             'nilai'             => 'required',
         ];
 
@@ -226,6 +247,7 @@ class MasterKasBelanjaController extends Controller
         if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
         // Store your file into directory and db
+        $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
         MasterKasBelanja::find($id)->update($request->except(['_token','_method']));
 
         MasterKasBelanjaDetail::whereKasId($id)->delete();
@@ -319,12 +341,20 @@ class MasterKasBelanjaController extends Controller
         return MasterKasBelanja::with(['coa_belanja','belanja_detail','banks_belanja'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            ->orWhereHas('banks_belanja', function($q) use($request){
-                $q->where('nama','%'.$request->cari."%");
-            })
-            ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            ->orWhere('nilai', 'like','%'.$request->cari."%")
-            ->orWhere('keterangan', 'like','%'.$request->cari."%");
+            ->orWhere('nominal', 'like','%'.$request->cari."%")
+            ->orWhere('keterangan_kas', 'like','%'.$request->cari."%");
+        })
+        ->when($request->sumber, function($q) use($request){
+            $q->whereJenis($request->sumber);
+        })
+        ->when($request->tanggal, function($q) use($request){
+            $tanggal = explode(" to ",$request->tanggal);
+            $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
+                $q->whereDate('tanggal_transaksi', $tanggal[0]);
+            });
+            $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
+                $q->whereDate('tanggal_transaksi', '>=',$tanggal[0])->whereDate('tanggal_transaksi', '<=',$tanggal[1]);
+            });
         })
         ->get();
     }

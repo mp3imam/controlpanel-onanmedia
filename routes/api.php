@@ -42,3 +42,7 @@ Route::get('get_select2_banks', [OnanmediaAPIController::class,'select2_banks'])
 Route::get('get_select2_banks_gabungan_kasir', [OnanmediaAPIController::class,'select2_banks_gabungan_kasir'])->name('api.get_select2_banks_gabungan_kasir');
 Route::get('get_select2_belanja', [OnanmediaAPIController::class,'select2_belanja'])->name('api.get_select2_belanja');
 Route::get('get_select2_mata_uangs', [OnanmediaAPIController::class,'select2_mata_uangs'])->name('api.get_select2_mata_uangs');
+Route::get('get_select2_header_coa', [OnanmediaAPIController::class,'select2_header_coa'])->name('api.get_select2_header_coa');
+Route::get('get_select2_deskripsi_coa', [OnanmediaAPIController::class,'select2_deskripsi_coa'])->name('api.get_select2_deskripsi_coa');
+Route::get('get_select2_uraian_coa', [OnanmediaAPIController::class,'select2_uraian_coa'])->name('api.get_select2_uraian_coa');
+Route::get('get_select2_banks_coa', [OnanmediaAPIController::class,'select2_banks_coa'])->name('api.get_select2_banks_coa');

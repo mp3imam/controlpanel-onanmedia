@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MasterKasBelanja extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $connection = 'pgsql';
     protected $table = 'transaksi_kas_belanjas';
     protected $guarded = ['id'];
+    protected $dates = ['deleted_at'];
 
     public function banks_belanja(){
         return $this->hasOne(BankModel::class, 'id', 'account_id');
