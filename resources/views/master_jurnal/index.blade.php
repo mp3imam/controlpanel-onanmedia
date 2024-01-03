@@ -58,7 +58,8 @@
                                         <th class="text-uppercase">Debet</th>
                                         <th class="text-uppercase">Kredit</th>
                                         <th class="text-uppercase">KETERANGAN</th>
-                                        {{-- <th hidden>tipe</th> --}}
+                                        <th class="text-uppercase" hidden>jenis</th>
+                                        <th class="text-uppercase">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -135,9 +136,20 @@
                 },{
                     data: 'keterangan_jurnal_umum',
                     name: 'KETERANGAN'
-                // },{
-                //     data: 'tipe',
-                //     visible: false
+                },{
+                    data: 'jenis',
+                    visible: false
+                },{
+                    data: 'id',
+                    name: 'Action',
+                    render: function (data, type, row, meta) {
+                        btn = row.jenis !== 0 ? `` : `
+                        <a href="{{ url('master_jurnal') }}/`+row.id+`/edit" class="btn btn-ghost-warning waves-effect waves-light btn-sm"><i class="ri-pencil-fill"></i></a>
+
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light float-end" onclick="konfirmasi_hapus(`+row.id+`,`+$row.nomor_transaksi+`)" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        `
+                        return btn
+                    }
                 }
             ]
         });
@@ -208,5 +220,44 @@
             $('#exampleModal').modal('hide')
         });
     })
+
+    function konfirmasi_hapus(id, name){
+        Swal.fire({
+            title: "Masukan Alasan menghapus data Jurnal "+name,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+            }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                var data = new FormData();
+                data.append('id', id);
+                data.append('alasan', result.value);
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('softdelete_jurnal_umum') }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        Swal.fire({
+                            title: 'Hapus!',
+                            text: 'Data berhasil di hapus',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        }).then(function(){
+                            window.location.href = "{{ route('master_jurnal.index') }}";
+                        });
+                    }
+                });
+            }
+
+        });
+    }
+
 </script>
 @endsection

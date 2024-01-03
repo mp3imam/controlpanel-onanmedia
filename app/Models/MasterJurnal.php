@@ -29,6 +29,6 @@ class MasterJurnal extends Model
     }
 
     public function jurnal_file(){
-        return $this->hasMany(MasterJurnalFile::class, 'id', 'jurnal_umum_id');
+        return $this->hasMany(MasterJurnalFile::class, 'jurnal_umum_id');
     }
 }

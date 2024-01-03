@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterJurnal;
+use App\Models\TemporaryFileUploadJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class MasterJurnalController extends Controller
 {
-    private $title = 'Master Transaksi Kas';
+    private $title = 'Master Jurnal Umum';
     private $li_1 = 'Index';
 
     /**
@@ -22,7 +26,7 @@ class MasterJurnalController extends Controller
      */
     function __construct()
     {
-        // dd(MasterJurnal::with(['details'])->get());
+        // dd(MasterJurnal::with(['details','jurnal_banks','jurnal_file'])->get());
         $this->middleware('permission:'.Permission::whereId(13)->active()->first()->name);
     }
 
@@ -69,11 +73,10 @@ class MasterJurnalController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
-            'bank_id'           => 'required',
-            'jenis_transaksi'   => 'required',
-            'nilai'             => 'required',
+            'account_id'        => 'required',
+            'debet'             => 'required',
+            'kredit'            => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -83,9 +86,47 @@ class MasterJurnalController extends Controller
         }
 
         // Store your file into directory and db
+        dd($request->all(), MasterJurnal::first());
+        $request['bank_id'] = $request->account_id;
         MasterJurnal::create($request->except('_token'));
 
         return redirect('master_jurnal');
+    }
+
+    public function softdelete_kas_belanja(Request $request){
+        DB::beginTransaction();
+        try {
+            MasterJurnal::findOrFail($request->id)->update([
+                'deleted_at' => Carbon::now(),
+                'alasan' => $request->alasan
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+        ]);
+    }
+
+    public function upload_foto(Request $request){
+        foreach ($request->file('attachment') as $file) {
+            $path = public_path('jurnal_umum/');
+            !is_dir($path) && mkdir($path, 0777, true);
+
+            $imageName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move($path, $imageName);
+
+            TemporaryFileUploadJurnal::create([
+                'folder' => $path,
+                'filename' => $imageName,
+                'token' => $request->header('X-Csrf-Token'),
+                'created_by' => (int)Auth::user()->id
+            ]);
+        }
     }
 
     /**
@@ -113,7 +154,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::with(['banks'])->findOrFail($id);
+        $detail = MasterJurnal::with(['jurnal_banks','details.coa_jurnal','jurnal_file'])->findOrFail($id);
         // dd($detail);
 
         return view('master_jurnal.edit', $title, compact(['detail']));
@@ -155,7 +196,7 @@ class MasterJurnalController extends Controller
     }
 
     public function models($request){
-        return MasterJurnal::with(['details'])->get();
+        return MasterJurnal::with(['details','jurnal_banks','jurnal_file'])->get();
     }
 
     public function pdf(Request $request){

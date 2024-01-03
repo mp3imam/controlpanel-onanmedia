@@ -1,7 +1,7 @@
 <!--start back-to-top-->
-<button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+{{-- <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
     <i class="ri-arrow-up-line"></i>
-</button>
+</button> --}}
 
 <!--preloader-->
 <div id="preloader">
@@ -601,7 +601,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="preloader-menu">
                     <h6 class="mt-4 mb-0 fw-semibold text-uppercase">Preloader</h6>
                     <p class="text-muted">Choose a preloader.</p>

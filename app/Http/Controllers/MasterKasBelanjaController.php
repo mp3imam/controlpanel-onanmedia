@@ -136,6 +136,7 @@ class MasterKasBelanjaController extends Controller
 
             // Create Master Jurnal
             $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
+            $request['bank_id'] = $request->account_id;
             $request['sumber_data'] = 1;
             $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
             $masterJurnal = MasterJurnal::create($request->except('_token'));
@@ -172,7 +173,7 @@ class MasterKasBelanjaController extends Controller
 
     public function upload_foto(Request $request){
         foreach ($request->file('attachment') as $file) {
-            $path = public_path('jurnal_umum/');
+            $path = public_path('kas_belanja/');
             !is_dir($path) && mkdir($path, 0777, true);
 
             $imageName = time() . '.' . $file->getClientOriginalExtension();
@@ -350,10 +351,10 @@ class MasterKasBelanjaController extends Controller
         ->when($request->tanggal, function($q) use($request){
             $tanggal = explode(" to ",$request->tanggal);
             $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
-                $q->whereDate('tanggal_transaksi', $tanggal[0]);
+                $q->where('tanggal_transaksi', Carbon::parse($tanggal[0])->format('Y-m-d'));
             });
             $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
-                $q->whereDate('tanggal_transaksi', '>=',$tanggal[0])->whereDate('tanggal_transaksi', '<=',$tanggal[1]);
+                $q->where('tanggal_transaksi', '>=',Carbon::parse($tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::parse($tanggal[1])->format('Y-m-d'));
             });
         })
         ->get();

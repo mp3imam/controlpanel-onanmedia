@@ -18,6 +18,10 @@
                     <form action="{{ route('master_coa.store') }}" method="POST">
                         @csrf
                         <div class="col-md-12 mb-4">
+                            <label for="header_coa" class="form-label">Uraian</label>
+                            <input class="form-control" id="header_coa" name="header_coa" />
+                        </div>
+                        <div class="col-md-12 mb-4">
                             <label for="uraian" class="form-label">Uraian</label>
                             <input class="form-control" id="uraian" name="uraian" />
                         </div>

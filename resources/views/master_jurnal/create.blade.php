@@ -22,12 +22,12 @@
                         <h4 class="card-title">Tambah Jurnal Umum</h4>
                     </div>
                     <div class="col">
-                        <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
+                        <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2"><i class="ri-arrow-go-back-line"></i></a>
                     </div>
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('master_kas_belanja.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('master_jurnal.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                         <div class="row">
                             <div class="row mb-3">
@@ -81,12 +81,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <h6 class="card-title mb-0">Detail Belanja</h6>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
-                                        </div>
+                                        <h6 class="card-title mb-0">Detail Jurnal</h6>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -96,7 +91,9 @@
                                             <div class="col">Keterangan</div>
                                             <div class="col">Debet</div>
                                             <div class="col">Kredit</div>
-                                            <div class="col text-center"></div>
+                                            <div class="col text-center">
+                                                <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-body tambah_detail">
@@ -108,10 +105,10 @@
                                                 <input id="keterangan[]" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col">
-                                                <input class="form-control debet" number="debet[]" name="debet[]" value="0" onkeyup="countDebet()" required/>
+                                                <input class="form-control text-end debet" number="debet[]" name="debet[]" value="0" onkeyup="countDebet()" required/>
                                             </div>
                                             <div class="col">
-                                                <input class="form-control kredit" number="kredit[]" name="kredit[]" value="0" onkeyup="countKredit()" required/>
+                                                <input class="form-control text-end kredit" number="kredit[]" name="kredit[]" value="0" onkeyup="countKredit()" required/>
                                             </div>
                                             <div class="col text-center float-end hapus_detail">
                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -122,16 +119,17 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                             </div>
-                                            <div class="col text-uppercase">TOTAL
+                                            <div class="col text-uppercase">
+                                                TOTAL
                                             </div>
                                             <div class="col">
-                                                <input class="form-control total_debet bg-gradient" value="0" id="total_debet" name="total_debet" readonly/>
+                                                <input class="form-control text-end total_debet text-white" style="background-color: #4E36E2" value="0" id="total_debet" name="total_debet" readonly/>
                                             </div>
                                             <div class="col">
-                                                <input class="form-control total_kredit bg-gradient" value="0" id="total_kredit" name="total_kredit" readonly/>
+                                                <input class="form-control text-end total_kredit text-white" style="background-color: #4E36E2" value="0" id="total_kredit" name="total_kredit" readonly/>
                                             </div>
                                             <div class="col text-center">
-                                                <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                                <input class="form-control text-end total_all text-white" style="background-color: #4E36E2" value="0" id="total_all" name="total_all" readonly/>
                                             </div>
                                         </div>
                                     </div>
@@ -139,10 +137,12 @@
                             </div>
                         </div>
                         <div class="float-end">
-                            <button class="btn bg-animation btn-success mr-5 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
-                                ></i> Simpan</button>
+                            <button class="btn bg-animation btn-success mr-5 rounded-5" style="background-color: #4E36E2" data-bs-toggle="tooltip" data-bs-placement="top" title="Simpan ke Database">
+                                <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
                                 &nbsp;&nbsp;&nbsp;
-                            <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
+                            <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end"  data-bs-toggle="tooltip" data-bs-placement="top" title="Kembali ke Menu" style="color: #4E36E2">
+                                <i class="ri-arrow-go-back-line"></i>
+                            </a>
                         </div>
                     </form>
                 </div><!-- end card -->
@@ -158,7 +158,7 @@
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
 <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-    <script>
+<script>
     FilePond.registerPlugin(FilePondPluginImagePreview);
     FilePond.registerPlugin(FilePondPluginFileValidateType);
 
@@ -213,14 +213,17 @@
             dataType: 'json',
             delay: 250,
             processResults: function(data) {
-            return {
-                results: $.map(data.data, function(item) {
-                    return {
-                        id: item.id,
-                        text: item.name
-                    }
-                })
-            };
+                return {
+                    results: $.map(
+                        data.data,
+                        function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name
+                            }
+                        }
+                    )
+                }
             }
         }
     }).on('select2:select', function (e) {
@@ -238,10 +241,10 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col">
-                    <input class="form-control debet" number="debet[]" name="debet[]" value="0" onkeyup="countDebet()" required/>
+                    <input class="form-control text-end debet" number="debet[]" name="debet[]" value="0" onkeyup="countDebet()" required/>
                 </div>
                 <div class="col">
-                    <input class="form-control kredit" number="kredit[]" name="kredit[]" value="0" onkeyup="countKredit()" required/>
+                    <input class="form-control text-end kredit" number="kredit[]" name="kredit[]" value="0" onkeyup="countKredit()" required/>
                 </div>
                 <div class="col text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -298,10 +301,14 @@
         })
 
         $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
+    $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     $(".debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $("#total_debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     function countKredit() {
         var sum_value = 0;
@@ -312,9 +319,9 @@
         })
 
         $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
-    $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 </script>
 @endsection

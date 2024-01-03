@@ -41,9 +41,9 @@
                                         <div class="carousel-inner">
                                             @foreach ($detail->kas_file as $foto => $f)
                                                 <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
-                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('jurnal_umum').'/'.$f->filename }}" >
+                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('kas_belanja').'/'.$f->filename }}" >
                                                     <div class="carousel-caption d-none d-md-block">
-                                                        <a href="{{ asset('jurnal_umum').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
+                                                        <a href="{{ asset('kas_belanja').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
                                                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
                                                     </div>
                                                 </div>
@@ -121,9 +121,9 @@
                                             <div class="col-md-3 text-center"></div>
                                         </div>
                                     </div>
-                                    @foreach ($detail->belanja_detail as $belanja => $b)
-                                        <div class="card-body {{ $loop->last ? "tambah_detail" : "" }} ">
-                                            <div class="row delete_detail">
+                                    <div class="card-body tambah_detail">
+                                        @foreach ($detail->belanja_detail as $belanja => $b)
+                                            <div class="row delete_detail mt-2">
                                                 <div class="col-md-3">
                                                     <select id="akun_belanja{{ $b->id }}" name="akun_belanja[]" class="form-control akun_belanja" required ></select>
                                                 </div>
@@ -131,20 +131,20 @@
                                                     <input id="keterangan[]" name="keterangan[]" class="form-control" value="{{ $b->keterangan }}" />
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input class="form-control nilai" number="nilai[]" name="nilai[]" value="{{ $b->nominal }}" onkeyup="countNilai()"  required/>
+                                                    <input class="form-control nilai text-end" number="nilai[]" name="nilai[]" value="{{ $b->nominal }}" onkeyup="countNilai()"  required/>
                                                 </div>
                                                 <div class="col-md-3 text-center float-end hapus_detail">
                                                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                     <div class="card-footer">
                                         <div class="row">
                                             <div class="col-md-3"></div>
                                             <div class="col-md-3 text-uppercase">TOTAL</div>
                                             <div class="col-md-3">
-                                                <input class="form-control total bg-gradient" id="total_nilai" name="total_nilai" readonly/>
+                                                <input class="form-control text-end total fs-20 text-white" style="background-color: #4E36E2" id="total_nilai" value="{{ $detail->nominal }}" name="total_nilai" readonly/>
                                             </div>
                                             <div class="col-md-3 text-center">
                                                 <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
@@ -313,7 +313,7 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <input class="form-control nilai" id="nilai" name="nilai[]" onkeyup="countNilai()" required />
+                    <input class="form-control nilai text-end" id="nilai" name="nilai[]" onkeyup="countNilai()" required />
                 </div>
                 <div class="col-md-3 text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -358,7 +358,7 @@
         countNilai()
     })
 
-    countNilai()
+    // countNilai()
 
     function countNilai() {
         var sum_value = 0;

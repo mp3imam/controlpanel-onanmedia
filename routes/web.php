@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('hapus_foto_kas_belanja', [MasterKasBelanjaController::class, 'hapus_foto'])->name('hapus_foto_kas_belanja');
     Route::resource('master_jurnal', MasterJurnalController::class);
     Route::get('getDataTableMasterJurnal', [MasterJurnalController::class, 'get_datatable'])->name('getDataTableMasterJurnal');
+    Route::post('softdelete_jurnal_umum', [MasterJurnalController::class, 'softdelete_jurnal_umum'])->name('softdelete_jurnal_umum');
     // End Finance
 
     // HRD

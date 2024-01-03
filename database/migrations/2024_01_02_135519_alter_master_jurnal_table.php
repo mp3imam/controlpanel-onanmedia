@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('jurnals_umum', function (Blueprint $table) {
+            $table->unsignedBigInteger('bank_id');
             $table->string('jenis')->default(1);
             $table->string('alasan')->nullable();
             $table->softDeletes();
@@ -24,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('jurnals_umum', function (Blueprint $table) {
-            $table->dropColumn(['jenis','alasan']);
+            $table->dropColumn(['bank_id','jenis','alasan']);
             $table->dropSoftDeletes();
         });
     }

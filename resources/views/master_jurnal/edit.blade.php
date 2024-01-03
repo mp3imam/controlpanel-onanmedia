@@ -18,11 +18,13 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-11">
-                        <h4 class="card-title mb-0">Edit Kas Belanja</h4>
+                        <h4 class="card-title mb-0">Detail <span style="color:#4E36E2">{{ $detail->nomor_transaksi }}</span></h4>
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light float-end" onclick="konfirmasi_hapus('{{ $detail->id }}',`{{ $detail->nomor_transaksi }}`)" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
-                        <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
+                        @if ($detail->jenis == 0)
+                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light float-end" onclick="konfirmasi_hapus('{{ $detail->id }}',`{{ $detail->nomor_transaksi }}`)" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        @endif
+                        <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2"><i class="ri-arrow-go-back-line"></i></a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -31,20 +33,23 @@
                     @method('PUT')
                         <div class="row">
                             <div class="row mb-3">
-                                @if ($detail->kas_file->isNotEmpty())
+                                @if ($detail->jurnal_file->isNotEmpty())
                                     <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
                                         <div class="carousel-indicators">
-                                            @foreach ($detail->kas_file as $foto => $f)
+                                            @foreach ($detail->jurnal_file as $foto => $f)
                                                 <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
                                             @endforeach
                                         </div>
                                         <div class="carousel-inner">
-                                            @foreach ($detail->kas_file as $foto => $f)
-                                                <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
-                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset('jurnal_umum').'/'.$f->filename }}" >
+                                            @php $path = $detail->sumber_data == 1 ? "kas_belanja" : "jurnal_umum" @endphp
+                                            @foreach ($detail->jurnal_file as $foto => $f)
+                                                <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 1 ? 'active' : '' }}" data-bs-interval="2000">
+                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset($path).'/'.$f->path }}" >
                                                     <div class="carousel-caption d-none d-md-block">
-                                                        <a href="{{ asset('jurnal_umum').'/'.$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
-                                                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
+                                                        <a href="{{ asset($path).'/'.$f->path }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
+                                                        @if ($detail->jenis == 0)
+                                                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -68,20 +73,20 @@
                             </div>
                             <div class="col-md-12 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
-                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" required/>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                             </div>
 
                             <div class="col-md-12 mb-4">
                                 <div>
                                     <p class="text-muted fw-medium">Jenis Pembayaran</p>
                                     <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_1" {{ $detail->jenis == 1 ? "checked=''" : "" }}  value="1">
+                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_1" {{ $detail->jenis == 0 ? "checked=''" : "" }}  value="1" {{ $detail->jenis == 0 ? "" : "disabled" }}>
                                         <label class="form-check-label" for="jenis_transaksi_1">
                                             Transfer
                                         </label>
                                     </div>
                                     <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_2" {{ $detail->jenis == 2 ? "checked=''" : "" }} value="2">
+                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_2" {{ $detail->jenis == 0 ? "checked=''" : "" }} value="2" {{ $detail->jenis == 0 ? "" : "disabled" }}>
                                         <label class="form-check-label" for="jenis_transaksi_2">
                                             Cash
                                         </label>
@@ -91,12 +96,12 @@
 
                             <div class="col-md-12 mb-4">
                                 <label for="account_id" class="form-label">SUMBER</label>
-                                <select id="modal_account_id" name="account_id" class="form-control" required></select>
+                                <select id="modal_account_id" name="account_id" class="form-control" {{ $detail->jenis == 0 ? "" : "disabled" }} required></select>
                             </div>
 
                             <div class="col-md-12 mb-4">
                                 <label for="keterangan_kas" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="3">{{ $detail->keterangan_kas }}</textarea>
+                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="3" {{ $detail->jenis == 0 ? "" : "disabled" }}>{{ $detail->keterangan_kas }}</textarea>
                             </div>
                         </div>
 
@@ -105,64 +110,77 @@
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <h6 class="card-title mb-0">Detail Belanja</h6>
+                                            <h6 class="card-title mb-0">Detail Jurnal</h6>
                                         </div>
                                         <div class="col-md-6">
-                                            <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
+                                            @if ($detail->jenis == 0)
+                                                <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="card-header">
                                         <div class="row font-weight-bold">
-                                            <div class="col-md-3">Akun Belanja</div>
-                                            <div class="col-md-3">Keterangan</div>
-                                            <div class="col-md-3">Debet</div>
-                                            <div class="col-md-3">Kredit</div>
-                                            <div class="col-md-3 text-center"></div>
+                                            <div class="col-md-3">Akun</div>
+                                            <div class="col">Keterangan</div>
+                                            <div class="col">Debet</div>
+                                            <div class="col">Kredit</div>
+                                            @if ($detail->jenis == 0)
+                                                <div class="col text-center"></div>
+                                            @endif
                                         </div>
                                     </div>
-                                    @foreach ($detail->belanja_detail as $belanja => $b)
-                                        <div class="card-body {{ $loop->last ? "tambah_detail" : "" }} ">
-                                            <div class="row delete_detail">
+                                    <div class="card-body">
+                                        @foreach ($detail->details as $belanja => $b)
+                                            <div class="row delete_detail mt-2">
                                                 <div class="col-md-3">
-                                                    <select id="akun_belanja{{ $b->id }}" name="akun_belanja[]" class="form-control akun_belanja" required ></select>
+                                                    <select id="akun_belanja{{ $b->id }}" name="akun_belanja[]" class="form-control akun_belanja" {{ $detail->jenis == 0 ? "" : "disabled" }} required ></select>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <input id="keterangan[]" name="keterangan[]" class="form-control" value="{{ $b->keterangan }}" />
+                                                <div class="col">
+                                                    <input id="keterangan[]" name="keterangan[]" class="form-control" value="{{ $b->keterangan }}" {{ $detail->jenis == 0 ? "" : "disabled" }} />
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <input class="form-control debet" number="debet[]" name="debet[]" value="{{ $b->nominal }}" onkeyup="countDebet()"  required/>
+                                                <div class="col">
+                                                    <input class="form-control text-end debet" number="debet[]" name="debet[]" value="{{ $b->debet ?? '0' }}" onkeyup="countDebet()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <input class="form-control kredit" number="kredit[]" name="kredit[]" value="{{ $b->nominal }}" onkeyup="countDebet()"  required/>
+                                                <div class="col">
+                                                    <input class="form-control text-end kredit" number="kredit[]" name="kredit[]" value="{{ $b->kredit ?? '0' }}" onkeyup="countKredit()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                                                 </div>
-                                                <div class="col-md-3 text-center float-end hapus_detail">
-                                                    <i class="ri-delete-bin-line text-danger ri-2x"></i>
-                                                </div>
+                                                @if ($detail->jenis == 0)
+                                                    <div class="col text-center float-end hapus_detail">
+                                                            <i class="ri-delete-bin-line text-danger ri-2x"></i>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                     <div class="card-footer">
                                         <div class="row">
                                             <div class="col-md-3"></div>
-                                            <div class="col-md-3 text-uppercase">TOTAL</div>
-                                            <div class="col-md-3">
-                                                <input class="form-control total bg-gradient" id="total_nilai" name="total_nilai" readonly/>
+                                            <div class="col text-uppercase">TOTAL</div>
+                                            <div class="col">
+                                                <input class="form-control text-end total text-white" style="background-color: #4E36E2" id="total_debet" name="total_debet" value="{{ $detail->debet }}" readonly/>
                                             </div>
-                                            <div class="col-md-3 text-center">
-                                                <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
+                                            <div class="col">
+                                                <input class="form-control text-end total text-white" style="background-color: #4E36E2" id="total_kredit" name="total_kredit" value="{{ $detail->kredit }}" readonly/>
                                             </div>
+                                            @if ($detail->jenis == 0)
+                                                <div class="col text-center">
+                                                        <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="float-end">
-                            <button class="btn btn-success mr-5 rounded-5 bg-animation" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
-                                ></i> Simpan</button>
-                                &nbsp;&nbsp;&nbsp;
-                            <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
+                            @if ($detail->jenis == 0)
+                                <button class="btn btn-success mr-5 rounded-5 bg-animation" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
+                                    ></i> Simpan</button>
+                                    &nbsp;&nbsp;&nbsp;
+                            @endif
+                            <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2"><i class="ri-arrow-go-back-line"></i></a>
                         </div>
                     </form>
                 </div><!-- end card -->
@@ -196,7 +214,7 @@
     const pond = FilePond.create(inputElement);
     const pondBox = document.querySelector('.filepond--root');
     pondBox.addEventListener('FilePond:addfile', e => {
-        var fileName = pond.getFile();
+        var path = pond.getFile();
     });
 
     FilePond.setOptions({
@@ -247,14 +265,14 @@
         });
     }
 
-    var data = {id: "{{ $detail->banks_belanja->id }}",text: "{{ $detail->banks_belanja->nama }}", selected: true};
+    var data = {id: "{{ $detail->jurnal_banks->id }}",text: "{{ $detail->jurnal_banks->nama }}", selected: true};
     var newOption = new Option(data.text, data.id, false, false)
     $('#modal_account_id').append(newOption).trigger('change')
     $('#modal_account_id').select2()
 
-    var f = {!! json_encode($detail->belanja_detail) !!}
+    var f = {!! json_encode($detail->details) !!}
     $.each(f, function(i, item) {
-        var data = {id: item.account_id,text: item.coa_belanja.uraian, selected: true};
+        var data = {id: item.account_id,text: item.coa_jurnal.uraian, selected: true};
         var newOption = new Option(data.text, data.id, false, false)
         $('#akun_belanja'+item.id).append(newOption).trigger('change')
         $('#akun_belanja'+item.id).select2()
@@ -313,16 +331,16 @@
                 <div class="col-md-3">
                     <select id="akun_belanja`+count+++`" name="akun_belanja[]" class="form-control akun_belanja" required ></select>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
-                <div class="col-md-3">
-                    <input class="form-control debet" id="debet" name="debet[]" onkeyup="countDebet()" required />
+                <div class="col">
+                    <input class="form-control text-end debet" id="debet" name="debet[]" onkeyup="countDebet()" required />
                 </div>
-                <div class="col-md-3">
-                    <input class="form-control kredit" id="kredit" name="kredit[]" onkeyup="countKredit()" required />
+                <div class="col">
+                    <input class="form-control text-end kredit" id="kredit" name="kredit[]" onkeyup="countKredit()" required />
                 </div>
-                <div class="col-md-3 text-center hapus_detail">
+                <div class="col text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
                 </div>
             </div>
@@ -364,6 +382,7 @@
     $('.hapus_detail').click(function(){
         $(this).closest('.delete_detail').remove();
         countDebet()
+        countKredit()
     })
 
     countDebet()
@@ -377,6 +396,8 @@
         })
 
         $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
     function countKredit() {
@@ -387,6 +408,8 @@
         })
 
         $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
     $(".debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
@@ -394,6 +417,8 @@
 
     $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     $.ajaxSetup({
         headers: {
@@ -403,7 +428,7 @@
 
     function konfirmasi_hapus(id, name){
         Swal.fire({
-            title: "Masukan Alasan menghapus data transaksi "+name,
+            title: "Masukan Alasan menghapus data Jurnal "+name,
             input: "text",
             inputAttributes: {
                 autocapitalize: "off"
@@ -415,10 +440,9 @@
                 var data = new FormData();
                 data.append('id', id);
                 data.append('alasan', result.value);
-                data.append('alasan', result.value);
                 $.ajax({
                     type: "post",
-                    url: "{{ route('softdelete_kas_belanja') }}",
+                    url: "{{ route('softdelete_jurnal_umum') }}",
                     data: data,
                     processData: false,
                     contentType: false,
