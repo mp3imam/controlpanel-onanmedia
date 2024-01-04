@@ -277,6 +277,15 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 3,
                     'module_description'    => '',
                     'module_status'         => 1
+                ],[
+                    'name'                  => 'HelpDesk',
+                    'alias'                 => 'Menu Pages',
+                    'module_icon'           => 'ri-file-user-fill',
+                    'module_url'            => 'menu_page',
+                    'module_parent'         => 0,
+                    'module_position'       => 8,
+                    'module_description'    => '',
+                    'module_status'         => 1
                 ]
             ];
 
@@ -289,6 +298,7 @@ class PermissionTableSeeder extends Seeder
                 ['name'=>'finance'],
                 ['name'=>'hrd'],
                 ['name'=>'customer_service'],
+                ['name'=>'help_desk'],
             ];
 
             $users = [
@@ -304,7 +314,7 @@ class PermissionTableSeeder extends Seeder
                     'update_by' => 'administrator'
                 ],[
                     'id' => 2,
-                    'username' => 'Finance',
+                    'username' => 'amalina',
                     'password' => bcrypt('12345678'),
                     'status' => 1,
                     'nama_lengkap' => 'finance',
@@ -332,6 +342,16 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
+                ],[
+                    'id' => 5,
+                    'username' => 'Adian',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'HelpDesk',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
                 ]
             ];
 
@@ -345,7 +365,7 @@ class PermissionTableSeeder extends Seeder
             // create user Finance & roles
             $financeRole = Role::create($role[1]);
             $financeUser = User::create($users[1]);
-            $financeRole->givePermissionTo(['Dashboard']);
+            $financeRole->givePermissionTo(['Dashboard','Rekening Bank','Transaksi Kas','Transaksi Belanja','Jurnal Umum']);
             $financeUser->assignRole($financeRole);
             // end
 
@@ -360,7 +380,13 @@ class PermissionTableSeeder extends Seeder
             $csRole = Role::create($role[3]);
             $csUser = User::create($users[3]);
             $csRole->givePermissionTo(['Dashboard']);
+            $csUser->assignRole($csRole);
+            // end
 
+            // create user Costumer Service & roles
+            $csRole = Role::create($role[4]);
+            $csUser = User::create($users[4]);
+            $csRole->givePermissionTo(['Dashboard']);
             $csUser->assignRole($csRole);
             // end
 

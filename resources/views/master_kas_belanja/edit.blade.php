@@ -243,7 +243,7 @@
         });
     }
 
-    var data = {id: "{{ $detail->banks_belanja->id }}",text: "{{ $detail->banks_belanja->nama }}", selected: true};
+    var data = {id: "{{ $detail->coa_belanja->id }}",text: "{{ $detail->coa_belanja->uraian }}", selected: true};
     var newOption = new Option(data.text, data.id, false, false)
     $('#modal_account_id').append(newOption).trigger('change')
     $('#modal_account_id').select2()

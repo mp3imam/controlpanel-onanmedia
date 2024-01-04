@@ -106,7 +106,7 @@
                                                 <input id="keterangan[]" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col-md-3">
-                                                <input class="form-control nilai text-end" number="nilai[]" name="nilai[]" value="0" onkeyup="countNilai()" required/>
+                                                <input class="form-control nilai text-end" id="nilai[]" name="nilai[]" value="0" onkeyup="countNilai()" required/>
                                             </div>
                                             <div class="col-md-3 text-center float-end hapus_detail">
                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>

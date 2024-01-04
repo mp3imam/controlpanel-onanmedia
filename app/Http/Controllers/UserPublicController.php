@@ -160,7 +160,10 @@ class UserPublicController extends Controller
     public function aktifkan_seller(Request $request){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => UserPublicModel::findOrFail($request->id)->update(['sellerStatus' => 1])
+            'message' => UserPublicModel::findOrFail($request->id)->update([
+                'sellerStatus' => 1,
+                'msMerchantLevelId' => 1
+            ])
         ]);
     }
 

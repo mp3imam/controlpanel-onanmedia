@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_transaksi');
             $table->date('tanggal_transaksi');
-            $table->unsignedBigInteger('dokumen')->nullable();
+            $table->string('dokumen');
             // $table->unsignedBigInteger('bank_id');
-            $table->integer('sumber_data');
+            $table->integer('sumber_data')->nullable();
             $table->string('uraian')->nullable();
             $table->string('debet')->nullable();
             $table->string('kredit')->nullable();

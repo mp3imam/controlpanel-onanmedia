@@ -148,7 +148,7 @@
                     data: 'jenis_transaksi',
                     name: 'JENIS PEMBAYARAN'
                 }, {
-                    data: 'nominal',
+                    data: 'nominals',
                     name: 'NILAI'
                 }, {
                     data: 'keterangan_kas',

@@ -119,7 +119,7 @@
                     data: 'tanggal_transaksi',
                     name: 'TGL. TRANSAKSI'
                 },{
-                    data: 'nomor_transaksi',
+                    data: 'dokumen',
                     name: 'Documen'
                 },{
                 //     data: 'banks',
@@ -128,10 +128,10 @@
                     data: 'uraian',
                     name: 'Uraian'
                 },{
-                    data: 'debet',
+                    data: 'debets',
                     name: 'Debet'
                 },{
-                    data: 'kredit',
+                    data: 'kredits',
                     name: 'Kredit'
                 },{
                     data: 'keterangan_jurnal_umum',

@@ -18,7 +18,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-11">
-                        <h4 class="card-title mb-0">Detail <span style="color:#4E36E2">{{ $detail->nomor_transaksi }}</span></h4>
+                        <h4 class="card-title mb-0">Detail <span style="color:#4E36E2">{{ $detail->nomor_transaksi ." => ". $detail->dokumen }}</span></h4>
                     </div>
                     <div class="col">
                         @if ($detail->jenis == 0)
@@ -41,9 +41,9 @@
                                             @endforeach
                                         </div>
                                         <div class="carousel-inner">
-                                            @php $path = $detail->sumber_data == 1 ? "kas_belanja" : "jurnal_umum" @endphp
+                                            @php $path = $detail->sumber_data = 1 ? "kas_belanja" : "jurnal_umum" @endphp
                                             @foreach ($detail->jurnal_file as $foto => $f)
-                                                <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 1 ? 'active' : '' }}" data-bs-interval="2000">
+                                                <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
                                                     <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset($path).'/'.$f->path }}" >
                                                     <div class="carousel-caption d-none d-md-block">
                                                         <a href="{{ asset($path).'/'.$f->path }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
@@ -66,16 +66,17 @@
                                     </div>
                                 @endif
 
-
-                                <div class="col-md-12">
-                                    <input class="bg-success" type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
-                                </div>
+                                @if ($detail->jenis == 0)
+                                    <div class="col-md-12">
+                                        <input class="bg-success" type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
+                                    </div>
+                                @endif
                             </div>
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                             </div>
-
+                            {{--
                             <div class="col-md-12 mb-4">
                                 <div>
                                     <p class="text-muted fw-medium">Jenis Pembayaran</p>
@@ -92,16 +93,18 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="col-md-12 mb-4">
-                                <label for="account_id" class="form-label">SUMBER</label>
-                                <select id="modal_account_id" name="account_id" class="form-control" {{ $detail->jenis == 0 ? "" : "disabled" }} required></select>
-                            </div>
+                            @if ($detail->jenis > 0)
+                                <div class="col-md-6 mb-4">
+                                    <label for="account_id" class="form-label">SUMBER</label>
+                                    <select id="modal_account_id" name="account_id" class="form-control" {{ $detail->jenis == 0 ? "" : "disabled" }} required></select>
+                                </div>
+                            @endif
 
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="keterangan_kas" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="3" {{ $detail->jenis == 0 ? "" : "disabled" }}>{{ $detail->keterangan_kas }}</textarea>
+                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="1" {{ $detail->jenis == 0 ? "" : "disabled" }}>{{ $detail->keterangan_jurnal_umum }}</textarea>
                             </div>
                         </div>
 
@@ -197,34 +200,37 @@
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
 <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-    <script>
-    FilePond.registerPlugin(FilePondPluginImagePreview);
-    FilePond.registerPlugin(FilePondPluginFileValidateType);
+<script>
+    var detail = "{{ $detail->jenis }}"
+    if (detail == 0){
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
 
-    const inputElement = document.querySelector('input[id="attachment"]', {
-        acceptedFileTypes: ['image/*'],
-        fileValidateTypeDetectType: (source, type) =>
-            new Promise((resolve, reject) => {
-                // Do custom type detection here and return with promise
+        const inputElement = document.querySelector('input[id="attachment"]', {
+            acceptedFileTypes: ['image/*'],
+            fileValidateTypeDetectType: (source, type) =>
+                new Promise((resolve, reject) => {
+                    // Do custom type detection here and return with promise
 
-                resolve(type);
-            }),
-    });
+                    resolve(type);
+                }),
+        });
 
-    const pond = FilePond.create(inputElement);
-    const pondBox = document.querySelector('.filepond--root');
-    pondBox.addEventListener('FilePond:addfile', e => {
-        var path = pond.getFile();
-    });
+        const pond = FilePond.create(inputElement);
+        const pondBox = document.querySelector('.filepond--root');
+        pondBox.addEventListener('FilePond:addfile', e => {
+            var path = pond.getFile();
+        });
 
-    FilePond.setOptions({
-        allowMultiple: true,
-        server: {
-            process: "/upload_foto_jurnal_umum",
-            headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
-        }
-    });
+        FilePond.setOptions({
+            allowMultiple: true,
+            server: {
+                process: "/upload_foto_jurnal_umum",
+                headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
+            }
+        });
 
+    }
 
     function hapus_gambar(id) {
         Swal.fire({
@@ -265,10 +271,13 @@
         });
     }
 
-    var data = {id: "{{ $detail->jurnal_banks->id }}",text: "{{ $detail->jurnal_banks->nama }}", selected: true};
-    var newOption = new Option(data.text, data.id, false, false)
-    $('#modal_account_id').append(newOption).trigger('change')
-    $('#modal_account_id').select2()
+    var d = {!! json_encode($detail->coa_jurnal_umum) !!}
+    if (detail > 0){
+        var data = {id: d.id,text: d.uraian, selected: true};
+        var newOption = new Option(data.text, data.id, false, false)
+        $('#modal_account_id').append(newOption).trigger('change')
+        $('#modal_account_id').select2()
+    }
 
     var f = {!! json_encode($detail->details) !!}
     $.each(f, function(i, item) {

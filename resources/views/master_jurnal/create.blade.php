@@ -35,7 +35,7 @@
                                     <input class="bg-success" type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
                             </div>
@@ -48,7 +48,7 @@
                                 </select>
                             </div> --}}
 
-                            <div class="col-md-12 mb-4">
+                            {{-- <div class="col-md-12 mb-4">
                                 <div>
                                     <p class="text-muted fw-medium">Jenis Pembayaran</p>
                                     <div class="form-check-inline">
@@ -69,9 +69,9 @@
                             <div class="col-md-12 mb-4">
                                 <label for="account_id" class="form-label">SUMBER</label>
                                 <select id="modal_account_id" name="account_id" class="form-control" required></select>
-                            </div>
+                            </div> --}}
 
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="keterangan_kas" class="form-label">KETERANGAN</label>
                                 <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="1"></textarea>
                             </div>
@@ -105,10 +105,10 @@
                                                 <input id="keterangan[]" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col">
-                                                <input class="form-control text-end debet" number="debet[]" name="debet[]" value="0" onkeyup="countDebet()" required/>
+                                                <input class="form-control debet_detail text-end" id="debet_detail[]" name="debet_detail[]" value="0" onkeyup="countDebet()" required/>
                                             </div>
                                             <div class="col">
-                                                <input class="form-control text-end kredit" number="kredit[]" name="kredit[]" value="0" onkeyup="countKredit()" required/>
+                                                <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]" value="0" onkeyup="countKredit()" required/>
                                             </div>
                                             <div class="col text-center float-end hapus_detail">
                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -209,7 +209,7 @@
         allowClear: true,
         width: '100%',
         ajax: {
-            url: "{{ route('api.get_select2_belanja') }}",
+            url: "{{ route('api.get_select2_uraian_coa') }}",
             dataType: 'json',
             delay: 250,
             processResults: function(data) {
@@ -241,10 +241,10 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col">
-                    <input class="form-control text-end debet" number="debet[]" name="debet[]" value="0" onkeyup="countDebet()" required/>
+                    <input class="form-control debet_detail text-end" id="debet_detail[]" name="debet_detail[]" value="0" onkeyup="countDebet()" required/>
                 </div>
                 <div class="col">
-                    <input class="form-control text-end kredit" number="kredit[]" name="kredit[]" value="0" onkeyup="countKredit()" required/>
+                    <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]" value="0" onkeyup="countKredit()" required/>
                 </div>
                 <div class="col text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -257,7 +257,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_belanja') }}",
+                url: "{{ route('api.get_select2_uraian_coa') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -281,8 +281,8 @@
             countKredit()
         });
 
-        $(".debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $(".debet_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $(".kredit_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     }
 
@@ -294,7 +294,7 @@
 
     function countDebet() {
         var sum_value = 0;
-        $('.debet').each(function(){
+        $('.debet_detail').each(function(){
             console.log(sum_value);
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
             $('#total_debet').val(sum_value);
@@ -305,14 +305,9 @@
         $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
-    $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $(".debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $("#total_debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-
     function countKredit() {
         var sum_value = 0;
-        $('.kredit').each(function(){
+        $('.kredit_detail').each(function(){
             console.log(sum_value);
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
             $('#total_kredit').val(sum_value);
@@ -323,5 +318,10 @@
         $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
+    $(".kredit_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $(".debet_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $("#total_debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 </script>
 @endsection
+-

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JurnalUmumDetail;
 use App\Models\MasterJurnal;
 use App\Models\TemporaryFileUploadJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,11 +44,11 @@ class MasterJurnalController extends Controller
         // ->addColumn('banks', function ($row){
         //     return $row->jurnal_banks->nama;
         // })
-        ->addColumn('kredits', function ($row){
-            return $row->details->sum('kredit');
-        })
         ->addColumn('debets', function ($row){
-            return $row->details->sum('debet');
+            return "Rp. ".number_format($row->debet, 0);
+        })
+        ->addColumn('kredits', function ($row){
+            return "Rp. ".number_format($row->kredit, 0);
         })
         ->rawColumns(['banks','kredit','debet'])
         ->make(true);
@@ -74,9 +75,9 @@ class MasterJurnalController extends Controller
     public function store(Request $request){
         $validasi = [
             'tanggal_transaksi' => 'required',
-            'account_id'        => 'required',
-            'debet'             => 'required',
-            'kredit'            => 'required',
+            'account_id'        => 'nullable',
+            'debet'             => 'nullable',
+            'kredit'            => 'nullable',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -85,10 +86,33 @@ class MasterJurnalController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
-        // Store your file into directory and db
-        dd($request->all(), MasterJurnal::first());
-        $request['bank_id'] = $request->account_id;
-        MasterJurnal::create($request->except('_token'));
+        DB::beginTransaction();
+        try {
+            // Store your file into directory and db
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['dokumen'] = $request->nomor_transaksi;
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_debet));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_kredit));
+            $request['jenis'] = 0;
+            $jurnaUmum = MasterJurnal::create($request->except('_token'));
+
+            $request['jurnal_umum_id'] = $jurnaUmum->id;
+            foreach ($request->akun_belanja as $akun => $a) {
+                $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->debet_detail[$akun]));
+                $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->kredit_detail[$akun]));
+                $request['keterangan'] = $request->keterangan[$akun] ?? '';
+                $request['account_id'] = $a;
+
+                JurnalUmumDetail::create($request->except('_token'));
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
 
         return redirect('master_jurnal');
     }
@@ -154,8 +178,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::with(['jurnal_banks','details.coa_jurnal','jurnal_file'])->findOrFail($id);
-        // dd($detail);
+        $detail = MasterJurnal::with(['coa_jurnal_umum','details.coa_jurnal','jurnal_file'])->findOrFail($id);
 
         return view('master_jurnal.edit', $title, compact(['detail']));
     }
@@ -196,7 +219,7 @@ class MasterJurnalController extends Controller
     }
 
     public function models($request){
-        return MasterJurnal::with(['details','jurnal_banks','jurnal_file'])->get();
+        return MasterJurnal::with(['details','coa_jurnal_umum','jurnal_file'])->get();
     }
 
     public function pdf(Request $request){

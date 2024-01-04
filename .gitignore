@@ -21,6 +21,7 @@ Homestead.json
 # /public/hot
 # /public/storage
 /public/jurnal_umum/*
+/public/kas_belanja/*
 /public/sql/*
 /storage/*.key
 /vendor
@@ -46,5 +47,4 @@ storage/app/*
 storage/logs/*
 storage/debuger/*
 storage/framework/*
-composer.lock
 package-lock.json

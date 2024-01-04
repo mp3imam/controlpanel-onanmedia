@@ -46,13 +46,13 @@ class MasterKasBelanjaController extends Controller
         ->addColumn('banks', function ($row){
             return $row->coa_belanja->uraian;
         })
-        // ->addColumn('nominal', function ($row){
-        //     return number_format($row->belanja_detail->sum('nominal'), 0);
-        // })
+        ->addColumn('nominals', function ($row){
+            return "Rp. ".number_format($row->nominal, 0);
+        })
         ->addColumn('jenis_transaksi', function ($row){
             return $row->jenis == 1 ? "Transfer" : "Cash";
         })
-        ->rawColumns(['banks'])
+        ->rawColumns(['banks','nominals','jenis_transaksi'])
         ->make(true);
 
     }
@@ -135,10 +135,15 @@ class MasterKasBelanjaController extends Controller
             }
 
             // Create Master Jurnal
+            $request['dokumen'] = $request->nomor_transaksi;
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
             $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
             $request['bank_id'] = $request->account_id;
             $request['sumber_data'] = 1;
-            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
+            $request['debet'] = $request->nominal;
+            $request['kredit'] = $request->nominal;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
 
             // Create Master Jurnal Detail
@@ -149,10 +154,16 @@ class MasterKasBelanjaController extends Controller
                     'jurnal_umum_id' => $masterJurnal->id,
                     'account_id'     => $a,
                     'keterangan'     => $request->keterangan[$akun] ?? '',
-                    'kredit'         => $nominal,
+                    'debet'         => $nominal,
                 ];
                 JurnalUmumDetail::create($data);
             }
+            JurnalUmumDetail::create([
+                'jurnal_umum_id' => $masterJurnal->id,
+                'account_id'     => $request->account_id,
+                'keterangan'     => '',
+                'kredit'          => $request->nominal,
+            ]);
 
             foreach (MasterKasBelanjaFile::whereKasId($kas->id)->get() as $file) {
                 $dataFile = [
@@ -223,7 +234,8 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['belanja_detail.coa_belanja','banks_belanja','kas_file'])->findOrFail($id);
+        $detail = MasterKasBelanja::with(['coa_belanja','belanja_detail.coa_belanja','banks_belanja','kas_file'])->findOrFail($id);
+        // dd($detail);
 
         return view('master_kas_belanja.edit', $title, compact(['detail']));
     }
@@ -306,6 +318,12 @@ class MasterKasBelanjaController extends Controller
             ];
             JurnalUmumDetail::create($data);
         }
+        JurnalUmumDetail::create([
+            'jurnal_umum_id' => $nomor->id,
+            'account_id'     => $request->account_id,
+            'keterangan'     => '',
+            'debet'          => $request->nominal,
+        ]);
 
         foreach (MasterKasBelanjaFile::whereKasId($id)->get() as $file) {
             $dataFile = [

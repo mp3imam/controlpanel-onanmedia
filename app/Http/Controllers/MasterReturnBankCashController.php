@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JurnalUmumDetail;
 use App\Models\MasterJurnal;
 use App\Models\MasterReturnBankCashModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -92,7 +93,13 @@ class MasterReturnBankCashController extends Controller
         //     //code...
             MasterReturnBankCashModel::create($request->except('_token'));
             $request['kredit'] = $request->nominal;
+            $request['debet'] = $request->nominal;
             MasterJurnal::create($request->except('_token'));
+            $keredet = ['kredit','debet'];
+            foreach ($keredet as $key) {
+                $request[$key] = $request->nominal;
+                JurnalUmumDetail::create($request->except('_token'));
+            }
 
             DB::commit();
         } catch (\Throwable $th) {

@@ -21,6 +21,10 @@ class MasterJurnal extends Model
         return $this->hasOne(BankModel::class, 'id', 'bank_id');
     }
 
+    public function coa_jurnal_umum(){
+        return $this->hasOne(MasterCoaModel::class, 'id', 'bank_id');
+    }
+
     public function scopeTotal($q){
         return $q->with(['details' => function($q) {
             $q->selectRaw('jurnal_umum_id, sum("debet") jumlah_debet, sum("kredit") jumlah_kredit')
