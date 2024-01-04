@@ -95,13 +95,6 @@
                                 </div>
                             </div> --}}
 
-                            @if ($detail->jenis > 0)
-                                <div class="col-md-6 mb-4">
-                                    <label for="account_id" class="form-label">SUMBER</label>
-                                    <select id="modal_account_id" name="account_id" class="form-control" {{ $detail->jenis == 0 ? "" : "disabled" }} required></select>
-                                </div>
-                            @endif
-
                             <div class="col-md-6 mb-4">
                                 <label for="keterangan_kas" class="form-label">KETERANGAN</label>
                                 <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="1" {{ $detail->jenis == 0 ? "" : "disabled" }}>{{ $detail->keterangan_jurnal_umum }}</textarea>
@@ -278,14 +271,6 @@
         $('#modal_account_id').append(newOption).trigger('change')
         $('#modal_account_id').select2()
     }
-
-    var f = {!! json_encode($detail->details) !!}
-    $.each(f, function(i, item) {
-        var data = {id: item.account_id,text: item.coa_jurnal.uraian, selected: true};
-        var newOption = new Option(data.text, data.id, false, false)
-        $('#akun_belanja'+item.id).append(newOption).trigger('change')
-        $('#akun_belanja'+item.id).select2()
-    });
 
     $(function(){
         $("#modal_account_id").select2({
