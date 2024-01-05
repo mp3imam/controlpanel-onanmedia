@@ -198,7 +198,7 @@
     FilePond.setOptions({
         allowMultiple: true,
         server: {
-            process: "/upload_foto_jurnal_umum",
+            process: "/upload_foto_kas_belanja",
             headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
         }
     });

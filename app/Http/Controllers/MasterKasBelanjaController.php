@@ -76,6 +76,7 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // dd($request->all());
         $validasi = [
             'tanggal_transaksi' => 'required',
             'account_id'        => 'required',
@@ -87,8 +88,8 @@ class MasterKasBelanjaController extends Controller
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
             $tahun = Carbon::now()->format('Y');
             $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
@@ -142,8 +143,8 @@ class MasterKasBelanjaController extends Controller
             $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
             $request['bank_id'] = $request->account_id;
             $request['sumber_data'] = 1;
-            $request['debet'] = $request->nominal;
-            $request['kredit'] = $request->nominal;
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             $masterJurnal = MasterJurnal::create($request->except('_token'));
 
             // Create Master Jurnal Detail
@@ -165,19 +166,20 @@ class MasterKasBelanjaController extends Controller
                 'kredit'          => $request->nominal,
             ]);
 
+            //
             foreach (MasterKasBelanjaFile::whereKasId($kas->id)->get() as $file) {
-                $dataFile = [
+                MasterJurnalFile::create([
                     'jurnal_umum_id' => $masterJurnal->id,
-                    'path'           => $file->filename
-                ];
-                MasterJurnalFile::create($dataFile);
+                    'path'           => 'kas_belanja',
+                    'filename'       => $file->filename,
+                ]);
             }
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-        }
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+        // }
 
         return redirect('master_kas_belanja');
     }
@@ -191,7 +193,7 @@ class MasterKasBelanjaController extends Controller
             $file->move($path, $imageName);
 
             TemporaryFileUpload::create([
-                'folder' => $path,
+                'folder' => 'kas_belanja',
                 'filename' => $imageName,
                 'token' => $request->header('X-Csrf-Token'),
                 'created_by' => (int)Auth::user()->id
@@ -259,78 +261,87 @@ class MasterKasBelanjaController extends Controller
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
-        // Store your file into directory and db
-        $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
-        MasterKasBelanja::find($id)->update($request->except(['_token','_method']));
+        DB::beginTransaction();
+        try {
+            // Store your file into directory and db
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
+            MasterKasBelanja::find($id)->update($request->except(['_token','_method']));
 
-        MasterKasBelanjaDetail::whereKasId($id)->delete();
+            MasterKasBelanjaDetail::whereKasId($id)->delete();
 
-        // Create New Detail and File Kas Belanja
-        foreach ($request->akun_belanja as $akun => $a) {
-            $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+            // Create New Detail and File Kas Belanja
+            foreach ($request->akun_belanja as $akun => $a) {
+                $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
 
-            $data = [
-                'kas_id'     => $id,
-                'account_id' => $a,
-                'keterangan' => $request->keterangan[$akun] ?? '',
-                'nominal'    => $nominal,
-            ];
-            MasterKasBelanjaDetail::create($data);
-        }
+                $data = [
+                    'kas_id'     => $id,
+                    'account_id' => $a,
+                    'keterangan' => $request->keterangan[$akun] ?? '',
+                    'nominal'    => $nominal,
+                ];
+                MasterKasBelanjaDetail::create($data);
+            }
 
-        $files = TemporaryFileUpload::query()
-        ->whereStatus("0")
-        ->get();
+            $files = TemporaryFileUpload::query()
+            ->whereStatus("0")
+            ->get();
 
-        foreach ($files as $file) {
-            $data = [
-                'kas_id'     => $id,
-                'filename'   => $file->filename,
-            ];
-            MasterKasBelanjaFile::create($data);
+            foreach ($files as $file) {
+                $data = [
+                    'kas_id'     => $id,
+                    'filename'   => $file->filename,
+                ];
+                MasterKasBelanjaFile::create($data);
 
-            // update foto status menjadi 1
-            TemporaryFileUpload::findOrFail($file->id)->update([
-                'kas_id' => $id,
-                'status' => 1,
+                // update foto status menjadi 1
+                TemporaryFileUpload::findOrFail($file->id)->update([
+                    'kas_id' => $id,
+                    'status' => 1,
+                ]);
+
+            }
+
+            // Edit Jurnal Umum, hapus detail dan file Jurnal Umum
+            $request['keterangan_jurnal_umum'] = $request->keterangan_kas;
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
+            $nomor = MasterJurnal::whereDokumen(MasterKasBelanja::whereId($id)->first()->nomor_transaksi)->first();
+            $nomor->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
+            $nomor->fresh();
+            JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
+            MasterJurnalFile::whereJurnalUmumId($nomor->id)->delete();
+
+            // Create Master Jurnal Detail
+            foreach ($request->akun_belanja as $akun => $a) {
+                $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+
+                $data = [
+                    'jurnal_umum_id' => $nomor->id,
+                    'account_id'     => $a,
+                    'keterangan'     => $request->keterangan[$akun] ?? '',
+                    'kredit'         => $nominal,
+                ];
+                JurnalUmumDetail::create($data);
+            }
+            JurnalUmumDetail::create([
+                'jurnal_umum_id' => $nomor->id,
+                'account_id'     => $request->account_id,
+                'keterangan'     => '',
+                'debet'          => $request->nominal,
             ]);
 
-        }
+            foreach (MasterKasBelanjaFile::whereKasId($id)->get() as $file) {
+                MasterJurnalFile::create([
+                    'jurnal_umum_id' => $nomor->id,
+                    'path'           => 'kas_belanja',
+                    'filename'       => $file->filename,
+                ]);
+            }
 
-        // Edit Jurnal Umum, hapus detail dan file Jurnal Umum
-        $request['keterangan_jurnal_umum'] = $request->keterangan_kas;
-        $request['kredit'] = $request->total_nilai;
-        $nomor = MasterJurnal::whereId($id)->first();
-        $nomor->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
-        $nomor->fresh();
-        JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
-        MasterJurnalFile::whereJurnalUmumId($nomor->id)->delete();
-
-        // Create Master Jurnal Detail
-        foreach ($request->akun_belanja as $akun => $a) {
-            $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
-
-            $data = [
-                'jurnal_umum_id' => $nomor->id,
-                'account_id'     => $a,
-                'keterangan'     => $request->keterangan[$akun] ?? '',
-                'kredit'         => $nominal,
-            ];
-            JurnalUmumDetail::create($data);
-        }
-        JurnalUmumDetail::create([
-            'jurnal_umum_id' => $nomor->id,
-            'account_id'     => $request->account_id,
-            'keterangan'     => '',
-            'debet'          => $request->nominal,
-        ]);
-
-        foreach (MasterKasBelanjaFile::whereKasId($id)->get() as $file) {
-            $dataFile = [
-                'jurnal_umum_id' => $nomor->id,
-                'path'           => $file->filename
-            ];
-            MasterJurnalFile::create($dataFile);
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
         }
 
         return redirect('master_kas_belanja');
@@ -343,9 +354,20 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
+        DB::beginTransaction();
+        try {
+            MasterKasBelanja::findOrFail($id)->softdeletes();
+            MasterJurnal::whereDokumen(MasterKasBelanja::whereId($id)->nomor_transaksi)->softdeletes();
+            DB::commit();
+            $status = 'Success';
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $status = "Error $th";
+        }
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterKasBelanja::findOrFail($id)->delete()
+            'message' => $status
         ]);
     }
 
@@ -375,6 +397,7 @@ class MasterKasBelanjaController extends Controller
                 $q->where('tanggal_transaksi', '>=',Carbon::parse($tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::parse($tanggal[1])->format('Y-m-d'));
             });
         })
+        ->orderBy('id','desc')
         ->get();
     }
 

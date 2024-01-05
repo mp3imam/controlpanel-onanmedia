@@ -26,6 +26,10 @@ class MasterCoaModel extends Model
         return $this->belongsTo(MasterBankCashModel::class, 'bank_id');
     }
 
+    public function coa_kas_saldo(){
+        return $this->belongsTo(MasterBankCashModel::class);
+    }
+
     public function coa_jurnal_umum(){
         return $this->belongsTo(MasterJurnal::class, 'bank_id');
     }

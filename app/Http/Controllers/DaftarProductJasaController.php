@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DaftarPricingModel;
 use App\Models\DaftarProductJasaModel;
+use App\Models\JasaModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -201,6 +202,15 @@ class DaftarProductJasaController extends Controller
         ->leftJoin('MsSubkategori', 'MsSubkategori.id', '=', 'Jasa.msSubkategoriId')
         ->leftJoin('MsStatusJasa', 'MsStatusJasa.id', '=', 'Jasa.msStatusJasaId')
         ->get();
+    }
+
+    function verifikasi_jasa(Request $request){
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => JasaModel::findOrFail($request->id)->update([
+                            'msStatusJasaId' => 1
+                        ])
+        ]);
     }
 
     public function daftar_pricing(Request $request){

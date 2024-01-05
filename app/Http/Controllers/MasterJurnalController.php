@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterJurnal;
+use App\Models\MasterJurnalFile;
 use App\Models\TemporaryFileUploadJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -25,8 +26,7 @@ class MasterJurnalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct()
-    {
+    function __construct(){
         // dd(MasterJurnal::with(['details','jurnal_banks','jurnal_file'])->get());
         $this->middleware('permission:'.Permission::whereId(13)->active()->first()->name);
     }
@@ -41,9 +41,6 @@ class MasterJurnalController extends Controller
     function get_datatable(Request $request){
         return
         DataTables::of($this->models($request))
-        // ->addColumn('banks', function ($row){
-        //     return $row->jurnal_banks->nama;
-        // })
         ->addColumn('debets', function ($row){
             return "Rp. ".number_format($row->debet, 0);
         })
@@ -86,8 +83,8 @@ class MasterJurnalController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
             // Store your file into directory and db
             $tahun = Carbon::now()->format('Y');
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
@@ -109,12 +106,44 @@ class MasterJurnalController extends Controller
                 JurnalUmumDetail::create($request->except('_token'));
             }
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-        }
+            if ($request->attachment){
+                $files = TemporaryFileUploadJurnal::query()
+                ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
+                ->whereStatus("0")
+                ->whereCreatedBy(Auth::user()->id)
+                ->whereToken($request->_token)
+                ->get();
+
+                foreach ($files as $file) {
+                    $data = [
+                        'jurnal_umum_id' => $jurnaUmum->id,
+                        'path'           => $file->folder,
+                        'filename'       => $file->filename,
+                    ];
+                    MasterJurnalFile::create($data);
+
+                    // update foto status menjadi 1
+                    TemporaryFileUploadJurnal::findOrFail($file->id)->update([
+                        'jurnal_umum_id' => $jurnaUmum->id,
+                        'status'         => 1,
+                    ]);
+                }
+            }
+
+
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        // }
 
         return redirect('master_jurnal');
+    }
+
+    public function hapus_foto(Request $request){
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => MasterJurnalFile::findOrFail($request->id)->delete()
+        ]);
     }
 
     public function softdelete_kas_belanja(Request $request){
@@ -145,12 +174,13 @@ class MasterJurnalController extends Controller
             $file->move($path, $imageName);
 
             TemporaryFileUploadJurnal::create([
-                'folder' => $path,
+                'folder' => 'jurnal_umum',
                 'filename' => $imageName,
                 'token' => $request->header('X-Csrf-Token'),
                 'created_by' => (int)Auth::user()->id
             ]);
         }
+        return $path;
     }
 
     /**
@@ -192,15 +222,59 @@ class MasterJurnalController extends Controller
      */
     public function update(Request $request, $id){
         $request->validate([
-            'nomor_transaksi'   => 'required',
             'tanggal_transaksi' => 'required',
-            'bank_id'           => 'required',
-            'jenis_transaksi'   => 'required',
-            'nilai'             => 'required',
+            'akun_belanja'      => 'required',
         ]);
 
-        // Store your file into directory and db
-        MasterJurnal::find($id)->update($request->except(['_token','_method']));
+        DB::beginTransaction();
+        try {
+            // Store your file into directory and db
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_debet));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_kredit));
+            MasterJurnal::find($id)->update($request->except(['_token','_method']));
+            $masterJurnal = MasterJurnal::whereId($id)->first();
+
+            // Hapus Jurnal Detail
+            JurnalUmumDetail::whereJurnalUmumId($masterJurnal->id)->delete();
+            $request['jurnal_umum_id'] = $masterJurnal->id;
+            foreach ($request->akun_belanja as $akun => $a) {
+                $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->debet_detail[$akun]));
+                $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->kredit_detail[$akun]));
+                $request['keterangan'] = $request->keterangan[$akun] ?? '';
+                $request['account_id'] = $a;
+
+                JurnalUmumDetail::create($request->except('_token'));
+            }
+
+            // Hapus Jurnal Detail
+            if ($request->attachment){
+                $files = TemporaryFileUploadJurnal::query()
+                ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
+                ->whereStatus("0")
+                ->whereCreatedBy(Auth::user()->id)
+                ->whereToken($request->_token)
+                ->get();
+
+                foreach ($files as $file) {
+                    $data = [
+                        'jurnal_umum_id' => $request->jurnal_umum_id,
+                        'path'           => $file->folder,
+                        'filename'       => $file->filename,
+                    ];
+                    MasterJurnalFile::create($data);
+
+                    // update foto status menjadi 1
+                    TemporaryFileUploadJurnal::findOrFail($file->id)->update([
+                        'jurnal_umum_id' => $request->jurnal_umum_id,
+                        'status'         => 1,
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
 
         return redirect('master_jurnal');
     }
@@ -219,7 +293,9 @@ class MasterJurnalController extends Controller
     }
 
     public function models($request){
-        return MasterJurnal::with(['details','coa_jurnal_umum','jurnal_file'])->get();
+        return MasterJurnal::with(['details','coa_jurnal_umum','jurnal_file'])
+        ->orderBy('id','desc')
+        ->get();
     }
 
     public function pdf(Request $request){

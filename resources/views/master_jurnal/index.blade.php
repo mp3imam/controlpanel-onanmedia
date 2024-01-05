@@ -143,10 +143,16 @@
                     data: 'id',
                     name: 'Action',
                     render: function (data, type, row, meta) {
-                        btn = row.jenis !== 0 ? `` : `
-                        <a href="{{ url('master_jurnal') }}/`+row.id+`/edit" class="btn btn-ghost-warning waves-effect waves-light btn-sm"><i class="ri-pencil-fill"></i></a>
+                        btn = `
+                        <a href="{{ url('master_jurnal') }}/`+row.id+`/edit" class="btn btn-outline-warning btn-icon waves-effect waves-light">
+                            <i class="ri-pencil-fill"></i>
+                        </a>
+                        `
+                        btn += row.jenis == "1" ? `` : `
 
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light float-end" onclick="konfirmasi_hapus(`+row.id+`,`+$row.nomor_transaksi+`)" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        <button type="button" class="btn btn-outline-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(`+row.id+`,'`+row.nomor_transaksi+`')" target="_blank">
+                            <i class="ri-delete-bin-5-line"></i>
+                        </button>
                         `
                         return btn
                     }

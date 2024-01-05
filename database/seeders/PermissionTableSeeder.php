@@ -365,7 +365,7 @@ class PermissionTableSeeder extends Seeder
             // create user Finance & roles
             $financeRole = Role::create($role[1]);
             $financeUser = User::create($users[1]);
-            $financeRole->givePermissionTo(['Dashboard','Rekening Bank','Transaksi Kas','Transaksi Belanja','Jurnal Umum']);
+            $financeRole->givePermissionTo(['Dashboard','Finance','Rekening Bank','Transaksi Kas','Transaksi Belanja','Jurnal Umum']);
             $financeUser->assignRole($financeRole);
             // end
 

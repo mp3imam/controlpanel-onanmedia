@@ -16,6 +16,10 @@ class MasterBankCashModel extends Model
         return $this->hasOne(BankModel::class, 'id', 'bank_id');
     }
 
+    public function coa_kas_saldo(){
+        return $this->hasOne(MasterCoaModel::class, 'id', 'bank_id');
+    }
+
     public function users_bank_cash(){
         return $this->hasOne(UserPublicModel::class, 'id', 'user_id');
     }

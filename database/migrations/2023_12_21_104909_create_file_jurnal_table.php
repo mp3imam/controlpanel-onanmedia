@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('jurnal_umum_id');
             $table->string('path');
+            $table->string('filename');
             $table->timestamps();
         });
     }

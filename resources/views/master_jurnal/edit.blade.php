@@ -21,10 +21,16 @@
                         <h4 class="card-title mb-0">Detail <span style="color:#4E36E2">{{ $detail->nomor_transaksi ." => ". $detail->dokumen }}</span></h4>
                     </div>
                     <div class="col">
-                        @if ($detail->jenis == 0)
-                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light float-end" onclick="konfirmasi_hapus('{{ $detail->id }}',`{{ $detail->nomor_transaksi }}`)" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
-                        @endif
-                        <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2"><i class="ri-arrow-go-back-line"></i></a>
+                        <div class="row float-end">
+                            <div class="col">
+                                @if ($detail->jenis == 0)
+                                    <button type="button" class="btn btn-outline-danger btn-icon waves-effect waves-light float-end" onclick="konfirmasi_hapus('{{ $detail->id }}',`{{ $detail->nomor_transaksi }}`)" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                                @endif
+                            </div>
+                            <div class="col">
+                                <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2"><i class="ri-arrow-go-back-line"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -41,12 +47,11 @@
                                             @endforeach
                                         </div>
                                         <div class="carousel-inner">
-                                            @php $path = $detail->sumber_data = 1 ? "kas_belanja" : "jurnal_umum" @endphp
                                             @foreach ($detail->jurnal_file as $foto => $f)
                                                 <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
-                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset($path).'/'.$f->path }}" >
+                                                    <img id="{{ $f->id }}" class="d-block" width="100%" height="300px" src="{{ asset($f->path)."/".$f->filename }}" >
                                                     <div class="carousel-caption d-none d-md-block">
-                                                        <a href="{{ asset($path).'/'.$f->path }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
+                                                        <a href="{{ asset($f->path)."/".$f->filename }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
                                                         @if ($detail->jenis == 0)
                                                             <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
                                                         @endif
@@ -96,8 +101,8 @@
                             </div> --}}
 
                             <div class="col-md-6 mb-4">
-                                <label for="keterangan_kas" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="1" {{ $detail->jenis == 0 ? "" : "disabled" }}>{{ $detail->keterangan_jurnal_umum }}</textarea>
+                                <label for="keterangan_jurnal_umum" class="form-label">KETERANGAN</label>
+                                <textarea class="form-control" id="keterangan_jurnal_umum" name="keterangan_jurnal_umum" rows="1" {{ $detail->jenis == 0 ? "" : "disabled" }}>{{ $detail->keterangan_jurnal_umum }}</textarea>
                             </div>
                         </div>
 
@@ -127,7 +132,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body tambah_detail">
                                         @foreach ($detail->details as $belanja => $b)
                                             <div class="row delete_detail mt-2">
                                                 <div class="col-md-3">
@@ -137,10 +142,10 @@
                                                     <input id="keterangan[]" name="keterangan[]" class="form-control" value="{{ $b->keterangan }}" {{ $detail->jenis == 0 ? "" : "disabled" }} />
                                                 </div>
                                                 <div class="col">
-                                                    <input class="form-control text-end debet" number="debet[]" name="debet[]" value="{{ $b->debet ?? '0' }}" onkeyup="countDebet()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
+                                                    <input class="form-control text-end debet" id="debet[]" name="debet_detail[]" value="{{ $b->debet ?? '0' }}" onkeyup="countDebet()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                                                 </div>
                                                 <div class="col">
-                                                    <input class="form-control text-end kredit" number="kredit[]" name="kredit[]" value="{{ $b->kredit ?? '0' }}" onkeyup="countKredit()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
+                                                    <input class="form-control text-end kredit" id="kredit[]" name="kredit_detail[]" value="{{ $b->kredit ?? '0' }}" onkeyup="countKredit()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                                                 </div>
                                                 @if ($detail->jenis == 0)
                                                     <div class="col text-center float-end hapus_detail">
@@ -162,7 +167,14 @@
                                             </div>
                                             @if ($detail->jenis == 0)
                                                 <div class="col text-center">
-                                                        <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <button class="btn float-end bg-soft-info" type="button" onclick="tambah_detail()" style="color:#4E36E2"><i class="ri-add-box-fill"></i></button>
+                                                        </div>
+                                                        <div class="col text-white text-end rounded-3" style="background-color: #4E36E2">
+                                                            <label class="mt-2" id="total_all" name="total_all">Rp. 0</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             @endif
                                         </div>
@@ -172,8 +184,7 @@
                         </div>
                         <div class="float-end">
                             @if ($detail->jenis == 0)
-                                <button class="btn btn-success mr-5 rounded-5 bg-animation" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
-                                    ></i> Simpan</button>
+                                <button class="btn btn-success mr-5 rounded-5 bg-animation bg-success"><i class="ri-ball-pen-fill label-icon align-middle fs-16 me-2"></i> Ubah</button>
                                     &nbsp;&nbsp;&nbsp;
                             @endif
                             <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2"><i class="ri-arrow-go-back-line"></i></a>
@@ -237,7 +248,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '{{ route("hapus_foto_kas_belanja") }}',
+                    url: '{{ route("hapus_foto_jurnal_umum") }}',
                     data: { '_token': $('meta[name=csrf-token]').attr('content'), id: id },
                     type: 'POST',
                     success: function (resp) {
@@ -264,13 +275,13 @@
         });
     }
 
-    var d = {!! json_encode($detail->coa_jurnal_umum) !!}
-    if (detail > 0){
-        var data = {id: d.id,text: d.uraian, selected: true};
+    var f = {!! json_encode($detail->details) !!}
+    $.each(f, function(i, item) {
+        var data = {id: item.coa_jurnal.id,text: item.coa_jurnal.uraian, selected: true};
         var newOption = new Option(data.text, data.id, false, false)
-        $('#modal_account_id').append(newOption).trigger('change')
-        $('#modal_account_id').select2()
-    }
+        $('#akun_belanja'+item.id).append(newOption).trigger('change')
+        $('#akun_belanja'+item.id).select2()
+    });
 
     $(function(){
         $("#modal_account_id").select2({
@@ -297,7 +308,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_belanja') }}",
+                url: "{{ route('api.get_select2_uraian_coa') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -315,10 +326,20 @@
             $("#jenis_sumber").val(e.params.data.item);
         });
 
-
+        convertRupiah()
     })
 
-    var count = 1
+    function convertRupiah(){
+        $(".debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+
+        $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').text(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    }
+
+    var count = 1000
     function tambah_detail() {
         $('.tambah_detail').append(`
             <div class="row delete_detail mt-2">
@@ -329,10 +350,10 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col">
-                    <input class="form-control text-end debet" id="debet" name="debet[]" onkeyup="countDebet()" required />
+                    <input class="form-control text-end debet" id="debet[]" name="debet_detail[]" onkeyup="countDebet()" value="0" required/>
                 </div>
                 <div class="col">
-                    <input class="form-control text-end kredit" id="kredit" name="kredit[]" onkeyup="countKredit()" required />
+                    <input class="form-control text-end kredit" id="kredit[]" name="kredit_detail[]" onkeyup="countKredit()" value="0" required/>
                 </div>
                 <div class="col text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -345,7 +366,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_belanja') }}",
+                url: "{{ route('api.get_select2_uraian_coa') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -370,6 +391,7 @@
         });
 
         $(".nilai").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        convertRupiah()
 
     }
 
@@ -390,8 +412,9 @@
         })
 
         $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').text(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
         $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        convertRupiah()
     }
 
     function countKredit() {
@@ -402,17 +425,10 @@
         })
 
         $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+        $('#total_all').text(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
         $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        convertRupiah()
     }
-
-    $(".debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-
-    $(".kredit").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     $.ajaxSetup({
         headers: {
