@@ -36,7 +36,14 @@
 
                         <div class="col-md-12 mb-4">
                             <label for="jenis_transaksi" class="form-label">JENIS TRANSAKSI</label>
-                            <input class="form-control" id="jenis_transaksi" name="jenis_transaksi" value="{{ $detail->jenis_transaksi }}" />
+                            <select class="form-control" name="jenis_transaksi">
+                                <option value="1" {{ $detail->jenis_transaksi == 1 ? "selected" : "" }}>
+                                    Transfer
+                                </option>
+                                <option value="2" {{ $detail->jenis_transaksi == 2 ? "selected" : "" }}>
+                                    Cash
+                                </option>
+                            </select>
                         </div>
 
                         {{-- <div class="col-md-12 mb-4">
@@ -152,7 +159,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_banks') }}",
+                url: "{{ route('api.get_select2_banks_coa') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -169,9 +176,9 @@
         });
     });
 
-    var dataId = "{{ $detail->bank_id }}"
-    var dataName = "{{ $detail->banks->nama }}"
-    var dataBank = {id: dataId,text: dataName, selected: true};
+    var dataId = {!! json_encode($detail->coa_kas_saldo) !!}
+    console.log(dataId);
+    var dataBank = {id: dataId.id,text: dataId.uraian, selected: true};
     var newOptionBank = new Option(dataBank.text, dataBank.id, false, false)
     $('#modal_bank_id').append(newOptionBank).trigger('change')
     $('#modal_bank_id').select2()

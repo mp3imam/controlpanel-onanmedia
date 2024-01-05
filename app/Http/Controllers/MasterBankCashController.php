@@ -84,40 +84,39 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        // dd($request->all());
-        $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->format('Y'))->first();
-        $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
-        $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
-        $request['nominal'] = str_replace(",","",$request->nominal);
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
+            $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->format('Y'))->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
+            $request['nominal'] = str_replace(",","",$request->nominal);
             MasterBankCashModel::create($request->except('_token'));
 
             $tahun = Carbon::now()->format('Y');
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['dokumen'] = $request->nomor_transaksi;
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
             $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
-            $request['dokumen'] = $request->nomor_transaksi;
             $request['debet'] = $request->nominal;
             $request['kredit'] = $request->nominal;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
             $request['jurnal_umum_id'] = $masterJurnal->id;
             $request['account_id'] = $request->bank_id;
-            $request['debet'] = $request->nominal;
-            $request['kredit'] = 0;
-            JurnalUmumDetail::create($request->except('_token'));
-            $request['account_id'] = 7;
             $request['debet'] = 0;
             $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = 7;
+            $request['debet'] = $request->nominal;
+            $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     DB::rollBack();
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
 
         return redirect('master_bank_cash');
     }
@@ -147,7 +146,7 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterBankCashModel::with(['banks'])->findOrFail($id);
+        $detail = MasterBankCashModel::with(['coa_kas_saldo'])->findOrFail($id);
         // dd($detail);
 
         return view('master_bank_cash.edit', $title, compact(['detail']));
@@ -161,17 +160,48 @@ class MasterBankCashController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        $request->validate([
-            'nomor_transaksi'   => 'required',
+        $validasi = [
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
-            'user_id'           => 'required',
             'jenis_transaksi'   => 'required',
-            'nilai'             => 'required',
-        ]);
+            'nominal'           => 'required',
+        ];
 
-        // Store your file into directory and db
-        MasterBankCashModel::find($id)->update($request->except(['_token','_method']));
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+        }
+
+        DB::beginTransaction();
+        try {
+            $request['nominal'] = str_replace(",","",$request->nominal);
+            MasterBankCashModel::find($id)->update($request->except(['_token','_method']));
+
+            // Edit Jurnal Umum, hapus detail
+            $request['keterangan_jurnal_umum'] = $request->keterangan;
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $nomor = MasterJurnal::whereDokumen(MasterBankCashModel::whereId($id)->first()->nomor_transaksi)->first();
+            $nomor->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
+            $nomor->fresh();
+            JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
+
+            $request['keterangan'] = '';
+            $request['jurnal_umum_id'] = $nomor->id;
+            $request['account_id'] = $request->bank_id;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->nominal;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = 7;
+            $request['debet'] = $request->nominal;
+            $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
 
         return redirect('master_bank_cash');
     }
@@ -183,9 +213,21 @@ class MasterBankCashController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
+        DB::beginTransaction();
+        try {
+            MasterBankCashModel::findOrFail($id)->softdeletes();
+            MasterJurnal::whereDokumen(MasterBankCashModel::whereId($id)->nomor_transaksi)->softdeletes();
+            DB::commit();
+            $status = 'Success';
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $status = "Error $th";
+        }
+
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterBankCashModel::findOrFail($id)->delete()
+            'message' => $status
         ]);
     }
 

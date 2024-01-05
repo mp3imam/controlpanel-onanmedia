@@ -20,7 +20,7 @@
         </li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active show" id="base-justified-home" role="tabpanel">
+        <div class="tab-pane active" id="base-justified-home" role="tabpanel">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
@@ -90,7 +90,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane active" id="product" role="tabpanel">
+        <div class="tab-pane" id="base-justified-product" role="tabpanel">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">

@@ -36,6 +36,11 @@
                             </select>
                         </div>
 
+                        <div class="col-md-12 mb-4">
+                            <label for="tujuan_id" class="form-label">Tujuan</label>
+                            <select id="modal_tujuan_id" name="tujuan_id" class="form-control" required></select>
+                        </div>
+
                         {{-- <div class="col-md-12 mb-4">
                             <label for="user_pelaksana" class="form-label">USER PELAKSANA</label>
                             <select id="modal_user_id" name="user_id" class="form-control"></select>
@@ -65,25 +70,25 @@
 @section('script')
 <script type="text/javascript">
     $(function () {
-        // $("#modal_user_id").select2({
-        //     allowClear: true,
-        //     width: '100%',
-        //     ajax: {
-        //         url: "{{ route('api.get_select2_users') }}",
-        //         dataType: 'json',
-        //         delay: 250,
-        //         processResults: function(data) {
-        //         return {
-        //             results: $.map(data.data, function(item) {
-        //                 return {
-        //                     id: item.id,
-        //                     text: item.name
-        //                 }
-        //             })
-        //         };
-        //         }
-        //     }
-        // });
+        $("#modal_tujuan_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_banks_coa') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
+            }
+        });
 
         $(document).ready(function(){
             $("#nominal").maskMoney({prefix: 'Rp. ', affixesStay: false, precision: 0});

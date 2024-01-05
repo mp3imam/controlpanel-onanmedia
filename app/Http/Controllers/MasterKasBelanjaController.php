@@ -21,7 +21,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class MasterKasBelanjaController extends Controller
 {
-    private $title = 'Master Pembayaran Kas';
+    private $title = 'Form Isian Transaksi Belanja';
     private $li_1 = 'Index';
 
     /**
