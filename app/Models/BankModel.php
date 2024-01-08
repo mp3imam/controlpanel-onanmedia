@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class BankModel extends Model
 {
@@ -22,6 +23,11 @@ class BankModel extends Model
 
     public function banks_belanja(){
         return $this->belongsTo(MasterKasBelanja::class, 'id');
+    }
+
+    public function getNamaAttribute($value){
+        if ($value) Str::ucfirst($value);
+        return $value;
     }
 
 }

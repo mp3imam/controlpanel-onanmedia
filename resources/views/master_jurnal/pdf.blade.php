@@ -13,21 +13,20 @@
     </style>
 
     <footer style="position: fixed; bottom: -60px; left: 0px; right: 0px; height: 50px;">
-    <table border="0" width="100%">
-        <td>
-            <label style="font-size: 8px">{{ Carbon\Carbon::now()->format('Y-M-d') }}</label>
-        </td>
-        <td>
-            <label style="font-size: 8px">Jurnal Umum</label>
-        </td>
-        <td>
-            <div class="pagenum-container" style="align-text: right; font-size: 8px">Page <span class="pagenum"></span></div>
-        </td>
-    </table>
+        <div class="pagenum-container float-end" style="position: absolute; right: 0px; font-size: 12px"><span class="pagenum"></span></div>
     </footer>
 
     <div class="mb-2 center text-center" style="margin-top: 50px">
-        <h4>Laporan Jurnal Umum</h4>
+        <table width="100%">
+            <tr>
+                <td width="90%" class="text-center">
+                    <h4>Laporan Jurnal Umum</h4>
+                </td>
+                <td width="10%" class="text-right text-end">
+                    {{ Carbon\Carbon::now()->format('d M Y') }}
+                </td>
+            </tr>
+        </table>
     </div>
     @if (!$datas->isEmpty())
         <table class='table table-bordered' border="0" width="100%" style="margin-bottom: 50px;">
@@ -45,9 +44,9 @@
                 @foreach($datas as $data)
                     @foreach ($data->details as $detail => $d)
                         <tr>
-                            <td>{{ $data->tanggal_transaksi }}</td>
+                            <td>{{ Carbon\Carbon::parse($data->tanggal_transaksi)->format('d-m-Y') }}</td>
                             <td>{{ $data->nomor_transaksi }}</td>
-                            @if ($data->sumber_data == 2 && $detail == 0)
+                            @if ($data->sumber_data == 2 && $detail !== 0)
                                 <td>{{ $d->jurnal_banks->nama }}</td>
                             @else
                                 <td>{{ $d->coa_jurnal->uraian }}</td>

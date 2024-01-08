@@ -110,21 +110,18 @@ class OnanmediaAPIController extends Controller
     }
 
     public function select2_banks(Request $request){
-        $datas = BankModel::select('id', 'nama as name')
-        ->when($request->id, function($q) use($request) {
-            return $q->whereIn('id',$request->id);
-        })
-        ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
-        })
-        ->get();
-
-        $data = [
+        return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => $datas->all()
-        ];
-
-        return response()->json($data);
+            'data'   => BankModel::select('id', 'nama as name')
+                ->when($request->id, function($q) use($request) {
+                    return $q->whereIn('id',$request->id);
+                })
+                ->when($request->q, function($q) use($request) {
+                    return $q->where('nama','like','%'.$request->q.'%');
+                })
+                ->get()
+                ->all()
+        ]);
     }
 
     public function select2_mata_uangs(Request $request){

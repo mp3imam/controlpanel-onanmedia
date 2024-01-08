@@ -8,21 +8,32 @@ use Illuminate\Database\Eloquent\Model;
 class HelpdeskModel extends Model
 {
     use HasFactory;
-    protected $table = 'helpdesks';
+    protected $connection = 'pgsql2';
+    protected $table = 'HelpDesk';
     protected $guarded = ['id'];
 
     public function jasas()
     {
-        return $this->belongsTo(JasaModel::class, 'id');
+        return $this->belongsTo(JasaModel::class, 'jasaId');
+    }
+
+    public function orders()
+    {
+        return $this->belongsTo(OrderModel::class, 'jasaId');
     }
 
     public function keluhan_user()
     {
-        return $this->belongsTo(UserPublicModel::class, 'user_id', 'id');
+        return $this->belongsTo(UserPublicModel::class, 'userId');
     }
 
-    public function status()
+    public function adminOnan()
     {
-        return $this->belongsTo(HelpdeskStatusModel::class, 'status_helpdesk', 'id');
+        return $this->belongsTo(UserPublicModel::class, 'adminId');
+    }
+
+    public function statuses()
+    {
+        return $this->belongsTo(HelpdeskStatusModel::class, 'helpdeskStatusId', 'id');
     }
 }

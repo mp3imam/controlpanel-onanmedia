@@ -20,10 +20,14 @@ class UserPublicModel extends Model
         'id' => 'string',
     ];
 
-
     public function keluhan_user()
     {
-        return $this->hasOne(HelpdeskModel::class, 'user_id', 'id');
+        return $this->hasOne(HelpdeskModel::class, 'userId','id');
+    }
+
+    public function adminOnan()
+    {
+        return $this->hasOne(HelpdeskModel::class, 'adminId','id');
     }
 
     public function users_bank_cash(){

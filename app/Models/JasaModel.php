@@ -20,7 +20,7 @@ class JasaModel extends Model
 
     public function jasas()
     {
-        return $this->hasOne(HelpdeskModel::class, 'jasa_id');
+        return $this->hasOne(HelpdeskModel::class, 'jasaId','id');
     }
 
 }

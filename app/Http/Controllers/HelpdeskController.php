@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\HelpdeskModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class HelpdeskController extends Controller
@@ -19,7 +23,7 @@ class HelpdeskController extends Controller
      */
     function __construct()
     {
-        // dd(HelpdeskModel::with(['status'])->get());
+        // dd(HelpdeskModel::with(['jasas','keluhan_user','statuses','adminOnan'])->first());
         $this->middleware('permission:Dashboard Helpdesk');
     }
 
@@ -44,13 +48,16 @@ class HelpdeskController extends Controller
         ->addColumn('keluhan_email', function ($row){
             return $row->keluhan_user->email;
         })
+        ->addColumn('admin_id', function ($row){
+            return $row->adminOnan->name ?? '-';
+        })
         ->addColumn('tanggal_keluhan', function ($row){
             return Carbon::parse($row->created_at)->format('d-m-Y');
         })
-        ->addColumn('status', function ($row){
-            return $row->status->nama;
+        ->addColumn('statuss', function ($row){
+            return $row->statuses->nama;
         })
-        ->rawColumns(['keluhan_nama','keluhan_email','tanggal_keluhan','status'])
+        ->rawColumns(['keluhan_nama','keluhan_email','tanggal_keluhan','statuss'])
 
         ->make(true);
     }
@@ -79,8 +86,8 @@ class HelpdeskController extends Controller
         // DB::beginTransaction();
         // try{
             // Store your file into directory and db
-            $user = new PendidikanModel();
-            $user->id     = PendidikanModel::orderBy('id','desc')->first()->id+1;
+            $user = new HelpdeskModel();
+            $user->id     = HelpdeskModel::orderBy('id','desc')->first()->id+1;
             $user->nama   = $request->pendidikan;
             $user->status = 1;
             $user->save();
@@ -106,7 +113,7 @@ class HelpdeskController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id)->first();
+        $detail = HelpdeskModel::findOrFail($id)->first();
 
         return view('users.detail', $title, compact(['detail']));
     }
@@ -121,7 +128,7 @@ class HelpdeskController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id);
+        $detail = HelpdeskModel::findOrFail($id);
 
         return view('users.edit', $title, compact(['detail']));
     }
@@ -156,7 +163,7 @@ class HelpdeskController extends Controller
                 'nama' => $request->pendidikan,
             ];
 
-            $user = PendidikanModel::findOrFail($id)->update($update);
+            $user = HelpdeskModel::findOrFail($id)->update($update);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -177,12 +184,12 @@ class HelpdeskController extends Controller
     public function destroy($id){
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => PendidikanModel::findOrFail($id)->delete()
+            'message' => HelpdeskModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request){
-        return HelpdeskModel::with(['keluhan_user'])->get();
+        return HelpdeskModel::with(['jasas','keluhan_user','statuses','adminOnan'])->get();
     }
 
     public function pdf(Request $request){

@@ -72,8 +72,8 @@
                             </div> --}}
 
                             <div class="col-md-6 mb-4">
-                                <label for="keterangan_kas" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="1"></textarea>
+                                <label for="keterangan_jurnal_umum" class="form-label">KETERANGAN</label>
+                                <textarea class="form-control" id="keterangan_jurnal_umum" name="keterangan_jurnal_umum" rows="1"></textarea>
                             </div>
                         </div>
 
@@ -111,7 +111,7 @@
                                                 <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]"  onkeyup="countKredit()" required/>
                                             </div>
                                             <div class="col text-center float-end hapus_detail">
-                                                <i class="ri-delete-bin-line text-danger ri-2x"></i>
+                                                {{-- <i class="ri-delete-bin-line text-danger ri-2x"></i> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -295,7 +295,6 @@
     function countDebet() {
         var sum_value = 0;
         $('.debet_detail').each(function(){
-            console.log(sum_value);
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
             $('#total_debet').val(sum_value);
         })

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('jurnal_umum_id');
             $table->unsignedBigInteger('account_id');
             $table->string('keterangan')->nullable();
-            $table->bigInteger('debet')->nullable();
-            $table->bigInteger('kredit')->nullable();
+            $table->bigInteger('debet')->default(0);
+            $table->bigInteger('kredit')->default(0);
             $table->timestamps();
         });
     }

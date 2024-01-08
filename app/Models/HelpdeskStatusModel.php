@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class HelpdeskStatusModel extends Model
 {
     use HasFactory;
-    protected $table = 'helpdesk_statuses';
+    protected $connection = 'pgsql2';
+    protected $table = 'MsHelpDeskStatus';
     protected $guarded = ['id'];
 
-    public function status()
+    public function statuses()
     {
         return $this->hasOne(HelpdeskModel::class, 'id');
     }

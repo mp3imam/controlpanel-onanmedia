@@ -239,19 +239,39 @@ class MasterBankCashController extends Controller
         return MasterBankCashModel::with(['coa_kas_saldo'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhere('tanggal_transaksi', $request->cari)
             ->orWhereHas('banks', function($q) use($request){
                 $q->where('nama','%'.$request->cari."%");
             })
             ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhereHa', function($q) use($request){
-            //     $q->where('name','%'.$request->cari."%");
-            // })
             ->orWhere('nilai', 'like','%'.$request->cari."%")
             ->orWhere('keterangan', 'like','%'.$request->cari."%");
         })
         ->orderBy('id','desc')
         ->get();
+    }
+
+    public function softdelete_kas_isi_saldo(Request $request){
+        DB::beginTransaction();
+        try {
+            MasterJurnal::whereDokumen(MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi)->update([
+                'deleted_at' => Carbon::now(),
+                'alasan' => $request->alasan
+            ]);
+
+            MasterBankCashModel::findOrFail($request->id)->update([
+                'deleted_at' => Carbon::now(),
+                'alasan' => $request->alasan
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+        ]);
     }
 
     public function pdf(Request $request){

@@ -19,8 +19,8 @@ return new class extends Migration
             // $table->unsignedBigInteger('bank_id');
             $table->integer('sumber_data')->nullable();
             $table->string('uraian')->nullable();
-            $table->string('debet')->nullable();
-            $table->string('kredit')->nullable();
+            $table->string('debet')->default(0);
+            $table->string('kredit')->default(0);
             // $table->string('tipe')->default(0);
             $table->string('keterangan_jurnal_umum')->nullable()->default('-');
             $table->unsignedBigInteger('jenis_mata_uang')->default(1);

@@ -158,6 +158,12 @@
         });
     });
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     function konfirmasi_hapus(id, name){
         Swal.fire({
             title: "Masukan Alasan menghapus data Jurnal "+name,

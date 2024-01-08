@@ -138,8 +138,8 @@
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         return `
-                        <a type="button" href="{{ url('master_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        <a type="button" href="{{ url('master_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(1, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
                         `;
                     }
                 }
@@ -190,7 +190,7 @@
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         return `
-                        <a type="button" href="{{ url('master_return_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
+                        <a type="button" href="{{ url('master_return_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
                         `;
                     }
@@ -335,6 +335,12 @@
     })
 
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     function konfirmasi_hapus(get, id, name) {
         Swal.fire({
             title: "Masukan Alasan menghapus data transaksi " + name,
@@ -345,6 +351,7 @@
             showCancelButton: true,
             confirmButtonText: "Hapus",
         }).then((result) => {
+            console.log(get == 1, get);
             var getUrl = get == 1 ? "{{ route('softdelete_kas_isi_saldo') }}" : "{{ route('softdelete_pengembalian_kas') }}"
             if (result.isConfirmed && result.value) {
                 var data = new FormData();

@@ -146,11 +146,12 @@ class MasterJurnalController extends Controller
         ]);
     }
 
-    public function softdelete_kas_belanja(Request $request){
+    public function softdelete_jurnal_umum(Request $request){
         DB::beginTransaction();
         try {
             MasterJurnal::findOrFail($request->id)->update([
                 'deleted_at' => Carbon::now(),
+                'keterangan_jurnal_umum' => $request->alasan,
                 'alasan' => $request->alasan
             ]);
 
@@ -295,8 +296,8 @@ class MasterJurnalController extends Controller
     public function models($request){
         return MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
         ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");
+            $q->where('nomor_transaksi', 'ilike', '%'.$request->cari.'%')
+            ->orWhere('keterangan_jurnal_umum', 'ilike', '%'.$request->cari.'%');
         })
         ->orderBy('id','desc')
         ->get();
@@ -305,10 +306,11 @@ class MasterJurnalController extends Controller
     public function get_pdf(Request $request){
         $datas = MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
         ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");
+            $q->where('nomor_transaksi', 'ilike','%'.$request->cari."%")
+            ->orWhere('keterangan_jurnal_umum', 'ilike',"%".$request->cari."%");
         })
         ->withTrashed()
+        ->oldest()
         ->get();
 
         $total = MasterJurnal::withTrashed()->with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])

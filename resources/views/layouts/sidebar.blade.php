@@ -8,8 +8,7 @@
                 <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" height="30">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="100%"
-                    height="70">
+                <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="100%">
             </span>
         </a>
         <!-- Light Logo-->

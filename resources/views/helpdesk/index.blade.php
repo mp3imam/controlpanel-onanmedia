@@ -119,7 +119,7 @@
                     data: 'tanggal_keluhan',
                     name: 'Tanggal',
                 },{
-                    data: 'status',
+                    data: 'statuss',
                     name: 'Status',
                 }
             ]

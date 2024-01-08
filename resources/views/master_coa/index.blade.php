@@ -19,7 +19,7 @@
                         <a href="{{ route('master_coa.create') }}" type="button" class="btn btn-success" >
                             Tambah
                         </a>
-                        <a type="button" class="btn btn-primary btn-label btn-pdf">
+                        {{-- <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
@@ -31,7 +31,7 @@
                                     PDF
                                 </div>
                             </div>
-                        </a>
+                        </a> --}}
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
@@ -52,8 +52,8 @@
                             width="200%">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th class="text-uppercase" width="10%">No.Coa</th>
+                                        <th style="z-index: 999">No</th>
+                                        <th class="text-uppercase" width="10%" style="z-index: 999">No.Coa</th>
                                         <th class="text-uppercase">Uraian Coa</th>
                                         <th class="text-uppercase">Nama Bank</th>
                                         <th class="text-uppercase">Nama Account</th>

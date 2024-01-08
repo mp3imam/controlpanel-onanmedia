@@ -109,13 +109,13 @@ class MasterReturnBankCashController extends Controller
 
             $request['keterangan'] = "";
             $request['jurnal_umum_id'] = $masterJurnal->id;
-            $request['account_id'] = $request->bank_id;
-            $request['kredit'] = $request->nominal;
-            $request['debet'] = 0;
-            JurnalUmumDetail::create($request->except('_token'));
             $request['account_id'] = $request->tujuan_id;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->bank_id;
+            $request['kredit'] = $request->nominal;
+            $request['debet'] = 0;
             JurnalUmumDetail::create($request->except('_token'));
 
             DB::commit();
@@ -189,13 +189,13 @@ class MasterReturnBankCashController extends Controller
 
             $request['keterangan'] = '';
             $request['jurnal_umum_id'] = $nomor->id;
-            $request['account_id'] = $request->bank_id;
-            $request['debet'] = 0;
-            $request['kredit'] = $request->nominal;
-            JurnalUmumDetail::create($request->except('_token'));
             $request['account_id'] = $request->tujuan_id;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->bank_id;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
 
             DB::commit();
@@ -231,18 +231,39 @@ class MasterReturnBankCashController extends Controller
         ]);
     }
 
+    public function softdelete_kas_belanja(Request $request){
+        DB::beginTransaction();
+        try {
+            MasterJurnal::whereDokumen(MasterReturnBankCashModel::whereId($request->id)->first()->nomor_transaksi)->update([
+                'deleted_at' => Carbon::now(),
+                'alasan' => $request->alasan
+            ]);
+
+            MasterReturnBankCashModel::findOrFail($request->id)->update([
+                'deleted_at' => Carbon::now(),
+                'alasan' => $request->alasan,
+                'keterangan_jurnal_umum' => $request->alasan,
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+        ]);
+    }
+
     public function models($request){
         return MasterReturnBankCashModel::with(['banks'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhere('tanggal_transaksi', $request->cari)
             ->orWhereHas('banks', function($q) use($request){
                 $q->where('nama','%'.$request->cari."%");
             })
             ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            // ->orWhereHa', function($q) use($request){
-            //     $q->where('name','%'.$request->cari."%");
-            // })
             ->orWhere('nilai', 'like','%'.$request->cari."%")
             ->orWhere('keterangan', 'like','%'.$request->cari."%");
         })
