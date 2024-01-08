@@ -13,7 +13,7 @@
                 <div class="card-header">
                     <div class="row justify-content-between">
                         <div class="col-md-8">
-                            <h4 class="card-title mb-0">Edit Rekening Bank</h4>
+                            <h4 class="card-title mb-0">Ubah Kembali ke Kas OnanMedia</h4>
                         </div>
                         <div class="col-md-4 d-flex justify-content-md-end">
                             <button id="deleteButton" class="btn btn-danger">Hapus</button>
@@ -21,41 +21,63 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('master_bank_cash.update', $detail->id) }}" method="POST">
+                    <form action="{{ route('master_return_bank_cash.update', $detail->id) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="col-md-12 mb-4">
-                            <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
-                            <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" />
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" />
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="bank_id" class="form-label">SUMBER</label>
+                                <select id="modal_bank_id" name="bank_id" class="form-control"></select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div>
+                                    <p class="text-muted fw-medium">Jenis Transaksi</p>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_1" value="1" {{ $detail->jenis_transaksi == "1" ? "checked" : "" }} >
+                                        <label class="form-check-label" for="jenis_transaksi_1">
+                                            Transfer
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_2" value="2" {{ $detail->jenis_transaksi == 2 ? "checked" : "" }} >
+                                        <label class="form-check-label" for="jenis_transaksi_2">
+                                            Cash
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="tujuan_id" class="form-label">Tujuan</label>
+                                <select id="modal_tujuan_id" name="tujuan_id" class="form-control" required></select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="nominal" class="form-label text-uppercase">Nominal</label>
+                                <input class="form-control" id="nominal" name="nominal" value="{{ $detail->nominal }}" />
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="keterangan" class="form-label">KETERANGAN</label>
+                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1">{{ $detail->keterangan }}</textarea>
+                            </div>
                         </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="bank_id" class="form-label">SUMBER</label>
-                            <select id="modal_bank_id" name="bank_id" class="form-control"></select>
+                        <div class="row">
+                            <div class="col-md-auto mb-4">
+                                <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('master_return_bank_cash.index') }}" >
+                                    <i class="ri-arrow-go-back-line"></i> Kembali
+                                </a>
+                                <button class="btn float-end btn-info text-white rounded-5 me-3">
+                                    <i class="bx bxs-pencil label-icon align-middle fs-16 me-2"></i> Ubah
+                                </button>
+                            </div>
                         </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="jenis_transaksi" class="form-label">JENIS TRANSAKSI</label>
-                            <input class="form-control" id="jenis_transaksi" name="jenis_transaksi" value="{{ $detail->jenis_transaksi }}" />
-                        </div>
-
-                        {{-- <div class="col-md-12 mb-4">
-                            <label for="user_pelaksana" class="form-label">USER PELAKSANA</label>
-                            <select id="modal_user_id" name="user_id" class="form-control"></select>
-                        </div> --}}
-
-                        <div class="col-md-12 mb-4">
-                            <label for="nominal" class="form-label text-uppercase">Nominal</label>
-                            <input class="form-control" id="nominal" name="nominal" value="{{ $detail->nominal }}" />
-                        </div>
-
-                        <div class="col-md-12 mb-4">
-                            <label for="keterangan" class="form-label">KETERANGAN</label>
-                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3">{{ $detail->keterangan }}</textarea>
-                        </div>
-
-                        <button class="btn btn-success form-control text-white" style="background-color: #4E36E2"><i
-                                class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
                     </form>
                 </div><!-- end card -->
             </div>
@@ -125,7 +147,8 @@
         });
 
         $(document).ready(function(){
-            $("#nominal").maskMoney({prefix: 'Rp. ', affixesStay: false, precision: 0});
+            $("#nominal").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+
         });
 
         // $("#modal_user_id").select2({
@@ -167,6 +190,27 @@
                 }
             }
         });
+
+        $("#modal_tujuan_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_banks_coa') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
+            }
+        });
+
     });
 
     var dataId = "{{ $detail->bank_id }}"
@@ -176,12 +220,12 @@
     $('#modal_bank_id').append(newOptionBank).trigger('change')
     $('#modal_bank_id').select2()
 
-    // var dataId = "{{ $detail->bank_id }}"
-    // var dataName = "{{ $detail->banks->nama }}"
-    // var datarole = {id: dataId,text: dataName, selected: true};
-    // var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-    // $('#modal_user_id').append(newOptionrole).trigger('change')
-    // $('#modal_user_id').select2()
+    var dataId = "{{ $detail->tujuan_id }}"
+    var dataName = "{{ $detail->coa_kas_kembali->uraian }}"
+    var datarole = {id: dataId,text: dataName, selected: true};
+    var newOptionrole = new Option(datarole.text, datarole.id, false, false)
+    $('#modal_tujuan_id').append(newOptionrole).trigger('change')
+    $('#modal_tujuan_id').select2()
 
 
 </script>

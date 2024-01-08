@@ -105,10 +105,10 @@
                                                 <input id="keterangan[]" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col">
-                                                <input class="form-control debet_detail text-end" id="debet_detail[]" name="debet_detail[]" value="0" onkeyup="countDebet()" required/>
+                                                <input class="form-control debet_detail text-end" id="debet_detail[]" name="debet_detail[]"  onkeyup="countDebet()" required/>
                                             </div>
                                             <div class="col">
-                                                <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]" value="0" onkeyup="countKredit()" required/>
+                                                <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]"  onkeyup="countKredit()" required/>
                                             </div>
                                             <div class="col text-center float-end hapus_detail">
                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -123,13 +123,13 @@
                                                 TOTAL
                                             </div>
                                             <div class="col">
-                                                <input class="form-control text-end total_debet text-white" style="background-color: #4E36E2" value="0" id="total_debet" name="total_debet" readonly/>
+                                                <input class="form-control text-end total_debet text-white" style="background-color: #4E36E2"  id="total_debet" name="total_debet" readonly/>
                                             </div>
                                             <div class="col">
-                                                <input class="form-control text-end total_kredit text-white" style="background-color: #4E36E2" value="0" id="total_kredit" name="total_kredit" readonly/>
+                                                <input class="form-control text-end total_kredit text-white" style="background-color: #4E36E2"  id="total_kredit" name="total_kredit" readonly/>
                                             </div>
                                             <div class="col text-center">
-                                                <input class="form-control text-end total_all text-white" style="background-color: #4E36E2" value="0" id="total_all" name="total_all" readonly/>
+                                                <input class="form-control text-end total_all text-white" style="background-color: #4E36E2"  id="total_all" name="total_all" readonly/>
                                             </div>
                                         </div>
                                     </div>
@@ -241,10 +241,10 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col">
-                    <input class="form-control debet_detail text-end" id="debet_detail[]" name="debet_detail[]" value="0" onkeyup="countDebet()" required/>
+                    <input class="form-control debet_detail text-end" id="debet_detail[]" name="debet_detail[]"  onkeyup="countDebet()" required/>
                 </div>
                 <div class="col">
-                    <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]" value="0" onkeyup="countKredit()" required/>
+                    <input class="form-control text-end kredit_detail" id="kredit_detail[]" name="kredit_detail[]"  onkeyup="countKredit()" required/>
                 </div>
                 <div class="col text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>

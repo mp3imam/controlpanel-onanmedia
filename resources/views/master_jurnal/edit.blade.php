@@ -276,8 +276,16 @@
     }
 
     var f = {!! json_encode($detail->details) !!}
+    var s = {!! json_encode($detail->sumber_data) !!}
     $.each(f, function(i, item) {
-        var data = {id: item.coa_jurnal.id,text: item.coa_jurnal.uraian, selected: true};
+        var dataId = item.coa_jurnal.id
+        var dataText = item.coa_jurnal.uraian
+        if (i == 0 && s == 2) {
+            dataId = item.jurnal_banks.id
+            dataText = item.jurnal_banks.nama
+        }
+
+        var data = {id: dataId, text: dataText, selected: true};
         var newOption = new Option(data.text, data.id, false, false)
         $('#akun_belanja'+item.id).append(newOption).trigger('change')
         $('#akun_belanja'+item.id).select2()
@@ -350,10 +358,10 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col">
-                    <input class="form-control text-end debet" id="debet[]" name="debet_detail[]" onkeyup="countDebet()" value="0" required/>
+                    <input class="form-control text-end debet" id="debet[]" name="debet_detail[]" onkeyup="countDebet()"  required/>
                 </div>
                 <div class="col">
-                    <input class="form-control text-end kredit" id="kredit[]" name="kredit_detail[]" onkeyup="countKredit()" value="0" required/>
+                    <input class="form-control text-end kredit" id="kredit[]" name="kredit_detail[]" onkeyup="countKredit()"  required/>
                 </div>
                 <div class="col text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>

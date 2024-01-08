@@ -83,8 +83,8 @@ class MasterJurnalController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             // Store your file into directory and db
             $tahun = Carbon::now()->format('Y');
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
@@ -131,10 +131,10 @@ class MasterJurnalController extends Controller
             }
 
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
 
         return redirect('master_jurnal');
     }
@@ -208,7 +208,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::with(['coa_jurnal_umum','details.coa_jurnal','jurnal_file'])->findOrFail($id);
+        $detail = MasterJurnal::with(['coa_jurnal_umum','details.coa_jurnal','details.jurnal_banks','jurnal_file'])->findOrFail($id);
 
         return view('master_jurnal.edit', $title, compact(['detail']));
     }
@@ -293,20 +293,26 @@ class MasterJurnalController extends Controller
     }
 
     public function models($request){
-        return MasterJurnal::with(['details','coa_jurnal_umum','jurnal_file'])
+        return MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
+        ->when($request->cari, function($q) use($request){
+            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
+            ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");
+        })
         ->orderBy('id','desc')
         ->get();
     }
 
-    public function pdf(Request $request){
+    public function get_pdf(Request $request){
         $datas = $this->models($request);
+        $total = MasterJurnal::total()->get();
 
-        $pdf = Pdf::loadview('users.pdf',[
-                'name'  => 'Data Master Bank Cash',
-                'datas' => $datas
+        $pdf = Pdf::loadview('master_jurnal.pdf',[
+                'name'  => 'Jurnal Umum',
+                'datas' => $datas,
+                'total' => $total
             ]
         )->setPaper('F4');
 
-        return $pdf->download('Laporan-Master-Bank-Cash-PDF');
+        return $pdf->download('Laporan-Jurnal-Umum'.Carbon::now()->format('Y-m-d_His').'.pdf');
     }
 }

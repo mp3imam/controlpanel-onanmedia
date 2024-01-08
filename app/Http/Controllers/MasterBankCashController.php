@@ -104,15 +104,16 @@ class MasterBankCashController extends Controller
 
             $request['debet'] = $request->nominal;
             $request['kredit'] = $request->nominal;
+            $request['sumber_data'] = 1;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
             $request['jurnal_umum_id'] = $masterJurnal->id;
-            $request['account_id'] = $request->bank_id;
-            $request['debet'] = 0;
-            $request['kredit'] = $request->nominal;
-            JurnalUmumDetail::create($request->except('_token'));
             $request['account_id'] = 7;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->bank_id;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
 
             DB::commit();
@@ -192,13 +193,13 @@ class MasterBankCashController extends Controller
 
             $request['keterangan'] = '';
             $request['jurnal_umum_id'] = $nomor->id;
-            $request['account_id'] = $request->bank_id;
-            $request['debet'] = 0;
-            $request['kredit'] = $request->nominal;
-            JurnalUmumDetail::create($request->except('_token'));
             $request['account_id'] = 7;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->bank_id;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
 
             DB::commit();

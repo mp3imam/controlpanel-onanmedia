@@ -88,8 +88,8 @@ class MasterKasBelanjaController extends Controller
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             $tahun = Carbon::now()->format('Y');
             $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
@@ -142,7 +142,7 @@ class MasterKasBelanjaController extends Controller
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
             $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
             $request['bank_id'] = $request->account_id;
-            $request['sumber_data'] = 1;
+            $request['sumber_data'] = 3;
             $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             $masterJurnal = MasterJurnal::create($request->except('_token'));
@@ -175,11 +175,11 @@ class MasterKasBelanjaController extends Controller
                 ]);
             }
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     DB::rollBack();
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
 
         return redirect('master_kas_belanja');
     }

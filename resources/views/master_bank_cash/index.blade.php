@@ -33,7 +33,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <!-- Tabel untuk menampilkan data -->
-                                <table id="dataTable" class="table table-striped dataTables_length w-100">
+                                <table id="dataTable" class="table table-striped w-100">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -68,7 +68,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <!-- Tabel untuk menampilkan data -->
-                                <table id="dataTableReturn" class="table table-striped" width="400px">
+                                <table id="dataTableReturn" class="table table-striped w-100">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -86,12 +86,10 @@
                                 </table>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
 
@@ -100,16 +98,8 @@
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
-            scrollY: "400px",
-            scrollX: true,
             processing: true,
             serverSide: true,
-            fixedColumns: {
-                left: 2,
-                right: 0,
-                width: 200,
-                targets: 10
-            },
             ajax: {
                 url: "{{ route('getDataTableBankCash') }}",
                 data: function (d) {
@@ -156,6 +146,60 @@
             ]
         });
     });
+
+    $(function () {
+        var table = $('#dataTableReturn').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('getDataTableReturnBankCash') }}",
+                data: function (d) {
+                    d.cari = $('#cari').val()
+                }
+            },
+            columns: [{
+                    data: "id",
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },{
+                    data: 'nomor_transaksi',
+                    name: 'No. Transaksi',
+                    render: function (data, type, row, meta) {
+                        return `<a href="{{ url('master_return_bank_cash') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                    }
+                },{
+                    data: 'tanggal_transaksi',
+                    name: 'TGL. TRANSAKSI'
+                },{
+                    data: 'banks',
+                    name: 'SUMBER'
+                },{
+                    data: 'jenis',
+                    name: 'JENIS TRANSAKSI'
+                },{
+                    data: 'nominal_number',
+                    name: 'Nilai'
+                },{
+                    data: 'keterangan',
+                    name: 'KETERANGAN'
+                }, {
+                    data: 'id',
+                    name: 'Action',
+                    render: function(data, type, row, meta) {
+                        return `
+                        <a type="button" href="{{ url('master_return_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        `;
+                    }
+                }
+            ]
+        });
+
+    });
+
 
     $('.btn-pdf').on('click', function(){
         $('#modal_content').html(`
@@ -223,58 +267,6 @@
         });
     })
 
-    $(function () {
-        var table = $('#dataTableReturn').DataTable({
-            dom: 'lrtip',
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('getDataTableReturnBankCash') }}",
-                data: function (d) {
-                    d.cari = $('#cari').val()
-                }
-            },
-            columns: [{
-                    data: "id",
-                    sortable: false,
-                    render: function (data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                },{
-                    data: 'nomor_transaksi',
-                    name: 'No. Transaksi',
-                    render: function (data, type, row, meta) {
-                        return `<a href="{{ url('master_bank_cash') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
-                    }
-                },{
-                    data: 'tanggal_transaksi',
-                    name: 'TGL. TRANSAKSI'
-                },{
-                    data: 'banks',
-                    name: 'SUMBER'
-                },{
-                    data: 'jenis',
-                    name: 'JENIS TRANSAKSI'
-                },{
-                    data: 'nominal_number',
-                    name: 'Nilai'
-                },{
-                    data: 'keterangan',
-                    name: 'KETERANGAN'
-                }, {
-                    data: 'id',
-                    name: 'Action',
-                    render: function(data, type, row, meta) {
-                        return `
-                        <a type="button" href="{{ url('master_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
-                        `;
-                    }
-                }
-            ]
-        });
-
-    });
 
     $('.btn-return-pdf').on('click', function(){
         $('#modal_content').html(`

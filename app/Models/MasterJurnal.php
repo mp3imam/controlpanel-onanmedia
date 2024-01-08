@@ -26,10 +26,8 @@ class MasterJurnal extends Model
     }
 
     public function scopeTotal($q){
-        return $q->with(['details' => function($q) {
-            $q->selectRaw('jurnal_umum_id, sum("debet") jumlah_debet, sum("kredit") jumlah_kredit')
-            ->groupBy('jurnal_umum_id');
-        }]);
+        return $q->selectRaw('sum(CAST("debet" as integer)) jumlah_debet, sum(CAST("kredit" as integer)) jumlah_kredit');
+
     }
 
     public function jurnal_file(){

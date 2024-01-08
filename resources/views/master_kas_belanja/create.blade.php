@@ -106,7 +106,7 @@
                                                 <input id="keterangan[]" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col-md-3">
-                                                <input class="form-control nilai text-end" id="nilai[]" name="nilai[]" value="0" onkeyup="countNilai()" required/>
+                                                <input class="form-control nilai text-end" id="nilai[]" name="nilai[]"  onkeyup="countNilai()" required/>
                                             </div>
                                             <div class="col-md-3 text-center float-end hapus_detail">
                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>
@@ -121,7 +121,7 @@
                                                 TOTAL
                                             </div>
                                             <div class="col-md-3">
-                                                <input class="form-control text-end total fs-20 text-white" style="background-color: #4E36E2" value="0" id="total_nilai" name="total_nilai" readonly/>
+                                                <input class="form-control text-end total fs-20 text-white" style="background-color: #4E36E2"  id="total_nilai" name="total_nilai" readonly/>
                                             </div>
                                             <div class="col-md-3 text-center">
                                                 <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Data Baris</button>
@@ -231,7 +231,7 @@
                     <input id="keterangan" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col-md-3">
-                    <input class="form-control nilai text-end" id="nilai" name="nilai[]" value="0" onkeyup="countNilai()" required />
+                    <input class="form-control nilai text-end" id="nilai" name="nilai[]"  onkeyup="countNilai()" required />
                 </div>
                 <div class="col-md-3 text-center hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>

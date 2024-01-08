@@ -40,12 +40,15 @@ class MasterReturnBankCashController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->banks->nama;
+            return $row->coa_kas_kembali->uraian;
         })
         ->addColumn('jenis', function ($row){
-            return $row->jenis_transaksi ? "Transfer" : "Cash";
+            return $row->jenis_transaksi == 1 ? "Transfer" : "Cash";
         })
-        ->rawColumns(['banks','jenis'])
+        ->addColumn('nominal_number', function ($row){
+            return "Rp. ".number_format($row->nominal, 0);
+        })
+        ->rawColumns(['banks','nominal_number','jenis'])
         ->make(true);
 
     }
@@ -69,7 +72,6 @@ class MasterReturnBankCashController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        // dd($request->all());
         $validasi = [
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
@@ -89,37 +91,38 @@ class MasterReturnBankCashController extends Controller
         $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
         $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
         $request['nominal'] = str_replace(",","",$request->nominal);
-        // DB::beginTransaction();
-        // try {
-        //     //code...
 
+        DB::beginTransaction();
+        try {
             MasterReturnBankCashModel::create($request->except('_token'));
             $tahun = Carbon::now()->format('Y');
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['dokumen'] = $request->nomor_transaksi;
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-            $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
+            $request['keterangan_jurnal_umum'] = $request->keterangan;
 
             $request['kredit'] = $request->nominal;
             $request['debet'] = $request->nominal;
+            $request['sumber_data'] = 2;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
 
+            $request['keterangan'] = "";
             $request['jurnal_umum_id'] = $masterJurnal->id;
             $request['account_id'] = $request->bank_id;
+            $request['kredit'] = $request->nominal;
+            $request['debet'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->tujuan_id;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
             JurnalUmumDetail::create($request->except('_token'));
-            $request['account_id'] = $request->tujuan_id;
-            $request['debet'] = 0;
-            $request['kredit'] = $request->nominal;
-            JurnalUmumDetail::create($request->except('_token'));
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     DB::rollBack();
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
 
         return redirect('master_bank_cash');
     }
@@ -134,7 +137,7 @@ class MasterReturnBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterReturnBankCashModel::findOrFail($id)->first();
+        $detail = MasterReturnBankCashModel::with(['banks','coa_kas_kembali'])->findOrFail($id)->first();
 
         return view('master_bank_cash.detail', $title, compact(['detail']));
     }
@@ -149,10 +152,9 @@ class MasterReturnBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterReturnBankCashModel::with(['banks'])->findOrFail($id);
-        // dd($detail);
+        $detail = MasterReturnBankCashModel::with(['banks','coa_kas_kembali'])->findOrFail($id);
 
-        return view('master_bank_cash.edit', $title, compact(['detail']));
+        return view('master_return_bank_cash.edit', $title, compact(['detail']));
     }
 
     /**
@@ -167,11 +169,39 @@ class MasterReturnBankCashController extends Controller
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
             'jenis_transaksi'   => 'required',
-            'nilai'             => 'required',
+            'tujuan_id'         => 'required',
+            'nominal'           => 'required',
         ]);
 
-        // Store your file into directory and db
-        MasterReturnBankCashModel::find($id)->update($request->except(['_token','_method']));
+        DB::beginTransaction();
+        try {
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            MasterReturnBankCashModel::find($id)->update($request->except(['_token','_method']));
+
+            // Edit Jurnal Umum, hapus detail
+            $request['keterangan_jurnal_umum'] = $request->keterangan;
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $nomor = MasterJurnal::whereDokumen(MasterReturnBankCashModel::whereId($id)->first()->nomor_transaksi)->first();
+            $nomor->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
+            $nomor->fresh();
+            JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
+
+            $request['keterangan'] = '';
+            $request['jurnal_umum_id'] = $nomor->id;
+            $request['account_id'] = $request->bank_id;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->nominal;
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->tujuan_id;
+            $request['debet'] = $request->nominal;
+            $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
 
         return redirect('master_bank_cash');
     }

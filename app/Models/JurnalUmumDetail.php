@@ -14,6 +14,10 @@ class JurnalUmumDetail extends Model
         return $this->belongsTo(MasterJurnal::class, 'id', 'jurnal_umum_id');
     }
 
+    public function jurnal_banks(){
+        return $this->hasOne(BankModel::class, 'id', 'account_id');
+    }
+
     public function coa_jurnal(){
         return $this->hasOne(MasterCoaModel::class, 'id', 'account_id');
     }
