@@ -41,12 +41,15 @@ class MasterBankCashController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->banks->nama;
+            return $row->coa_kas_saldo->uraian;
         })
         ->addColumn('jenis', function ($row){
-            return $row->jenis_transaksi ? "Transfer" : "Cash";
+            return $row->jenis_transaksi == 1 ? "Transfer" : "Cash";
         })
-        ->rawColumns(['banks','jenis'])
+        ->addColumn('nominal_number', function ($row){
+            return "Rp. ".number_format($row->nominal, 0);
+        })
+        ->rawColumns(['banks','nominal_number','jenis'])
         ->make(true);
 
     }
@@ -89,7 +92,7 @@ class MasterBankCashController extends Controller
             $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->format('Y'))->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
-            $request['nominal'] = str_replace(",","",$request->nominal);
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             MasterBankCashModel::create($request->except('_token'));
 
             $tahun = Carbon::now()->format('Y');
@@ -175,7 +178,7 @@ class MasterBankCashController extends Controller
 
         DB::beginTransaction();
         try {
-            $request['nominal'] = str_replace(",","",$request->nominal);
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             MasterBankCashModel::find($id)->update($request->except(['_token','_method']));
 
             // Edit Jurnal Umum, hapus detail

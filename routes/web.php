@@ -70,10 +70,18 @@ Route::group(['middleware' => ['auth']], function () {
     // Finance
     Route::resource('master_coa', MasterCoaController::class);
     Route::get('getDataTableCoa', [MasterCoaController::class, 'get_datatable'])->name('getDataTableCoa');
+
+    // Kas Isi Saldo
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
+    Route::post('softdelete_kas_isi_saldo', [MasterBankCashController::class, 'softdelete_kas_isi_saldo'])->name('softdelete_kas_isi_saldo');
+
+    // Pengembalian Kas
     Route::resource('master_return_bank_cash', MasterReturnBankCashController::class);
     Route::get('getDataTableReturnBankCash', [MasterReturnBankCashController::class, 'get_datatable'])->name('getDataTableReturnBankCash');
+    Route::post('softdelete_pengembalian_kas', [MasterReturnBankCashController::class, 'softdelete_pengembalian_kas'])->name('softdelete_pengembalian_kas');
+
+
     Route::post('upload_foto_kas_belanja', [MasterKasBelanjaController::class, 'upload_foto'])->name('upload_foto_kas_belanja');
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class);
     Route::post('softdelete_kas_belanja', [MasterKasBelanjaController::class, 'softdelete_kas_belanja'])->name('softdelete_kas_belanja');

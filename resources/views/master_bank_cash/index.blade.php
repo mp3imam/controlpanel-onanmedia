@@ -9,162 +9,93 @@
     @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
     <ul class="nav nav-tabs nav-justified nav-border-bottom animation-nav" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" data-bs-toggle="tab" href="#base-justified-home" role="tab" aria-selected="false" tabindex="-1">
+            <a class="nav-link active" data-bs-toggle="tab" href="#base-justified-home" role="tab" aria-selected="true">
                 Isi Saldo Kasir
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="true">
+            <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
                 Pengembalian Kas
             </a>
         </li>
     </ul>
-    <div class="tab-content">
+
+    <div class="tab-content mt-4">
         <div class="tab-pane active" id="base-justified-home" role="tabpanel">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div id="customerList">
-                                <div class="col-sm-auto mb-3">
-                                    <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success" >
-                                        Tambah
-                                    </a>
-                                    <a type="button" class="btn btn-primary btn-label btn-pdf">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                            </div>
-                                            <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                                Loading...
-                                            </div>
-                                            <div class="flex-grow-1 btn-pdf-no-loading">
-                                                PDF
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="row g-4">
-                                    <div class="row mt-4">
-                                        <div class="col-xxl-12 col-md-6 p-3">
-                                            <label>Filter</label>
-                                            <form action="{{ route('master_bank_cash.index') }}">
-                                                <div class="input-group">
-                                                        <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
-                                                    <button class="input-group-text"><i class="ri-search-line"></i>&nbsp;Cari</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-body">
-                                        <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                                        width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                                    <th class="text-uppercase">TGL. TRANSAKSI</th>
-                                                    <th class="text-uppercase">SUMBER</th>
-                                                    <th class="text-uppercase">JENIS TRANSAKSI</th>
-                                                    {{-- <th class="text-uppercase">USER PELAKSANA</th> --}}
-                                                    <th class="text-uppercase">Nominal</th>
-                                                    <th class="text-uppercase">KETERANGAN</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                                <div class="modal-dialog">
-                                    <div class="modal-content" id="modal_content">
-                                    </div>
-                                </div>
+            <!-- Konten untuk Isi Saldo Kasir -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success mb-3" >
+                            Tambah
+                        </a>
+                        <!-- Tambahkan konten yang sesuai untuk Isi Saldo Kasir -->
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Tabel untuk menampilkan data -->
+                                <table id="dataTable" class="table table-striped dataTables_length w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>No. Transaksi</th>
+                                            <th>Tanggal Transaksi</th>
+                                            <th>Sumber</th>
+                                            <th>Jenis Transaksi</th>
+                                            <th>Nominal</th>
+                                            <th>Keterangan</th>
+                                            <th width="20%">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Isi tabel disini -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="tab-pane" id="base-justified-product" role="tabpanel">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div id="customerList">
-                                <div class="col-sm-auto mb-3">
-                                    <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success" >
-                                        Tambah
-                                    </a>
-                                    <a type="button" class="btn btn-primary btn-label btn-pdf">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                            </div>
-                                            <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                                Loading...
-                                            </div>
-                                            <div class="flex-grow-1 btn-pdf-no-loading">
-                                                PDF
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="row g-4">
-                                    <div class="row mt-4">
-                                        <div class="col-xxl-12 col-md-6 p-3">
-                                            <label>Filter</label>
-                                            <form action="{{ route('master_bank_cash.index') }}">
-                                                <div class="input-group">
-                                                        <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
-                                                    <button class="input-group-text"><i class="ri-search-line"></i>&nbsp;Cari</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-body">
-                                        <table id="dataTableReturn" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                                        width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                                    <th class="text-uppercase">TGL. TRANSAKSI</th>
-                                                    <th class="text-uppercase">SUMBER</th>
-                                                    <th class="text-uppercase">JENIS TRANSAKSI</th>
-                                                    {{-- <th class="text-uppercase">USER PELAKSANA</th> --}}
-                                                    <th class="text-uppercase">Nominal</th>
-                                                    <th class="text-uppercase">KETERANGAN</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                                <div class="modal-dialog">
-                                    <div class="modal-content" id="modal_content">
-                                    </div>
-                                </div>
+            <!-- Konten untuk Pengembalian Kas -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success mb-3">
+                            Tambah
+                        </a>
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Tabel untuk menampilkan data -->
+                                <table id="dataTableReturn" class="table table-striped" width="400px">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>No. Transaksi</th>
+                                            <th>Tanggal Transaksi</th>
+                                            <th>Sumber</th>
+                                            <th>Jenis Transaksi</th>
+                                            <th>Nominal</th>
+                                            <th>Keterangan</th>
+                                            <th width="20%">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 
 @section('script')
-<script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
 <script type="text/javascript">
     $(function () {
         var table = $('#dataTable').DataTable({
@@ -207,14 +138,20 @@
                     data: 'jenis',
                     name: 'JENIS TRANSAKSI'
                 },{
-                //     data: 'user',
-                //     name: 'USER PELAKSANA'
-                // },{
-                    data: 'nominal',
+                    data: 'nominal_number',
                     name: 'Nilai'
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'
+                }, {
+                    data: 'id',
+                    name: 'Action',
+                    render: function(data, type, row, meta) {
+                        return `
+                        <a type="button" href="{{ url('master_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        `;
+                    }
                 }
             ]
         });
@@ -289,16 +226,8 @@
     $(function () {
         var table = $('#dataTableReturn').DataTable({
             dom: 'lrtip',
-            scrollY: "400px",
-            scrollX: true,
             processing: true,
             serverSide: true,
-            fixedColumns: {
-                left: 2,
-                right: 0,
-                width: 200,
-                targets: 10
-            },
             ajax: {
                 url: "{{ route('getDataTableReturnBankCash') }}",
                 data: function (d) {
@@ -327,17 +256,24 @@
                     data: 'jenis',
                     name: 'JENIS TRANSAKSI'
                 },{
-                //     data: 'user',
-                //     name: 'USER PELAKSANA'
-                // },{
-                    data: 'nominal',
+                    data: 'nominal_number',
                     name: 'Nilai'
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'
+                }, {
+                    data: 'id',
+                    name: 'Action',
+                    render: function(data, type, row, meta) {
+                        return `
+                        <a type="button" href="{{ url('master_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
+                        `;
+                    }
                 }
             ]
         });
+
     });
 
     $('.btn-return-pdf').on('click', function(){
@@ -405,6 +341,47 @@
             $('#exampleModalReturn').modal('hide')
         });
     })
+
+
+    function konfirmasi_hapus(get, id, name) {
+        Swal.fire({
+            title: "Masukan Alasan menghapus data transaksi " + name,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+        }).then((result) => {
+            var getUrl = get == 1 ? "{{ route('softdelete_kas_isi_saldo') }}" : "{{ route('softdelete_pengembalian_kas') }}"
+            if (result.isConfirmed && result.value) {
+                var data = new FormData();
+                data.append('id', id);
+                data.append('alasan', result.value);
+                $.ajax({
+                    type: "post",
+                    url: getUrl,
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        Swal.fire({
+                            title: 'Hapus!',
+                            text: 'Data berhasil di hapus',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        }).then(function() {
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide');
+                        });
+                    }
+                });
+            }
+
+        });
+    }
 
 </script>
 @endsection
