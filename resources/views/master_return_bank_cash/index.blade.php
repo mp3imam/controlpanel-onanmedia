@@ -65,7 +65,7 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                                    <th class="text-uppercase">TGL. TRANSAKSI</th>
+                                                    <th class="text-uppercase">TANGGAL TRANSAKSI</th>
                                                     <th class="text-uppercase">SUMBER</th>
                                                     <th class="text-uppercase">JENIS TRANSAKSI</th>
                                                     {{-- <th class="text-uppercase">USER PELAKSANA</th> --}}
@@ -136,7 +136,7 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                                    <th class="text-uppercase">TGL. TRANSAKSI</th>
+                                                    <th class="text-uppercase">TANGGAL TRANSAKSI</th>
                                                     <th class="text-uppercase">SUMBER</th>
                                                     <th class="text-uppercase">JENIS TRANSAKSI</th>
                                                     {{-- <th class="text-uppercase">USER PELAKSANA</th> --}}
@@ -200,7 +200,7 @@
                     }
                 },{
                     data: 'tanggal_transaksi',
-                    name: 'TGL. TRANSAKSI'
+                    name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
                     name: 'SUMBER'

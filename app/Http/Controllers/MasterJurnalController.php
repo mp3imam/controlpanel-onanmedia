@@ -303,8 +303,19 @@ class MasterJurnalController extends Controller
     }
 
     public function get_pdf(Request $request){
-        $datas = $this->models($request);
-        $total = MasterJurnal::total()->get();
+        $datas = MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
+        ->when($request->cari, function($q) use($request){
+            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
+            ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");
+        })
+        ->withTrashed()
+        ->get();
+
+        $total = MasterJurnal::withTrashed()->with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
+        ->when($request->cari, function($q) use($request){
+            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
+            ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");
+        })->total()->get();
 
         $pdf = Pdf::loadview('master_jurnal.pdf',[
                 'name'  => 'Jurnal Umum',

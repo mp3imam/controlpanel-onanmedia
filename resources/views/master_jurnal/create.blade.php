@@ -89,7 +89,7 @@
                                         <div class="row font-weight-bold">
                                             <div class="col-md-3">Akun Belanja</div>
                                             <div class="col">Keterangan</div>
-                                            <div class="col">Debet</div>
+                                            <div class="col">Debit</div>
                                             <div class="col">Kredit</div>
                                             <div class="col text-center">
                                                 <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>

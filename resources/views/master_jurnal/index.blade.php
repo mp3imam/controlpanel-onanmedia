@@ -57,10 +57,10 @@
                                     <tr>
                                         <th>No</th>
                                         <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                        <th class="text-uppercase">TGL. Jurnal</th>
+                                        <th class="text-uppercase">TANGGAL Jurnal</th>
                                         <th class="text-uppercase">Dokumen</th>
                                         <th class="text-uppercase">Uraian</th>
-                                        <th class="text-uppercase">Debet</th>
+                                        <th class="text-uppercase">Debit</th>
                                         <th class="text-uppercase">Kredit</th>
                                         <th class="text-uppercase">KETERANGAN</th>
                                         <th class="text-uppercase" hidden>jenis</th>
@@ -116,7 +116,7 @@
                     }
                 },{
                     data: 'tanggal_transaksi',
-                    name: 'TGL. TRANSAKSI'
+                    name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'dokumen',
                     name: 'Documen'
@@ -139,9 +139,10 @@
                     data: 'id',
                     name: 'Action',
                     render: function (data, type, row, meta) {
+                        icon = row.jenis == "1" ? 'ri-eye-fill' : 'ri-pencil-fill'
                         btn = `
                         <a href="{{ url('master_jurnal') }}/`+row.id+`/edit" class="btn btn-outline-warning btn-icon waves-effect waves-light">
-                            <i class="ri-pencil-fill"></i>
+                            <i class="${icon}"></i>
                         </a>
                         `
                         btn += row.jenis == "1" ? `` : `

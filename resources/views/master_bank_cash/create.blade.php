@@ -19,7 +19,7 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="tanggal_transaksi" class="form-label">TGL. TRANSAKSI</label>
+                                <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
                             </div>
 
@@ -30,7 +30,7 @@
 
                             <div class="col-md-6 mb-4">
                                 <div>
-                                    <p class="text-muted fw-medium">Jenis Transaksi</p>
+                                    <p class="text-muted fw-medium text-uppercase">Jenis Transaksi</p>
                                     <div class="form-check-inline">
                                         <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_1" value="1" checked>
                                         <label class="form-check-label" for="jenis_transaksi_1">

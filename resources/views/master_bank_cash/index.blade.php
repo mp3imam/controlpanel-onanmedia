@@ -120,7 +120,7 @@
                     }
                 },{
                     data: 'tanggal_transaksi',
-                    name: 'TGL. TRANSAKSI'
+                    name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
                     name: 'SUMBER'
@@ -172,7 +172,7 @@
                     }
                 },{
                     data: 'tanggal_transaksi',
-                    name: 'TGL. TRANSAKSI'
+                    name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
                     name: 'SUMBER'
