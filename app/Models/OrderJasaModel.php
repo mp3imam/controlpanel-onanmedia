@@ -12,4 +12,10 @@ class OrderJasaModel extends Model
     protected $table = 'OrderJasa';
     public $incrementing = false;
     protected $keyType = 'string';
+
+    public function helpDesk()
+    {
+        return $this->hasOne(HelpdeskModel::class, 'orderId');
+    }
+
 }

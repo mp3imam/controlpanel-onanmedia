@@ -115,7 +115,7 @@ class HelpdeskController extends Controller
 
         $detail = HelpdeskModel::findOrFail($id)->first();
 
-        return view('users.detail', $title, compact(['detail']));
+        return view('helpdesk.detail', $title, compact(['detail']));
     }
 
     /**
@@ -128,9 +128,10 @@ class HelpdeskController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = HelpdeskModel::findOrFail($id);
+        $detail = HelpdeskModel::with(['detail.file','file','jasas','order.orderJasa','order.penjual','order.pembeli'])->findOrFail($id);
+        // dd($detail);
 
-        return view('users.edit', $title, compact(['detail']));
+        return view('helpdesk.detail', $title, compact(['detail']));
     }
 
     /**

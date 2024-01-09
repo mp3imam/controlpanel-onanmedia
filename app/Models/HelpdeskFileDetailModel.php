@@ -8,7 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class HelpdeskFileDetailModel extends Model
 {
     use HasFactory;
-    protected $table = 'helpdesk_file_details';
+    protected $connection = 'pgsql2';
+    protected $table = 'HelpDeskChatFile';
     protected $guarded = ['id'];
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    public function file()
+    {
+        return $this->belongsTo(HelpdeskDetailModel::class, 'id');
+    }
 
 }

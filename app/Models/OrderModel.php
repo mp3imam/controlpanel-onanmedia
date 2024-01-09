@@ -16,4 +16,20 @@ class OrderModel extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function penjual(){
+        return $this->belongsTo(UserPublicModel::class, 'userIdPembeli', 'id');
+    }
+
+    public function pembeli(){
+        return $this->belongsTo(UserPublicModel::class, 'userIdPembeli', 'id');
+    }
+
+    public function HelpDesk(){
+        return $this->hasOne(HelpdeskModel::class, 'orderId', 'id');
+    }
+
+    public function orderJasa(){
+        return $this->hasOne(OrderJasaModel::class, 'orderId', 'id');
+    }
 }

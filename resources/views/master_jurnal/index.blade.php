@@ -83,6 +83,7 @@
 <script type="text/javascript">
     $(function () {
         var table = $('#dataTable').DataTable({
+            stateSave: true,
             dom: 'lrtip',
             scrollY: "400px",
             scrollX: true,

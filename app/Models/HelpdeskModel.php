@@ -24,9 +24,19 @@ class HelpdeskModel extends Model
         return $this->hasMany(HelpdeskDetailModel::class, 'helpdeskId');
     }
 
-    public function orders()
+    public function file()
     {
-        return $this->belongsTo(OrderModel::class, 'jasaId');
+        return $this->hasMany(HelpdeskFileModel::class, 'helpDeskId');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(OrderModel::class, 'orderId');
+    }
+
+    public function orderJasa()
+    {
+        return $this->belongsTo(OrderJasaModel::class, 'orderId');
     }
 
     public function keluhan_user()
