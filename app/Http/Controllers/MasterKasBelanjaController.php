@@ -320,7 +320,7 @@ class MasterKasBelanjaController extends Controller
                     'jurnal_umum_id' => $nomor->id,
                     'account_id'     => $a,
                     'keterangan'     => $request->keterangan[$akun] ?? '',
-                    'kredit'         => $nominal,
+                    'debet'          => $nominal,
                 ];
                 JurnalUmumDetail::create($data);
             }
@@ -328,7 +328,7 @@ class MasterKasBelanjaController extends Controller
                 'jurnal_umum_id' => $nomor->id,
                 'account_id'     => $request->account_id,
                 'keterangan'     => '',
-                'debet'          => $request->nominal,
+                'kredit'         => $request->nominal,
             ]);
 
             foreach (MasterKasBelanjaFile::whereKasId($id)->get() as $file) {

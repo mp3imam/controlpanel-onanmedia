@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JurnalUmumDetail;
+use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
 use App\Models\MasterReturnBankCashModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -86,14 +87,14 @@ class MasterReturnBankCashController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
-        // Store your file into directory and db
-        $model = MasterReturnBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->format('Y'))->first();
-        $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
-        $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
-        $request['nominal'] = str_replace(",","",$request->nominal);
-
         DB::beginTransaction();
         try {
+            // Store your file into directory and db
+            $model = count(MasterBankCashModel::whereYear('created_at','=',Carbon::now()->format('Y'))->get()) + count(MasterReturnBankCashModel::whereYear('created_at','=',Carbon::now()->format('Y'))->get());
+            $nomor = sprintf("%05s", $model + 1);
+            $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
+            $request['nominal'] = str_replace(",","",$request->nominal);
+
             MasterReturnBankCashModel::create($request->except('_token'));
             $tahun = Carbon::now()->format('Y');
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();

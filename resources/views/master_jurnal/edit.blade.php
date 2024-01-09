@@ -147,11 +147,13 @@
                                                 <div class="col">
                                                     <input class="form-control text-end kredit" id="kredit[]" name="kredit_detail[]" value="{{ $b->kredit ?? '0' }}" onkeyup="countKredit()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                                                 </div>
-                                                @if ($detail->jenis == 0)
-                                                    <div class="col text-center float-end hapus_detail">
-                                                            <i class="ri-delete-bin-line text-danger ri-2x"></i>
-                                                    </div>
-                                                @endif
+                                                <div class="col">
+                                                    @if ($detail->jenis == 0 && $belanja !== 0)
+                                                        <div class="text-center float-end hapus_detail">
+                                                                <i class="ri-delete-bin-line text-danger ri-2x"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -166,14 +168,9 @@
                                                 <input class="form-control text-end total text-white" style="background-color: #4E36E2" id="total_kredit" name="total_kredit" value="{{ $detail->kredit }}" readonly/>
                                             </div>
                                             @if ($detail->jenis == 0)
-                                                <div class="col text-center">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <button class="btn float-end bg-soft-info" type="button" onclick="tambah_detail()" style="color:#4E36E2"><i class="ri-add-box-fill"></i></button>
-                                                        </div>
-                                                        <div class="col text-white text-end rounded-3" style="background-color: #4E36E2">
-                                                            <label class="mt-2" id="total_all" name="total_all">Rp. 0</label>
-                                                        </div>
+                                                <div class="col">
+                                                    <div class="col text-white text-end rounded-3" style="background-color: #4E36E2; padding-right: 20px">
+                                                        <label class="mt-2" id="total_all" name="total_all">Rp. 0</label>
                                                     </div>
                                                 </div>
                                             @endif
@@ -345,6 +342,7 @@
         $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
         $('#total_all').text(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
         $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+        // $('#total_all').val() == 0 ? $('#total_all').attr('style','background-color: #4E36E2') : $('#total_all').attr('style','background-color: #DC143C')
     }
 
     var count = 1000

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
+use App\Models\MasterReturnBankCashModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -87,10 +88,10 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        DB::beginTransaction();
-        try {
-            $model = MasterBankCashModel::latest()->whereYear('created_at','=',Carbon::now()->format('Y'))->first();
-            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+        // DB::beginTransaction();
+        // try {
+            $model = count(MasterBankCashModel::whereYear('created_at','=',Carbon::now()->format('Y'))->get()) + count(MasterReturnBankCashModel::whereYear('created_at','=',Carbon::now()->format('Y'))->get());
+            $nomor = sprintf("%05s", $model + 1);
             $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
             $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             MasterBankCashModel::create($request->except('_token'));
@@ -116,11 +117,11 @@ class MasterBankCashController extends Controller
             $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-        }
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+        // }
 
         return redirect('master_bank_cash');
     }

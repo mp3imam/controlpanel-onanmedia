@@ -5,8 +5,7 @@
 @section('content')
 
 @include('components.breadcrumb')
-@section('content')
-    @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
+@include('sweetalert::alert')
     <ul class="nav nav-tabs nav-justified nav-border-bottom animation-nav" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" data-bs-toggle="tab" href="#base-justified-home" role="tab" aria-selected="true">
@@ -74,7 +73,7 @@
                                             <th>No</th>
                                             <th>No. Transaksi</th>
                                             <th>Tanggal Transaksi</th>
-                                            <th>Sumber</th>
+                                            <th>Tujuan</th>
                                             <th>Jenis Transaksi</th>
                                             <th>Nominal</th>
                                             <th>Keterangan</th>
@@ -175,7 +174,7 @@
                     name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
-                    name: 'SUMBER'
+                    name: 'Tujuan'
                 },{
                     data: 'jenis',
                     name: 'JENIS TRANSAKSI'

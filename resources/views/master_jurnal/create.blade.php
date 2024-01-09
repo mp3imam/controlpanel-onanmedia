@@ -27,7 +27,7 @@
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('master_jurnal.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('master_jurnal.store') }}" method="POST" enctype="multipart/form-data" onsubmit="myButtonValue.disabled = true; return true;">
                     @csrf
                         <div class="row">
                             <div class="row mb-3">
@@ -137,7 +137,7 @@
                             </div>
                         </div>
                         <div class="float-end">
-                            <button class="btn bg-animation btn-success mr-5 rounded-5" style="background-color: #4E36E2" data-bs-toggle="tooltip" data-bs-placement="top" title="Simpan ke Database">
+                            <button id="myButtonValue" class="btn bg-animation btn-success mr-5 rounded-5" style="background-color: #4E36E2" data-bs-toggle="tooltip" data-bs-placement="top" title="Simpan ke Database">
                                 <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
                                 &nbsp;&nbsp;&nbsp;
                             <a href="{{ route('master_jurnal.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end"  data-bs-toggle="tooltip" data-bs-placement="top" title="Kembali ke Menu" style="color: #4E36E2">

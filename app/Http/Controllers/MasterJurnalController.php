@@ -91,8 +91,8 @@ class MasterJurnalController extends Controller
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
             $request['dokumen'] = $request->nomor_transaksi;
-            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_debet));
-            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_kredit));
+            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_debet ?? 0));
+            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_kredit ?? 0));
             $request['jenis'] = 0;
             $jurnaUmum = MasterJurnal::create($request->except('_token'));
 
@@ -297,7 +297,18 @@ class MasterJurnalController extends Controller
         return MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'ilike', '%'.$request->cari.'%')
+            ->orWhere('debet', 'ilike', '%'.$request->cari.'%')
+            ->orWhere('kredit', 'ilike', '%'.$request->cari.'%')
             ->orWhere('keterangan_jurnal_umum', 'ilike', '%'.$request->cari.'%');
+        })
+        ->when($request->tanggal, function($q) use($request){
+            $tanggal = explode(" to ",$request->tanggal);
+            $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
+                $q->where('tanggal_transaksi', Carbon::parse($tanggal[0])->format('Y-m-d'));
+            });
+            $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
+                $q->where('tanggal_transaksi', '>=',Carbon::parse($tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::parse($tanggal[1])->format('Y-m-d'));
+            });
         })
         ->orderBy('id','desc')
         ->get();
@@ -309,11 +320,10 @@ class MasterJurnalController extends Controller
             $q->where('nomor_transaksi', 'ilike','%'.$request->cari."%")
             ->orWhere('keterangan_jurnal_umum', 'ilike',"%".$request->cari."%");
         })
-        ->withTrashed()
         ->oldest()
         ->get();
 
-        $total = MasterJurnal::withTrashed()->with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
+        $total = MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");

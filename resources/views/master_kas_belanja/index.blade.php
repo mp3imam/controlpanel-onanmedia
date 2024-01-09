@@ -4,9 +4,8 @@
 
 @section('content')
 
-    @include('components.breadcrumb')
-@section('content')
-    @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
+@include('components.breadcrumb')
+@include('sweetalert::alert')
     <div class="row">
         <div class="col-lg-12">
             <div class="card">

@@ -11,10 +11,17 @@ class HelpdeskModel extends Model
     protected $connection = 'pgsql2';
     protected $table = 'HelpDesk';
     protected $guarded = ['id'];
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     public function jasas()
     {
         return $this->belongsTo(JasaModel::class, 'jasaId');
+    }
+
+    public function detail()
+    {
+        return $this->hasMany(HelpdeskDetailModel::class, 'helpdeskId');
     }
 
     public function orders()

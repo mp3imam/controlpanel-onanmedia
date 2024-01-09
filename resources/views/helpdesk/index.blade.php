@@ -98,10 +98,10 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },{
-                    data: 'keluhan_nama',
+                    data: 'id',
                     name: 'Nama',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit','`+row.id+`', '`+row.nama+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        return `<a class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" href="{{ url('helpdesk_list/`+row.id+`/edit') }}">${data}</a>`;
                     }
                 },{
                     data: 'keluhan_email',
@@ -121,6 +121,26 @@
                 },{
                     data: 'statuss',
                     name: 'Status',
+                    render: function (data, type, row, meta) {
+                        switch(data) {
+                            case 'Dibuat':
+                                bgColor = 'FFEDD5'
+                                color = 'F97316'
+                                break;
+                            case 'Dalam Proses':
+                                bgColor = 'FEE2E2'
+                                color = 'EF4444'
+                                break;
+                            case 'Pending':
+                                bgColor = 'D1FAE5'
+                                color = '10B981'
+                                break;
+                            default:
+                                bgColor = 'DBEAFE'
+                                color = '3B82F6'
+                            }
+                        return `<span class="badge" style="background-color:#${bgColor}; color: #${color}"><i class="mdi mdi-circle-medium"></i> ${data}</span>`;
+                    }
                 }
             ]
         });
@@ -133,6 +153,8 @@
             table.draw();
         });
     });
+
+
 
     function modal_crud(data, id, nama){
         var nama_modal = nama ?? ''
