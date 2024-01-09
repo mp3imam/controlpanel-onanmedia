@@ -169,7 +169,7 @@
                                             </div>
                                             @if ($detail->jenis == 0)
                                                 <div class="col">
-                                                    <div class="col text-white text-end rounded-3" style="background-color: #4E36E2; padding-right: 20px">
+                                                    <div id="ubahwarna" class="col text-white text-end rounded-3" style="background-color: #4E36E2; padding-right: 20px">
                                                         <label class="mt-2" id="total_all" name="total_all">Rp. 0</label>
                                                     </div>
                                                 </div>
@@ -330,8 +330,6 @@
         }).on('select2:select', function (e) {
             $("#jenis_sumber").val(e.params.data.item);
         });
-
-        convertRupiah()
     })
 
     function convertRupiah(){
@@ -342,7 +340,7 @@
         $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
         $('#total_all').text(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
         $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
-        // $('#total_all').val() == 0 ? $('#total_all').attr('style','background-color: #4E36E2') : $('#total_all').attr('style','background-color: #DC143C')
+        $('#total_all').text() !== "Rp. 0" ? $('#ubahwarna').attr('style', 'background-color : #E9967A; padding-right: 20px') : $('#ubahwarna').attr('style', 'background-color : #4E36E2; padding-right: 20px')
     }
 
     var count = 1000

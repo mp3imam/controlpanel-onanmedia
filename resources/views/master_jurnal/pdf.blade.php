@@ -22,7 +22,7 @@
                 <td width="90%" class="text-center">
                     <h4>Laporan Jurnal Umum</h4>
                 </td>
-                <td width="10%" class="text-right text-end">
+                <td width="10%" class="text-right font-weight-bold text-end">
                     {{ Carbon\Carbon::now()->format('d M Y') }}
                 </td>
             </tr>

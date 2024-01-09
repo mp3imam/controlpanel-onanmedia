@@ -64,14 +64,14 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="col-md-12 mb-4">
-                                <label for="account_id" class="form-label">SUMBER</label>
-                                <select id="modal_account_id" name="account_id" class="form-control" required></select>
                             </div> --}}
 
                             <div class="col-md-6 mb-4">
+                                <label for="modal_jenis_mata_uang" class="form-label">Jenis Mata Uang</label>
+                                <select id="modal_jenis_mata_uang" name="modal_jenis_mata_uang" class="form-control" required></select>
+                            </div>
+
+                            <div class="col-md-12 mb-4">
                                 <label for="keterangan_jurnal_umum" class="form-label">KETERANGAN</label>
                                 <textarea class="form-control" id="keterangan_jurnal_umum" name="keterangan_jurnal_umum" rows="1"></textarea>
                             </div>
@@ -84,6 +84,7 @@
                                         <h6 class="card-title mb-0">Detail Jurnal</h6>
                                     </div>
                                 </div>
+                                <button class="btn form-control" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
                                 <div class="card-body">
                                     <div class="card-header">
                                         <div class="row font-weight-bold">
@@ -92,7 +93,6 @@
                                             <div class="col">Debit</div>
                                             <div class="col">Kredit</div>
                                             <div class="col text-center">
-                                                <button class="btn float-end" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
                                             </div>
                                         </div>
                                     </div>
@@ -230,6 +230,32 @@
         $("#jenis_sumber").val(e.params.data.item);
     });
 
+
+    $("#modal_jenis_mata_uang").select2({
+        allowClear: true,
+        width: '100%',
+        ajax: {
+            url: "{{ route('api.get_select2_mata_uangs') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(
+                        data.data,
+                        function(item) {
+                            return {
+                                id: item.id,
+                                text: item.nama
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }).on('select2:select', function (e) {
+        $("#jenis_sumber").val(e.params.data.item);
+    });
+
     var count = 1
     function tambah_detail() {
         $('.tambah_detail').append(`
@@ -281,8 +307,10 @@
             countKredit()
         });
 
-        $(".debet_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        $(".kredit_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').val() !== "Rp. 0" ? $('#total_all').css('background-color', 'E9967A') : $('#total_all').css('background-color', '4E36E2')
+
+        $(".debet_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+        $(".kredit_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
 
     }
 
@@ -299,28 +327,29 @@
             $('#total_debet').val(sum_value);
         })
 
-        $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_debet').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
         $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+        $('#total_all').val() !== "Rp. 0" ? $('#total_all').css('background-color', 'E9967A') : $('#total_all').css('background-color', '4E36E2')
     }
 
     function countKredit() {
         var sum_value = 0;
         $('.kredit_detail').each(function(){
-            console.log(sum_value);
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
             $('#total_kredit').val(sum_value);
         })
 
-        $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
         $('#total_all').val(parseInt($('#total_debet').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#total_kredit').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('#total_all').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+        $('#total_all').val() !== "Rp. 0" ? $('#total_all').css('background-color', 'E9967A') : $('#total_all').css('background-color', '4E36E2')
     }
 
-    $(".kredit_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $(".debet_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $("#total_debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $(".kredit_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+    $(".debet_detail").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+    $("#total_debet").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
+    $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
 </script>
 @endsection
 -
