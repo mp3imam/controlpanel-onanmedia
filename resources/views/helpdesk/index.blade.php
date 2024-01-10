@@ -92,7 +92,7 @@
                 }
             },
             columns: [{
-                    data: "id",
+                    data: "keluhan_nama",
                     sortable: false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
@@ -101,7 +101,7 @@
                     data: 'id',
                     name: 'Nama',
                     render: function (data, type, row, meta) {
-                        return `<a class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" href="{{ url('helpdesk_list/`+row.id+`/edit') }}">${data}</a>`;
+                        return `<a class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" href="{{ url('helpdesk_list/`+row.id+`/edit') }}">${row.keluhan_nama}</a>`;
                     }
                 },{
                     data: 'keluhan_email',

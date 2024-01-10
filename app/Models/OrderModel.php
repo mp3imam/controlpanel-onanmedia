@@ -18,7 +18,7 @@ class OrderModel extends Model
     }
 
     public function penjual(){
-        return $this->belongsTo(UserPublicModel::class, 'userIdPembeli', 'id');
+        return $this->belongsTo(UserPublicModel::class, 'userIdPenjual', 'id');
     }
 
     public function pembeli(){

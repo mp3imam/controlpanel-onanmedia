@@ -13,10 +13,16 @@ class HelpdeskModel extends Model
     protected $guarded = ['id'];
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     public function jasas()
     {
         return $this->belongsTo(JasaModel::class, 'jasaId');
+    }
+
+    public function user_public()
+    {
+        return $this->belongsTo(UserPublicModel::class, 'userId');
     }
 
     public function detail()

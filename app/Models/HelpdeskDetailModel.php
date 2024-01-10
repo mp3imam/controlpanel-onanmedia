@@ -13,6 +13,7 @@ class HelpdeskDetailModel extends Model
     protected $guarded = ['id'];
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     public function detail()
     {
@@ -22,6 +23,11 @@ class HelpdeskDetailModel extends Model
     public function file()
     {
         return $this->hasMany(HelpdeskFileDetailModel::class, 'id');
+    }
+
+    public function userPublic()
+    {
+        return $this->belongsTo(UserPublicModel::class, 'userId');
     }
 
 }

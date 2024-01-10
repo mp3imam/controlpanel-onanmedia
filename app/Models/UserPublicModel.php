@@ -34,4 +34,13 @@ class UserPublicModel extends Model
         return $this->belongsTo(MasterBankCashModel::class, 'id');
     }
 
+    public function users_chat(){
+        return $this->hasOne(HelpdeskDetailModel::class, 'id','userId');
+    }
+
+    public function user_public()
+    {
+        return $this->hasOne(HelpdeskModel::class, 'userId','id');
+    }
+
 }

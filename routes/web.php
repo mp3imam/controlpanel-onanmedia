@@ -109,6 +109,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // HelpDesk
     Route::resource('helpdesk_list', HelpdeskController::class);
+    Route::post('helpdesk-upload-image', [HelpdeskController::class, 'uploadImage'])->name('helpdesk.upload.image');
 
     // Pengaturan
     Route::resource('users', UserController::class);
