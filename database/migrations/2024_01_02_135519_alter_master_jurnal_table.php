@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('jurnals_umum', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('jurnals_umum', function (Blueprint $table) {
             $table->unsignedBigInteger('bank_id')->nullable();
             $table->string('jenis')->default(1);
             $table->string('alasan')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('jurnals_umum', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('jurnals_umum', function (Blueprint $table) {
             $table->dropColumn(['bank_id','jenis','alasan']);
             $table->dropSoftDeletes();
         });

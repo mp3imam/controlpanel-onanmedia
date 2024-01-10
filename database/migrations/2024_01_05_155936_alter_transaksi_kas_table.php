@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksi_kas', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
             $table->string('alasan')->nullable();
             $table->softDeletes();
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksi_kas', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
             $table->dropColumn(['alasan']);
             $table->dropSoftDeletes();
         });

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jurnals_umum', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("jurnals_umum"))
+        Schema::connection('pgsql')->create('jurnals_umum', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_transaksi');
             $table->date('tanggal_transaksi');

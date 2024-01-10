@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cl_coa', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
             $table->string('metode_penyusutan')->nullable()->after('type');
             $table->string('rekening_bank')->nullable()->after('type');
             $table->text('alamat_bank')->nullable()->after('type');

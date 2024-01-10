@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mata_uangs', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("mata_uangs"))
+        Schema::connection('pgsql')->create('mata_uangs', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('kode');

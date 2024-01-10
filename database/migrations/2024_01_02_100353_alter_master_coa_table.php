@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cl_coa', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
             $table->string('jenis')->default(0);
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cl_coa', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
             $table->dropColumn('jenis');
         });
     }

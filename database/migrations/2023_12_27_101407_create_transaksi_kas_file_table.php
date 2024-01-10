@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi_kas_belanja_file', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("transaksi_kas_belanja_file"))
+        Schema::connection('pgsql')->create('transaksi_kas_belanja_file', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('kas_id');
             $table->string('filename');

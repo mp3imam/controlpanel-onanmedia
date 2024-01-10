@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_karyawan_personal', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("data_karyawan_personal"))
+        Schema::connection('pgsql')->create('data_karyawan_personal', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('data_karyawan_id');
             $table->string('no_ktp');

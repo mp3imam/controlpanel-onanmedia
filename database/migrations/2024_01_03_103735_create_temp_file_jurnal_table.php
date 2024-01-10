@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('temp_file_jurnal', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("temp_file_jurnal"))
+        Schema::connection('pgsql')->create('temp_file_jurnal', function (Blueprint $table) {
             $table->id();
             $table->string('folder');
             $table->string('filename');

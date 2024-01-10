@@ -12,7 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi_kas', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("transaksi_kas"))
+        Schema::connection('pgsql')->create('transaksi_kas', function (Blueprint $table) {
             $table->id();
             $table->string('nomor_transaksi');
             $table->date('tanggal_transaksi')->default(Carbon::now()->format('Y-m-d'));

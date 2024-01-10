@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status_kontrak', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("status_kontrak"))
+        Schema::connection('pgsql')->create('status_kontrak', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('aktif')->default(1);

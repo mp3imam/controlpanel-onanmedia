@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mode_absensi', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("mode_absensi"))
+        Schema::connection('pgsql')->create('mode_absensi', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('aktif')->default(1);

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('MsDivisi', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("MsDivisi"))
+        Schema::connection('pgsql')->create('MsDivisi', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->timestamps();

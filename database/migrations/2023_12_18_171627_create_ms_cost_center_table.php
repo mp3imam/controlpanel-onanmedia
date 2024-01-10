@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ms_cost_center', function (Blueprint $table) {
+        if (!Schema::connection('pgsql')->hasTable("ms_cost_center"))
+        Schema::connection('pgsql')->create('ms_cost_center', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('kode')->default(1);

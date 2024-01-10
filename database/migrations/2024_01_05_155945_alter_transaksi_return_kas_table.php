@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksi_return_kas', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('transaksi_return_kas', function (Blueprint $table) {
             $table->unsignedBigInteger('tujuan_id');
             $table->string('alasan')->nullable();
             $table->softDeletes();
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksi_return_kas', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('transaksi_return_kas', function (Blueprint $table) {
             $table->dropColumn(['tujuan_id','alasan']);
             $table->dropSoftDeletes();
         });

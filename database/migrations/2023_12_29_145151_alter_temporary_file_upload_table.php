@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('temporary_file_upload', function (Blueprint $table) {
+        Schema::connection('pgsql')->table('temporary_file_upload', function (Blueprint $table) {
             $table->string('kas_id')->nullable();
         });
     }
