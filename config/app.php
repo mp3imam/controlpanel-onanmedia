@@ -67,7 +67,9 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Jakarta',
+    // 'timezone' => 'Europe/London',
+    'timezone' => 'Asia/Bangkok',
+    // setlocale(LC_ALL, 'IND'),
 
     /*
     |--------------------------------------------------------------------------

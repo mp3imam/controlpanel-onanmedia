@@ -20,9 +20,9 @@ class HelpdeskDetailModel extends Model
         return $this->belongsTo(HelpdeskModel::class, 'id');
     }
 
-    public function file()
+    public function file_details()
     {
-        return $this->hasMany(HelpdeskFileDetailModel::class, 'id');
+        return $this->hasMany(HelpdeskFileDetailModel::class, 'helpdeskChatId','id');
     }
 
     public function userPublic()

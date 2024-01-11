@@ -6,9 +6,8 @@ use App\Helpers\IdStringRandom;
 use App\Models\HelpdeskDetailModel;
 use App\Models\HelpdeskFileModel;
 use App\Models\HelpdeskModel;
-use App\Models\TemporaryFileUpload;
 use App\Models\TemporaryFileUploadHelpdesk;
-use App\Models\TemporaryFileUploadJurnal;
+use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +15,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use PHPUnit\TextUI\Help;
 use Yajra\DataTables\Facades\DataTables;
 
 class HelpdeskController extends Controller
@@ -31,7 +29,6 @@ class HelpdeskController extends Controller
      */
     function __construct()
     {
-        // dd(HelpdeskModel::with(['jasas','keluhan_user','statuses','adminOnan'])->first());
         $this->middleware('permission:Dashboard Helpdesk');
     }
 
@@ -78,7 +75,7 @@ class HelpdeskController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'balasan'     => 'required',
+            'balasan'     => 'nullable',
             'random_text' => 'required',
         ];
 
@@ -92,50 +89,45 @@ class HelpdeskController extends Controller
         }
 
         $user = 'Data Tidak Tersimpan';
-        // DB::beginTransaction();
-        // try{
+        DB::beginTransaction();
+        try{
             // Store your file into directory and db
-            $user = Auth::user();
+            $user = UserPublicModel::whereId(Auth::user()->id)->first();
             HelpdeskModel::findOrFail($request->helpdesk_id)->update([
                 'helpdeskStatusId'  => 2,
                 'adminId'           => $user->id,
                 'adminName'         => $user->nama_lengkap,
             ]);
 
-            $tanggal = Carbon::now();
             $helpdeskDetail = new HelpdeskDetailModel();
             $helpdeskDetail->id         = IdStringRandom::stringRandom();
-            // $helpdeskDetail->userId     = $user->id;
-            $helpdeskDetail->userId     = 'clqyuvzre0001pvyyfobnln0j';
+            $helpdeskDetail->userId     = $user->id;
             $helpdeskDetail->helpdeskId = $request->helpdesk_id;
-            $helpdeskDetail->createdAt  = $tanggal;
-            $helpdeskDetail->updatedAt  = $tanggal;
-            $helpdeskDetail->pesan      = $request->balasan;
-            $helpdeskDetail->role       = "Admin";
+            $helpdeskDetail->name       = $user->nama_lengkap;
+            $helpdeskDetail->pesan      = $request->balasan ?? '';
+            $helpdeskDetail->role       = "ADMIN";
             $helpdeskDetail->helpdeskStatusId = 2;
-            // dd($helpdeskDetail);
             $helpdeskDetail->save();
 
-            // $files = TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exsits();
-            // if ($files)
-            // foreach ($files->get() as $gambar) {
-            //     HelpdeskFileModel::insert([
-            //         'id'         => IdStringRandom::stringRandom(),
-            //         'helpDeskId' => $request->helpdesk_id,
-            //         'helpDeskChatId' => $helpdeskDetail->id,
-            //         'fileName' => $gambar->filename,
-            //         'url' => $gambar->url,
-            //     ]);
-            // }
+            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
+            foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
+                HelpdeskFileModel::insert([
+                    'id'             => IdStringRandom::stringRandom(),
+                    'helpDeskId'     => $request->helpdesk_id,
+                    'helpdeskChatId' => $helpdeskDetail->id,
+                    'fileName'       => $gambar->filename,
+                    'url'            => $gambar->url,
+                ]);
+            }
 
-        //     DB::commit();
-        // }catch(\Exception $e){
-        //     DB::rollback();
-        // }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+        }
 
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => $user
+            'message' => HelpdeskDetailModel::with(['userPublic','file_details'])->whereId($helpdeskDetail->id)->first()
         ]);
     }
 
@@ -164,7 +156,7 @@ class HelpdeskController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = HelpdeskModel::with(['user_public','detail.file','detail.userPublic','file','jasas','order.orderJasa','order.penjual','order.pembeli'])
+        $detail = HelpdeskModel::with(['user_public','detail.file_details','detail.userPublic','file','jasas','order.orderJasa','order.penjual','order.pembeli'])
         ->findOrFail($id);
         // dd($detail);
 
@@ -240,7 +232,7 @@ class HelpdeskController extends Controller
 
         $image->move($path, $imageName);
 
-        TemporaryFileUploadJurnal::create([
+        TemporaryFileUploadHelpdesk::create([
             'folder' => 'jurnal_umum',
             'url' => asset("helpdesk/$imageName"),
             'filename' => $imageName,

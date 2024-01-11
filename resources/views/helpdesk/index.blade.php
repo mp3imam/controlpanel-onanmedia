@@ -108,10 +108,7 @@
                     name: 'Email',
                 },{
                     data: 'admin_id',
-                    name: 'Di Kerjakan Oleh',
-                    render: function (data, type, row, meta) {
-                        return data ?? '-';
-                    }
+                    name: 'Di Kerjakan Oleh'
                 },{
                     data: 'keluhan',
                     name: 'Keluhan',

@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             // AccountSeeder::class,
             // JasaSeeder::class,
             TblDataKaryawanGajiSeeder::class,
-            ClcoaSeeder::class,
+            // ClcoaSeeder::class,
             JenisPembayaranClCoaSeeder::class,
         ]);
     }
