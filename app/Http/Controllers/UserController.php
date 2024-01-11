@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\IdStringRandom;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -85,9 +87,9 @@ class UserController extends Controller
         }
 
         $user = 'Data Tidak Tersimpan';
-        DB::beginTransaction();
-        try{
-            // Store your file into directory and db
+        // DB::beginTransaction();
+        // try{
+            // dd($request->role);
             $input = $request->only(['username','nama_lengkap']);
             $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
             $input['cl_perusahaan_id'] = 1;
@@ -96,16 +98,28 @@ class UserController extends Controller
             $input['update_date']      = Carbon::now();
             $input['update_by']        = 'Administrator';
             $input['password']         = Hash::make('12345678');
+
+            if ($request->role == 'help_desk'){
+                $UserPublicModel = UserPublicModel::insert([
+                    'id'            => IdStringRandom::stringRandom(),
+                    'name'          => $request->nama_lengkap,
+                    'email'         => $request->username . '@mail.com',
+                ]);
+
+                $input['isHelpdesk'] = $UserPublicModel->id;
+            }
+
+            // Store your file into directory and db
             User::insert($input);
 
             $role = Role::whereName($request->role)->first();
             $user = User::whereId($input['id'])->first();
 
             $user->assignRole($role);
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
+        //     DB::commit();
+        // }catch(\Exception $e){
+        //     DB::rollback();
+        // }
 
         return response()->json([
             'status'  => Response::HTTP_OK,
