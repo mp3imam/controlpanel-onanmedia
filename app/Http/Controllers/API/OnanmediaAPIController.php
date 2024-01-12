@@ -175,7 +175,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('uraian','ilike','%'.$request->q.'%');
         })->get();
 
         $data = [

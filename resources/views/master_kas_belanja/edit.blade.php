@@ -66,12 +66,17 @@
                                     <input class="bg-success" type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" required/>
                             </div>
 
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
+                                <label for="account_id" class="form-label">SUMBER</label>
+                                <select id="modal_account_id" name="account_id" class="form-control" required></select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
                                 <div>
                                     <p class="text-muted fw-medium">Jenis Pembayaran</p>
                                     <div class="form-check-inline">
@@ -89,12 +94,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 mb-4">
-                                <label for="account_id" class="form-label">SUMBER</label>
-                                <select id="modal_account_id" name="account_id" class="form-control" required></select>
-                            </div>
-
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="keterangan_kas" class="form-label">KETERANGAN</label>
                                 <textarea class="form-control" id="keterangan_kas" name="keterangan_kas" rows="3">{{ $detail->keterangan_kas }}</textarea>
                             </div>
