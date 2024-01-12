@@ -232,7 +232,7 @@ class MasterReturnBankCashController extends Controller
         ]);
     }
 
-    public function softdelete_kas_belanja(Request $request){
+    public function softdelete_pengembalian_kas(Request $request){
         DB::beginTransaction();
         try {
             MasterJurnal::whereDokumen(MasterReturnBankCashModel::whereId($request->id)->first()->nomor_transaksi)->update([
