@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('pgsql')->table('tbl_user', function (Blueprint $table) {
-            $table->unsignedBigInteger('isHelpdesk')->nullable();
+            $table->string('isHelpdesk')->nullable();
         });
     }
 

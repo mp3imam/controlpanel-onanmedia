@@ -87,10 +87,10 @@ class UserController extends Controller
         }
 
         $user = 'Data Tidak Tersimpan';
-        // DB::beginTransaction();
-        // try{
-            // dd($request->role);
-            $input = $request->only(['username','nama_lengkap']);
+        DB::beginTransaction();
+        try{
+            $input = $request->only(['nama_lengkap']);
+            $input['username'] = str_replace(" ","_",$request->username);
             $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
             $input['cl_perusahaan_id'] = 1;
             $input['cl_user_group_id'] = 1;
@@ -100,13 +100,15 @@ class UserController extends Controller
             $input['password']         = Hash::make('12345678');
 
             if ($request->role == 'help_desk'){
-                $UserPublicModel = UserPublicModel::insert([
-                    'id'            => IdStringRandom::stringRandom(),
-                    'name'          => $request->nama_lengkap,
-                    'email'         => $request->username . '@mail.com',
+                $id = IdStringRandom::stringRandom();
+                UserPublicModel::insert([
+                    'id'         => $id,
+                    'name'       => $request->nama_lengkap,
+                    'email'      => $input['username'] . '@mail.com',
+                    'isHelpdesk' => 1,
                 ]);
 
-                $input['isHelpdesk'] = $UserPublicModel->id;
+                $input['isHelpdesk'] = $id;
             }
 
             // Store your file into directory and db
@@ -116,10 +118,10 @@ class UserController extends Controller
             $user = User::whereId($input['id'])->first();
 
             $user->assignRole($role);
-        //     DB::commit();
-        // }catch(\Exception $e){
-        //     DB::rollback();
-        // }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+        }
 
         return response()->json([
             'status'  => Response::HTTP_OK,

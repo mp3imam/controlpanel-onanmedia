@@ -28,17 +28,21 @@
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
+                            <div class="col-md-9 p-3">
+                                <div class="input-group">
+                                    <input class="form-control" id='cari' name="cari" placeholder="Cari data user di sini">
+                                    <span class="input-group-text"><i class="ri-search-line"></i></span>
+                                </div>
                             </div>
+                            <div class="col-md-3 p-3">
+                                <input type="text" class="form-control flatpickr-input active" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" value="1 Nov, 2023 to 12 Jan, 2024" readonly="readonly">                            </div>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
                             <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
                             width="100%">
-                                <thead>
+                                <thead class="text-white text-center text-uppercase" style="background-color: #405189 !important">
                                     <tr>
                                         <th width="50px">No</th>
                                         <th>Nama</th>
@@ -65,6 +69,12 @@
         </div>
     </div>
 </div>
+<style>
+    #dataTable thead th {
+        height:30px;
+        vertical-align: middle;
+    }
+</style>
 
 @endsection
 
@@ -150,235 +160,6 @@
             table.draw();
         });
     });
-
-
-
-    function modal_crud(data, id, nama){
-        var nama_modal = nama ?? ''
-        button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
-
-        $('#modal_content').html(`
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">`+data+` Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_Pekerjaan_append">
-                        <label for="Pekerjaan" class="form-label">Nama Pekerjaan</label>
-                        <input class="form-control" id="modal_pendidikan" placeholder="Enter Pekerjaan" value="${nama_modal}">
-                    </div>
-                    <div class="col-lg-12 d-flex justify-content-between">
-                        <div class="d-flex">
-                            ${button_hapus}
-                        </div>
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;
-                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `)
-
-
-        if (id !== undefined){
-            $('#row'+id).removeClass('add')
-            $('#row'+id).removeClass('btn-primary')
-            $('#row'+id).addClass('edit')
-            $('#row'+id).addClass('btn-warning')
-        }else{
-            $('#rowundefined').removeClass('edit')
-            $('#rowundefined').addClass('add')
-            $('#rowundefined').removeClass('btn-warning')
-            $('#rowundefined').addClass('btn-primary')
-        }
-
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $('.add').on('click', function() {
-            var data = new FormData()
-            data.append('pendidikan', $('#modal_pendidikan').val())
-            $.ajax({
-                type: "post",
-                url: "{{ url('pendidikan') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('pendidikan', $('#modal_pendidikan').val())
-            $.ajax({
-                url: "{{ url('pendidikan') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                    }
-
-                }
-            });
-
-        })
-    }
-
-    function alert_delete(id, nama){
-        Swal.fire({
-        title: `Hapus Data`,
-        text: "Apakah anda yakin untuk menghapus data '"+nama+"'",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Iya',
-        cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "delete",
-                    url: "{{ url('pendidikan') }}" + '/' + id,
-                    data: {
-                        "_method": 'delete',
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function (result) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'Your file has been deleted.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                        });
-                    }
-                });
-            }
-
-        });
-    }
-
-    $('.btn-pdf').on('click', function(){
-        $('#modal_content').html(`
-            <div class="modal-body text-center p-5">
-                <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:120px;height:120px"></lord-icon>
-
-                <div class="mt-4">
-                    <h4 class="mb-3">Sedang Mendownload PDF</h4>
-                    <p class="text-muted mb-4"> Mohon Tunggu Sebentar. </p>
-                </div>
-            </div>
-        `)
-        $("#exampleModal").modal('show');
-
-        var fd = new FormData()
-        fd.append('username_id', $('#username_id').val())
-        fd.append('nama_lengkap_id', $('#nama_lengkap_id').val())
-        $.ajax({
-            type:'post',
-            url: "{{ route('users.pdf') }}",
-            data: fd,
-            processData: false,
-            contentType: false,
-            xhrFields: {
-                responseType: 'blob' // to avoid binary data being mangled on charset conversion
-            },
-            success: function(blob, status, xhr) {
-                // check for a filename
-                var filename = "";
-                var disposition = xhr.getResponseHeader('Content-Disposition');
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                    var matches = filenameRegex.exec(disposition);
-                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-                }
-
-                if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-                    window.navigator.msSaveBlob(blob, filename);
-                } else {
-                    var URL = window.URL || window.webkitURL;
-                    var downloadUrl = URL.createObjectURL(blob);
-
-                    if (filename) {
-                        // use HTML5 a[download] attribute to specify filename
-                        var a = document.createElement("a");
-                        // safari doesn't support this yet
-                        if (typeof a.download === 'undefined') {
-                            window.location.href = downloadUrl;
-                        } else {
-                            a.href = downloadUrl;
-                            a.download = filename;
-                            document.body.appendChild(a);
-                            a.click();
-                        }
-                    } else {
-                        window.location.href = downloadUrl;
-                    }
-
-                    setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
-                }
-            }
-        }).done(function() { //use this
-            $('#exampleModal').modal('hide')
-        });
-    })
 
     $.ajaxSetup({
         headers: {

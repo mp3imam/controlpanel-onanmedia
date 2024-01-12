@@ -251,13 +251,11 @@ class UserPublicController extends Controller
     }
 
     public function models($request){
-        //dd($request->status_user );
-        //echo $request->status_user;exit;
-        
         return UserPublicModel::query()
         ->when($request->status_user != "", function($q) use($request){
             $q->where('sellerStatus', '=', $request->status_user );
         })
+        ->where('isHelpdesk',0)
         ->orderBy('id')
         ->get();
     }

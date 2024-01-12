@@ -10,36 +10,10 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
-                <!-- <div id="customerList">
-                    <div class="col-sm-auto mb-3">
-
-                    </div> 
-                    <div class="row g-4">
-                        <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label> <input id='username_id' name="username_id" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            
-                        </div>
-                    </div>
-
-                     <th width="5px">Nomor</th>
-                            <th width="100px">Nama Lengkap</th>
-                            <th width="30px">Nomor Hanphone</th>
-                            <th width="30px">Username</th>
-                            <th width="30px">Verifikasi Email</th>
-                            <th width="30px">Verifikasi No.Hp</th>
-                            <th width="30px">Terdaftar Seller</th>
-                </div> -->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-
                                 <div class="row">
                                     <div class="col-md-2">
                                         <div>
@@ -59,7 +33,7 @@
                     </div>
                     <div class="col-md-12">
                         <table id="dataTable" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
-                            <thead>
+                            <thead class="text-white text-center text-uppercase" style="background-color: #405189">
                                 <tr>
                                     <th >No</th>
                                     <th >Nama Lengkap</th>
@@ -75,7 +49,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
                     <div class="modal-dialog modal-xl" id="modal_content">
                     </div>
@@ -86,10 +60,6 @@
 </div>
 <style>
     #dataTable thead th {
-        background-color: #405189;
-        color: #ffffff;
-        text-align: center;
-        text-transform: uppercase;
         height:40px;
         vertical-align: middle;
     }
@@ -532,10 +502,10 @@
 @endsection
 
 
-{{-- 
+{{--
 <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
     Tambah
-</button> 
+</button>
 <a type="button" class="btn btn-primary btn-label btn-pdf">
     <div class="d-flex">
         <div class="flex-shrink-0">

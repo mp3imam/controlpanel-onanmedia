@@ -33,7 +33,7 @@
     }
 
     .dtfc-fixed-left {
-        background-color: rgb(255, 255, 255) !important;
+        background-color: rgb(255, 255, 255);
     }
 </style>
 

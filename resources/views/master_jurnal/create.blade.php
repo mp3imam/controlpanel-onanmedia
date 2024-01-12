@@ -40,32 +40,6 @@
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
                             </div>
 
-                            {{-- <div class="col-md-6 mb-4">
-                                <label for="account_id" class="form-label">Jenis Pembayaran</label>
-                                <select id="modal_pembayaran_id" name="pembayaran_id" class="form-control" required>
-                                    <option value="1" selected>Transfer</option>
-                                    <option value="2">Cash</option>
-                                </select>
-                            </div> --}}
-
-                            {{-- <div class="col-md-12 mb-4">
-                                <div>
-                                    <p class="text-muted fw-medium">Jenis Pembayaran</p>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_1" value="1" checked="">
-                                        <label class="form-check-label" for="jenis_transaksi_1">
-                                            Transfer
-                                        </label>
-                                    </div>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis" id="jenis_transaksi_2" value="2">
-                                        <label class="form-check-label" for="jenis_transaksi_2">
-                                            Cash
-                                        </label>
-                                    </div>
-                                </div>
-                            </div> --}}
-
                             <div class="col-md-6 mb-4">
                                 <label for="modal_jenis_mata_uang" class="form-label">Jenis Mata Uang</label>
                                 <select id="modal_jenis_mata_uang" name="modal_jenis_mata_uang" class="form-control" required></select>
