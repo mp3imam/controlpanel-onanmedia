@@ -12,8 +12,9 @@ class BankTunaiSeeder extends Seeder
      */
     public function run(): void
     {
+        BankModel::whereKode('Cash')->delete();
         BankModel::create([
-            'nama' => 'Tunai Kas / Kasir',
+            'nama' => 'Kas Tunai / Kasir',
             'kode' => 'Cash'
         ]);
     }
