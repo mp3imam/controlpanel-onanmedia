@@ -181,7 +181,7 @@
         isPengambilanModal = isPengambilan == 1 ? img_ok : img_not_ok
         isPengirimanModal = isPengiriman == 1 ? img_ok : img_not_ok
         isUnggulanModal = isUnggulan == 1 ? img_ok : img_not_ok
-        msStatusJasaIdModal = msStatusJasaId == 1 ? img_ok : img_not_ok
+        msStatusJasaIdModal = msStatusJasaId == 1 ? img_ok : `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px" onclick="konfirmasi_verifikasi_jasa('${id}','${nama}')" style="cursor:pointer">`
         $('#modal_content').html(`
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalgridLabel">Detail Data</h5>
@@ -301,7 +301,6 @@
                     </div>
                 </div>
 
-
                 <hr>
                 <h1>Jasa Pricing</h1>
                 <table id="jasaPricing" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
@@ -318,8 +317,6 @@
                     </tbody>
                 </table>
             </div>
-
-
         `)
 
         var table = $('#jasaPricing').DataTable({
@@ -390,6 +387,44 @@
 
         });
     }
+
+
+    function konfirmasi_verifikasi_jasa(id, nama){
+        Swal.fire({
+        title: `Aktifkan Jasa`,
+        text: "Apakah anda yakin untuk mengaktifkan Jasa '"+nama+"'",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Iya',
+        cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('verifikasi_jasa') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "id": id
+                    },
+                    success: function (result) {
+                        Swal.fire({
+                            title: 'Aktif!',
+                            text: 'Your file has been aktif.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }
+                });
+            }
+        });
+    }
+
 
     $('.btn-pdf').on('click', function(){
         $('#modal_content').html(`

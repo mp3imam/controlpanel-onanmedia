@@ -10,7 +10,8 @@ class JasaModel extends Model
     use HasFactory;
     protected $connection = 'pgsql2';
     protected $table = 'Jasa';
-
+    protected $guarded = ['id'];
+    public $timestamps = false;
     public $incrementing = false;
     public $keyType = 'string';
 
