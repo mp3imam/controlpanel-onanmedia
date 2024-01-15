@@ -34,7 +34,7 @@
                             <div class="row">
                                 <div class="col-md-3 p-3">
                                     <label>Filter Tanggal</label>
-                                    <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                    <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal') ?? Carbon\Carbon::now()->subMonths(3)->firstOfMonth()->format('d M, Y')." to ".Carbon\Carbon::now()->format('d M, Y')) }}">
                                 </div>
                                 <div class="col-md-3 p-3">
                                     <label>Filter All</label>
