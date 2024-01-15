@@ -126,7 +126,7 @@
                     </div><!-- end card -->
                     <div class="card-fotter">
                         @foreach ($adminBalasan as $balasan => $b)
-                            <div onclick="copy_balasan(`{{ $b->isi }}`)" class="alert alert-primary alert-dismissible fade show alert-aktif" role="alert">
+                            <div onclick="copy_balasan(`{{ $b->isi }}`)" class="alert alert-dismissible show alert-aktif rounded-5" style="color:#4E36E2; border-color:#4E36E2" role="alert">
                                 {{ $b->isi }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
