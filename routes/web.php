@@ -81,12 +81,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('getDataTableReturnBankCash', [MasterReturnBankCashController::class, 'get_datatable'])->name('getDataTableReturnBankCash');
     Route::post('softdelete_pengembalian_kas', [MasterReturnBankCashController::class, 'softdelete_pengembalian_kas'])->name('softdelete_pengembalian_kas');
 
-
+    // Kas Belanja
     Route::post('upload_foto_kas_belanja', [MasterKasBelanjaController::class, 'upload_foto'])->name('upload_foto_kas_belanja');
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class);
     Route::post('softdelete_kas_belanja', [MasterKasBelanjaController::class, 'softdelete_kas_belanja'])->name('softdelete_kas_belanja');
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
     Route::post('hapus_foto_kas_belanja', [MasterKasBelanjaController::class, 'hapus_foto'])->name('hapus_foto_kas_belanja');
+
+    // Jurnal Umum
     Route::resource('master_jurnal', MasterJurnalController::class);
     Route::get('master_jurnal_pdf', [MasterJurnalController::class, 'get_pdf'])->name('master_jurnal.pdf');
     Route::get('getDataTableMasterJurnal', [MasterJurnalController::class, 'get_datatable'])->name('getDataTableMasterJurnal');

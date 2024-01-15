@@ -25,9 +25,27 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success mb-3" >
+                        <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success" >
                             Tambah
                         </a>
+                        <form action="#">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-md-3 p-3">
+                                        <label>Filter Tanggal</label>
+                                        <input type="text" class="form-control flatpickr-input" id="tanggal_cash" name="tanggal_cash" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                    </div>
+                                    <div class="col-md-3 p-3">
+                                        <label>Filter All</label>
+                                        <input type="text" id="cari_cash" name="cari_cash" value="{{ old('cari_cash', Request::get('cari_cash')) }}"
+                                        class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                    </div>
+                                    <div class="col-md-3 p-3 text-center mt-4">
+                                        <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                         <!-- Tambahkan konten yang sesuai untuk Isi Saldo Kasir -->
                         <div class="card">
                             <div class="card-body">
@@ -61,9 +79,27 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success mb-3">
+                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success">
                             Tambah
                         </a>
+                        <form action="#">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-md-3 p-3">
+                                        <label>Filter Tanggal</label>
+                                        <input type="text" class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                    </div>
+                                    <div class="col-md-3 p-3">
+                                        <label>Filter All</label>
+                                        <input type="text" id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
+                                        class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                    </div>
+                                    <div class="col-md-3 p-3 text-center mt-4">
+                                        <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                         <div class="card">
                             <div class="card-body">
                                 <!-- Tabel untuk menampilkan data -->
@@ -102,7 +138,8 @@
             ajax: {
                 url: "{{ route('getDataTableBankCash') }}",
                 data: function (d) {
-                    d.cari = $('#cari').val()
+                    d.tanggal_cash = $('#tanggal_cash').val(),
+                    d.cari_cash = $('#cari_cash').val()
                 }
             },
             columns: [{
@@ -144,6 +181,14 @@
                 }
             ]
         });
+
+        $('#tanggal_cash').change(function() {
+            table.draw();
+        });
+
+        $('#cari_cash').keypress(function() {
+            table.draw();
+        });
     });
 
     $(function () {
@@ -154,7 +199,8 @@
             ajax: {
                 url: "{{ route('getDataTableReturnBankCash') }}",
                 data: function (d) {
-                    d.cari = $('#cari').val()
+                    d.tanggal_return = $('#tanggal_return').val(),
+                    d.cari_return = $('#cari_return').val()
                 }
             },
             columns: [{
@@ -195,6 +241,14 @@
                     }
                 }
             ]
+        });
+
+        $('#tanggal_return').change(function() {
+            table.draw();
+        });
+
+        $('#cari_return').keypress(function() {
+            table.draw();
         });
 
     });

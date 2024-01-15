@@ -238,14 +238,22 @@ class MasterBankCashController extends Controller
 
     public function models($request){
         return MasterBankCashModel::with(['coa_kas_saldo'])
-        ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            ->orWhereHas('banks', function($q) use($request){
-                $q->where('nama','%'.$request->cari."%");
-            })
-            ->orWhere('jenis_transaksi', 'like','%'.$request->cari."%")
-            ->orWhere('nilai', 'like','%'.$request->cari."%")
-            ->orWhere('keterangan', 'like','%'.$request->cari."%");
+        ->when($request->cari_cash, function($q) use($request){
+            $q->where('nomor_transaksi', 'ilike','%'.$request->cari_cash."%")
+            ->orWhere('keterangan', 'ilike','%'.$request->cari_cash."%");
+        })
+        ->when($request->tanggal_bank, function($q) use($request){
+            $tanggal = explode(" to ",$request->tanggal_bank);
+            $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
+                $q->where('tanggal_transaksi', Carbon::parse($tanggal[0])->format('Y-m-d'));
+            });
+            $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
+                $q->where('tanggal_transaksi', '>=',Carbon::parse($tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::parse($tanggal[1])->format('Y-m-d'));
+            });
+        })
+        // Default 3 Bulan Ke Belakang
+        ->when($request->tanggal_bank == null, function($q) use($request){
+            $q->where('tanggal_transaksi', '>=', Carbon::now()->subMonths(3)->firstOfMonth()->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::now()->format('Y-m-d'));
         })
         ->orderBy('id','desc')
         ->get();
