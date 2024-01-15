@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\IdStringRandom;
+use App\Models\AdminBalasanTemplateModel;
 use App\Models\HelpdeskDetailModel;
 use App\Models\HelpdeskFileModel;
 use App\Models\HelpdeskModel;
@@ -158,9 +159,10 @@ class HelpdeskController extends Controller
 
         $detail = HelpdeskModel::with(['user_public','detail.file_details','detail.userPublic','file','jasas','order.orderJasa','order.penjual','order.pembeli'])
         ->findOrFail($id);
+        $adminBalasan = AdminBalasanTemplateModel::get();
         // dd($detail);
 
-        return view('helpdesk.detail', $title, compact(['detail']));
+        return view('helpdesk.detail', $title, compact(['detail','adminBalasan']));
     }
 
     /**
@@ -239,6 +241,13 @@ class HelpdeskController extends Controller
             'token' => $request->random_text
         ]);
 
+    }
+
+    public function aktifkan_seller_chat(Request $request){
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => HelpdeskModel::findOrFail($request->id)->update(['isAktif' => 1])
+        ]);
     }
 
     public function pdf(Request $request){

@@ -125,6 +125,12 @@
                         </div>
                     </div><!-- end card -->
                     <div class="card-fotter">
+                        @foreach ($adminBalasan as $balasan => $b)
+                            <div onclick="copy_balasan(`{{ $b->isi }}`)" class="alert alert-primary alert-dismissible fade show alert-aktif" role="alert">
+                                {{ $b->isi }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endforeach
                         <div class="row mt-2">
                             <div class="col-md-8 my-2">
                                 <strong class="fs-18">Berikan balasan</strong>
@@ -136,7 +142,7 @@
                                 <div class="row">
                                     <div class="col-md-8">
                                         <textarea class="form-control" name="balasan" id="balasan" cols="30" rows="4"
-                                            placeholder="Tulis balasan di sini...."></textarea>
+                                            placeholder="Tulis balasan di sini...." ></textarea>
                                         <input id="helpdeskId" value="{{ $detail->id }}" hidden />
                                     </div>
                                     <div class="col-md">
@@ -161,6 +167,11 @@
                                     href="{{ route('helpdesk_list.index') }}">
                                     <i class="ri-reply-fill"></i> Batal
                                 </a>
+                                @if ($detail->isAktif == 0)
+                                    <button type="button" class="btn btn-outline-primary btn-border rounded-5 me-3" onclick="konfirmasi_seller('{{ $detail->id }}','{{ $detail->order->penjual->name }}')">
+                                        <i class="ri-customer-service-2-fill ri-1x"></i> Support Seller
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -170,73 +181,111 @@
     </div>
 @endsection
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
-        integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $(document).ready(function() {
-            $('#simpan').click(function() {
-                var data = new FormData();
-                data.append('balasan', $('#balasan').val())
-                data.append('random_text', $('#random_text').val())
-                data.append('helpdesk_id', $('#helpdeskId').val())
-                $.ajax({
-                type: "post",
-                url: "{{ route('helpdesk_list.store') }}",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    $('#append_chat').append(`
-                            <div class="row">
-                                <div class="col-md-auto">
-                                    <img src="{{ asset('assets/images/logo/logo-image.png') }}" alt="" class="rounded-circle avatar-sm">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="fs-20 font-weight-bold">${result.message.user_public.name}</div>
-                                    <span class="badge rounded-pill px-4 py-1" style="background-color: #4E36E2">ADMIN</span>
-                                </div>
-                                <div class="col-md-3 text-end text-muted mt-2">
-                                    <label class="mt-2 fs-16">
-                                        {{ Carbon\Carbon::now()->format('D, d M - H:i a') }}
-                                    </label>
-                                </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
+    integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function() {
+        $('#simpan').click(function() {
+            var data = new FormData();
+            data.append('balasan', $('#balasan').val())
+            data.append('random_text', $('#random_text').val())
+            data.append('helpdesk_id', $('#helpdeskId').val())
+            $.ajax({
+            type: "post",
+            url: "{{ route('helpdesk_list.store') }}",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                $('#append_chat').append(`
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <img src="{{ asset('assets/images/logo/logo-image.png') }}" alt="" class="rounded-circle avatar-sm">
                             </div>
-                            <div class="row mt-4">
-                                <div class="col-md-12 mt-4">
-                                    <div class="fs-18"><strong>Pesan</strong></div>
-                                    <div class="fs-18 mt-1">${result.message.pesan}</div>
-                                </div>
-                                <div class="col-md-12 my-4 append_image">
-                                </div>
+                            <div class="col-md-8">
+                                <div class="fs-20 font-weight-bold">${result.message.user_public.name}</div>
+                                <span class="badge rounded-pill px-4 py-1" style="background-color: #4E36E2">ADMIN</span>
                             </div>
-                        `)
+                            <div class="col-md-3 text-end text-muted mt-2">
+                                <label class="mt-2 fs-16">
+                                    {{ Carbon\Carbon::now()->format('D, d M - H:i a') }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12 mt-4">
+                                <div class="fs-18"><strong>Pesan</strong></div>
+                                <div class="fs-18 mt-1">${result.message.pesan}</div>
+                            </div>
+                            <div class="col-md-12 my-4 append_image">
+                            </div>
+                        </div>
+                    `)
 
-                        console.log(result.message.file_details);
-                        result.message.file_details.forEach(element => {
-                            $('.append_image').append(
-                                `<a class="mx-2" href="${element.url}" target="_blank">${element.fileName}</a>`
-                            )
-                        });
+                    console.log(result.message.file_details);
+                    result.message.file_details.forEach(element => {
+                        $('.append_image').append(
+                            `<a class="mx-2" href="${element.url}" target="_blank">${element.fileName}</a>`
+                        )
+                    });
 
-                    }
-                }).done(function(e){
-                    $('#balasan').val("");
-                    $('#drop-zone-container').empty();
-                    $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
-                    $('.dz-default').remove();
-                    $('.dz-preview').remove();
-                })
-            })
-
-            $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
+            }).done(function(e){
+                $('#balasan').val("");
+                $('#drop-zone-container').empty();
+                $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+                $('.dz-default').remove();
+                $('.dz-preview').remove();
+            })
+        })
+
+        $("html, body").animate({ scrollTop: $(document).height()- $(window).height() });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
-    </script>
+
+    });
+
+    function konfirmasi_seller(id, name) {
+        Swal.fire({
+            title: "Aktifkan Chat dengan Seller " + name,
+            showCancelButton: true,
+            confirmButtonText: "Aktifkan",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var data = new FormData();
+                data.append('id', id);
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('aktifkan.seller.chat', $detail->id) }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil di aktifkan',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        })
+                    }
+                });
+            }
+
+        });
+    }
+
+    function copy_balasan(isi) {
+        $('#balasan').val(isi)
+        $('.alert-aktif').remove();
+    }
+
+</script>
 @endsection
