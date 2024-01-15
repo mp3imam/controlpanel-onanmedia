@@ -37,10 +37,6 @@
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
-                                <input type="text" class="form-control flatpickr-input" id="tanggal"
-                                name="tanggal" data-provider="flatpickr" data-date-format="d M, Y"
-                                data-range-date="true" readonly="readonly"
-                                value="{{ Request::get('tanggal') }}">
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" data-date-format="d MMMM, YYYY" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
                             </div>
 
