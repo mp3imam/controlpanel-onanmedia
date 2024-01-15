@@ -159,6 +159,39 @@
         }
     });
 
+    var data = {id: "1", text: "Rupiah", selected: true};
+    var newOption = new Option(data.text, data.id, false, false)
+    $('#modal_jenis_mata_uang').append(newOption).trigger('change')
+    $('#modal_jenis_mata_uang').select2()
+
+    $(function () {
+        $("#modal_jenis_mata_uang").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_mata_uangs') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(
+                            data.data,
+                            function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.nama
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }).on('select2:select', function (e) {
+            $("#jenis_sumber").val(e.params.data.item);
+        });
+
+    })
+
     $("#modal_account_id").select2({
         allowClear: true,
         width: '100%',
@@ -194,32 +227,6 @@
                             return {
                                 id: item.id,
                                 text: item.name
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    }).on('select2:select', function (e) {
-        $("#jenis_sumber").val(e.params.data.item);
-    });
-
-
-    $("#modal_jenis_mata_uang").select2({
-        allowClear: true,
-        width: '100%',
-        ajax: {
-            url: "{{ route('api.get_select2_mata_uangs') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-                return {
-                    results: $.map(
-                        data.data,
-                        function(item) {
-                            return {
-                                id: item.id,
-                                text: item.nama
                             }
                         }
                     )
