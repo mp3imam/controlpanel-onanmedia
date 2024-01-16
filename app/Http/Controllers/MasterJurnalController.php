@@ -303,16 +303,16 @@ class MasterJurnalController extends Controller
         })
         ->when($request->tanggal, function($q) use($request){
             $tanggal = explode(" to ",$request->tanggal);
+            // dd($tanggal[0], Carbon::parse($tanggal[0])->format('Y-m-d'), $tanggal[1], Carbon::parse($tanggal[1])->format('Y-m-d'));
+            // dd(Carbon::parse($tanggal[0])->format('Y-m-d'));
             $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
                 $q->where('tanggal_transaksi', Carbon::parse($tanggal[0])->format('Y-m-d'));
             });
             $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
-                $q->where('tanggal_transaksi', '>=',Carbon::parse($tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::parse($tanggal[1])->format('Y-m-d'));
+                $q
+                // ->where('tanggal_transaksi', '>=', Carbon::parse($tanggal[0])->format('Y-m-d'));
+                ->where('tanggal_transaksi', '<=', Carbon::parse($tanggal[1])->format('Y-m-d'));
             });
-        })
-        // Default 3 Bulan Ke Belakang
-        ->when($request->tanggal == null, function($q) use($request){
-            $q->where('tanggal_transaksi', '>=', Carbon::now()->subMonths(3)->firstOfMonth()->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::now()->format('Y-m-d'));
         })
         ->orderBy('id','desc')
         ->get();
