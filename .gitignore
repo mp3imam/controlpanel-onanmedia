@@ -22,6 +22,7 @@ Homestead.json
 # /public/storage
 /public/jurnal_umum/*
 /public/kas_belanja/*
+/public/*
 /public/sql/*
 /storage/*.key
 /vendor

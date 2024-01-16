@@ -161,7 +161,7 @@ class HelpdeskController extends Controller
 
         $detail = HelpdeskModel::with(['user_public','detail.file_details','detail.userPublic','file','jasas','order.orderJasa','order.penjual','order.pembeli'])
         ->findOrFail($id);
-        $adminBalasan = AdminBalasanTemplateModel::get();
+        $adminBalasan = AdminBalasanTemplateModel::where('isAktif',1)->get();
         // dd($detail);
 
         return view('helpdesk.detail', $title, compact(['detail','adminBalasan']));

@@ -26,12 +26,6 @@
                                     class="rounded-circle avatar-xs mt-1">
                                 <img src="{{ $detail->order->pembeli->image }}" alt=""
                                     class="rounded-circle avatar-xs mt-1 mx-2">
-                                @if ($detail->helpdeskStatusId !== 4)
-                                    <button id="done_button" onclick="button_selesai(`{{ $detail->id }}`,`{{ $detail->order->nomor }}`)" class="btn float-end btn-danger text-white rounded-5 me-3">
-                                        <i class="ri-pushpin-fill label-icon align-middle fs-16 me-2"></i>
-                                        Selesai
-                                    </button>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -99,7 +93,7 @@
                                         </div>
                                         <div class="col-md-8">
                                             <div class="fs-20 font-weight-bold">{{ $d->userPublic->name }}</div>
-                                            <span class="badge rounded-pill px-4 py-1"
+                                            <span class="badge rounded-pill px-4"
                                                 style="background-color: #{{ $color }}">{{ $userRole }}</span>
                                         </div>
                                         <div class="col-md-3 text-end text-muted mt-2">
@@ -107,7 +101,7 @@
                                                 class="mt-2 fs-16">{{ Carbon\Carbon::parse($d->createdAt)->format('D, d M - H:i a') }}</label>
                                         </div>
                                     </div>
-                                    <div class="row mt-4">
+                                    <div class="row mb-4">
                                         <div class="col-md-12 mt-4">
                                             <div class="fs-18"><strong>Pesan</strong></div>
                                             <div class="fs-18 mt-1">{{ $d->pesan }}</div>
@@ -171,7 +165,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md mt-3">
+                                <div class="col-md-12 mt-3">
                                     <button id="simpan" class="btn btn-success text-white rounded-5 me-3"
                                         style="background-color: #4E36E2">
                                         <i class="ri-send-plane-fill"></i> Kirim
@@ -195,10 +189,14 @@
                                         </a>
                                         <a type="button" target="_blank"
                                             href="https://api.whatsapp.com/send/?phone={{ $detail->order->pembeli->phone }}&text=Hallo Bpk/Ibu {{ $detail->order->penjual->name }}. Kami dari OnanMedia, ada keluhan tentang penjualan anda. Silahkan buka Onanmedia.com untuk informasi lebih lanjut atau bisa wa langsung disini. Terima kasih&type=phone_number&app_absent=0"
-                                            class="btn btn-danger btn-border rounded-5 me-3">
+                                            class="btn btn-warning btn-border rounded-5 me-3">
                                             <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Pembeli
                                         </a>
                                     @endif
+                                    <button id="done_button" onclick="button_selesai(`{{ $detail->id }}`,`{{ $detail->order->nomor }}`)" class="btn btn-danger text-white rounded-5 me-3">
+                                        <i class="ri-pushpin-fill label-icon align-middle fs-16 me-2"></i>
+                                        Selesai
+                                    </button>
                                 </div>
                             </div>
                         </div>
