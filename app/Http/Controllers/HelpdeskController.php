@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\IdStringRandom;
+use App\Mail\KeluhanMail;
 use App\Models\AdminBalasanTemplateModel;
 use App\Models\HelpdeskDetailModel;
 use App\Models\HelpdeskFileModel;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -93,7 +95,7 @@ class HelpdeskController extends Controller
         DB::beginTransaction();
         try{
             // Store your file into directory and db
-            $user = UserPublicModel::whereId(Auth::user()->id)->first();
+            $user = UserPublicModel::whereId(Auth::user()->isHelpdesk)->first();
             HelpdeskModel::findOrFail($request->helpdesk_id)->update([
                 'helpdeskStatusId'  => 2,
                 'adminId'           => $user->id,
@@ -244,9 +246,22 @@ class HelpdeskController extends Controller
     }
 
     public function aktifkan_seller_chat(Request $request){
+        Mail::to($request->email)->send(new KeluhanMail([
+            'pembeli' => $request->pembeli,
+            'penjual' => $request->penjual,
+            'url' => url('')."/helpdesk_list/$request->id/edit"
+        ]));
+
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => HelpdeskModel::findOrFail($request->id)->update(['isAktif' => 1])
+        ]);
+    }
+
+    public function selesaikan_keluhan(Request $request){
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => HelpdeskModel::findOrFail($request->id)->update(['helpdeskStatusId' => 4])
         ]);
     }
 

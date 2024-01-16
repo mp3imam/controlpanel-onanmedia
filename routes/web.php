@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('helpdesk_list', HelpdeskController::class);
     Route::post('helpdesk-upload-image', [HelpdeskController::class, 'uploadImage'])->name('helpdesk.upload.image');
     Route::post('aktifkan-seller-chat', [HelpdeskController::class, 'aktifkan_seller_chat'])->name('aktifkan.seller.chat');
+    Route::post('selesaikan-keluhan', [HelpdeskController::class, 'selesaikan_keluhan'])->name('selesaikan.keluhan');
 
     // Pengaturan
     Route::resource('users', UserController::class);
