@@ -111,7 +111,7 @@
                     data: 'UserPosting',
                     name: 'User Posting',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('`+row.id+`', '`+row.nama+`', '`+row.subkategori+`', '`+row.kategori+`', '`+row.impresi+`', '`+row.klik+`', '`+row.UserPosting+`', '`+row.tags+`', '`+row.deskripsi+`', '`+row.msStatusJasaId+`', '`+row.slug+`', '`+row.cover+`', '`+row.hargaTermahal+`', '`+row.hargaTermurah+`', '`+row.statusjasa+`', '`+row.isPengambilan+`', '`+row.isPengiriman+`', '`+row.isUnggulan+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        return '<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud(`'+row.id+'`, `'+row.nama+'`, `'+row.subkategori+'`, `'+row.kategori+'`, `'+row.impresi+'`, `'+row.klik+'`, `'+row.UserPosting+'`, `'+row.tags+'`, `'+row.deskripsi+'`, `'+row.msStatusJasaId+'`, `'+row.slug+'`, `'+row.cover+'`, `'+row.hargaTermahal+'`, `'+row.hargaTermurah+'`, `'+row.statusjasa+'`, `'+row.isPengambilan+'`, `'+row.isPengiriman+'`, `'+row.isUnggulan+'`)" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">'+data+'</button>';
                     }
                 },{
                     data: 'nama',
