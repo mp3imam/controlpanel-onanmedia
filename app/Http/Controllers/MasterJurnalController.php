@@ -47,6 +47,9 @@ class MasterJurnalController extends Controller
         ->addColumn('kredits', function ($row){
             return "Rp. ".number_format($row->kredit, 0);
         })
+        ->addColumn('tanggal', function ($row){
+            return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
+        })
         ->rawColumns(['banks','kredit','debet'])
         ->make(true);
     }

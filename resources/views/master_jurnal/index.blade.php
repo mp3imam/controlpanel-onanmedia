@@ -116,7 +116,7 @@
                         return btn
                     }
                 },{
-                    data: 'tanggal_transaksi',
+                    data: 'tanggal',
                     name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'dokumen',

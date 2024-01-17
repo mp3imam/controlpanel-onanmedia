@@ -155,7 +155,7 @@
                         return `<a href="{{ url('master_bank_cash') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
                     }
                 },{
-                    data: 'tanggal_transaksi',
+                    data: 'tanggal',
                     name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
@@ -216,7 +216,7 @@
                         return `<a href="{{ url('master_return_bank_cash') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
                     }
                 },{
-                    data: 'tanggal_transaksi',
+                    data: 'tanggal',
                     name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',

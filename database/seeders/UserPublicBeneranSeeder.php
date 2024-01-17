@@ -13,6 +13,6 @@ class UserPublicBeneranSeeder extends Seeder
      */
     public function run(): void
     {
-        UserPublicModel::factory(50)->create();
+        UserPublicModel::factory(10)->create();
     }
 }

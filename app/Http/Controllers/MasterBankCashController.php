@@ -50,6 +50,9 @@ class MasterBankCashController extends Controller
         ->addColumn('nominal_number', function ($row){
             return "Rp. ".number_format($row->nominal, 0);
         })
+        ->addColumn('tanggal', function ($row){
+            return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
+        })
         ->rawColumns(['banks','nominal_number','jenis'])
         ->make(true);
 

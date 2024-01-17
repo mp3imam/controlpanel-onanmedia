@@ -52,6 +52,9 @@ class MasterKasBelanjaController extends Controller
         ->addColumn('jenis_transaksi', function ($row){
             return $row->jenis == 1 ? "Transfer" : "Cash";
         })
+        ->addColumn('tanggal', function ($row){
+            return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
+        })
         ->rawColumns(['banks','nominals','jenis_transaksi'])
         ->make(true);
 
@@ -76,7 +79,6 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        // dd($request->all());
         $validasi = [
             'tanggal_transaksi' => 'required',
             'account_id'        => 'required',

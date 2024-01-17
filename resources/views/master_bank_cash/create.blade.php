@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
-                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('d-m-Y') }}" required/>
                             </div>
 
                             <div class="col-md-6 mb-4">

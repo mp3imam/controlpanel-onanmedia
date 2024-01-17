@@ -85,7 +85,7 @@
                                         <div class="row font-weight-bold">
                                             <div class="col-md-3">Akun Belanja</div>
                                             <div class="col-md-3">Keterangan</div>
-                                            <div class="col-md-3">Nilai</div>
+                                            <div class="col-md-3">Nominal</div>
                                             <div class="col-md-3 text-center"></div>
                                         </div>
                                     </div>
