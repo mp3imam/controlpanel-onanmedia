@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\UserPublicModel;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserPublicBeneranSeeder extends Seeder
@@ -13,6 +12,6 @@ class UserPublicBeneranSeeder extends Seeder
      */
     public function run(): void
     {
-        UserPublicModel::factory(10)->create();
+        UserPublicModel::factory(48)->create();
     }
 }

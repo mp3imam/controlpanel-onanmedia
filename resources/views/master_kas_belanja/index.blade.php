@@ -138,7 +138,7 @@
                             data + `</a>`;
                     }
                 }, {
-                    data: 'tanggal_transaksi',
+                    data: 'tanggal',
                     name: 'TANGGAL TRANSAKSI'
                 }, {
                     data: 'banks',
