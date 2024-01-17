@@ -157,7 +157,7 @@
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         return `
-                        <a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"></i></a>
+                        <a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
                         `;
                     }
