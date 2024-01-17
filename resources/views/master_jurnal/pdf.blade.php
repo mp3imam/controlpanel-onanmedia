@@ -55,7 +55,7 @@
                             <td style="text-align: right">{{ number_format($d->debet, 0); }}</td>
                             <td>Rp.</td>
                             <td style="text-align: right">{{ number_format($d->kredit, 0); }}</td>
-                            <td>{{ $data->keterangan }}</td>
+                            <td>{{ $data->keterangan_jurnal_umum }}</td>
                         </tr>
                     @endforeach
                 @endforeach
