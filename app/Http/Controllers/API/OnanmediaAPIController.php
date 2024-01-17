@@ -206,13 +206,12 @@ class OnanmediaAPIController extends Controller
         return response()->json($data);
     }
 
-    public function select2_deskrispi_coa(Request $request){
+    public function select2_deskripsi_coa(Request $request){
         $bankMergeCoa = MasterCoaModel::select('id','uraian as name')
-        ->where('kdrek2','!=',0)
         ->where('kdrek3',0)
         ->where('type','H')
         ->when($request->id, function($q) use($request) {
-            return $q->whereIn('id',$request->id);
+            return $q->where('kdrek1',$request->id);
         })
         ->when($request->q, function($q) use($request) {
             return $q->where('name','like','%'.$request->q.'%');
@@ -227,6 +226,24 @@ class OnanmediaAPIController extends Controller
     }
 
     public function select2_uraian_coa(Request $request){
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => MasterCoaModel::select('id','uraian as name')
+            ->when($request->q, function($q) use($request) {
+                return $q->where('uraian','ilike','%'.$request->q.'%');
+            })
+            ->where('kdrek2','!=',0)
+            ->where('kdrek3','!=',0)
+            ->where('type','D')
+            ->orderBy('kdrek1')
+            ->orderBy('kdrek2')
+            ->orderBy('kdrek3')
+            ->get()
+            ->all()
+        ]);
+    }
+
+    public function select2_detail_coa(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => MasterCoaModel::select('id','uraian as name')

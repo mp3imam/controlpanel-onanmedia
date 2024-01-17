@@ -62,7 +62,7 @@
                                 <div class="card-body">
                                     <div class="card-header">
                                         <div class="row font-weight-bold">
-                                            <div class="col-md-3">Akun Belanja</div>
+                                            <div class="col-md-3">Akun</div>
                                             <div class="col">Keterangan</div>
                                             <div class="col">Debit</div>
                                             <div class="col">Kredit</div>
@@ -134,17 +134,8 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script>
     FilePond.registerPlugin(FilePondPluginImagePreview);
-    FilePond.registerPlugin(FilePondPluginFileValidateType);
 
-    const inputElement = document.querySelector('input[id="attachment"]', {
-        acceptedFileTypes: ['image/*'],
-        fileValidateTypeDetectType: (source, type) =>
-            new Promise((resolve, reject) => {
-                // Do custom type detection here and return with promise
-
-                resolve(type);
-            }),
-    });
+    const inputElement = document.querySelector('input[id="attachment"]');
     const pond = FilePond.create(inputElement);
     const pondBox = document.querySelector('.filepond--root');
     pondBox.addEventListener('FilePond:addfile', e => {
@@ -333,4 +324,4 @@
     $('#total_kredit').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0, allowNegative: true});
 </script>
 @endsection
--
+

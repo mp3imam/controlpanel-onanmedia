@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('master_coa', MasterCoaController::class);
     Route::get('getDataTableCoa', [MasterCoaController::class, 'get_datatable'])->name('getDataTableCoa');
 
-    // Kas Isi Saldo
+    // Transaksi Kas
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
     Route::post('softdelete_kas_isi_saldo', [MasterBankCashController::class, 'softdelete_kas_isi_saldo'])->name('softdelete_kas_isi_saldo');

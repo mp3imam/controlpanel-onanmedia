@@ -210,7 +210,7 @@ class MasterKasBelanjaController extends Controller
                 'alasan' => $request->alasan
             ]);
 
-            MasterJurnal::whereNomorTransaksi(MasterKasBelanja::withTrashed()->whereId($request->id)->first()->nomor_transaksi)->update([
+            MasterJurnal::whereDokumen(MasterKasBelanja::withTrashed()->whereId($request->id)->first()->nomor_transaksi)->update([
                 'deleted_at' => $date,
                 'alasan' => $request->alasan,
                 'keterangan_jurnal_umum' => $request->alasan,
