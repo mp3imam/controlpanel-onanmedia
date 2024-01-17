@@ -29,8 +29,8 @@
                     <div class="row g-4">
                         <div class="row mt-4">
                             <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
+                                <label>Filter Nama Jasa</label>
+                                <input class="form-control" id='cari' name="cari" />
                             </div>
                         </div>
                     </div>
@@ -97,8 +97,7 @@
             ajax: {
                 url: "{{ route('daftar_product_jasa.create') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
-                    d.roles_id = $('#roles_id').val()
+                    d.cari = $('#cari').val()
                 }
             },
             columns: [{
@@ -168,11 +167,7 @@
             ]
         });
 
-        $('#username_id').keyup(function () {
-            table.draw();
-        });
-
-        $('#roles_id').change(function () {
+        $('#cari').keyup(function () {
             table.draw();
         });
     });

@@ -201,6 +201,9 @@ class DaftarProductJasaController extends Controller
         ->leftJoin('MsKategori', 'MsKategori.id', '=', 'Jasa.msKategoriId')
         ->leftJoin('MsSubkategori', 'MsSubkategori.id', '=', 'Jasa.msSubkategoriId')
         ->leftJoin('MsStatusJasa', 'MsStatusJasa.id', '=', 'Jasa.msStatusJasaId')
+        ->when($request->cari, function($q) use($request){
+            $q->where('Jasa.nama', 'ilike', '%'.$request->cari.'%');
+        })
         ->get();
     }
 
