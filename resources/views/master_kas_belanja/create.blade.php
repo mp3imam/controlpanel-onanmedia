@@ -141,21 +141,11 @@
 @section('script')
 
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script>
     FilePond.registerPlugin(FilePondPluginImagePreview);
-    FilePond.registerPlugin(FilePondPluginFileValidateType);
 
-    const inputElement = document.querySelector('input[id="attachment"]', {
-        acceptedFileTypes: ['image/*'],
-        fileValidateTypeDetectType: (source, type) =>
-            new Promise((resolve, reject) => {
-                // Do custom type detection here and return with promise
-
-                resolve(type);
-            }),
-    });
+    const inputElement = document.querySelector('input[id="attachment"]');
     const pond = FilePond.create(inputElement);
     const pondBox = document.querySelector('.filepond--root');
     pondBox.addEventListener('FilePond:addfile', e => {
