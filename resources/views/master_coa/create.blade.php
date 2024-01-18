@@ -18,6 +18,22 @@
                     <form action="{{ route('master_coa.store') }}" method="POST">
                         @csrf
                         <div class="col-md-12 mb-4">
+                            <label for="header_coa" class="form-label">Header Coa</label>
+                            <select id="header_coa_id" name="header_coa_id" class="form-control" required></select>
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <label for="deskripsi_coa" class="form-label">Deskripsi Coa</label>
+                            <select id="deskripsi_coa_id" name="deskripsi_coa_id" class="form-control" required></select>
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <label for="detail_coa" class="form-label">Detail Coa</label>
+                            <select id="detail_coa_id" name="detail_coa_id" class="form-control" required></select>
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <label for="kode_coa" class="form-label">Kode Coa</label>
+                            <input class="form-control" id="kode_coa" name="kode_coa" />
+                        </div>
+                        <div class="col-md-12 mb-4">
                             <label for="header_coa" class="form-label">Uraian</label>
                             <input class="form-control" id="header_coa" name="header_coa" />
                         </div>
@@ -55,4 +71,50 @@
         <!-- end col -->
     </div>
     <!--end row-->
+@endsection
+@section('script')
+<script>
+    $("#header_coa_id").select2({
+        allowClear: true,
+        width: '100%',
+        ajax: {
+            url: "{{ route('api.get_select2_header_coa') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        };
+                    })
+                };
+            }
+        }
+    }).on('select2:select', function(e) {
+        $("#deskripsi_coa_id").select2({
+        allowClear: true,
+        width: '100%',
+        ajax: {
+            url: "{{ route('api.get_select2_deskripsi_coa') }}?id="+e.params.data.id,
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        };
+                    })
+                };
+            }
+        }
+    }).on('select2:select', function(e) {
+        $("#jenis_sumber").val(e.params.data.item);
+    });
+
+    });
+</script>
 @endsection

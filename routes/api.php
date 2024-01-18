@@ -46,3 +46,4 @@ Route::get('get_select2_header_coa', [OnanmediaAPIController::class,'select2_hea
 Route::get('get_select2_deskripsi_coa', [OnanmediaAPIController::class,'select2_deskripsi_coa'])->name('api.get_select2_deskripsi_coa');
 Route::get('get_select2_uraian_coa', [OnanmediaAPIController::class,'select2_uraian_coa'])->name('api.get_select2_uraian_coa');
 Route::get('get_select2_banks_coa', [OnanmediaAPIController::class,'select2_banks_coa'])->name('api.get_select2_banks_coa');
+Route::get('get_select2_deskripsi_coa', [OnanmediaAPIController::class,'select2_deskripsi_coa'])->name('api.get_select2_deskripsi_coa');
