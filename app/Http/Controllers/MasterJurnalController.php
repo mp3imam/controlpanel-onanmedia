@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterJurnal;
 use App\Models\MasterJurnalFile;
+use App\Models\TemporaryFileUploadHelpdesk;
 use App\Models\TemporaryFileUploadJurnal;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class MasterJurnalController extends Controller
 {
@@ -62,8 +64,9 @@ class MasterJurnalController extends Controller
     public function create(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
+        $random_string = Str::random(25);
 
-        return view('master_jurnal.create', $title);
+        return view('master_jurnal.create', $title, compact('random_string'));
     }
 
     /**
@@ -169,21 +172,20 @@ class MasterJurnalController extends Controller
         ]);
     }
 
-    public function upload_foto(Request $request){
-        foreach ($request->file('attachment') as $file) {
-            $path = public_path('jurnal_umum/');
-            !is_dir($path) && mkdir($path, 0777, true);
+    public function upload_file(Request $request){
+        $image = $request->file('file');
+        $imageName = Carbon::now()->format('H:i:s.u').'.'.$image->extension();
+        $imageName = !file_exists($imageName) ?? Carbon::now()->format('H:i:s.u').'.'.$image->extension();
+        $path = public_path("Finance/$request->folder/".date('Y')."/".date('m')."/".date('d'));
+        !is_dir($path) && mkdir($path, 0777, true);
+        $image->move($path, $imageName);
 
-            $imageName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move($path, $imageName);
-
-            TemporaryFileUploadJurnal::create([
-                'folder' => 'jurnal_umum',
-                'filename' => $imageName,
-                'token' => $request->header('X-Csrf-Token'),
-                'created_by' => (int)Auth::user()->id
-            ]);
-        }
+        TemporaryFileUploadHelpdesk::create([
+            'folder' => $request->folder,
+            'url' => asset("Finance/$request->folder/$imageName".date('Y')."/".date('m')."/".date('d')),
+            'filename' => $imageName,
+            'token' => $request->random_text
+        ]);
         return $path;
     }
 
@@ -213,8 +215,9 @@ class MasterJurnalController extends Controller
         $title['li_1'] = $this->li_1;
 
         $detail = MasterJurnal::with(['coa_jurnal_umum','details.coa_jurnal','details.jurnal_banks','jurnal_file'])->findOrFail($id);
+        $random_string = Str::random(25);
 
-        return view('master_jurnal.edit', $title, compact(['detail']));
+        return view('master_jurnal.edit', $title, compact(['detail','random_string']));
     }
 
     /**

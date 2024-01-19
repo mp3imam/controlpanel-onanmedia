@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
-use App\Models\MasterReturnBankCashModel;
+use App\Models\MasterJurnalFile;
+use App\Models\TemporaryFileUploadHelpdesk;
+use App\Models\TransaksiKasFileModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +30,7 @@ class MasterBankCashController extends Controller
      */
     function __construct()
     {
-        // dd(MasterBankCashModel::with(['coa_kas_saldo'])->first());
+        // dd(MasterBankCashModel::with(['banks'])->first());
         $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
     }
 
@@ -43,6 +46,9 @@ class MasterBankCashController extends Controller
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
             return $row->coa_kas_saldo->uraian;
+        })
+        ->addColumn('tujuan', function ($row){
+            return $row->banks->nama;
         })
         ->addColumn('jenis', function ($row){
             return $row->jenis_transaksi == 1 ? "Transfer" : "Cash";
@@ -66,8 +72,9 @@ class MasterBankCashController extends Controller
     public function create(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
+        $random_string = Str::random(25);
 
-        return view('master_bank_cash.create', $title);
+        return view('master_bank_cash.create', $title, compact('random_string'));
     }
 
     /**
@@ -91,16 +98,26 @@ class MasterBankCashController extends Controller
         }
 
         // Store your file into directory and db
-        // DB::beginTransaction();
-        // try {
-            $model = count(MasterBankCashModel::whereYear('created_at','=',Carbon::now()->format('Y'))->get()) + count(MasterReturnBankCashModel::whereYear('created_at','=',Carbon::now()->format('Y'))->get());
-            $nomor = sprintf("%05s", $model + 1);
-            $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.Carbon::now()->format('Y');
-            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
-            MasterBankCashModel::create($request->except('_token'));
-
+        DB::beginTransaction();
+        try {
+            $request['kategori'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
             $tahun = Carbon::now()->format('Y');
-            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+            $model = count(MasterBankCashModel::withTrashed()->whereYear('created_at', $tahun)->get());
+            $nomor = sprintf("%05s", $model + 1);
+            $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.$tahun;
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $MasterBankCashModel = MasterBankCashModel::create($request->except('_token'));
+
+            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
+            foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
+                TransaksiKasFileModel::create([
+                    'kas_id'    => $MasterBankCashModel->id,
+                    'url'       => $gambar->url,
+                    'filename'  => $gambar->filename,
+                ]);
+            }
+
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['dokumen'] = $request->nomor_transaksi;
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
@@ -108,10 +125,10 @@ class MasterBankCashController extends Controller
 
             $request['debet'] = $request->nominal;
             $request['kredit'] = $request->nominal;
-            $request['sumber_data'] = 1;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
             $request['jurnal_umum_id'] = $masterJurnal->id;
-            $request['account_id'] = 7;
+            $request['account_id'] = $request->tujuan_id;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
             JurnalUmumDetail::create($request->except('_token'));
@@ -120,11 +137,19 @@ class MasterBankCashController extends Controller
             $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     DB::rollBack();
-        // }
+            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
+            foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
+                MasterJurnalFile::create([
+                    'jurnal_umum_id' => $masterJurnal->id,
+                    'path'           => 'kas_saldo',
+                    'filename'       => $gambar->filename,
+                ]);
+            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+        }
 
         return redirect('master_bank_cash');
     }
@@ -154,10 +179,11 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterBankCashModel::with(['coa_kas_saldo'])->findOrFail($id);
+        $detail = MasterBankCashModel::with(['coa_kas_saldo','banks','file'])->findOrFail($id);
         // dd($detail);
+        $random_string = Str::random(25);
 
-        return view('master_bank_cash.edit', $title, compact(['detail']));
+        return view('master_bank_cash.edit', $title, compact(['detail','random_string']));
     }
 
     /**
@@ -183,8 +209,18 @@ class MasterBankCashController extends Controller
 
         DB::beginTransaction();
         try {
+            $request['kategori'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
             $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             MasterBankCashModel::find($id)->update($request->except(['_token','_method']));
+
+            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
+            foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
+                TransaksiKasFileModel::create([
+                    'kas_id'    => $id,
+                    'url'       => $gambar->url,
+                    'filename'  => $gambar->filename,
+                ]);
+            }
 
             // Edit Jurnal Umum, hapus detail
             $request['keterangan_jurnal_umum'] = $request->keterangan;
@@ -197,7 +233,7 @@ class MasterBankCashController extends Controller
 
             $request['keterangan'] = '';
             $request['jurnal_umum_id'] = $nomor->id;
-            $request['account_id'] = 7;
+            $request['account_id'] = $request->tujuan_id;
             $request['debet'] = $request->nominal;
             $request['kredit'] = 0;
             JurnalUmumDetail::create($request->except('_token'));
@@ -206,6 +242,14 @@ class MasterBankCashController extends Controller
             $request['kredit'] = $request->nominal;
             JurnalUmumDetail::create($request->except('_token'));
 
+            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
+            foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
+                MasterJurnalFile::create([
+                    'jurnal_umum_id' => $nomor->id,
+                    'path'           => 'kas_saldo',
+                    'filename'       => $gambar->filename,
+                ]);
+            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -223,8 +267,8 @@ class MasterBankCashController extends Controller
     public function destroy($id){
         DB::beginTransaction();
         try {
-            MasterBankCashModel::findOrFail($id)->softdeletes();
-            MasterJurnal::whereDokumen(MasterBankCashModel::whereId($id)->nomor_transaksi)->softdeletes();
+            MasterBankCashModel::findOrFail($id)->delete();
+            MasterJurnal::whereDokumen(MasterBankCashModel::whereId($id)->nomor_transaksi)->delete();
             DB::commit();
             $status = 'Success';
         } catch (\Throwable $th) {
@@ -240,7 +284,7 @@ class MasterBankCashController extends Controller
     }
 
     public function models($request){
-        return MasterBankCashModel::with(['coa_kas_saldo'])
+        return MasterBankCashModel::kasSaldo()->with(['coa_kas_saldo','banks'])
         ->when($request->cari_cash, function($q) use($request){
             $q->where('nomor_transaksi', 'ilike','%'.$request->cari_cash."%")
             ->orWhere('keterangan', 'ilike','%'.$request->cari_cash."%");

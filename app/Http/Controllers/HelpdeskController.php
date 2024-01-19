@@ -230,15 +230,14 @@ class HelpdeskController extends Controller
 
     public function uploadImage(Request $request){
         $image = $request->file('file');
-        $imageName = time().'.'.$image->extension();
-        $path = public_path('helpdesk/');
+        $imageName = date('H:i:s').'.'.$image->extension();
+        $path = public_path("Helpdesk/".date('Y')."/".date('m')."/".date('d'));
         !is_dir($path) && mkdir($path, 0777, true);
-
         $image->move($path, $imageName);
 
         TemporaryFileUploadHelpdesk::create([
             'folder' => 'jurnal_umum',
-            'url' => asset("helpdesk/$imageName"),
+            'url' => asset("Helpdesk/$imageName".date('Y')."/".date('m')."/".date('d')),
             'filename' => $imageName,
             'token' => $request->random_text
         ]);

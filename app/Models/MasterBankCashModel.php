@@ -13,15 +13,35 @@ class MasterBankCashModel extends Model
     protected $table = "transaksi_kas";
     protected $guarded = ['id'];
 
+    const KATEGORY_KAS_SALDO = "1";
+    const KATEGORY_KAS_PENGEMBALIAN = "2";
+
     public function banks(){
-        return $this->hasOne(BankModel::class, 'id', 'bank_id');
+        return $this->hasOne(BankModel::class, 'id', 'tujuan_id');
     }
 
     public function coa_kas_saldo(){
         return $this->hasOne(MasterCoaModel::class, 'id', 'bank_id');
     }
 
+    public function banks_pengembalian(){
+        return $this->hasOne(BankModel::class, 'id', 'tujuan_id');
+    }
+
+    public function coa_kas_saldo_pengembalian(){
+        return $this->hasOne(MasterCoaModel::class, 'id', 'bank_id');
+    }
+
     public function users_bank_cash(){
         return $this->hasOne(UserPublicModel::class, 'id', 'user_id');
+    }
+
+    public function file()
+    {
+        return $this->hasMany(TransaksiKasFileModel::class, 'kas_id');
+    }
+
+    function scopeKasSaldo(){
+        return $this->whereKategori(MasterBankCashModel::KATEGORY_KAS_SALDO);
     }
 }

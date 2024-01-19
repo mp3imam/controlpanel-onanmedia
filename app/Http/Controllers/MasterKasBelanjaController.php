@@ -359,8 +359,8 @@ class MasterKasBelanjaController extends Controller
     public function destroy($id){
         DB::beginTransaction();
         try {
-            MasterKasBelanja::findOrFail($id)->softdeletes();
-            MasterJurnal::whereDokumen(MasterKasBelanja::whereId($id)->nomor_transaksi)->softdeletes();
+            MasterKasBelanja::findOrFail($id)->delete();
+            MasterJurnal::whereDokumen(MasterKasBelanja::whereId($id)->nomor_transaksi)->delete();
             DB::commit();
             $status = 'Success';
         } catch (\Throwable $th) {

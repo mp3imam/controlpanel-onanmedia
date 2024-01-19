@@ -5,6 +5,9 @@
 @endsection -->
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
+crossorigin="anonymous" referrerpolicy="no-referrer" />
     @include('components.breadcrumb')
 
     <div class="row">
@@ -13,13 +16,25 @@
                 <div class="card-header">
                     <h4 class="card-title mb-0">Tambah Kembali ke Kas OnanMedia</h4>
                 </div><!-- end card header -->
+                <form action="{{ route('helpdesk.upload.image') }}" enctype="multipart/form-data"
+                    class="dropzone dz-clickable"
+                    id="image-upload" method="post" id="gambar-dropzone">
+                    @csrf
+                    <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                    <div class="dz-default dz-message">
+                        <div>Drag & drop a photo or</div>
+                        <span class="text-primary">Browse</span>
+                    </div>
+                    <ul class="list-unstyled mb-0" id="dropzone-preview"></ul>
+                </form>
 
                 <div class="card-body">
                     <form action="{{ route('master_return_bank_cash.store') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label for="tanggal_transaksi" class="form-label text-uppercase">TANGGAL TRANSAKSI</label>
+                            <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                            <label for="tanggal_transaksi" class="form-label text-uppercase">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
                             </div>
 
@@ -81,6 +96,7 @@
     <!--end row-->
 @endsection
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js" integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript">
     $(function () {
         $("#modal_tujuan_id").select2({
@@ -91,14 +107,14 @@
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
+                    return {
+                        results: $.map(data.data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name
+                            }
+                        })
+                    }
                 }
             }
         });

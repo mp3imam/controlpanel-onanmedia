@@ -57,6 +57,7 @@
                                             <th>No. Transaksi</th>
                                             <th>Tanggal Transaksi</th>
                                             <th>Sumber</th>
+                                            <th>Tujuan</th>
                                             <th>Jenis Transaksi</th>
                                             <th>Nominal</th>
                                             <th>Keterangan</th>
@@ -109,6 +110,7 @@
                                             <th>No</th>
                                             <th>No. Transaksi</th>
                                             <th>Tanggal Transaksi</th>
+                                            <th>Sumber</th>
                                             <th>Tujuan</th>
                                             <th>Jenis Transaksi</th>
                                             <th>Nominal</th>
@@ -159,7 +161,10 @@
                     name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
-                    name: 'SUMBER'
+                    name: 'sumber'
+                },{
+                    data: 'tujuan',
+                    name: 'Tujuan'
                 },{
                     data: 'jenis',
                     name: 'JENIS TRANSAKSI'
@@ -220,6 +225,9 @@
                     name: 'TANGGAL TRANSAKSI'
                 },{
                     data: 'banks',
+                    name: 'sumber'
+                },{
+                    data: 'tujuan',
                     name: 'Tujuan'
                 },{
                     data: 'jenis',

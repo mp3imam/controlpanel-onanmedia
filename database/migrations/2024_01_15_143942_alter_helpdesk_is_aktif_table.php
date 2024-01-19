@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('pgsql2')->hasColumn('HelpDesk','isAktif'))
-        Schema::connection('pgsql2')->table('HelpDesk', function (Blueprint $table) {
-            $table->integer('isAktif', 32)->default(0)->autoIncrement(false);
-        });
+        // if (!Schema::connection('pgsql2')->hasColumn('HelpDesk','isAktif'))
+        // Schema::connection('pgsql2')->table('HelpDesk', function (Blueprint $table) {
+        //     $table->integer('isAktif', 32)->default(0)->autoIncrement(false);
+        // });
     }
 
     /**
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('pgsql2')->table('HelpDesk', function (Blueprint $table) {
-            $table->dropColumn(['isAktif']);
-        });
+        // Schema::connection('pgsql2')->table('HelpDesk', function (Blueprint $table) {
+        //     $table->dropColumn(['isAktif']);
+        // });
     }
 };

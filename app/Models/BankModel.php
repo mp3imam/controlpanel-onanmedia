@@ -17,6 +17,10 @@ class BankModel extends Model
         return $this->belongsTo(MasterBankCashModel::class, 'bank_id');
     }
 
+    public function banks_kembali(){
+        return $this->belongsTo(MasterReturnBankCashModel::class);
+    }
+
     public function jurnal_banks(){
         return $this->belongsTo(MasterJurnal::class, 'id');
     }

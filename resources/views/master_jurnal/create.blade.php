@@ -5,13 +5,9 @@
 @endsection -->
 
 @section('content')
-@section('css')
-<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
-    <link
-    href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-    rel="stylesheet"
-/>
-@endsection
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
+crossorigin="anonymous" referrerpolicy="no-referrer" />
 @include('components.breadcrumb')
 
     <div class="row">
@@ -26,17 +22,34 @@
                     </div>
                 </div><!-- end card header -->
 
+                <form action="{{ route('upload.foto.jurnal.umum') }}" enctype="multipart/form-data" class="dropzone dz-clickable" id="image-upload" method="post" id="gambar-dropzone">
+                    @csrf
+                    <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                    <input id="folder_text" name="folder" value="Jurnal_Umum" hidden />
+                    <div class="dz-default dz-message">
+                        <div>Drag & drop a photo or</div>
+                        <span class="text-primary">Browse</span>
+                    </div>
+                    <ul class="list-unstyled mb-0" id="dropzone-preview"></ul>
+                </form>
+                <div class="dz-preview dz-file-preview">
+                    <div class="dz-details">
+                      <div class="dz-filename"><span data-dz-name></span></div>
+                      <div class="dz-size" data-dz-size></div>
+                      <img data-dz-thumbnail />
+                    </div>
+                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                    <div class="dz-success-mark"><span>✔</span></div>
+                    <div class="dz-error-mark"><span>✘</span></div>
+                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                  </div>
                 <div class="card-body">
                     <form action="{{ route('master_jurnal.store') }}" method="POST" enctype="multipart/form-data" onsubmit="myButtonValue.disabled = true; return true;">
                     @csrf
                         <div class="row">
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <input class="bg-success" type="file" name="attachment[]" id="attachment" accept="image/*" multiple>
-                                </div>
-                            </div>
                             <div class="col-md-6 mb-4">
-                                <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
+                            <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                            <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
                             </div>
 
@@ -129,26 +142,10 @@
 @endsection
 @section('script')
 
-<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
+integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    FilePond.registerPlugin(FilePondPluginImagePreview);
-
-    const inputElement = document.querySelector('input[id="attachment"]');
-    const pond = FilePond.create(inputElement);
-    const pondBox = document.querySelector('.filepond--root');
-    pondBox.addEventListener('FilePond:addfile', e => {
-        var fileName = pond.getFile();
-    });
-
-    FilePond.setOptions({
-        allowMultiple: true,
-        server: {
-            process: "/upload_foto_jurnal_umum",
-            headers:{'X-CSRF-TOKEN': '{{ csrf_token() }}'}
-        }
-    });
-
     var data = {id: "1", text: "Rupiah", selected: true};
     var newOption = new Option(data.text, data.id, false, false)
     $('#modal_jenis_mata_uang').append(newOption).trigger('change')

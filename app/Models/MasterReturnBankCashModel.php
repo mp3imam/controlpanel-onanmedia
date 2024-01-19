@@ -10,10 +10,10 @@ class MasterReturnBankCashModel extends Model
 {
     use HasFactory, SoftDeletes;
     protected $connection = "pgsql";
-    protected $table = "transaksi_return_kas";
+    protected $table = "transaksi_kas";
     protected $guarded = ['id'];
 
-    public function banks(){
+    public function banks_kembali(){
         return $this->hasOne(BankModel::class, 'id', 'bank_id');
     }
 
@@ -23,5 +23,14 @@ class MasterReturnBankCashModel extends Model
 
     public function users_bank_cash(){
         return $this->hasOne(UserPublicModel::class, 'id', 'user_id');
+    }
+
+    public function file()
+    {
+        return $this->hasMany(TransaksiKasFileModel::class, 'kas_id');
+    }
+
+    function scopeKasPengembalian(){
+        return $this->whereKategori(MasterBankCashModel::KATEGORY_KAS_PENGEMBALIAN);
     }
 }

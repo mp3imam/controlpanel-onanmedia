@@ -5,6 +5,9 @@
 @endsection -->
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
+crossorigin="anonymous" referrerpolicy="no-referrer" />
     @include('components.breadcrumb')
 
     <div class="row">
@@ -16,18 +19,66 @@
                             <h4 class="card-title mb-0">Edit Kas Isi Saldo</h4>
                         </div>
                         <div class="col-md-4 d-flex justify-content-md-end">
-                            <button id="deleteButton" class="btn float-end btn-danger text-white rounded-5 me-3">
+                            <button onclick="konfirmasi_hapus({{ $detail->id }},'{{ $detail->nomor_transaksi }}')" class="btn float-end btn-danger text-white rounded-5 me-3">
                                 <i class="bx bxs-trash label-icon align-middle fs-16 me-2"></i> Hapus
                             </button>
                         </div>
                     </div>
                 </div>
+
+                <div class="row mb-3">
+                    @if ($detail->file->isNotEmpty())
+                        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                @foreach ($detail->file as $foto => $f)
+                                    <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
+                                @endforeach
+                            </div>
+                            <div class="carousel-inner">
+                                @foreach ($detail->file as $foto => $f)
+                                    <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
+                                        <iframe src="{{ $f->url }}" align="top" height="300px" width="100%" frameborder="0" scrolling="auto"></iframe>
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <a href="{{ $f->url }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
+                                            @if ($detail->jenis == 0)
+                                                <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    @endif
+                </div>
+
+                @if ($detail->jenis == 0)
+                    <form action="{{ route('helpdesk.upload.image') }}" enctype="multipart/form-data" class="dropzone dz-clickable" id="image-upload" method="post" id="gambar-dropzone">
+                        @csrf
+                        <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                        <div class="dz-default dz-message">
+                            <div>Drag & drop a photo or</div>
+                            <span class="text-primary">Browse</span>
+                        </div>
+                        <ul class="list-unstyled mb-0" id="dropzone-preview"></ul>
+                    </form>
+                @endif
+
                 <div class="card-body">
                     <form action="{{ route('master_bank_cash.update', $detail->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-6 mb-4">
+                                <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
                                 <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" />
                             </div>
@@ -56,11 +107,16 @@
                             </div>
 
                             <div class="col-md-6 mb-4">
+                                <label for="tujuan_id" class="form-label text-uppercase">Tujuan</label>
+                                <select id="modal_tujuan_id" name="tujuan_id" class="form-control"></select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
                                 <label for="nominal" class="form-label text-uppercase">Nominal</label>
                                 <input class="form-control" id="nominal" name="nominal" value="{{ $detail->nominal }}" />
                             </div>
 
-                            <div class="col-md-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label for="keterangan" class="form-label">KETERANGAN</label>
                                 <textarea class="form-control" id="keterangan" name="keterangan" rows="1">{{ $detail->keterangan }}</textarea>
                             </div>
@@ -87,86 +143,13 @@
 @endsection
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
+integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $("#nominal").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     $(document).ready(function() {
-
-        $('#deleteButton').click(function(e) {
-            e.preventDefault(); // Prevent the default click behavior
-
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data akan dihapus permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Jika pengguna mengonfirmasi
-                    $.ajax({
-                        url: '{{ url('master_bank_cash', $detail->id) }}',
-                        method: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            let timerInterval;
-                            Swal.fire({
-                            title: "Berhasil!",
-                            html: "Hapus",
-                            timer: 1000,
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading();
-                                const timer = Swal.getPopup().querySelector("b");
-                                timerInterval = setInterval(() => {
-                                timer.textContent = `${Swal.getTimerLeft()}`;
-                                }, 100);
-                            },
-                            willClose: () => {
-                                window.location = "{{ route('master_bank_cash.index') }}"
-                            }
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    window.location = "{{ route('master_bank_cash.index') }}"
-                                }
-                            });
-                        },
-                        error: function(xhr) {
-                            // Tindakan jika penghapusan gagal
-                            console.log('Gagal menghapus data.');
-                            // Tambahkan kode lain yang Anda perlukan jika penghapusan gagal
-                        }
-                    });
-                }
-            });
-
-        });
-
-        // $("#modal_user_id").select2({
-        //     allowClear: true,
-        //     width: '100%',
-        //     ajax: {
-        //         url: "{{ route('api.get_select2_users') }}",
-        //         dataType: 'json',
-        //         delay: 250,
-        //         processResults: function(data) {
-        //         return {
-        //             results: $.map(data.data, function(item) {
-        //                 return {
-        //                     id: item.id,
-        //                     text: item.name
-        //                 }
-        //             })
-        //         };
-        //         }
-        //     }
-        // });
-
         $("#modal_bank_id").select2({
             allowClear: true,
             width: '100%',
@@ -186,22 +169,121 @@
                 }
             }
         });
+
+        $("#modal_tujuan_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_banks') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
+            }
+        });
     });
 
     var dataId = {!! json_encode($detail->coa_kas_saldo) !!}
-    console.log(dataId);
     var dataBank = {id: dataId.id,text: dataId.uraian, selected: true};
     var newOptionBank = new Option(dataBank.text, dataBank.id, false, false)
     $('#modal_bank_id').append(newOptionBank).trigger('change')
     $('#modal_bank_id').select2()
 
-    // var dataId = "{{ $detail->bank_id }}"
-    // var dataName = "{{ $detail->banks->nama }}"
-    // var datarole = {id: dataId,text: dataName, selected: true};
-    // var newOptionrole = new Option(datarole.text, datarole.id, false, false)
-    // $('#modal_user_id').append(newOptionrole).trigger('change')
-    // $('#modal_user_id').select2()
+    var dataId = {!! json_encode($detail->banks) !!}
+    var dataTujuan = {id: dataId.id,text: dataId.nama, selected: true};
+    var newOptionTujuan = new Option(dataTujuan.text, dataTujuan.id, false, false)
+    $('#modal_tujuan_id').append(newOptionTujuan).trigger('change')
+    $('#modal_tujuan_id').select2()
 
+    function konfirmasi_hapus(id, name) {
+        Swal.fire({
+            title: "Masukan Alasan menghapus data transaksi " + name,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                var data = new FormData();
+                data.append('id', id);
+                data.append('alasan', result.value);
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('softdelete_pengembalian_kas') }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        Swal.fire({
+                            title: 'Hapus!',
+                            text: 'Data berhasil di hapus',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        }).then(function() {
+                            window.location = "{{ route('master_bank_cash.index') }}"
+                        });
+                    }
+                });
+            }
 
+        });
+    }
+
+    function hapus_gambar(id) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("hapus_foto_kas_kembalian") }}',
+                    data: { '_token': $('meta[name=csrf-token]').attr('content'), id: id },
+                    type: 'POST',
+                    success: function (resp) {
+                        if (resp.status == 200) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success",
+                                showConfirmButton: false, // Hide the confirmation button
+                                timer: 1500 // Automatically close after 1.5 seconds
+                            });
+                            $('#' + id).remove(); // Remove the image
+                            $('#carousel' + id).remove(); // Remove the image
+                            $('#carousel-role' + id).remove(); // Remove the image
+                        } else {
+                            Swal.fire("Failed !!!", "An error occurred while deleting the image", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Failed !!!", "An error occurred while deleting the image", "error");
+                    }
+                });
+            }
+        });
+    }
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 </script>
 @endsection
