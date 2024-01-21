@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UploadFileHelper;
 use App\Models\AntrianModel;
 use App\Models\LogActivitiesModel;
 use App\Models\logUserModel;
@@ -189,6 +190,10 @@ class DasboardController extends Controller
         $title['li_1'] = $this->li_1;
 
         return view('logs_users.index', $title);
+    }
+
+    function upload_file(Request $request) {
+        UploadFileHelper::uploadFile($request);
     }
 
     public function cek_logs_lists(Request $request)

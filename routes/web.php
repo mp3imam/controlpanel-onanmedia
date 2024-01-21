@@ -45,7 +45,8 @@ Route::post('post-register', [AuthController::class, 'postregister'])->name('reg
 Route::get('/', [HomeController::class, 'root'])->name('root');
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');;
+    Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');
+    Route::post('upload-file', [DasboardController::class, 'upload_file'])->name('upload.file');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('users_public', UserPublicController::class);
