@@ -22,6 +22,7 @@ class MasterCoaController extends Controller
      */
     function __construct()
     {
+        // dd(MasterCoaModel::where('kdrek1',1)->where('kdrek2','!=',0)->where('kdrek2',1)->where('type','D')->orderBy('kdrek')->first()->kdrek);
         $this->middleware('permission:'.Permission::whereId(10)->first()->name);
     }
 
@@ -177,14 +178,14 @@ class MasterCoaController extends Controller
     public function models($request){
         return MasterCoaModel::query()
         ->when($request->cari, function($q) use($request){
-            $q->where('uraian', 'like','%'.$request->cari."%")
-            ->orWhere('type', 'like','%'.$request->cari."%")
-            ->orWhere('metode_penyusutan', 'like','%'.$request->cari."%")
-            ->orWhere('rekening_bank', 'like','%'.$request->cari."%")
-            ->orWhere('alamat_bank', 'like','%'.$request->cari."%")
-            ->orWhere('nama_bank', 'like','%'.$request->cari."%")
-            ->orWhere('account_name', 'like','%'.$request->cari."%")
-            ->orWhere('swift_code', 'like','%'.$request->cari."%");
+            $q->where('uraian', 'ilike','%'.$request->cari."%")
+            ->orWhere('type', 'ilike','%'.$request->cari."%")
+            ->orWhere('metode_penyusutan', 'ilike','%'.$request->cari."%")
+            ->orWhere('rekening_bank', 'ilike','%'.$request->cari."%")
+            ->orWhere('alamat_bank', 'ilike','%'.$request->cari."%")
+            ->orWhere('nama_bank', 'ilike','%'.$request->cari."%")
+            ->orWhere('account_name', 'ilike','%'.$request->cari."%")
+            ->orWhere('swift_code', 'ilike','%'.$request->cari."%");
         })
         ->get();
     }

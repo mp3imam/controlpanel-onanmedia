@@ -33,47 +33,41 @@
                         <div class="row mt-4">
                             <div class="col-xxl-12 col-md-6 p-3">
                                 <label>Filter</label>
-                                <form action="{{ route('master_coa.index') }}">
                                     <div class="input-group">
-                                            <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                        <input type="text" id="cari" name="cari"  class="form-control" placeholder="Cari semua data" >
                                         <button class="input-group-text"><i class="ri-search-line"></i>&nbsp;Cari</button>
                                     </div>
-                                </form>
                             </div>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="200%">
+                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th style="z-index: 999">No</th>
-                                        <th class="text-uppercase" width="10%" style="z-index: 999">No.Coa</th>
+                                        <th style="z-index: 999; background-color:white">No</th>
+                                        <th class="text-uppercase" width="10%" style="z-index: 999; background-color:white">No.Coa</th>
                                         <th class="text-uppercase">Uraian Coa</th>
                                         <th class="text-uppercase">Nama Bank</th>
                                         <th class="text-uppercase">Nama Account</th>
-                                        <th class="text-uppercase">Swift Code</th>
                                         <th class="text-uppercase">Rekening Bank</th>
-                                        <th class="text-uppercase">Alamat Bank</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
                     <div class="modal-dialog">
-                        <div class="modal-content" id="modal_content">
-                        </div>
+                        <div class="modal-content" id="modal_content"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<style> #dataTable tbody td { z-index: 999; background-color:white;}</style>
 
 @endsection
 
@@ -83,16 +77,8 @@
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
-            scrollY: "400px",
-            scrollX: true,
             processing: true,
             serverSide: true,
-            fixedColumns: {
-                left: 2,
-                right: 0,
-                width: 200,
-                targets: 10
-            },
             ajax: {
                 url: "{{ route('getDataTableCoa') }}",
                 data: function (d) {
@@ -121,16 +107,14 @@
                     data: 'account_name',
                     name: 'Nama Account'
                 },{
-                    data: 'swift_code',
-                    name: 'Swift Code'
-                },{
                     data: 'rekening_bank',
                     name: 'Rekening Bank'
-                },{
-                    data: 'alamat_bank',
-                    name: 'Alamat'
                 }
             ]
+        });
+
+        $('#cari').on('keyup', function () {
+            table.draw();
         });
     });
 

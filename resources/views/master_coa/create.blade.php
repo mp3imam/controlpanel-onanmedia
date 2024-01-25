@@ -17,52 +17,46 @@
                 <div class="card-body">
                     <form action="{{ route('master_coa.store') }}" method="POST">
                         @csrf
-                        <div class="col-md-12 mb-4">
-                            <label for="header_coa" class="form-label">Header Coa</label>
-                            <select id="header_coa_id" name="header_coa_id" class="form-control" required></select>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="header_coa" class="form-label">Header Coa</label>
+                                <select id="header_coa_id" name="header_coa_id" class="form-control" required></select>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="deskripsi_coa" class="form-label">Deskripsi Coa</label>
+                                <select id="deskripsi_coa_id" name="deskripsi_coa_id" class="form-control" required></select>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="detail_coa" class="form-label">Detail Coa</label>
+                                <select id="detail_coa_id" name="detail_coa_id" class="form-control" required></select>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="kode_coa" class="form-label">Kode Coa</label>
+                                <input class="form-control" id="kode_coa" name="kode_coa" />
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="uraian" class="form-label">Uraian</label>
+                                <input class="form-control" id="uraian" name="uraian" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="rekening_bank" class="form-label">Rekening Bank</label>
+                                <input class="form-control" id="rekening_bank" name="rekening_bank" />
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="nama_bank" class="form-label">Nama Bank</label>
+                                <input class="form-control" id="nama_bank" name="nama_bank" />
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="deskripsi_coa" class="form-label">Deskripsi Coa</label>
-                            <select id="deskripsi_coa_id" name="deskripsi_coa_id" class="form-control" required></select>
+                        <div class="row">
+                            <div class="col-md-auto mb-4">
+                                <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('master_coa.index') }}" >
+                                    <i class="ri-arrow-go-back-line"></i> Kembali
+                                </a>
+                                <button class="btn float-end btn-success text-white rounded-5 me-3" style="background-color: #4E36E2">
+                                    <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="detail_coa" class="form-label">Detail Coa</label>
-                            <select id="detail_coa_id" name="detail_coa_id" class="form-control" required></select>
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="kode_coa" class="form-label">Kode Coa</label>
-                            <input class="form-control" id="kode_coa" name="kode_coa" />
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="header_coa" class="form-label">Uraian</label>
-                            <input class="form-control" id="header_coa" name="header_coa" />
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="uraian" class="form-label">Uraian</label>
-                            <input class="form-control" id="uraian" name="uraian" />
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="rekening_bank" class="form-label">Rekening Bank</label>
-                            <input class="form-control" id="rekening_bank" name="rekening_bank" />
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="alamat_bank" class="form-label">Alamat Bank</label>
-                            <textarea class="form-control" id="alamat_bank" name="alamat_bank"></textarea>
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="nama_bank" class="form-label">Nama Bank</label>
-                            <input class="form-control" id="nama_bank" name="nama_bank" />
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="account_name" class="form-label">Account Name</label>
-                            <input class="form-control" id="account_name" name="account_name" />
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="swift_code" class="form-label">Swift Code</label>
-                            <input class="form-control" id="swift_code" name="swift_code" />
-                        </div>
-                        <button class="btn btn-success form-control text-white" style="background-color: #4E36E2"><i
-                                class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan</button>
                     </form>
                 </div><!-- end card -->
             </div>
@@ -86,18 +80,24 @@
                     results: $.map(data.data, function(item) {
                         return {
                             id: item.id,
-                            text: item.name
+                            text: item.name,
+                            kdrek1: item.kdrek1
                         };
                     })
                 };
             }
         }
     }).on('select2:select', function(e) {
+        $("#kode_coa").val(parseInt(e.params.data.kdrek1) + 1);
+        // reset select2 all
+        $("#deskripsi_coa_id").val('').trigger('change')
+        $("#detail_coa_id").val('').trigger('change')
+
         $("#deskripsi_coa_id").select2({
         allowClear: true,
         width: '100%',
         ajax: {
-            url: "{{ route('api.get_select2_deskripsi_coa') }}?id="+e.params.data.id,
+            url: "{{ route('api.get_select2_deskripsi_coa') }}?header_id="+e.params.data.kdrek1,
             dataType: 'json',
             delay: 250,
             processResults: function(data) {
@@ -105,16 +105,41 @@
                     results: $.map(data.data, function(item) {
                         return {
                             id: item.id,
-                            text: item.name
+                            text: item.name,
+                            kdrek1: item.kdrek1
                         };
                     })
                 };
             }
         }
-    }).on('select2:select', function(e) {
-        $("#jenis_sumber").val(e.params.data.item);
-    });
+        }).on('select2:select', function(e) {
+            $("#kode_coa").val(parseInt(e.params.data.kdrek1) + 1);
+            // reset select2 all
+            $("#detail_coa_id").val('').trigger('change')
 
+            $("#detail_coa_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_uraian_coa') }}?header_id="+e.params.data.kdrek1,
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data.data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name,
+                                kdrek: item.kdrek
+                            };
+                        })
+                    };
+                }
+            }
+            }).on('select2:select', function(e) {
+                $("#kode_coa").val(parseFloat(parseFloat(e.params.data.kdrek) + parseFloat(0.001)).toFixed(3));
+            });
+        });
     });
 </script>
 @endsection

@@ -11,7 +11,6 @@ use App\Models\MataUang;
 use App\Models\UserPublicModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -23,7 +22,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })
         ->get();
 
@@ -41,7 +40,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('nama','like','%'.$request->q.'%');
+            return $q->where('nama','ilike','%'.$request->q.'%');
         })
         ->get();
 
@@ -61,7 +60,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })
         ->get();
 
@@ -79,7 +78,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })
         ->get();
 
@@ -97,7 +96,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })
         ->get();
 
@@ -117,7 +116,7 @@ class OnanmediaAPIController extends Controller
                     return $q->whereIn('id',$request->id);
                 })
                 ->when($request->q, function($q) use($request) {
-                    return $q->where('nama','like','%'.$request->q.'%');
+                    return $q->where('nama','ilike','%'.$request->q.'%');
                 })
                 ->get()
                 ->all()
@@ -130,7 +129,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })
         ->get();
 
@@ -148,7 +147,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         });
 
         $bankMergeCoa = MasterCoaModel::selectRaw('CAST(id as integer), uraian as name, 1 as data')
@@ -156,7 +155,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })->unionAll($dataBank)->get();
 
         $data = [
@@ -187,15 +186,14 @@ class OnanmediaAPIController extends Controller
     }
 
     public function select2_header_coa(Request $request){
-        $bankMergeCoa = MasterCoaModel::select('id','uraian as name')
+        $bankMergeCoa = MasterCoaModel::select('id','uraian as name', 'kdrek1')
         ->where('kdrek2',0)
-        ->where('kdrek3',0)
         ->where('type','H')
         ->when($request->id, function($q) use($request) {
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })->get();
 
         $data = [
@@ -207,14 +205,15 @@ class OnanmediaAPIController extends Controller
     }
 
     public function select2_deskripsi_coa(Request $request){
-        $bankMergeCoa = MasterCoaModel::select('id','uraian as name')
-        ->where('kdrek3',0)
+        $bankMergeCoa = MasterCoaModel::select('id','uraian as name', 'kdrek1')
+        ->where('kdrek1',$request->header_id)
+        ->where('kdrek2','!=',0)
         ->where('type','H')
         ->when($request->id, function($q) use($request) {
             return $q->where('kdrek1',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })->get();
 
         $data = [
@@ -226,6 +225,21 @@ class OnanmediaAPIController extends Controller
     }
 
     public function select2_uraian_coa(Request $request){
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => MasterCoaModel::select('id','uraian as name','kdrek')
+            ->when($request->q, function($q) use($request) {
+                $q->where('uraian','ilike','%'.$request->q.'%');
+            })
+            ->where('kdrek1',$request->header_id)
+            ->where('kdrek2','!=',0)
+            ->where('type','D')
+            ->orderBy('id','desc')
+            ->first()
+        ]);
+    }
+
+    public function get_select2_uraian(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => MasterCoaModel::select('id','uraian as name')
@@ -248,7 +262,7 @@ class OnanmediaAPIController extends Controller
             'status' => Response::HTTP_OK,
             'data'   => MasterCoaModel::select('id','uraian as name')
             ->when($request->q, function($q) use($request) {
-                return $q->where('uraian','like','%'.$request->q.'%');
+                return $q->where('uraian','ilike','%'.$request->q.'%');
             })
             ->where('kdrek2','!=',0)
             ->where('kdrek3','!=',0)
@@ -259,6 +273,11 @@ class OnanmediaAPIController extends Controller
         ]);
     }
 
+    public function select_number_coa(Request $request){
+        return MasterCoaModel::where('kdrek1',$request->header_id)->where('kdrek2','!=',0)->where('type','D')->orderBy('kdrek')->kdrek;
+    }
+
+
     public function select2_banks_coa(Request $request){
         $bankMergeCoa = MasterCoaModel::select('id','uraian as name')
         ->where('jenis',1)
@@ -266,7 +285,7 @@ class OnanmediaAPIController extends Controller
             return $q->whereIn('id',$request->id);
         })
         ->when($request->q, function($q) use($request) {
-            return $q->where('name','like','%'.$request->q.'%');
+            return $q->where('name','ilike','%'.$request->q.'%');
         })->get();
 
         $data = [
