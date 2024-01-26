@@ -45,5 +45,11 @@ Route::get('get_select2_mata_uangs', [OnanmediaAPIController::class,'select2_mat
 Route::get('get_select2_header_coa', [OnanmediaAPIController::class,'select2_header_coa'])->name('api.get_select2_header_coa');
 Route::get('get_select2_deskripsi_coa', [OnanmediaAPIController::class,'select2_deskripsi_coa'])->name('api.get_select2_deskripsi_coa');
 Route::get('get_select2_uraian_coa', [OnanmediaAPIController::class,'select2_uraian_coa'])->name('api.get_select2_uraian_coa');
+Route::get('get_select2_uraian', [OnanmediaAPIController::class,'get_select2_uraian'])->name('api.get_select2_uraian');
 Route::get('get_select2_banks_coa', [OnanmediaAPIController::class,'select2_banks_coa'])->name('api.get_select2_banks_coa');
-Route::get('get_select2_deskripsi_coa', [OnanmediaAPIController::class,'select2_deskripsi_coa'])->name('api.get_select2_deskripsi_coa');
+
+// count number coa
+Route::get('count_header_coa', [OnanmediaAPIController::class,'count_header_coa'])->name('api.count_header_coa');
+Route::get('count_deskripsi_coa', [OnanmediaAPIController::class,'count_deskripsi_coa'])->name('api.count_deskripsi_coa');
+Route::get('count_uraian_coa', [OnanmediaAPIController::class,'count_uraian_coa'])->name('api.count_uraian_coa');
+Route::get('count_detail_coa', [OnanmediaAPIController::class,'count_detail_coa'])->name('api.count_detail_coa');

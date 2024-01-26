@@ -17,11 +17,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     <h4 class="card-title mb-0">Tambah Isi Saldo Kasir</h4>
                 </div><!-- end card header -->
 
-                <form action="{{ route('helpdesk.upload.image') }}" enctype="multipart/form-data"
+                <form action="{{ route('upload.file') }}" enctype="multipart/form-data"
                     class="dropzone dz-clickable"
                     id="image-upload" method="post" id="gambar-dropzone">
                     @csrf
                     <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                    <input id="folder" name="folder" value="Jurnal_Umum" hidden />
+                    <input id="folder_role" name="folder_role" value="Finance" hidden />
                     <div class="dz-default dz-message">
                         <div>Drag & drop a photo or</div>
                         <span class="text-primary">Browse</span>

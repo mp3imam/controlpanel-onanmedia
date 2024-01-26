@@ -36,15 +36,48 @@ class MasterKasBelanjaController extends Controller
     public function index(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
+        $user = Auth::user();
+        $finance = $user->hasRole('finance');
+        $filter = where
+        $all = count(MasterKasBelanja::when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
+        $create = count(MasterKasBelanja::whereStatus(1)
+        ->when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
+        $on_progress = count(MasterKasBelanja::whereStatus(2)
+        ->when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
+        $prosess = count(MasterKasBelanja::whereStatus(3)
+        ->when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
+        $tolak = count(MasterKasBelanja::whereStatus(5)
+        ->when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
+        $selesai = count(MasterKasBelanja::whereStatus(4)
+        ->when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
 
-        return view('master_kas_belanja.index', $title);
+        return view('master_kas_belanja.index', $title, compact(['all', 'create']));
     }
 
     function get_datatable(Request $request){
+        $user = Auth::user();
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
             return $row->coa_belanja->uraian;
+        })
+        ->addColumn('username', function ($row) use($user){
+            return $user->username;
+        })
+        ->addColumn('role', function ($row) use($user){
+            return $user->roles[0]->name;
         })
         ->addColumn('nominals', function ($row){
             return "Rp. ".number_format($row->nominal, 0);
@@ -98,6 +131,7 @@ class MasterKasBelanjaController extends Controller
             $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.$tahun;
             $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
             $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            $request['user_id'] = Auth::user()->id;
 
             // Store your file into directory and db
             $kas = MasterKasBelanja::create($request->except('_token'));
@@ -382,11 +416,15 @@ class MasterKasBelanjaController extends Controller
     }
 
     public function models($request){
+        $user = Auth::user();
         return MasterKasBelanja::with(['coa_belanja','belanja_detail','banks_belanja'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             ->orWhere('nominal', 'like','%'.$request->cari."%")
             ->orWhere('keterangan_kas', 'like','%'.$request->cari."%");
+        })
+        ->when($user->roles[0]->name !== 'finance', function ($q) use($user){
+            $q->whereUserId($user->id);
         })
         ->when($request->sumber, function($q) use($request){
             $q->whereJenis($request->sumber);

@@ -302,7 +302,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_uraian_coa') }}",
+                url: "{{ route('api.get_select2_uraian') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
@@ -359,7 +359,7 @@
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_uraian_coa') }}",
+                url: "{{ route('api.get_select2_uraian') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {

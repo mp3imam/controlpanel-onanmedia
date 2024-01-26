@@ -72,7 +72,11 @@ class MasterBankCashController extends Controller
     public function create(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
+        $path = public_path("Finance/Kas_Isi_saldo/".date('Y')."/".date('m')."/".date('d'));
+        !is_dir($path) && mkdir($path, 0777, true);
+
         $random_string = Str::random(25);
+        // dd($random_string);
 
         return view('master_bank_cash.create', $title, compact('random_string'));
     }

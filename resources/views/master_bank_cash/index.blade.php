@@ -22,107 +22,94 @@
     <div class="tab-content mt-4">
         <div class="tab-pane active" id="base-justified-home" role="tabpanel">
             <!-- Konten untuk Isi Saldo Kasir -->
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success" >
-                            Tambah
-                        </a>
-                        <form action="#">
-                            <div class="card">
-                                <div class="row">
-                                    <div class="col-md-3 p-3">
-                                        <label>Filter Tanggal</label>
-                                        <input type="text" class="form-control flatpickr-input" id="tanggal_cash" name="tanggal_cash" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
-                                    </div>
-                                    <div class="col-md-3 p-3">
-                                        <label>Filter All</label>
-                                        <input type="text" id="cari_cash" name="cari_cash" value="{{ old('cari_cash', Request::get('cari_cash')) }}"
-                                        class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
-                                    </div>
-                                    <div class="col-md-3 p-3 text-center mt-4">
-                                        <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <!-- Tambahkan konten yang sesuai untuk Isi Saldo Kasir -->
-                        <div class="card">
-                            <div class="card-body">
-                                <!-- Tabel untuk menampilkan data -->
-                                <table id="dataTable" class="table table-striped w-100">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>No. Transaksi</th>
-                                            <th>Tanggal Transaksi</th>
-                                            <th>Sumber</th>
-                                            <th>Tujuan</th>
-                                            <th>Jenis Transaksi</th>
-                                            <th>Nominal</th>
-                                            <th>Keterangan</th>
-                                            <th width="20%">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Isi tabel disini -->
-                                    </tbody>
-                                </table>
-                            </div>
+            <div class="col-lg-12">
+                <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success my-2" >
+                    Tambah
+                </a>
+                <form action="#">
+                    <div class="row">
+                        <div class="col-md-3 p-3">
+                            <label>Filter Tanggal</label>
+                            <input type="text" class="form-control flatpickr-input" id="tanggal_cash" name="tanggal_cash" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                         </div>
+                        <div class="col-md-3 p-3">
+                            <label>Filter All</label>
+                            <input type="text" id="cari_cash" name="cari_cash" value="{{ old('cari_cash', Request::get('cari_cash')) }}"
+                            class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                        <div class="col-md-3 p-3 text-center mt-4">
+                            <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Tambahkan konten yang sesuai untuk Isi Saldo Kasir -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Tabel untuk menampilkan data -->
+                        <table id="dataTable" class="table table-striped w-100">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>No. Transaksi</th>
+                                    <th>Tanggal Transaksi</th>
+                                    <th>Sumber</th>
+                                    <th>Tujuan</th>
+                                    <th>Jenis Transaksi</th>
+                                    <th>Nominal</th>
+                                    <th>Keterangan</th>
+                                    <th width="20%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Isi tabel disini -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="tab-pane" id="base-justified-product" role="tabpanel">
             <!-- Konten untuk Pengembalian Kas -->
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success">
-                            Tambah
-                        </a>
-                        <form action="#">
-                            <div class="card">
-                                <div class="row">
-                                    <div class="col-md-3 p-3">
-                                        <label>Filter Tanggal</label>
-                                        <input type="text" class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
-                                    </div>
-                                    <div class="col-md-3 p-3">
-                                        <label>Filter All</label>
-                                        <input type="text" id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
-                                        class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
-                                    </div>
-                                    <div class="col-md-3 p-3 text-center mt-4">
-                                        <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="card">
-                            <div class="card-body">
-                                <!-- Tabel untuk menampilkan data -->
-                                <table id="dataTableReturn" class="table table-striped w-100">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>No. Transaksi</th>
-                                            <th>Tanggal Transaksi</th>
-                                            <th>Sumber</th>
-                                            <th>Tujuan</th>
-                                            <th>Jenis Transaksi</th>
-                                            <th>Nominal</th>
-                                            <th>Keterangan</th>
-                                            <th width="20%">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+            <div class="col-lg-12">
+                <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
+                    Tambah
+                </a>
+                <form action="#">
+                    <div class="row">
+                        <div class="col-md-3 p-3">
+                            <label>Filter Tanggal</label>
+                            <input type="text" class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                         </div>
+                        <div class="col-md-3 p-3">
+                            <label>Filter All</label>
+                            <input type="text" id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
+                            class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                        <div class="col-md-3 p-3 text-center mt-4">
+                            <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Tabel untuk menampilkan data -->
+                        <table id="dataTableReturn" class="table table-striped w-100">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>No. Transaksi</th>
+                                    <th>Tanggal Transaksi</th>
+                                    <th>Sumber</th>
+                                    <th>Tujuan</th>
+                                    <th>Jenis Transaksi</th>
+                                    <th>Nominal</th>
+                                    <th>Keterangan</th>
+                                    <th width="20%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

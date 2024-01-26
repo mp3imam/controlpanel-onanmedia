@@ -12,22 +12,30 @@
                 <div class="card-body">
                     <div id="customerList">
                         <div class="col-sm-auto mb-3">
-                            <a href="{{ route('master_kas_belanja.create') }}" type="button" class="btn btn-success">
-                                Tambah
-                            </a>
-                            <a type="button" class="btn btn-primary btn-label btn-pdf" hidden>
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                    </div>
-                                    <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                        Loading...
-                                    </div>
-                                    <div class="flex-grow-1 btn-pdf-no-loading">
-                                        PDF
-                                    </div>
-                                </div>
-                            </a>
+                            @hasrole('finance')
+                                <button id="approve_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                    Approve ({{ $all }})
+                                </button>
+                            @else
+                                <button id="create_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                    Create ({{ $all }})
+                                </button>
+                            @endhasrole
+                            <button id="on_progress_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                On Progress (30)
+                            </button>
+                            <button id="prosess_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                Prosess (30)
+                            </button>
+                            <button id="cancell_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                Cancel (30)
+                            </button>
+                            <button id="done_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                Done (30)
+                            </button>
+                            <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                All (30)
+                            </button>
                         </div>
                         <div class="row g-3">
                             <form action="{{ route('master_kas_belanja.index') }}">
@@ -35,10 +43,7 @@
                                     <div class="row">
                                         <div class="col-md-3 p-3">
                                             <label>Filter Tanggal</label>
-                                            <input type="text" class="form-control flatpickr-input" id="tanggal"
-                                                name="tanggal" data-provider="flatpickr" data-date-format="d M, Y"
-                                                data-range-date="true" readonly="readonly"
-                                                value="{{ Request::get('tanggal') }}">
+                                            <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ Request::get('tanggal') }}">
                                         </div>
                                         <div class="col-md-3 p-3">
                                             <label>Sumber Dana</label>
@@ -50,14 +55,14 @@
                                         </div>
                                         <div class="col-md-3 p-3">
                                             <label>Filter All</label>
-                                            <input type="text" id="cari" name="cari"
-                                                value="{{ Request::get('cari') }}" class="form-control"
+                                            <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control"
                                                 placeholder="Cari semua data"
                                                 aria-label="Amount (to the nearest dollar)">
                                         </div>
-                                        <div class="col-md-3 p-3 text-center mt-4">
-                                            <button class="btn btn-success btn-icon waves-effect waves-light"><i class="ri-search-2-line"></i></button>
-                                            <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                        <div class="col-md-3 p-3 text-center mt-4 float-end">
+                                            <a href="{{ route('master_kas_belanja.create') }}" type="button" class="btn btn-success">
+                                                Tambah
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -72,8 +77,10 @@
                                             <th>No</th>
                                             <th class="text-uppercase" width="10%">No. Transaksi</th>
                                             <th class="text-uppercase">TANGGAL TRANSAKSI</th>
-                                            <th class="text-uppercase">SUMBER</th>
-                                            <th class="text-uppercase">JENIS PEMBAYARAN</th>
+                                            <th class="text-uppercase">Role</th>
+                                            <th class="text-uppercase">Username</th>
+                                            <th class="text-uppercase">Sumber</th>
+                                            <th class="text-uppercase">Jenis Pembayaran</th>
                                             <th class="text-uppercase">Nominal</th>
                                             <th class="text-uppercase">KETERANGAN</th>
                                             <th class="text-uppercase" width="80px">Action</th>
@@ -139,7 +146,13 @@
                     }
                 }, {
                     data: 'tanggal',
-                    name: 'TANGGAL TRANSAKSI'
+                    name: 'Tanggal Transaksi'
+                }, {
+                    data: 'role',
+                    name: 'Role'
+                }, {
+                    data: 'username',
+                    name: 'Username'
                 }, {
                     data: 'banks',
                     name: 'SUMBER'

@@ -36,6 +36,10 @@ class MasterBankCashModel extends Model
         return $this->hasOne(UserPublicModel::class, 'id', 'user_id');
     }
 
+    public function statuses(){
+        return $this->hasOne(TransasksiKasStatusModel::class, 'id', 'status_id');
+    }
+
     public function file()
     {
         return $this->hasMany(TransaksiKasFileModel::class, 'kas_id');

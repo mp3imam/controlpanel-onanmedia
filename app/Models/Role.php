@@ -200,7 +200,6 @@ class Role extends Model implements RoleContract
 
     public function pages()
     {
-        return $this->belongsTo(PagesRoleModel::class, 'id', 'role_id');
+        return $this->hasMany(PagesRoleModel::class, 'role_id');
     }
-
 }

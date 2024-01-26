@@ -25,7 +25,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 <form action="{{ route('upload.foto.jurnal.umum') }}" enctype="multipart/form-data" class="dropzone dz-clickable" id="image-upload" method="post" id="gambar-dropzone">
                     @csrf
                     <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
-                    <input id="folder_text" name="folder" value="Jurnal_Umum" hidden />
+                    <input id="folder" name="folder" value="Jurnal_Umum" hidden />
                     <div class="dz-default dz-message">
                         <div>Drag & drop a photo or</div>
                         <span class="text-primary">Browse</span>
@@ -203,7 +203,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         allowClear: true,
         width: '100%',
         ajax: {
-            url: "{{ route('api.get_select2_uraian_coa') }}",
+            url: "{{ route('api.get_select2_uraian') }}",
             dataType: 'json',
             delay: 250,
             processResults: function(data) {
@@ -251,7 +251,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             allowClear: true,
             width: '100%',
             ajax: {
-                url: "{{ route('api.get_select2_uraian_coa') }}",
+                url: "{{ route('api.get_select2_uraian') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {

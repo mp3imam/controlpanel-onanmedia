@@ -22,7 +22,6 @@ class MasterCoaController extends Controller
      */
     function __construct()
     {
-        // dd(MasterCoaModel::where('kdrek1',1)->where('kdrek2','!=',0)->where('kdrek2',1)->where('type','D')->orderBy('kdrek')->first()->kdrek);
         $this->middleware('permission:'.Permission::whereId(10)->first()->name);
     }
 
