@@ -24,36 +24,50 @@
                     <form method="POST" action="{{ route('master_coa.update', $detail->id) }}">
                         @csrf
                         @method('PUT')
-                        <div class="col-md-12 mb-4">
-                            <label for="uraian" class="form-label">Uraian</label>
-                            <input class="form-control" id="uraian" name="uraian" value="{{ $detail->uraian }}" required />
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-md mb-4" id="kdrek1_coa_hidden">
+                                    <label for="kdrek1_coa" class="form-label">Header Coa</label>
+                                    <select id="kdrek1_coa_id" name="kdrek1_coa_id" class="form-control"></select>
+                                </div>
+                                <div class="col-md mb-4" id="kdrek2_coa_hidden">
+                                    <label for="kdrek2_coa" class="form-label">Deskripsi Coa</label>
+                                    <select id="kdrek2_coa_id" name="kdrek2_coa_id" class="form-control"></select>
+                                </div>
+                                <div class="col-md mb-4" id="kdrek3_coa_hidden">
+                                    <label for="kdrek3_coa" class="form-label">Uraian Coa</label>
+                                    <select id="kdrek3_coa_id" name="kdrek3_coa_id" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="kode_coa" class="form-label">Kode Coa</label>
+                                    <input class="form-control" id="kode_coa" name="kode_coa" value="{{ $detail->kdrek }}" />
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="nama_akun" class="form-label">Nama Akun</label>
+                                    <input class="form-control" id="nama_akun" name="nama_akun" value="{{ $detail->uraian }}" />
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="rekening_bank" class="form-label">Rekening Bank</label>
+                                    <input type="number" class="form-control" id="rekening_bank" name="rekening_bank" value="{{ $detail->rekening_bank }}" />
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="nama_bank" class="form-label">Nama Bank</label>
+                                    <input class="form-control" id="nama_bank" name="nama_bank" value="{{ $detail->nama_bank }}" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="rekening_bank" class="form-label">Rekening Bank</label>
-                            <input class="form-control" id="rekening_bank" name="rekening_bank" value="{{ $detail->rekening_bank }}" />
-                            @error('rekening_bank')
-                                <p class="text-red-500">{{ $message }}</p>
-                            @enderror
-                            {{-- @dd($errors->has('rekening_bank')) --}}
-
+                        <div class="row">
+                            <div class="col-md-auto mb-4">
+                                <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('master_coa.index') }}" >
+                                    <i class="ri-arrow-go-back-line"></i> Kembali
+                                </a>
+                                <button class="btn float-end btn-success text-white rounded-5 me-3" style="background-color: #4E36E2">
+                                    <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="alamat_bank" class="form-label">Alamat Bank</label>
-                            <textarea class="form-control" id="alamat_bank" name="alamat_bank">{{ $detail->alamat_bank }}</textarea>
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="nama_bank" class="form-label">Nama Bank</label>
-                            <input class="form-control" id="nama_bank" name="nama_bank" value="{{ $detail->nama_bank }}" required />
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="account_name" class="form-label">Account Name</label>
-                            <input class="form-control" id="account_name" name="account_name" value="{{ $detail->account_name }}" required />
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="swift_code" class="form-label">Swift Code</label>
-                            <input class="form-control" id="swift_code" name="swift_code" value="{{ $detail->swift_code }}" required />
-                        </div>
-                        <button class="btn form-control text-white" style="background-color: #4E36E2">Ubah</button>
                     </form>
                 </div><!-- end card -->
             </div>
@@ -120,6 +134,105 @@
                 }
             });
         });
+
+
+        $("#kdrek1_coa_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_kdrek1_coa') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data.data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name,
+                                kdrek1: item.kdrek1
+                            };
+                        })
+                    };
+                }
+            }
+        })
+
+        $("#kdrek2_coa_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_kdrek2_coa') }}?kdrek1={{ $kdrek1->kdrek1 }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data.data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name,
+                                kdrek1: item.kdrek1,
+                                kdrek2: item.kdrek2,
+                                kdrek3: item.kdrek3
+                            };
+                        })
+                    };
+                }
+            }
+        })
+
+        $("#kdrek3_coa_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.get_select2_kdrek3') }}?kdrek1="+e.params.data.kdrek1+"&kdrek2="+e.params.data.kdrek2+"&kdrek3="+e.params.data.kdrek3,
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    if (data.status == '200'){
+                        return {
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name,
+                                    kdrek1: item.kdrek1,
+                                    kdrek2: item.kdrek2,
+                                    kdrek3: item.kdrek3
+                                };
+                            })
+                        };
+                    }else{
+                        $("#kode_coa").val(data.data);
+                    }
+                }
+            }
+        })
+
+
     });
+
+
+    // KDREK1
+    var dataKdrek1 = {id: "{{ $kdrek1->kdrek1 }}", text: "{{ $kdrek1->uraian }}", selected: true };
+    var newOptionKdrek1 = new Option(dataKdrek1.text, dataKdrek1.id, false, false);
+    $('#kdrek1_coa_id').append(newOptionKdrek1).trigger('change');
+    $('#kdrek1_coa_id').select2();
+
+    // KDREK2
+    var dataKdrek2 = {id: "{{ $kdrek2->kdrek2 }}", text: "{{ $kdrek2->uraian }}", selected: true };
+    var newOptionKdrek2 = new Option(dataKdrek2.text, dataKdrek2.id, false, false);
+    $('#kdrek2_coa_id').append(newOptionKdrek2).trigger('change');
+    $('#kdrek2_coa_id').select2();
+
+    // KDREK3
+    var dataKdrek3 = {id: "{{ $kdrek3->kdrek3 }}", text: "{{ $kdrek3->uraian }}", selected: true };
+    var newOptionKdrek3 = new Option(dataKdrek3.text, dataKdrek3.id, false, false);
+    $('#kdrek3_coa_id').append(newOptionKdrek3).trigger('change');
+    $('#kdrek3_coa_id').select2();
+
+    if (dataKdrek1.text == dataKdrek2.text)
+    $("#kdrek2_coa_id").val('').trigger('change')
+
+    if (dataKdrek2.text == dataKdrek3.text)
+    $("#kdrek3_coa_id").val('').trigger('change')
 </script>
 @endsection

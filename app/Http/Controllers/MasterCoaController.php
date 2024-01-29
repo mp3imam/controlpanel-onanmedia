@@ -61,14 +61,17 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // dd($request->all());
         $validasi = [
-            'uraian'        => 'required',
+            'pilih_data_id' => 'required',
+            'kode_coa'      => 'required',
+            'nama_akun'     => 'required',
             'rekening_bank' => 'required',
-            'alamat_bank'   => 'required',
             'nama_bank'     => 'required',
-            'account_name'  => 'required',
-            'swift_code'    => 'required',
         ];
+
+        if ($request->pilih_data_id == 2) $validasi += ['kdrek1_coa_id'];
+        if ($request->pilih_data_id == 3) $validasi += ['kdrek2_coa_id'];
 
         $validator = Validator::make($request->all(), $validasi);
 
@@ -77,19 +80,22 @@ class MasterCoaController extends Controller
         }
 
         // Store your file into directory and db
-        $input = $request->except(['_token']);
+        $input = $request->except(['_token','kode_coa','nama_akun','kdrek1_coa_id','kdrek2_coa_id','kdrek3_coa_id']);
         $input['id']            = MasterCoaModel::getMaxIdRecord()->first()->id+1;
-        $input['kdrek1']        = 1;
-        $input['kdrek2']        = 1;
-        $input['kdrek3']        = 1;
-        $input['kdrek']         = 1;
-        $input['type']          = "H";
-        $input['uraian']        = $request->uraian;
+        $input['kdrek1']        = 0;
+        $input['kdrek2']        = 0;
+        $input['kdrek3']        = 0;
+
+        if ($request->pilih_data_id > 1) $input['kdrek1'] = $request->kdrek1_coa_id;
+        if ($request->pilih_data_id > 2) $input['kdrek2'] = $request->kdrek2_coa_id;
+        if ($request->pilih_data_id > 3) $input['kdrek3'] = $request->kdrek3_coa_id;
+
+        $input['kdrek']         = $request->kode_coa;
+        $input['type']          = $request->pilih_data_id < 4 ? "H" : "D";
+        $input['uraian']        = $request->nama_akun;
         $input['rekening_bank'] = $request->rekening_bank;
-        $input['alamat_bank']   = $request->alamat_bank;
         $input['nama_bank']     = $request->nama_bank;
-        $input['account_name']  = $request->account_name;
-        $input['swift_code']    = $request->swift_code;
+
         MasterCoaModel::insert($input);
 
         return redirect('master_coa');
@@ -121,8 +127,11 @@ class MasterCoaController extends Controller
         $title['li_1'] = $this->li_1;
 
         $detail = MasterCoaModel::findOrFail($id);
+        $kdrek1 = MasterCoaModel::where('kdrek1',$detail->kdrek1)->first();
+        $kdrek2 = MasterCoaModel::where('kdrek2',$detail->kdrek2)->first();
+        $kdrek3 = MasterCoaModel::where('kdrek3',$detail->kdrek3)->first();
 
-        return view('master_coa.edit', $title, compact(['detail']));
+        return view('master_coa.edit', $title, compact(['detail', 'kdrek1', 'kdrek2', 'kdrek3']));
     }
 
     /**

@@ -185,7 +185,7 @@ class OnanmediaAPIController extends Controller
         return response()->json($data);
     }
 
-    public function select2_header_coa(Request $request){
+    public function select2_kdrek1_coa(Request $request){
         $bankMergeCoa = MasterCoaModel::select('id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
         ->where('kdrek2',0)
         ->where('type','H')
@@ -204,11 +204,11 @@ class OnanmediaAPIController extends Controller
         return response()->json($data);
     }
 
-    public function select2_deskripsi_coa(Request $request){
+    public function select2_kdrek2_coa(Request $request){
         $bankMergeCoa = MasterCoaModel::select('id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
-        ->where('kdrek1',$request->header_id)
+        ->where('kdrek1',$request->kdrek1)
         ->where('kdrek2','!=',0)
-        // ->where('kdrek3','=',0)
+        ->where('kdrek3','=',0)
         ->where('type','H')
         ->when($request->id, function($q) use($request) {
             return $q->where('kdrek1',$request->id);
@@ -232,7 +232,7 @@ class OnanmediaAPIController extends Controller
             ->when($request->q, function($q) use($request) {
                 $q->where('uraian','ilike','%'.$request->q.'%');
             })
-            ->where('kdrek1',$request->header_id)
+            ->where('kdrek1',$request->kdrek1)
             ->where('kdrek2','!=',0)
             ->where('type','D')
             ->first()
@@ -246,7 +246,7 @@ class OnanmediaAPIController extends Controller
             ->when($request->q, function($q) use($request) {
                 $q->where('uraian','ilike','%'.$request->q.'%');
             })
-            ->where('kdrek1',$request->header_id)
+            ->where('kdrek1',$request->kdrek1)
             ->where('kdrek2','!=',0)
             ->where('kdrek2',$request->kdrek2)
             ->where('type','H')
@@ -254,21 +254,36 @@ class OnanmediaAPIController extends Controller
         ]);
     }
 
-    public function get_select2_uraian(Request $request){
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'data'   => MasterCoaModel::select('id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
+    public function get_select2_kdrek3(Request $request){
+        if (
+            MasterCoaModel::select('id', 'uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
             ->when($request->q, function($q) use($request) {
                 return $q->where('uraian','ilike','%'.$request->q.'%');
             })
-            ->where('kdrek1', $request->header_id)
-            ->where('kdrek2', '!=', 0)
+            ->where('kdrek1', $request->kdrek1)
+            ->where('kdrek2', $request->kdrek2)
             ->where('kdrek3','!=',0)
-            // ->where('kdrek2',$request->kdrek2)
             ->where('type','H')
-            ->get()
-            ->all()
-        ]);
+            ->exists()
+        )
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'data'   => MasterCoaModel::select('id', 'uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
+                ->when($request->q, function($q) use($request) {
+                    return $q->where('uraian','ilike','%'.$request->q.'%');
+                })
+                ->where('kdrek1', $request->kdrek1)
+                ->where('kdrek2', $request->kdrek2)
+                ->where('kdrek3','!=',0)
+                ->where('type','H')
+                ->get()
+                ->all()
+            ]);
+
+            return response()->json([
+                'status' => Response::HTTP_PROCESSING,
+                'data'   => number_format(MasterCoaModel::where('kdrek1',$request->kdrek1)->where('kdrek2','=',$request->kdrek2)->where('type','D')->orderBy('kdrek','desc')->first()->kdrek + 0.001, 3)
+            ]);
     }
 
     public function select2_detail_coa(Request $request){
@@ -287,32 +302,32 @@ class OnanmediaAPIController extends Controller
         ]);
     }
 
-    public function count_header_coa(Request $request){
+    public function count_kdrek1_coa(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => count(MasterCoaModel::where('kdrek2', 0)->where('type','H')->orderBy('kdrek','desc')->get()) + 1
         ]);
     }
 
-    public function count_deskripsi_coa(Request $request){
+    public function count_kdrek2_coa(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => MasterCoaModel::where('kdrek1',$request->header_id)->where('kdrek2','!=',0)->where('type','H')->orderBy('kdrek','desc')->first()->kdrek + 1
+            'data'   => MasterCoaModel::where('kdrek1',$request->kdrek1)->where('kdrek2','!=',0)->where('type','H')->orderBy('kdrek','desc')->first()->kdrek + 1
         ]);
     }
 
-    public function count_uraian_coa(Request $request){
+    public function count_kdrek3_coa(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => MasterCoaModel::where('kdrek1',$request->header_id)->where('kdrek2','=',$request->kdrek2)->where('type','H')->orderBy('kdrek','desc')->first()->kdrek + 1
-            // 'data'   => number_format(MasterCoaModel::where('kdrek1',$request->header_id)->where('kdrek2','=',$request->kdrek2)->where('kdrek3','=',$request->kdrek3)->where('type','H')->orderBy('kdrek','desc')->first()->kdrek + 0.001, 3)
+            'data'   => MasterCoaModel::where('kdrek1',$request->kdrek1)->where('kdrek2','=',$request->kdrek2)->where('type','H')->orderBy('kdrek','desc')->first()->kdrek + 1
+            // 'data'   => number_format(MasterCoaModel::where('kdrek1',$request->kdrek1)->where('kdrek2','=',$request->kdrek2)->where('kdrek3','=',$request->kdrek3)->where('type','H')->orderBy('kdrek','desc')->first()->kdrek + 0.001, 3)
         ]);
     }
 
-    public function count_detail_coa(Request $request){
+    public function count_kdrek_coa(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => number_format(MasterCoaModel::where('kdrek1',$request->header_id)->where('kdrek2','=',$request->kdrek2)->where('kdrek3','=',$request->kdrek3)->where('type','D')->orderBy('kdrek','desc')->first()->kdrek + 0.001, 3)
+            'data'   => number_format(MasterCoaModel::where('kdrek1',$request->kdrek1)->where('kdrek2','=',$request->kdrek2)->where('kdrek3','=',$request->kdrek3)->where('type','D')->orderBy('kdrek','desc')->first()->kdrek + 0.001, 3)
         ]);
     }
 

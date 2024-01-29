@@ -42,14 +42,14 @@ Route::get('get_select2_banks', [OnanmediaAPIController::class,'select2_banks'])
 Route::get('get_select2_banks_gabungan_kasir', [OnanmediaAPIController::class,'select2_banks_gabungan_kasir'])->name('api.get_select2_banks_gabungan_kasir');
 Route::get('get_select2_belanja', [OnanmediaAPIController::class,'select2_belanja'])->name('api.get_select2_belanja');
 Route::get('get_select2_mata_uangs', [OnanmediaAPIController::class,'select2_mata_uangs'])->name('api.get_select2_mata_uangs');
-Route::get('get_select2_header_coa', [OnanmediaAPIController::class,'select2_header_coa'])->name('api.get_select2_header_coa');
-Route::get('get_select2_deskripsi_coa', [OnanmediaAPIController::class,'select2_deskripsi_coa'])->name('api.get_select2_deskripsi_coa');
+Route::get('get_select2_kdrek1_coa', [OnanmediaAPIController::class,'select2_kdrek1_coa'])->name('api.get_select2_kdrek1_coa');
+Route::get('get_select2_kdrek2_coa', [OnanmediaAPIController::class,'select2_kdrek2_coa'])->name('api.get_select2_kdrek2_coa');
+Route::get('get_select2_kdrek3', [OnanmediaAPIController::class,'get_select2_kdrek3'])->name('api.get_select2_kdrek3');
 Route::get('get_select2_uraian_coa', [OnanmediaAPIController::class,'select2_uraian_coa'])->name('api.get_select2_uraian_coa');
-Route::get('get_select2_uraian', [OnanmediaAPIController::class,'get_select2_uraian'])->name('api.get_select2_uraian');
 Route::get('get_select2_banks_coa', [OnanmediaAPIController::class,'select2_banks_coa'])->name('api.get_select2_banks_coa');
 
 // count number coa
-Route::get('count_header_coa', [OnanmediaAPIController::class,'count_header_coa'])->name('api.count_header_coa');
-Route::get('count_deskripsi_coa', [OnanmediaAPIController::class,'count_deskripsi_coa'])->name('api.count_deskripsi_coa');
-Route::get('count_uraian_coa', [OnanmediaAPIController::class,'count_uraian_coa'])->name('api.count_uraian_coa');
-Route::get('count_detail_coa', [OnanmediaAPIController::class,'count_detail_coa'])->name('api.count_detail_coa');
+Route::get('count_kdrek1_coa', [OnanmediaAPIController::class,'count_kdrek1_coa'])->name('api.count_kdrek1_coa');
+Route::get('count_kdrek2_coa', [OnanmediaAPIController::class,'count_kdrek2_coa'])->name('api.count_kdrek2_coa');
+Route::get('count_kdrek3_coa', [OnanmediaAPIController::class,'count_kdrek3_coa'])->name('api.count_kdrek3_coa');
+Route::get('count_kdrek_coa', [OnanmediaAPIController::class,'count_kdrek_coa'])->name('api.count_kdrek_coa');
