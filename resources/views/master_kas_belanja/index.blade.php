@@ -12,28 +12,32 @@
                 <div class="card-body">
                     <div id="customerList">
                         <div class="col-sm-auto mb-3">
+                            @php
+                                $active = "color: #f7f6fb; border-color: #4E36E2; background-color:#4E36E2";
+                                $no_active = "color: #4E36E2; border-color: #4E36E2";
+                            @endphp
                             @hasrole('finance')
-                                <button id="approve_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
-                                    Approve ({{ $all }})
+                                <button id="approve_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $active }}">
+                                    {{ MasterKasBelanja::STATUS_CREATE }} ({{ $all }})
                                 </button>
                             @else
-                                <button id="create_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                                <button id="create_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $active }}">
                                     Create ({{ $all }})
                                 </button>
                             @endhasrole
-                            <button id="on_progress_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                            <button id="on_progress_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
                                 On Progress (30)
                             </button>
-                            <button id="prosess_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                            <button id="prosess_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
                                 Prosess (30)
                             </button>
-                            <button id="cancell_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                            <button id="cancell_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
                                 Cancel (30)
                             </button>
-                            <button id="done_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                            <button id="done_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
                                 Done (30)
                             </button>
-                            <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation btn-outline-primary waves-effect waves-light rounded-5" style="color: #4E36E2">
+                            <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
                                 All (30)
                             </button>
                         </div>

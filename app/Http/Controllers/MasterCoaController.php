@@ -61,7 +61,7 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        // dd($request->all());
+        dd($request->all());
         $validasi = [
             'pilih_data_id' => 'required',
             'kode_coa'      => 'required',
@@ -80,7 +80,7 @@ class MasterCoaController extends Controller
         }
 
         // Store your file into directory and db
-        $input = $request->except(['_token','kode_coa','nama_akun','kdrek1_coa_id','kdrek2_coa_id','kdrek3_coa_id']);
+        $input = $request->except(['_token','kode_coa','nama_akun','kdrek1_coa_id','kdrek2_coa_id','kdrek3_coa_id','pilih_data_id']);
         $input['id']            = MasterCoaModel::getMaxIdRecord()->first()->id+1;
         $input['kdrek1']        = 0;
         $input['kdrek2']        = 0;
@@ -88,14 +88,19 @@ class MasterCoaController extends Controller
 
         if ($request->pilih_data_id > 1) $input['kdrek1'] = $request->kdrek1_coa_id;
         if ($request->pilih_data_id > 2) $input['kdrek2'] = $request->kdrek2_coa_id;
-        if ($request->pilih_data_id > 3) $input['kdrek3'] = $request->kdrek3_coa_id;
+        if ($request->pilih_data_id > 3) $input['kdrek3'] = $request->kdrek3_coa_id ?? 0;
+
+        $pilih_data = "D";
+        if ($request->pilih_data_id == 1) $pilih_data = "H";
+        if ($request->pilih_data_id == 2) $pilih_data = "S";
+        if ($request->pilih_data_id == 3) $pilih_data = "C";
 
         $input['kdrek']         = $request->kode_coa;
-        $input['type']          = $request->pilih_data_id < 4 ? "H" : "D";
+        $input['type']          = $pilih_data;
         $input['uraian']        = $request->nama_akun;
         $input['rekening_bank'] = $request->rekening_bank;
         $input['nama_bank']     = $request->nama_bank;
-
+        // dd($input);
         MasterCoaModel::insert($input);
 
         return redirect('master_coa');
@@ -127,9 +132,10 @@ class MasterCoaController extends Controller
         $title['li_1'] = $this->li_1;
 
         $detail = MasterCoaModel::findOrFail($id);
-        $kdrek1 = MasterCoaModel::where('kdrek1',$detail->kdrek1)->first();
-        $kdrek2 = MasterCoaModel::where('kdrek2',$detail->kdrek2)->first();
-        $kdrek3 = MasterCoaModel::where('kdrek3',$detail->kdrek3)->first();
+        $kdrek1 = MasterCoaModel::whereId($detail->kdrek1)->first();
+        $kdrek2 = MasterCoaModel::whereId($detail->kdrek2)->first();
+        $kdrek3 = MasterCoaModel::whereId($detail->kdrek3)->first();
+        dd($detail, $kdrek1, $kdrek2, $kdrek3);
 
         return view('master_coa.edit', $title, compact(['detail', 'kdrek1', 'kdrek2', 'kdrek3']));
     }

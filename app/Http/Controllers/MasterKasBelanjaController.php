@@ -38,27 +38,31 @@ class MasterKasBelanjaController extends Controller
         $title['li_1'] = $this->li_1;
         $user = Auth::user();
         $finance = $user->hasRole('finance');
-        $filter = where
+
         $all = count(MasterKasBelanja::when(!$finance, function($q) use($user){
             $q->whereUserId($user->id);
         })->get());
-        $create = count(MasterKasBelanja::whereStatus(1)
+        $create = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_CREATE)
         ->when(!$finance, function($q) use($user){
             $q->whereUserId($user->id);
         })->get());
-        $on_progress = count(MasterKasBelanja::whereStatus(2)
+        $on_progress = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_ON_PROGRESS)
         ->when(!$finance, function($q) use($user){
             $q->whereUserId($user->id);
         })->get());
-        $prosess = count(MasterKasBelanja::whereStatus(3)
+        $prosess = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PROSESS)
         ->when(!$finance, function($q) use($user){
             $q->whereUserId($user->id);
         })->get());
-        $tolak = count(MasterKasBelanja::whereStatus(5)
+        $tolak = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_TOLAK)
         ->when(!$finance, function($q) use($user){
             $q->whereUserId($user->id);
         })->get());
-        $selesai = count(MasterKasBelanja::whereStatus(4)
+        $histori = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_HISTORY)
+        ->when(!$finance, function($q) use($user){
+            $q->whereUserId($user->id);
+        })->get());
+        $pending = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PENDING)
         ->when(!$finance, function($q) use($user){
             $q->whereUserId($user->id);
         })->get());

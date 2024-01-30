@@ -25,16 +25,25 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            <div class="row">
-                                <div class="col-md mb-4" id="kdrek1_coa_hidden">
+                            <div class="row mb-4">
+                                <div class="col-md" id="kdrek1_coa_hidden">
+                                    <label for="pilih_data" class="form-label">Tambahkan Data</label>
+                                    <select id="pilih_data_id" name="pilih_data_id" class="form-control" required>
+                                        <option value="1" {{ $detail->type == "H" ? "selected" : "" }}>Header</option>
+                                        <option value="2" {{ $detail->type == "S" ? "selected" : "" }}>SubHeader</option>
+                                        <option value="3" {{ $detail->type == "C" ? "selected" : "" }}>Category</option>
+                                        <option value="4" {{ $detail->type == "D" ? "selected" : "" }}>Detail</option>
+                                    </select>
+                                    </div>
+                                <div class="col-md" id="kdrek1_coa_hidden">
                                     <label for="kdrek1_coa" class="form-label">Header Coa</label>
                                     <select id="kdrek1_coa_id" name="kdrek1_coa_id" class="form-control"></select>
                                 </div>
-                                <div class="col-md mb-4" id="kdrek2_coa_hidden">
+                                <div class="col-md" id="kdrek2_coa_hidden">
                                     <label for="kdrek2_coa" class="form-label">Deskripsi Coa</label>
                                     <select id="kdrek2_coa_id" name="kdrek2_coa_id" class="form-control"></select>
                                 </div>
-                                <div class="col-md mb-4" id="kdrek3_coa_hidden">
+                                <div class="col-md" id="kdrek3_coa_hidden">
                                     <label for="kdrek3_coa" class="form-label">Uraian Coa</label>
                                     <select id="kdrek3_coa_id" name="kdrek3_coa_id" class="form-control"></select>
                                 </div>

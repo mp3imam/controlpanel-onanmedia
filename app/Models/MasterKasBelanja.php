@@ -14,6 +14,13 @@ class MasterKasBelanja extends Model
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
 
+    const STATUS_CREATE = "1";
+    const STATUS_ON_PROGRESS = "2";
+    const STATUS_PROSESS = "3";
+    const STATUS_TOLAK = "4";
+    const STATUS_HISTORY = "5";
+    const STATUS_PENDING = "6";
+
     public function banks_belanja(){
         return $this->hasOne(BankModel::class, 'id', 'account_id');
     }

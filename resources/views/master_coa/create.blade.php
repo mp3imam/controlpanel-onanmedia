@@ -23,8 +23,8 @@
                                     <label for="pilih_data" class="form-label">Tambahkan Data</label>
                                     <select id="pilih_data_id" name="pilih_data_id" class="form-control" required>
                                         <option value="1">Header</option>
-                                        <option value="2">Deskripsi</option>
-                                        <option value="3">Uraian</option>
+                                        <option value="2">SubHeader</option>
+                                        <option value="3">Category</option>
                                         <option value="4" selected>Detail</option>
                                     </select>
                                 </div>
@@ -144,7 +144,7 @@
                                     return {
                                         results: $.map(data.data, function(item) {
                                             return {
-                                                id: item.id,
+                                                id: item.kdrek3,
                                                 text: item.name,
                                                 kdrek1: item.kdrek1,
                                                 kdrek2: item.kdrek2,
