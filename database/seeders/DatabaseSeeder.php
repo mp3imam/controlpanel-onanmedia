@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             ClcoaSeeder::class,
             CoaBelanjaSeeder::class,
             JenisPembayaranClCoaSeeder::class,
-            AdminBalasanTemplateSeeder::class,
+            // AdminBalasanTemplateSeeder::class,
         ]);
     }
 }

@@ -427,6 +427,24 @@ class MasterKasBelanjaController extends Controller
             ->orWhere('nominal', 'like','%'.$request->cari."%")
             ->orWhere('keterangan_kas', 'like','%'.$request->cari."%");
         })
+        ->when($request->q == MasterKasBelanja::STATUS_CREATE, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_CREATE);
+        })
+        ->when($request->q == MasterKasBelanja::STATUS_ON_PROGRESS, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_ON_PROGRESS);
+        })
+        ->when($request->q == MasterKasBelanja::STATUS_PROSESS, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_PROSESS);
+        })
+        ->when($request->q == MasterKasBelanja::STATUS_PENDING, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_PENDING);
+        })
+        ->when($request->q == MasterKasBelanja::STATUS_HISTORY, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_HISTORY);
+        })
+        ->when($request->q == MasterKasBelanja::STATUS_TOLAK, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_TOLAK);
+        })
         ->when($user->roles[0]->name !== 'finance', function ($q) use($user){
             $q->whereUserId($user->id);
         })

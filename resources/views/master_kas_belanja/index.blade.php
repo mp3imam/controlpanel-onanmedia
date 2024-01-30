@@ -12,32 +12,28 @@
                 <div class="card-body">
                     <div id="customerList">
                         <div class="col-sm-auto mb-3">
-                            @php
-                                $active = "color: #f7f6fb; border-color: #4E36E2; background-color:#4E36E2";
-                                $no_active = "color: #4E36E2; border-color: #4E36E2";
-                            @endphp
                             @hasrole('finance')
-                                <button id="approve_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $active }}">
+                                <button id="approve_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                     {{ MasterKasBelanja::STATUS_CREATE }} ({{ $all }})
                                 </button>
                             @else
-                                <button id="create_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $active }}">
+                                <button id="create_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                     Create ({{ $all }})
                                 </button>
                             @endhasrole
-                            <button id="on_progress_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
-                                On Progress (30)
+                            <button id="on_progress_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
+                                On Progress
                             </button>
-                            <button id="prosess_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
+                            <button id="prosess_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                 Prosess (30)
                             </button>
-                            <button id="cancell_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
+                            <button id="cancell_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                 Cancel (30)
                             </button>
-                            <button id="done_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
+                            <button id="done_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                 Done (30)
                             </button>
-                            <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5" style="{{ $no_active }}">
+                            <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                 All (30)
                             </button>
                         </div>
@@ -47,6 +43,7 @@
                                     <div class="row">
                                         <div class="col-md-3 p-3">
                                             <label>Filter Tanggal</label>
+                                            <input class="form-control flatpickr-input" id="q" hidden>
                                             <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ Request::get('tanggal') }}">
                                         </div>
                                         <div class="col-md-3 p-3">
@@ -81,8 +78,10 @@
                                             <th>No</th>
                                             <th class="text-uppercase" width="10%">No. Transaksi</th>
                                             <th class="text-uppercase">TANGGAL TRANSAKSI</th>
+                                            @hasrole('finance')
                                             <th class="text-uppercase">Role</th>
                                             <th class="text-uppercase">Username</th>
+                                            @endhasrole
                                             <th class="text-uppercase">Sumber</th>
                                             <th class="text-uppercase">Jenis Pembayaran</th>
                                             <th class="text-uppercase">Nominal</th>
@@ -131,7 +130,8 @@
                         d.cari = $('#cari').val(),
                         d.tanggal = $('#tanggal').val(),
                         d.sumber = $('#sumber').val(),
-                        d.tanggal = $('#tanggal').val()
+                        d.tanggal = $('#tanggal').val(),
+                        d.q = $('#q').val()
                     }
                 },
                 columns: [{
@@ -152,12 +152,14 @@
                     data: 'tanggal',
                     name: 'Tanggal Transaksi'
                 }, {
+                    <?php if (Auth::user()->roles[0]->name == 'Finance') { ?>
                     data: 'role',
                     name: 'Role'
                 }, {
                     data: 'username',
                     name: 'Username'
                 }, {
+                    <?php } ?>
                     data: 'banks',
                     name: 'SUMBER'
                 }, {
@@ -181,7 +183,68 @@
                 }]
             });
 
+            $('#approve_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_CREATE }})
+                resetWarna()
+                $('#approve_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#create_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_CREATE }})
+                resetWarna()
+                $('#create_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#on_progress_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
+                resetWarna()
+                $('#on_progress_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#prosess_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
+                resetWarna()
+                $('#prosess_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#cancell_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
+                resetWarna()
+                $('#cancell_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#done_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
+                resetWarna()
+                $('#done_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#all_filter').click(function () {
+                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
+                resetWarna()
+                $('#all_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
         });
+
+        function resetWarna(){
+            $('#approve_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#create_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#on_progress_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#prosess_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#cancell_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#done_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#all_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+        }
+
+        resetWarna()
+        $('#create_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
 
         $.ajaxSetup({
             headers: {
