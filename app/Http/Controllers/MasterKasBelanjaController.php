@@ -67,7 +67,7 @@ class MasterKasBelanjaController extends Controller
             $q->whereUserId($user->id);
         })->get());
 
-        return view('master_kas_belanja.index', $title, compact(['all', 'create']));
+        return view('master_kas_belanja.index', $title, compact(['all', 'create','finance']));
     }
 
     function get_datatable(Request $request){

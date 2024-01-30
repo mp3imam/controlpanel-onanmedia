@@ -14,7 +14,7 @@
                         <div class="col-sm-auto mb-3">
                             @hasrole('finance')
                                 <button id="approve_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
-                                    {{ MasterKasBelanja::STATUS_CREATE }} ({{ $all }})
+                                    Approve ({{ $all }})
                                 </button>
                             @else
                                 <button id="create_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
@@ -78,14 +78,15 @@
                                             <th>No</th>
                                             <th class="text-uppercase" width="10%">No. Transaksi</th>
                                             <th class="text-uppercase">TANGGAL TRANSAKSI</th>
-                                            @hasrole('finance')
-                                            <th class="text-uppercase">Role</th>
-                                            <th class="text-uppercase">Username</th>
-                                            @endhasrole
+                                            @if($finance)
+                                                <th class="text-uppercase">Role</th>
+                                                <th class="text-uppercase">Username</th>
+                                            @endif
                                             <th class="text-uppercase">Sumber</th>
                                             <th class="text-uppercase">Jenis Pembayaran</th>
                                             <th class="text-uppercase">Nominal</th>
                                             <th class="text-uppercase">KETERANGAN</th>
+                                            <th hidden>status</th>
                                             <th class="text-uppercase" width="80px">Action</th>
                                         </tr>
                                     </thead>
@@ -152,7 +153,7 @@
                     data: 'tanggal',
                     name: 'Tanggal Transaksi'
                 }, {
-                    <?php if (Auth::user()->roles[0]->name == 'Finance') { ?>
+                    <?php if ($finance) { ?>
                     data: 'role',
                     name: 'Role'
                 }, {
@@ -172,13 +173,15 @@
                     data: 'keterangan_kas',
                     name: 'KETERANGAN'
                 }, {
+                    data: 'status',
+                    visible: false
+                }, {
                     data: 'id',
                     name: 'Action',
                     render: function(data, type, row, meta) {
-                        return `
-                        <a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
-                        `;
+                        button = `<a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
+                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>`
+                        return row.status;
                     }
                 }]
             });
@@ -245,6 +248,7 @@
 
         resetWarna()
         $('#create_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+        $('#approve_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
 
         $.ajaxSetup({
             headers: {
