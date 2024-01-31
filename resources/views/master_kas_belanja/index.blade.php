@@ -22,49 +22,39 @@
                                 </button>
                             @endhasrole
                             <button id="on_progress_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
-                                On Progress
+                                On Progress ({{ $all }})
                             </button>
                             <button id="prosess_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
-                                Prosess (30)
+                                Prosess ({{ $all }})
                             </button>
                             <button id="cancell_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
-                                Cancel (30)
+                                Cancel ({{ $all }})
                             </button>
                             <button id="done_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
-                                Done (30)
+                                Done ({{ $all }})
                             </button>
                             <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
-                                All (30)
+                                All ({{ $all }})
                             </button>
                         </div>
                         <div class="row g-3">
                             <form action="{{ route('master_kas_belanja.index') }}">
-                                <div class="card mt-4">
-                                    <div class="row">
-                                        <div class="col-md-3 p-3">
-                                            <label>Filter Tanggal</label>
-                                            <input class="form-control flatpickr-input" id="q" hidden>
-                                            <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ Request::get('tanggal') }}">
-                                        </div>
-                                        <div class="col-md-3 p-3">
-                                            <label>Sumber Dana</label>
-                                            <select class="form-control" id="sumber" name="sumber">
-                                                <option value="">-- ALL --</option>
-                                                <option value="1" {{ Request::get('sumber') == 1 ? "selected" : "" }}>Transfer</option>
-                                                <option value="2" {{ Request::get('sumber') == 2 ? "selected" : "" }}>Cash</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 p-3">
-                                            <label>Filter All</label>
-                                            <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control"
-                                                placeholder="Cari semua data"
-                                                aria-label="Amount (to the nearest dollar)">
-                                        </div>
-                                        <div class="col-md-3 p-3 text-center mt-4 float-end">
-                                            <a href="{{ route('master_kas_belanja.create') }}" type="button" class="btn btn-success">
-                                                Tambah
-                                            </a>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-md-4 p-3">
+                                        <label>Filter Tanggal</label>
+                                        <input class="form-control flatpickr-input" id="q" hidden>
+                                        <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ Request::get('tanggal') }}">
+                                    </div>
+                                    <div class="col-md-6 p-3">
+                                        <label>Filter All</label>
+                                        <input type="text" id="cari" name="cari" value="{{ Request::get('cari') }}" class="form-control"
+                                            placeholder="Cari semua data"
+                                            aria-label="Amount (to the nearest dollar)">
+                                    </div>
+                                    <div class="col-md py-2 text-center mt-4 float-end">
+                                        <a href="{{ route('master_kas_belanja.create') }}" type="button" class="btn text-white fs-20 px-4" style="background-color: #4E36E2">
+                                            <i class="ri-add-fill"></i> Add
+                                        </a>
                                     </div>
                                 </div>
                             </form>
@@ -75,18 +65,17 @@
                                     cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
+                                            <th><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" disabled ></th>
                                             <th>No</th>
                                             <th class="text-uppercase" width="10%">No. Transaksi</th>
-                                            <th class="text-uppercase">TANGGAL TRANSAKSI</th>
+                                            <th class="text-uppercase">Tanggal Transaksi</th>
                                             @if($finance)
                                                 <th class="text-uppercase">Role</th>
                                                 <th class="text-uppercase">Username</th>
                                             @endif
-                                            <th class="text-uppercase">Sumber</th>
-                                            <th class="text-uppercase">Jenis Pembayaran</th>
+                                            <th class="text-uppercase">Deskripsi</th>
                                             <th class="text-uppercase">Nominal</th>
-                                            <th class="text-uppercase">KETERANGAN</th>
-                                            <th hidden>status</th>
+                                            <th class="text-uppercase">Status</th>
                                             <th class="text-uppercase" width="80px">Action</th>
                                         </tr>
                                     </thead>
@@ -130,12 +119,16 @@
                     data: function(d) {
                         d.cari = $('#cari').val(),
                         d.tanggal = $('#tanggal').val(),
-                        d.sumber = $('#sumber').val(),
-                        d.tanggal = $('#tanggal').val(),
                         d.q = $('#q').val()
                     }
                 },
                 columns: [{
+                    data: "id",
+                    sortable: false,
+                    render: function(data, type, row, meta) {
+                        return `<input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" readonly>`
+                    }
+                }, {
                     data: "id",
                     sortable: false,
                     render: function(data, type, row, meta) {
@@ -161,27 +154,21 @@
                     name: 'Username'
                 }, {
                     <?php } ?>
-                    data: 'banks',
-                    name: 'SUMBER'
-                }, {
-                    data: 'jenis_transaksi',
-                    name: 'JENIS PEMBAYARAN'
+                    data: 'keterangan_kas',
+                    name: 'Deskripsi'
                 }, {
                     data: 'nominals',
-                    name: 'NILAI'
-                }, {
-                    data: 'keterangan_kas',
-                    name: 'KETERANGAN'
+                    name: 'Nominal'
                 }, {
                     data: 'status',
-                    visible: false
+                    name: 'Status'
                 }, {
                     data: 'id',
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         button = `<a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>`
-                        return row.status;
+                        return row.status > 2 ? button : null;
                     }
                 }]
             });
@@ -237,13 +224,13 @@
         });
 
         function resetWarna(){
-            $('#approve_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
-            $('#create_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
-            $('#on_progress_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
-            $('#prosess_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
-            $('#cancell_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
-            $('#done_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
-            $('#all_filter').css({'color': '#4E36E2', 'background-color' : '#ffffff', 'border-color': '#4E36E2'})
+            $('#approve_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#create_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#on_progress_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#prosess_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#cancell_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#done_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#all_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
         }
 
         resetWarna()

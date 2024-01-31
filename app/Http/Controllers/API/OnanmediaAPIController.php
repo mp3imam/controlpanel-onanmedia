@@ -8,6 +8,7 @@ use App\Models\DivisiModel;
 use App\Models\KategoriModel;
 use App\Models\MasterCoaModel;
 use App\Models\MataUang;
+use App\Models\SatuanModel;
 use App\Models\UserPublicModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -328,6 +329,20 @@ class OnanmediaAPIController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => number_format(MasterCoaModel::where('kdrek1',$request->kdrek1)->where('kdrek2','=',$request->kdrek2)->where('kdrek3','=',$request->kdrek3)->where('type','D')->orderBy('kdrek','desc')->first()->kdrek + 0.001, 3)
+        ]);
+    }
+
+    public function get_select2_satuan_barang(Request $request){
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => SatuanModel::select('id','nama as name')
+            ->where('isAktif',1)
+            ->when($request->id, function($q) use($request) {
+                return $q->whereIn('id',$request->id);
+            })
+            ->when($request->q, function($q) use($request) {
+                return $q->where('nama','ilike','%'.$request->q.'%');
+            })->get()->all()
         ]);
     }
 
