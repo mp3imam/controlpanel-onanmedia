@@ -37,6 +37,10 @@ class MasterKasBelanja extends Model
         return $this->hasMany(MasterKasBelanjaDetail::class, 'kas_id');
     }
 
+    public function statuses(){
+        return $this->belongsTo(TransaksiKasBelanjaStatusModel::class, 'status');
+    }
+
     public function scopeTotal($q){
         return $q->with(['belanja_detail' => function($q) {
             $q->selectRaw('kas_id, sum("nominal") jumlah_nominal')

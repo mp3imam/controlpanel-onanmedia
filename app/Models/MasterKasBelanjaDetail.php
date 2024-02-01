@@ -23,4 +23,9 @@ class MasterKasBelanjaDetail extends Model
     public function banks_belanja(){
         return $this->hasOne(BankModel::class, 'id', 'account_id');
     }
+
+    public function satuan_barang(){
+        return $this->belongsTo(SatuanModel::class,'satuan_id');
+    }
+
 }

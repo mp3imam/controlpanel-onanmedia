@@ -28,7 +28,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label for="account_id" class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" rows="4" cols="50" placeholder="Tulis deskripsi pembelanjaan di sini...." required></textarea>
+                                    <textarea class="form-control" rows="4" cols="50" placeholder="Tulis deskripsi pembelanjaan di sini...." name="deskripsi" required></textarea>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                                                 <input id="harga0" name="harga[]" class="form-control harga" value="1" onkeyup="updateTotal(0)" min="1" required />
                                             </div>
                                             <div class="col-md">
-                                                <input id="keterangan" name="keterangan[]" class="form-control" required />
+                                                <input id="keterangan" name="keterangan[]" class="form-control" />
                                             </div>
                                             <div class="col-md">
                                                 <input id="jumlah0" name="jumlah[]" class="form-control jumlah" value="0" readonly />

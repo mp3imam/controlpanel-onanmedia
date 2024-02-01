@@ -30,6 +30,7 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     function __construct(){
+        // dd(MasterKasBelanja::with(['coa_belanja','belanja_detail.satuan_barang','banks_belanja','statuses'])->get());
         $this->middleware('permission:'.Permission::findOrFail(12)->active()->first()->name);
     }
 
@@ -38,36 +39,18 @@ class MasterKasBelanjaController extends Controller
         $title['li_1'] = $this->li_1;
         $user = Auth::user();
         $finance = $user->hasRole('finance');
+        // $administrator = $user->hasRole('administrator');
+        // dd(!$finance || !$administrator);
 
-        $all = count(MasterKasBelanja::when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
-        $create = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_CREATE)
-        ->when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
-        $on_progress = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_ON_PROGRESS)
-        ->when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
-        $prosess = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PROSESS)
-        ->when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
-        $tolak = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_TOLAK)
-        ->when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
-        $histori = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_HISTORY)
-        ->when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
-        $pending = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PENDING)
-        ->when(!$finance, function($q) use($user){
-            $q->whereUserId($user->id);
-        })->get());
+        $all = count(MasterKasBelanja::when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $create = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_CREATE)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $on_progress = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_ON_PROGRESS)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $prosess = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PROSESS)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $tolak = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_TOLAK)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $histori = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_HISTORY)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $pending = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PENDING)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
 
-        return view('master_kas_belanja.index', $title, compact(['all', 'create','finance']));
+        return view('master_kas_belanja.index', $title, compact(['all', 'create','finance','on_progress','prosess','tolak','histori','pending']));
     }
 
     function get_datatable(Request $request){
@@ -75,7 +58,7 @@ class MasterKasBelanjaController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->coa_belanja->uraian;
+            return $row->coa_belanja ? $row->coa_belanja->uraian : '-';
         })
         ->addColumn('username', function ($row) use($user){
             return $user->username;
@@ -92,7 +75,10 @@ class MasterKasBelanjaController extends Controller
         ->addColumn('tanggal', function ($row){
             return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
         })
-        ->rawColumns(['banks','nominals','jenis_transaksi'])
+        ->addColumn('status_name', function ($row){
+            return $row->statuses->nama;
+        })
+        ->rawColumns(['banks','nominals','jenis_transaksi','tanggal','status_name'])
         ->make(true);
 
     }
@@ -116,110 +102,104 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // dd($request->all());
         $validasi = [
-            'tanggal_transaksi' => 'required',
-            'account_id'        => 'required',
-            'jenis'             => 'required',
-            'nilai'             => 'required',
+            'deskripsi'   => 'required',
+            'total_nilai' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
             $tahun = Carbon::now()->format('Y');
             $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
             $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.$tahun;
             $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
-            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            $request['keterangan_kas'] = $request->deskripsi;
             $request['user_id'] = Auth::user()->id;
 
             // Store your file into directory and db
-            $kas = MasterKasBelanja::create($request->except('_token'));
+            $kasBelanja = MasterKasBelanja::create($request->except('_token'));
 
-            foreach ($request->akun_belanja as $akun => $a) {
-                $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+            foreach ($request->nama_item as $item => $i) {
+                $harga = str_replace(".","",str_replace("Rp. ","",$request->harga[$item]));
+                $jumlah = str_replace(".","",str_replace("Rp. ","",$request->jumlah[$item]));
 
                 $data = [
-                    'kas_id'     => $kas->id,
-                    'account_id' => $a,
-                    'keterangan' => $request->keterangan[$akun] ?? '',
-                    'nominal'    => $nominal,
+                    'kas_id'     => $kasBelanja->id,
+                    'nama_item'  => $i,
+                    'qty'        => $request->qty[$item],
+                    'satuan'     => $request->satuan[$item],
+                    'harga'      => $harga,
+                    'jumlah'     => $jumlah,
+                    'keterangan' => $request->keterangan[$item] ?? '',
+                    'nominal'    => $request->nominal,
                 ];
+
+                $file = $request->file('file')[$item];
+                if ($file) {
+                    $path = public_path('kas_belanja/');
+                    $rand = rand(1000,9999);
+                    $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+                    $file->move($path, $imageName);
+                }
+
+                $data += [
+                    'file'        => asset('kas_belanja/')."/".$imageName,
+                ];
+
                 MasterKasBelanjaDetail::create($data);
             }
 
-            if ($request->attachment){
-                $files = TemporaryFileUpload::query()
-                ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
-                ->whereStatus("0")
-                ->whereCreatedBy(Auth::user()->id)
-                ->whereToken($request->_token)
-                ->get();
-
-                foreach ($files as $file) {
-                    $data = [
-                        'kas_id'     => $kas->id,
-                        'filename'   => $file->filename,
-                    ];
-                    MasterKasBelanjaFile::create($data);
-
-                    // update foto status menjadi 1
-                    TemporaryFileUpload::findOrFail($file->id)->update([
-                        'kas_id' => $kas->id,
-                        'status' => 1,
-                    ]);
-                }
-            }
-
             // Create Master Jurnal
-            $request['dokumen'] = $request->nomor_transaksi;
-            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
-            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
-            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-            $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
-            $request['bank_id'] = $request->account_id;
-            $request['sumber_data'] = 3;
-            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
-            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
-            $masterJurnal = MasterJurnal::create($request->except('_token'));
+            // $request['dokumen'] = $request->nomor_transaksi;
+            // $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+            // $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            // $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            // $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
+            // $request['bank_id'] = $request->account_id;
+            // $request['sumber_data'] = 3;
+            // $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            // $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            // $masterJurnal = MasterJurnal::create($request->except('_token'));
 
-            // Create Master Jurnal Detail
-            foreach ($request->akun_belanja as $akun => $a) {
-                $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
+            // // Create Master Jurnal Detail
+            // foreach ($request->akun_belanja as $akun => $a) {
+            //     $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
 
-                $data = [
-                    'jurnal_umum_id' => $masterJurnal->id,
-                    'account_id'     => $a,
-                    'keterangan'     => $request->keterangan[$akun] ?? '',
-                    'debet'         => $nominal,
-                ];
-                JurnalUmumDetail::create($data);
-            }
-            JurnalUmumDetail::create([
-                'jurnal_umum_id' => $masterJurnal->id,
-                'account_id'     => $request->account_id,
-                'keterangan'     => '',
-                'kredit'          => $request->nominal,
-            ]);
+            //     $data = [
+            //         'jurnal_umum_id' => $masterJurnal->id,
+            //         'account_id'     => $a,
+            //         'keterangan'     => $request->keterangan[$akun] ?? '',
+            //         'debet'         => $nominal,
+            //     ];
+            //     JurnalUmumDetail::create($data);
+            // }
+            // JurnalUmumDetail::create([
+            //     'jurnal_umum_id' => $masterJurnal->id,
+            //     'account_id'     => $request->account_id,
+            //     'keterangan'     => '',
+            //     'kredit'          => $request->nominal,
+            // ]);
 
-            //
-            foreach (MasterKasBelanjaFile::whereKasId($kas->id)->get() as $file) {
-                MasterJurnalFile::create([
-                    'jurnal_umum_id' => $masterJurnal->id,
-                    'path'           => 'kas_belanja',
-                    'filename'       => $file->filename,
-                ]);
-            }
+            // //
+            // foreach (MasterKasBelanjaFile::whereKasId($kas->id)->get() as $file) {
+            //     MasterJurnalFile::create([
+            //         'jurnal_umum_id' => $masterJurnal->id,
+            //         'path'           => 'kas_belanja',
+            //         'filename'       => $file->filename,
+            //     ]);
+            // }
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-        }
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+        // }
 
         return redirect('master_kas_belanja');
     }
@@ -277,7 +257,7 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['coa_belanja','belanja_detail.coa_belanja','banks_belanja','kas_file'])->findOrFail($id);
+        $detail = MasterKasBelanja::with(['coa_belanja','belanja_detail.satuan_barang','banks_belanja','kas_file'])->findOrFail($id);
         // dd($detail);
 
         return view('master_kas_belanja.edit', $title, compact(['detail']));
@@ -421,13 +401,16 @@ class MasterKasBelanjaController extends Controller
 
     public function models($request){
         $user = Auth::user();
-        return MasterKasBelanja::with(['coa_belanja','belanja_detail','banks_belanja'])
+        return MasterKasBelanja::with(['coa_belanja','belanja_detail','banks_belanja','statuses'])
         ->when($request->cari, function($q) use($request){
             $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
             ->orWhere('nominal', 'like','%'.$request->cari."%")
             ->orWhere('keterangan_kas', 'like','%'.$request->cari."%");
         })
         ->when($request->q == MasterKasBelanja::STATUS_CREATE, function ($q){
+            $q->whereStatus(MasterKasBelanja::STATUS_CREATE);
+        })
+        ->when($request->q == NULL, function ($q){
             $q->whereStatus(MasterKasBelanja::STATUS_CREATE);
         })
         ->when($request->q == MasterKasBelanja::STATUS_ON_PROGRESS, function ($q){
