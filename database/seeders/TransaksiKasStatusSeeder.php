@@ -18,8 +18,8 @@ class TransaksiKasStatusSeeder extends Seeder
                 'name' => 'Persetujuan',
                 'slug' => 'persetujuan',
             ],[
-                'name' => 'Pending',
-                'slug' => 'pending',
+                'name' => 'On Progress',
+                'slug' => 'on_progress',
             ],[
                 'name' => 'Proses',
                 'slug' => 'proses',
@@ -27,8 +27,11 @@ class TransaksiKasStatusSeeder extends Seeder
                 'name' => 'Tolak',
                 'slug' => 'tolak',
             ],[
-                'name' => 'Selesai',
-                'slug' => 'selesai',
+                'name' => 'History',
+                'slug' => 'history',
+            ],[
+                'name' => 'Pending',
+                'slug' => 'pending',
             ]
         ]);
     }

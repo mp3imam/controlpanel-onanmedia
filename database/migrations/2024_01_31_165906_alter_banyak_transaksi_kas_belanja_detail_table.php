@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('harga')->default(1);
             $table->string('jumlah')->default(1);
             $table->string('file')->nullable();
+            $table->string('status')->default(0);
         });
     }
 

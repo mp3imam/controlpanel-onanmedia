@@ -34,7 +34,43 @@ class MasterKasBelanja extends Model
     }
 
     public function belanja_detail(){
+        return $this->hasMany(MasterKasBelanjaDetail::class, 'kas_id')->whereIn('status', [0,6]);
+    }
+
+    public function belanja_barang(){
         return $this->hasMany(MasterKasBelanjaDetail::class, 'kas_id');
+    }
+
+    public function scopeBelanjaCreate($query){
+        return $query->whereHas('belanja_barang', function ($q) {
+            $q->whereStatus(1);
+        });
+    }
+
+    public function scopeBelanjaOnProgress($query){
+        return $query->whereHas('belanja_barang', function ($q) {
+            $q->whereStatus(2);
+        });
+    }
+    public function scopeBelanjaProses($query){
+        return $query->whereHas('belanja_barang', function ($q) {
+            $q->whereStatus(3);
+        });
+    }
+    public function scopeBelanjaTolak($query){
+        return $query->whereHas('belanja_barang', function ($q) {
+            $q->whereStatus(4);
+        });
+    }
+    public function scopeBelanjaHistory($query){
+        return $query->whereHas('belanja_barang', function ($q) {
+            $q->whereStatus(5);
+        });
+    }
+    public function scopeBelanjaPending($query){
+        return $query->whereHas('belanja_barang', function ($q) {
+            $q->whereStatus(6);
+        });
     }
 
     public function statuses(){

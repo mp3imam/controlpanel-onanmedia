@@ -129,10 +129,11 @@
                     data: "id",
                     sortable: false,
                     render: function(data, type, row, meta) {
-                        return `<input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" readonly>`
+                        checked = row.checked == 1 ? "checked" : "disabled"
+                        return `<input type="checkbox" ${checked} >`
                     }
                 }, {
-                    data: "id",
+                    data: "checked",
                     sortable: false,
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;

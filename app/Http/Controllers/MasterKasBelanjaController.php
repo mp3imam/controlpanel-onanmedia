@@ -30,7 +30,10 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     function __construct(){
-        // dd(MasterKasBelanja::with(['coa_belanja','belanja_detail.satuan_barang','banks_belanja','statuses'])->get());
+        // $user = Auth::user();
+        // $finance = $user->hasRole('finance');
+        // dd(MasterKasBelanja::BelanjaProses()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+
         $this->middleware('permission:'.Permission::findOrFail(12)->active()->first()->name);
     }
 
@@ -43,12 +46,12 @@ class MasterKasBelanjaController extends Controller
         // dd(!$finance || !$administrator);
 
         $all = count(MasterKasBelanja::when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
-        $create = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_CREATE)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
-        $on_progress = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_ON_PROGRESS)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
-        $prosess = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PROSESS)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
-        $tolak = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_TOLAK)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
-        $histori = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_HISTORY)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
-        $pending = count(MasterKasBelanja::whereStatus(MasterKasBelanja::STATUS_PENDING)->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $create = count(MasterKasBelanja::BelanjaCreate()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $on_progress = count(MasterKasBelanja::BelanjaOnProgress()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $prosess = count(MasterKasBelanja::BelanjaProses()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $tolak = count(MasterKasBelanja::BelanjaTolak()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $histori = count(MasterKasBelanja::BelanjaHistory()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
+        $pending = count(MasterKasBelanja::BelanjaPending()->when(!$finance, function($q) use($user){$q->whereUserId($user->id);})->get());
 
         return view('master_kas_belanja.index', $title, compact(['all', 'create','finance','on_progress','prosess','tolak','histori','pending']));
     }
@@ -133,7 +136,7 @@ class MasterKasBelanjaController extends Controller
                     'kas_id'     => $kasBelanja->id,
                     'nama_item'  => $i,
                     'qty'        => $request->qty[$item],
-                    'satuan'     => $request->satuan[$item],
+                    'satuan_id'  => $request->satuan[$item],
                     'harga'      => $harga,
                     'jumlah'     => $jumlah,
                     'keterangan' => $request->keterangan[$item] ?? '',
@@ -368,6 +371,35 @@ class MasterKasBelanjaController extends Controller
         return redirect('master_kas_belanja');
     }
 
+    function checked_finance(Request $request) {
+        foreach ($request->id_item as $id => $i) {
+            MasterKasBelanjaDetail::find($i)->update([
+                'status' => $request->selectDetail[$id],
+                'keterangan' => $request->keterangan[$id] ?? '-'
+            ]);
+        }
+
+        // All Approve
+        $status = 1;
+        $checked = 0;
+
+        // Checked
+        if(in_array(1, $request->selectDetail)) {
+            $status = 2;
+            $checked = 1;
+        }
+
+        // Pending
+        if(in_array(4, $request->selectDetail)) $status = 4;
+
+        MasterKasBelanja::find($request->id_detail)->update([
+            'status' => $status,
+            'checked' => $checked
+        ]);
+
+        return redirect('master_kas_belanja');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -408,25 +440,25 @@ class MasterKasBelanjaController extends Controller
             ->orWhere('keterangan_kas', 'like','%'.$request->cari."%");
         })
         ->when($request->q == MasterKasBelanja::STATUS_CREATE, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_CREATE);
+            $q->BelanjaCreate();
         })
         ->when($request->q == NULL, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_CREATE);
+            $q->BelanjaCreate();
         })
         ->when($request->q == MasterKasBelanja::STATUS_ON_PROGRESS, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_ON_PROGRESS);
+            $q->BelanjaOnProgress();
         })
         ->when($request->q == MasterKasBelanja::STATUS_PROSESS, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_PROSESS);
+            $q->BelanjaProses();
         })
         ->when($request->q == MasterKasBelanja::STATUS_PENDING, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_PENDING);
+            $q->BelanjaTolak();
         })
         ->when($request->q == MasterKasBelanja::STATUS_HISTORY, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_HISTORY);
+            $q->BelanjaHistory();
         })
         ->when($request->q == MasterKasBelanja::STATUS_TOLAK, function ($q){
-            $q->whereStatus(MasterKasBelanja::STATUS_TOLAK);
+            $q->BelanjaPending();
         })
         ->when($user->roles[0]->name !== 'finance', function ($q) use($user){
             $q->whereUserId($user->id);

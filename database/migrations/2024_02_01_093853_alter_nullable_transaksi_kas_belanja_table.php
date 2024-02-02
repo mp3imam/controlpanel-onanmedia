@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
+            $table->string('checked')->default(0);
             $table->integer('account_id')->nullable()->change();
         });
     }

@@ -42,6 +42,8 @@ class DatabaseSeeder extends Seeder
             ClcoaSeeder::class,
             CoaBelanjaSeeder::class,
             JenisPembayaranClCoaSeeder::class,
+            TransaksiKasBelanjaStatusSeeder::class,
+            SatuanSeeder::class,
             // AdminBalasanTemplateSeeder::class,
         ]);
     }
