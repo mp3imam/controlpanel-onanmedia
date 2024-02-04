@@ -25,6 +25,10 @@ class MasterKasBelanja extends Model
         return $this->hasOne(BankModel::class, 'id', 'account_id');
     }
 
+    public function users(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
     public function coa_belanja(){
         return $this->hasOne(MasterCoaModel::class, 'id', 'account_id');
     }
@@ -33,8 +37,10 @@ class MasterKasBelanja extends Model
         return $this->hasMany(MasterKasBelanjaFile::class, 'kas_id');
     }
 
-    public function belanja_detail(){
-        return $this->hasMany(MasterKasBelanjaDetail::class, 'kas_id')->whereIn('status', [0,6]);
+    public function scopeBelanjaDetail($query, $status){
+        return $query->whereHas('belanja_barang', function ($q) use($status){
+            $q->whereIn('status', $status);
+        });
     }
 
     public function belanja_barang(){

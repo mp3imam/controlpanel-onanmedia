@@ -78,12 +78,27 @@
                                             @endif
                                             <th class="text-uppercase">Deskripsi</th>
                                             <th class="text-uppercase">Nominal</th>
-                                            <th class="text-uppercase">Status</th>
+                                            <th class="text-uppercase">Nominal Approve</th>
                                             <th class="text-uppercase" width="80px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
+                                    @hasrole('finance')
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text-end" colspan="6">
+                                                    <label class="fs-20 rounded-4 py-2 px-4">Total</label>
+                                                    <label class="fs-20 text-white rounded-4 py-2 px-5 pt-2" style="background-color: #4E36E2">Rp. {{ $checked_sum }}</label>
+                                                </td>
+                                                <td class="text-end mb-2">
+                                                    <button class="btn btn-success fs-20 text-white rounded-4 py-2 px-4" onclick="konfirmasi_id({{ $checked_id }})">
+                                                        Approved
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    @endhasrole
                                 </table>
                             </div>
                         </div>
@@ -107,16 +122,8 @@
         $(function() {
             var table = $('#dataTable').DataTable({
                 dom: 'lrtip',
-                scrollY: "400px",
-                scrollX: true,
                 processing: true,
                 serverSide: true,
-                fixedColumns: {
-                    left: 2,
-                    right: 0,
-                    width: 200,
-                    targets: 10
-                },
                 ajax: {
                     url: "{{ route('getDataTableMasterKasBelanja') }}",
                     data: function(d) {
@@ -129,7 +136,7 @@
                     data: "id",
                     sortable: false,
                     render: function(data, type, row, meta) {
-                        checked = row.checked == 1 ? "checked" : "disabled"
+                        checked = row.checked == 1 ? "checked onclick='this.checked=!this.checked;'" : "disabled"
                         return `<input type="checkbox" ${checked} >`
                     }
                 }, {
@@ -162,8 +169,8 @@
                     data: 'nominals',
                     name: 'Nominal'
                 }, {
-                    data: 'status_name',
-                    name: 'Status'
+                    data: 'nominals_approve',
+                    name: 'Nominal Approve'
                 }, {
                     data: 'id',
                     name: 'Action',
@@ -264,101 +271,141 @@
                 </div>
             </div>
         `)
-            $("#exampleModal").modal('show');
+        $("#exampleModal").modal('show');
 
-            var fd = new FormData()
-            fd.append('username_id', $('#username_id').val())
-            fd.append('nama_lengkap_id', $('#nama_lengkap_id').val())
-            $.ajax({
-                type: 'post',
-                url: "{{ route('users.pdf') }}",
-                data: fd,
-                processData: false,
-                contentType: false,
-                xhrFields: {
-                    responseType: 'blob' // to avoid binary data being mangled on charset conversion
-                },
-                success: function(blob, status, xhr) {
-                    // check for a filename
-                    var filename = "";
-                    var disposition = xhr.getResponseHeader('Content-Disposition');
-                    if (disposition && disposition.indexOf('attachment') !== -1) {
-                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                        var matches = filenameRegex.exec(disposition);
-                        if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-                    }
+        var fd = new FormData()
+        fd.append('username_id', $('#username_id').val())
+        fd.append('nama_lengkap_id', $('#nama_lengkap_id').val())
+        $.ajax({
+            type: 'post',
+            url: "{{ route('users.pdf') }}",
+            data: fd,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                responseType: 'blob' // to avoid binary data being mangled on charset conversion
+            },
+            success: function(blob, status, xhr) {
+                // check for a filename
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
 
-                    if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                        // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-                        window.navigator.msSaveBlob(blob, filename);
-                    } else {
-                        var URL = window.URL || window.webkitURL;
-                        var downloadUrl = URL.createObjectURL(blob);
+                if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    var URL = window.URL || window.webkitURL;
+                    var downloadUrl = URL.createObjectURL(blob);
 
-                        if (filename) {
-                            // use HTML5 a[download] attribute to specify filename
-                            var a = document.createElement("a");
-                            // safari doesn't support this yet
-                            if (typeof a.download === 'undefined') {
-                                window.location.href = downloadUrl;
-                            } else {
-                                a.href = downloadUrl;
-                                a.download = filename;
-                                document.body.appendChild(a);
-                                a.click();
-                            }
-                        } else {
+                    if (filename) {
+                        // use HTML5 a[download] attribute to specify filename
+                        var a = document.createElement("a");
+                        // safari doesn't support this yet
+                        if (typeof a.download === 'undefined') {
                             window.location.href = downloadUrl;
+                        } else {
+                            a.href = downloadUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
                         }
-
-                        setTimeout(function() {
-                            URL.revokeObjectURL(downloadUrl);
-                        }, 100); // cleanup
+                    } else {
+                        window.location.href = downloadUrl;
                     }
+
+                    setTimeout(function() {
+                        URL.revokeObjectURL(downloadUrl);
+                    }, 100); // cleanup
                 }
-            }).done(function() { //use this
-                $('#exampleModal').modal('hide')
-            });
+            }
+        }).done(function() { //use this
+            $('#exampleModal').modal('hide')
+        });
 
-        })
+    })
 
-        function konfirmasi_hapus(id, name) {
-            Swal.fire({
-                title: "Masukan Alasan menghapus data transaksi " + name,
-                input: "text",
-                inputAttributes: {
-                    autocapitalize: "off"
-                },
-                showCancelButton: true,
-                confirmButtonText: "Hapus",
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    var data = new FormData();
-                    data.append('id', id);
-                    data.append('alasan', result.value);
-                    $.ajax({
-                        type: "post",
-                        url: "{{ route('softdelete_kas_belanja') }}",
-                        data: data,
-                        processData: false,
-                        contentType: false,
-                        success: function(result) {
-                            Swal.fire({
-                                title: 'Hapus!',
-                                text: 'Data berhasil di hapus',
-                                icon: 'success',
-                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                                buttonsStyling: false,
-                                timer: 2500
-                            }).then(function() {
-                                $('#dataTable').DataTable().ajax.reload()
-                                $('#exampleModalgrid').modal('hide');
-                            });
-                        }
-                    });
-                }
+    function konfirmasi_hapus(id, name) {
+        Swal.fire({
+            title: "Masukan Alasan menghapus data transaksi " + name,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                var data = new FormData();
+                data.append('id', id);
+                data.append('alasan', result.value);
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('softdelete_kas_belanja') }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        Swal.fire({
+                            title: 'Hapus!',
+                            text: 'Data berhasil di hapus',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        }).then(function() {
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide');
+                        });
+                    }
+                });
+            }
 
-            });
-        }
-    </script>
+        });
+    }
+
+    function konfirmasi_hapus(id, name) {
+        Swal.fire({
+            title: "Masukan Alasan menghapus data transaksi " + name,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                var data = new FormData();
+                data.append('id', id);
+                data.append('alasan', result.value);
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('softdelete_kas_belanja') }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        Swal.fire({
+                            title: 'Hapus!',
+                            text: 'Data berhasil di hapus',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        }).then(function() {
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide');
+                        });
+                    }
+                });
+            }
+
+        });
+    }
+
+</script>
 @endsection

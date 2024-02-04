@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
             $table->string('checked')->default(0);
+            $table->string('nominal_approve')->default(0);
             $table->integer('account_id')->nullable()->change();
         });
     }
@@ -22,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
+            $table->dropColumn(['checked','nominal_approve']);
+        });
     }
 };

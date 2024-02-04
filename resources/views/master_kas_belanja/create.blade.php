@@ -78,7 +78,7 @@
                                                 <input id="jumlah0" name="jumlah[]" class="form-control jumlah" value="0" readonly />
                                             </div>
                                             <div class="col-md">
-                                                <input id="file" name="file[]" type="file" class="form-control" accept="image/*" />
+                                                <input id="file" name="file0" type="file" class="form-control" accept="image/*" />
                                             </div>
                                             <div class="col-md text-center float-end">
                                             </div>
@@ -187,7 +187,7 @@
                     <input id="jumlah`+count+`" name="jumlah[]" class="form-control jumlah" value="0" readonly />
                 </div>
                 <div class="col-md">
-                    <input id="file`+count+`" name="file[]" type="file" class="form-control" accept="image/*" />
+                    <input id="file`+count+`" name="file`+count+`" type="file" class="form-control" accept="image/*" />
                 </div>
                 <div class="col-md text-center float-end hapus_detail">
                     <i class="ri-delete-bin-line text-danger ri-2x"></i>
