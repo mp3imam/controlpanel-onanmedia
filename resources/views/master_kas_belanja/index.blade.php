@@ -70,7 +70,7 @@
                                         <tr>
                                             <th><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" disabled ></th>
                                             <th>No</th>
-                                            <th class="text-uppercase" width="10%">No. Transaksi</th>
+                                            <th class="text-uppercase">No. Transaksi</th>
                                             <th class="text-uppercase">Tanggal Transaksi</th>
                                             @if($finance)
                                                 <th class="text-uppercase">Role</th>
@@ -85,19 +85,21 @@
                                     <tbody>
                                     </tbody>
                                     @hasrole('finance')
-                                        <tfoot>
-                                            <tr>
-                                                <td class="text-end" colspan="6">
-                                                    <label class="fs-20 rounded-4 py-2 px-4">Total</label>
-                                                    <label class="fs-20 text-white rounded-4 py-2 px-5 pt-2" style="background-color: #4E36E2">Rp. {{ $checked_sum }}</label>
-                                                </td>
-                                                <td class="text-end mb-2">
-                                                    <button class="btn btn-success fs-20 text-white rounded-4 py-2 px-4" onclick="konfirmasi_id({{ $checked_id }})">
-                                                        Approved
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
+                                        @if ($checked_sum > 0)
+                                            <tfoot>
+                                                <tr>
+                                                    <td class="text-end" colspan="8">
+                                                        <label class="fs-20 rounded-4 py-2 px-4">Total</label>
+                                                        <label class="fs-20 text-white rounded-4 py-2 px-5 pt-2" style="background-color: #4E36E2" id="checked_sum">{{ $checked_sum }}</label>
+                                                    </td>
+                                                    <td class="text-end mb-2" colspan="2">
+                                                        <button id="approved" class="btn btn-success fs-20 text-white rounded-4 py-2 px-4" onclick="konfirmasi_id('{{ $checked_id }}','{{ $checked_sum }}')">
+                                                            Approved
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        @endif
                                     @endhasrole
                                 </table>
                             </div>
@@ -136,7 +138,9 @@
                     data: "id",
                     sortable: false,
                     render: function(data, type, row, meta) {
-                        checked = row.checked == 1 ? "checked onclick='this.checked=!this.checked;'" : "disabled"
+                        checked = "disabled"
+                        if (row.checked == 1) checked = "checked onclick='this.checked=!this.checked;'"
+                        if (row.checked > 1)  checked = "checked onclick='this.checked=!this.checked;' disabled"
                         return `<input type="checkbox" ${checked} >`
                     }
                 }, {
@@ -177,7 +181,7 @@
                     render: function(data, type, row, meta) {
                         button = `<a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>`
-                        return row.status < 3 ? button : null;
+                        return row.status < 2 ? button : null;
                     }
                 }]
             });
@@ -328,6 +332,7 @@
         });
 
     })
+    $("#checked_sum").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     function konfirmasi_hapus(id, name) {
         Swal.fire({
@@ -368,42 +373,40 @@
         });
     }
 
-    function konfirmasi_hapus(id, name) {
+    function konfirmasi_id(id, nominal) {
         Swal.fire({
-            title: "Masukan Alasan menghapus data transaksi " + name,
-            input: "text",
-            inputAttributes: {
-                autocapitalize: "off"
-            },
-            showCancelButton: true,
-            confirmButtonText: "Hapus",
+        title: "Konfirmasi Permintaan",
+        text: "Transaksi Kas sebesar Rp. "+nominal,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes"
         }).then((result) => {
-            if (result.isConfirmed && result.value) {
-                var data = new FormData();
-                data.append('id', id);
-                data.append('alasan', result.value);
-                $.ajax({
-                    type: "post",
-                    url: "{{ route('softdelete_kas_belanja') }}",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function(result) {
-                        Swal.fire({
-                            title: 'Hapus!',
-                            text: 'Data berhasil di hapus',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false,
-                            timer: 2500
-                        }).then(function() {
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide');
-                        });
-                    }
-                });
+        if (result.isConfirmed) {
+            var data = new FormData();
+            data.append('id', id);
+            data.append('nominal', nominal);
+            $.ajax({
+                type: "post",
+                url: "{{ route('approve_finance') }}",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    Swal.fire({
+                        title: 'Berhasi;!',
+                        text: 'Data berhasil di approve',
+                        icon: 'success',
+                        confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                        buttonsStyling: false,
+                        timer: 2500
+                    }).then(function() {
+                        location.reload();
+                    });
+                }
+            });
             }
-
         });
     }
 

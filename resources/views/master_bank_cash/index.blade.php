@@ -57,6 +57,7 @@
                                     <th>Jenis Transaksi</th>
                                     <th>Nominal</th>
                                     <th>Keterangan</th>
+                                    <th hidden>Belanjas Id</th>
                                     <th width="20%">Action</th>
                                 </tr>
                             </thead>
@@ -141,7 +142,7 @@
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function (data, type, row, meta) {
-                        return `<a href="{{ url('master_bank_cash') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                        return `<a href="{{ url('approve_list') }}?id=`+row.id+`" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
                     }
                 },{
                     data: 'tanggal',
@@ -166,7 +167,7 @@
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         return `
-                        <a type="button" href="{{ url('master_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
+                        <a type="button" href="{{ url('approve_list') }}?id=` + row.id + `" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(1, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
                         `;
                     }
@@ -225,6 +226,9 @@
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'
+                }, {
+                    data: 'belanjas_id',
+                    visibled: false
                 }, {
                     data: 'id',
                     name: 'Action',

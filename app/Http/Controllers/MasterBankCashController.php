@@ -6,6 +6,7 @@ use App\Models\JurnalUmumDetail;
 use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
 use App\Models\MasterJurnalFile;
+use App\Models\MasterKasBelanja;
 use App\Models\TemporaryFileUploadHelpdesk;
 use App\Models\TransaksiKasFileModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -45,10 +46,10 @@ class MasterBankCashController extends Controller
         return
         DataTables::of($this->models($request))
         ->addColumn('banks', function ($row){
-            return $row->coa_kas_saldo->uraian;
+            return $row->coa_kas_saldo->uraian ?? '';
         })
         ->addColumn('tujuan', function ($row){
-            return $row->banks->nama;
+            return $row->banks->nama ?? '';
         })
         ->addColumn('jenis', function ($row){
             return $row->jenis_transaksi == 1 ? "Transfer" : "Cash";
@@ -184,10 +185,26 @@ class MasterBankCashController extends Controller
         $title['li_1'] = $this->li_1;
 
         $detail = MasterBankCashModel::with(['coa_kas_saldo','banks','file'])->findOrFail($id);
-        // dd($detail);
+        dd($detail);
         $random_string = Str::random(25);
 
         return view('master_bank_cash.edit', $title, compact(['detail','random_string']));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function approve_list(Request $request){
+        $title['title'] = $this->title;
+        $title['li_1'] = $this->li_1;
+        $detail = MasterBankCashModel::find($request->id)->first();
+        $detail_belanja = MasterKasBelanja::whereIn('id', explode(',',$detail->belanjas_id))->with(['belanja_barang' => function ($q) {$q->whereStatus(1)->with(['satuan_barang','coa_belanja']);}])->get();
+
+        $checked_sum = $detail_belanja->sum(function ($item) {return $item->belanja_barang->sum('jumlah');});
+        return view('master_bank_cash.approve', $title, compact(['detail','detail_belanja','checked_sum']));
     }
 
     /**

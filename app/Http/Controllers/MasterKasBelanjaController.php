@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\JurnalUmumDetail;
+use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
 use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\MasterKasBelanjaFile;
 use App\Models\TemporaryFileUpload;
+use App\Models\TransaksiKasDetail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -377,34 +379,103 @@ class MasterKasBelanjaController extends Controller
     }
 
     function checked_finance(Request $request) {
-        $nominal_approve = collect();
-        foreach ($request->id_item as $id => $i) {
-            MasterKasBelanjaDetail::find($i)->update([
-                'status' => $request->selectDetail[$id],
-                'keterangan' => $request->keterangan[$id] ?? '-'
+        DB::beginTransaction();
+        try {
+            $nominal_approve = collect();
+            foreach ($request->id_item as $id => $i) {
+                MasterKasBelanjaDetail::find($i)->update([
+                    'account_id' => $request->akun[$id],
+                    'status'     => $request->selectDetail[$id],
+                    'keterangan' => $request->keterangan[$id] ?? '-'
+                ]);
+                if ($request->selectDetail[$id] == 1)
+                    $nominal_approve->push((int)str_replace(".","",str_replace("Rp. ","",$request->jumlah[$id])));
+            }
+
+            // All Approve
+            $status = 1;
+            $checked = 0;
+
+            // Checked
+            if(in_array(1, $request->selectDetail)) {
+                $status = 2;
+                $checked = 1;
+            }
+
+            // Pending
+            if(in_array(4, $request->selectDetail)) $status = 4;
+
+            MasterKasBelanja::find($request->id_detail)->update([
+                'status'  => $status,
+                'checked' => $checked,
+                'nominal_approve' => $nominal_approve->sum()
             ]);
-            if ($request->selectDetail[$id] == 1)
-                $nominal_approve->push((int)str_replace(".","",str_replace("Rp. ","",$request->jumlah[$id])));
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
         }
 
-        // All Approve
-        $status = 1;
-        $checked = 0;
+        return redirect('master_kas_belanja');
+    }
 
-        // Checked
-        if(in_array(1, $request->selectDetail)) {
+    function approve_finance(Request $request) {
+        // DB::beginTransaction();
+        // try {
+            // All Approve
             $status = 2;
-            $checked = 1;
-        }
+            $checked = 2;
 
-        // Pending
-        if(in_array(4, $request->selectDetail)) $status = 4;
+            $request['kategori'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
+            $tahun = Carbon::now()->format('Y');
+            $model = count(MasterBankCashModel::withTrashed()->whereYear('created_at', $tahun)->get());
+            $nomor = sprintf("%05s", $model + 1);
+            $request['nomor_transaksi'] = $nomor.'/TRAN/KAS/'.$tahun;
+            $request['belanjas_id'] = $request->id;
+            $belanja_id = explode(',', $request->id);
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
+            $request['keterangan'] = count($belanja_id)." Transaksi";
+            // dd($request->all());
+            $MasterBankCashModel = MasterBankCashModel::create($request->except('_token'));
 
-        MasterKasBelanja::find($request->id_detail)->update([
-            'status'  => $status,
-            'checked' => $checked,
-            'nominal_approve' => $nominal_approve->sum()
-        ]);
+            foreach ($belanja_id as $id) {
+                foreach (MasterKasBelanja::find($id)->whereChecked(1)->with('belanja_barang', function ($q) {$q->whereStatus(1);})->get() as $kasBelanja) {
+                    // foreach ($kasBelanja->belanja_barang as $belanja) {
+                    //     TransaksiKasDetail::create([
+                    //         'kas_id'        => $MasterBankCashModel->id,
+                    //         'account_id'    => $belanja->account_id,
+                    //         'keterangan'    => $belanja->keterangan,
+                    //         'nominal'       => $belanja->nominal,
+                    //         'nama_item'     => $belanja->nama_item,
+                    //         'qty'           => $belanja->qty,
+                    //         'satuan_id'     => $belanja->satuan_id,
+                    //         'harga'         => $belanja->harga,
+                    //         'jumlah'        => $belanja->jumlah,
+                    //         'file'          => $belanja->file ?? '',
+                    //         'status'        => 1,
+                    //     ]);
+                    // }
+
+                    MasterKasBelanjaDetail::find($kasBelanja->id)->update([
+                        'status' => $status,
+                    ]);
+
+                }
+
+                MasterKasBelanja::find($id)->update([
+                    'status'  => $status,
+                    'checked' => $checked,
+                ]);
+            }
+
+
+
+            //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     //throw $th;
+        // }
 
         return redirect('master_kas_belanja');
     }

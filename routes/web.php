@@ -74,6 +74,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
     Route::post('softdelete_kas_isi_saldo', [MasterBankCashController::class, 'softdelete_kas_isi_saldo'])->name('softdelete_kas_isi_saldo');
+    Route::get('approve_list', [MasterBankCashController::class, 'approve_list'])->name('approve_list');
+    Route::post('approve_direktur', [MasterBankCashController::class, 'approve_direktur'])->name('approve_direktur');
 
     // Pengembalian Kas
     Route::resource('master_return_bank_cash', MasterReturnBankCashController::class);
@@ -83,8 +85,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Kas Belanja
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class)->except('show');
-    Route::post('master_kas_belanja/approve_finance', [MasterKasBelanjaController::class, 'approve_finance'])->name('approve_finance');
     Route::post('master_kas_belanja/checked_finance', [MasterKasBelanjaController::class, 'checked_finance'])->name('checked_finance');
+    Route::post('master_kas_belanja/approve_finance', [MasterKasBelanjaController::class, 'approve_finance'])->name('approve_finance');
     Route::post('softdelete_kas_belanja', [MasterKasBelanjaController::class, 'softdelete_kas_belanja'])->name('softdelete_kas_belanja');
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
     Route::post('hapus_foto_kas_belanja', [MasterKasBelanjaController::class, 'hapus_foto'])->name('hapus_foto_kas_belanja');
