@@ -21,13 +21,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                 </div>
 
-                @php {{ $route = Auth::user()->roles[0]->name == 'Administrator' ? route('master_bank_cash.approve_direktur', $detail->id) : route('master_bank_cash.update', $detail->id) }}@endphp
-
-                <form action="" method="POST">
+                <form action="{{ route('approve_direktur', $detail->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
-
-
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
@@ -39,6 +34,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                                     <h6 class="card-title mb-0">{{ $detail->nomor_transaksi }} - {{ $detail->users->roles[0]->name }} - {{ $detail->users->username }}</h6>
                                                 </div>
                                                 <div class="col-md-6 text-end text-mute">
+                                                    <input id="id" name="id" value="{{ Request::get('id') }}" class="form-control" hidden />
+                                                    <input id="belanja_id" name="belanja_id[]" value="{{ $detail->id }}" class="form-control" hidden />
                                                     {{ Carbon\Carbon::parse($detail->created_at)->format('d F Y') }}
                                                 </div>
                                             </div>
@@ -47,7 +44,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                             <div class="card-header text-center fs-16" style="background-color: #CCC4FF">
                                                 <div class="row font-weight-bold">
                                                     <div class="col-md">
-                                                        <select id="selectAll{{ $detail->id }}" name="selectAll" class="form-control text-white selectAll" style="background-color:#00bd9d">
+                                                        <select id="selectAll{{ $detail->id }}" name="selectAll[]" class="form-control text-white selectAll" style="background-color:#00bd9d">
                                                             <option value="1" selected>Approve All</option>
                                                             <option value="6">Pending All</option>
                                                             <option value="4">Tolak All</option>
@@ -74,7 +71,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                                             </select>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <select id="akun{{ $b->id }}" name="akun[]" class="form-control akun"  required></select>
+                                                            <input id="belanja_id_detail" name="belanja_id_detail[]" value="{{ $b->id }}" class="form-control" hidden />
+                                                            <select id="akun{{ $b->id }}" name="akun[]" class="form-control akun" readonly required></select>
                                                         </div>
                                                         <div class="col-md">
                                                             <input id="nama_item" name="nama_item[]" class="form-control" value="{{ $b->nama_item }}" readonly required />
@@ -110,7 +108,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                                         TOTAL
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input class="form-control text-end total fs-20 text-white mt-1 total_nilai" id="total_nilai{{ $detail->id }}" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal_approve }}" name="total_nilai{{ $detail->id }}"  readonly/>
+                                                        <input class="form-control text-end total fs-20 text-white mt-1 total_nilai" id="total_nilai{{ $detail->id }}" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal_approve }}" name="total_nilai[]"  readonly/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -127,23 +125,24 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="sumber_dana">Upload Foto</label>
-                                                <input type="file" id="file" name="file" class="form-control" required />
+                                                <input type="file" id="file" name="file" class="form-control" accept="image/*" required />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body rounded-top-4">
                                         <div class="row">
                                             <div class="col-md-2">
-                                                <select id="selectTotal" name="selectTotal" class="form-control text-white selectTotal" style="background-color: #00bd9d">
+                                                <select id="selectTotal" name="selectTotal" class="form-control text-white selectTotal" onchange="checked_keseluruhan()" style="background-color: #00bd9d">
                                                     <option value="1" selected="selected">Approve All</option>
                                                     <option value="6">Pending All</option>
                                                     <option value="4">Tolak All</option>
                                                 </select>
                                             </div>
                                             <div class="col-md text-end">
-                                                <span class="fs-36 seluruh_total"> {{ $checked_sum }}</span>
-                                                <button class="btn btn-outline-warning rounded-4 mx-3 mb-3">Back</button>
-                                                <button class="btn btn-success rounded-4 mb-3">Approved</button>
+                                                <span class="fs-20 seluruh_total mb-2">{{ $checked_sum }}</span>
+                                                <input class="fs-20 seluruh_total_input text-end mb-2" name="seluruh_total" value="{{ $checked_sum }}" hidden/>
+                                                <button class="btn btn-outline-warning rounded-4 mx-3 mb-3" onclick="history.back()">Back</button>
+                                                <button class="btn btn-success rounded-4 mb-3" type="submit">Approved</button>
                                             </div>
                                         </div>
                                     </div>
@@ -212,11 +211,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     }
                     if (this.value == 6) {
                         $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                        if ($('#total_nilai'+eitem.id).val() < 1) $('#total_nilai'+eitem.id).val(0)
                         $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                         $('#keterangan' + item.id).prop('required',true);
                     }
                     if (this.value == 4) {
                         $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                        if ($('#total_nilai'+eitem.id).val() < 1) $('#total_nilai'+eitem.id).val(0)
                         $('#selectDetail' + item.id).css("background-color", "#f06548");
                         $('#keterangan' + item.id).prop('required',true);
                     }
@@ -336,30 +337,32 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         $("#jenis_sumber").val(e.params.data.item);
     });
 
+    function checked_keseluruhan() {
+        if ($('#selectTotal').val() != 1) {
+            $('.seluruh_total').text(0);
+            $('.total_nilai').val(0);
+        }else{
+            location.reload()
+        }
+    }
+
     function countSeluruhTotal() {
         var sum_value = 0;
         $('.total_nilai').each(function(){
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
             $('.seluruh_total').text(sum_value);
+            $('.seluruh_total_input').val(sum_value);
         })
-        if ($('#selectTotal').val() != 1) {
-            $('.seluruh_total').text(0);
-            $('.total_nilai').val(0);
-        }else{
-            console.log($('.total_nilai').text());
-            $('.seluruh_total').text(parseInt(sum_value) / 2);
-            $('.total_nilai').val(parseInt($('.total_nilai').text().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) / 2);
-        }
 
         $(".harga").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
         $(".jumlah").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        $('.seluruh_total').priceFormat({prefix: 'Total Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('.seluruh_total').priceFormat({prefix: 'Total Pembayaran Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
         $('.total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
     $(".harga").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     $(".jumlah").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('.seluruh_total').priceFormat({prefix: 'Total Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $('.seluruh_total').priceFormat({prefix: 'Total Pembayaran Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     $('.total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
 

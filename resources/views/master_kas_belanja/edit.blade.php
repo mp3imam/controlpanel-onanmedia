@@ -24,18 +24,77 @@
                 <div class="card-body">
                     @hasrole('finance')
                         @php  $route = route('checked_finance') @endphp
+                        @if ($detail->status == 2)
+                            @php  $route = route('upload_bukti_transfer_divisi_finance') @endphp
+                        @elseif ($detail->bukti_transfer_divisi_to_finance != null)
+                            @php  $route = route('finance_selesai') @endphp
+                        @endif
                     @else
                         @php  $route = url('master_kas_belanja.update') @endphp
+                        @if ($detail->status == 3)
+                            @php  $route = url('upload_bukti_transfer_finance_divisi') @endphp
+                        @endif
                     @endhasrole
                     <form action="{{ $route }}" method="POST" enctype="multipart/form-data">
                     @csrf
                         <div class="row">
                             <div class="row mb-3">
-                                <div class="col-md-12">
+                                <div class="col-md">
                                     <label for="account_id" class="form-label">Deskripsi</label>
                                     <input id="id_detail" name="id_detail" class="form-control" value="{{ $detail->id }}" hidden />
                                     <textarea class="form-control" rows="4" cols="50" placeholder="Tulis deskripsi pembelanjaan di sini...." name="deskripsi" required @hasrole('finance') readonly @endhasrole>{{ $detail->keterangan_kas }}</textarea>
                                 </div>
+                                @hasrole('finance')
+                                    @if ($detail->status == 2)
+                                        <div class="col-md">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="account_id" class="form-label">Upload Bukti Transfer</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="file" name="upload_bukti" accept="image/*" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @else
+                                    @if ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null)
+                                        <div class="col-md">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="account_id" class="form-label">Upload Bukti Belanja</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="file" name="upload_bukti_belanja" accept="image/*" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endhasrole
+                                @if ($detail->bukti_transfer_finance_to_divisi != null)
+                                    <div class="col-md">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="account_id" class="form-label">Foto Bukti Transfer</label>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <img src="{{ $detail->bukti_transfer_finance_to_divisi }}" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($detail->bukti_transfer_divisi_to_finance != null)
+                                <div class="col-md">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label for="account_id" class="form-label">Foto Bukti Belanja</label>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <img src="{{ $detail->bukti_transfer_divisi_to_finance }}" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </div>
                         <div class="col">
@@ -48,7 +107,9 @@
                                         <div class="col-md-6">
                                             @hasrole('finance')
                                             @else
-                                                <button class="btn float-end mt-2" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                                @if ($detail->status == 1)
+                                                    <button class="btn float-end mt-2" type="button" onclick="tambah_detail()" style="background-color:#E0E7FF; color:#4E36E2"><i class="ri-add-box-fill"></i> Tambah Baris</button>
+                                                @endif
                                             @endhasrole
                                         </div>
                                     </div>
@@ -58,7 +119,7 @@
                                         <div class="row font-weight-bold">
                                             @hasrole('finance')
                                                 <div class="col-md">
-                                                    <select id="selectAll" name="selectAll" class="form-control text-white selectAll" style="background-color:#00bd9d">
+                                                    <select id="selectAll" name="selectAll" class="form-control text-white selectAll" @if($detail->status > 1) disabled @endif style="background-color:#00bd9d">
                                                         <option value="Approve" selected>Approve All</option>
                                                         <option value="Pending">Pending All</option>
                                                         <option value="Tolak">Tolak All</option>
@@ -97,34 +158,34 @@
 
                                                 @hasrole('finance')
                                                     <div class="col-md">
-                                                        <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control text-white selectDetail" style="background-color:{{ $color }}" >
+                                                        <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control text-white selectDetail" @if($detail->status > 1) readonly @endif style="background-color:{{ $color }}" >
                                                             <option value="1" {{ $b->status == 1 || $b->status == 0 ? "selected" : "" }}>Approve</option>
                                                             <option value="6" {{ $b->status == 6 ? "selected" : "" }}>Pending</option>
                                                             <option value="4" {{ $b->status == 4 ? "selected" : "" }}>Tolak</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <select id="akun{{ $b->id }}" name="akun[]" class="form-control akun"  required></select>
+                                                        <select id="akun{{ $b->id }}" name="akun[]" class="form-control akun" @if($detail->status == 2) disabled @endif required></select>
                                                     </div>
                                                 @endhasrole()
                                                 <div class="col-md">
                                                     <input id="id_item" name="id_item[]" class="form-control" value="{{ $b->id }}" hidden />
-                                                    <input id="nama_item" name="nama_item[]" class="form-control" value="{{ $b->nama_item }}" @hasrole('finance') readonly @endhasrole required />
+                                                    <input id="nama_item" name="nama_item[]" class="form-control" value="{{ $b->nama_item }}" @hasrole('finance') readonly @endhasrole  @if($detail->status > 1) disabled @endif required />
                                                 </div>
                                                 <div class="col-md">
-                                                    <input id="qty{{ $b->id }}" name="qty[]" class="form-control" type="number" onkeyup="updateTotal({{ $b->id }})" min="1" value="{{ $b->qty }}" @hasrole('finance') readonly @endhasrole  required />
+                                                    <input id="qty{{ $b->id }}" name="qty[]" class="form-control" type="number" onkeyup="updateTotal({{ $b->id }})" min="1" value="{{ $b->qty }}" @hasrole('finance') readonly @endhasrole  @if($detail->status > 1) disabled @endif required />
                                                 </div>
                                                 <div class="col-md">
-                                                    <select id="satuan{{ $b->id }}" name="satuan[]" class="form-control satuan" @hasrole('finance') readonly @endhasrole  required ></select>
+                                                    <select id="satuan{{ $b->id }}" name="satuan[]" class="form-control satuan" @hasrole('finance') readonly @endhasrole @if($detail->status > 1) disabled @endif required ></select>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input id="harga{{ $b->id }}" name="harga[]" class="form-control harga" value="{{ $b->harga }}" onkeyup="updateTotal({{ $b->id }})" min="1" @hasrole('finance') readonly @endhasrole  required />
+                                                    <input id="harga{{ $b->id }}" name="harga[]" class="form-control harga" value="{{ $b->harga }}" onkeyup="updateTotal({{ $b->id }})" min="1" @hasrole('finance') readonly @endhasrole  @if($detail->status > 1) disabled @endif required />
                                                 </div>
                                                 <div class="col-md">
-                                                    <input id="keterangan{{ $b->id }}" name="keterangan[]" class="form-control keterangan" value="{{ $b->keterangan }}" style="background-color:{{ $color }}" />
+                                                    <input id="keterangan{{ $b->id }}" name="keterangan[]" class="form-control keterangan" value="{{ $b->keterangan }}" style="background-color:{{ $color }}" @if($detail->status > 1) disabled @endif />
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah" value="{{ $b->jumlah }}" readonly />
+                                                    <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah" value="{{ $b->jumlah }}" @if($detail->status > 1) disabled @endif readonly />
                                                 </div>
                                                 @if ($b->file)
                                                     <div class="col-md text-center" onclick="zoomOutImage(`{{ $b->file }}`)">
@@ -135,10 +196,12 @@
                                                 @endif
                                                 @hasrole('finance')
                                                 @else
-                                                    <div class="col-md text-center float-end  {{ !$loop->first ? "hapus_detail" : "" }}" >
+                                                    <div class="col-md text-center float-end {{ !$loop->first ? "hapus_detail" : "" }}" >
+                                                        @if($detail->status == 1)
                                                             @if (!$loop->first )
                                                                 <i class="ri-delete-bin-line text-danger ri-2x"></i>
                                                             @endif
+                                                        @endif
                                                     </div>
                                                 @endhasrole
                                             </div>
@@ -158,15 +221,22 @@
                             </div>
                         </div>
                         <div class="float-end">
-                            @if($detail->status < 2)
                             @hasrole('finance')
-                                <button class="btn bg-animation btn-success mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
-                                    ></i> Approve</button>
+                                @if($detail->status == 1)
+                                    <button class="btn bg-animation btn-success mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Approve</button>
+                                @elseif ($detail->status == 2)
+                                    <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti Transfer</button>
+                                @elseif ($detail->bukti_transfer_divisi_to_finance != null)
+                                    <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>
+                                @endif
                             @else
-                                <button class="btn bg-animation btn-warning mr-5 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Update</button>
+                                @if ($detail->status == 1)
+                                    <button class="btn bg-animation btn-warning mr-5 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Update</button>
+                                @elseif ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null)
+                                    <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti Transfer</button>
+                                @endif
                             @endhasrole
-                                    &nbsp;&nbsp;&nbsp;
-                            @endif
+                            &nbsp;&nbsp;&nbsp;
                             <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
                         </div>
                     </form>

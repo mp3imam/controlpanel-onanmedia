@@ -120,6 +120,7 @@
 
 @section('script')
 <script type="text/javascript">
+    var user = {!! json_encode($user) !!};
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
@@ -142,7 +143,9 @@
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function (data, type, row, meta) {
-                        return `<a href="{{ url('approve_list') }}?id=`+row.id+`" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                        route = "{{ url('master_bank_cash') }}/"+row.id+"/edit"
+                        if (user == 'direktur') route = "{{ url('approve_list') }}?id="+row.id
+                        return `<a href="${route}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
                     }
                 },{
                     data: 'tanggal',
@@ -167,7 +170,7 @@
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         return `
-                        <a type="button" href="{{ url('approve_list') }}?id=` + row.id + `" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
+                        <a type="button" href="${route}" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(1, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
                         `;
                     }

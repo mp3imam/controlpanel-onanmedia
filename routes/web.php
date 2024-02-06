@@ -73,7 +73,6 @@ Route::group(['middleware' => ['auth']], function () {
     // Transaksi Kas
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
-    Route::post('master_kas_belanja/approve_direktue', [MasterBankCashController::class, 'approve_direktue'])->name('approve_direktue');
     Route::post('softdelete_kas_isi_saldo', [MasterBankCashController::class, 'softdelete_kas_isi_saldo'])->name('softdelete_kas_isi_saldo');
     Route::get('approve_list', [MasterBankCashController::class, 'approve_list'])->name('approve_list');
     Route::post('approve_direktur', [MasterBankCashController::class, 'approve_direktur'])->name('approve_direktur');
@@ -87,10 +86,13 @@ Route::group(['middleware' => ['auth']], function () {
     // Kas Belanja
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class)->except('show');
     Route::post('master_kas_belanja/checked_finance', [MasterKasBelanjaController::class, 'checked_finance'])->name('checked_finance');
-    Route::post('master_kas_belanja/approve_finance', [MasterKasBelanjaController::class, 'approve_finance'])->name('approve_finance');
+    Route::post('approve_finance', [MasterKasBelanjaController::class, 'approve_finance'])->name('approve_finance');
+    Route::post('upload_bukti_transfer_divisi_finance', [MasterKasBelanjaController::class, 'upload_bukti_transfer_divisi_finance'])->name('upload_bukti_transfer_divisi_finance');
+    Route::post('upload_bukti_transfer_finance_divisi', [MasterKasBelanjaController::class, 'upload_bukti_transfer_finance_divisi'])->name('upload_bukti_transfer_finance_divisi');
     Route::post('softdelete_kas_belanja', [MasterKasBelanjaController::class, 'softdelete_kas_belanja'])->name('softdelete_kas_belanja');
     Route::get('getDataTableMasterKasBelanja', [MasterKasBelanjaController::class, 'get_datatable'])->name('getDataTableMasterKasBelanja');
     Route::post('hapus_foto_kas_belanja', [MasterKasBelanjaController::class, 'hapus_foto'])->name('hapus_foto_kas_belanja');
+    Route::post('finance_selesai', [MasterKasBelanjaController::class, 'finance_selesai'])->name('finance_selesai');
 
     // Jurnal Umum
     Route::resource('master_jurnal', MasterJurnalController::class);

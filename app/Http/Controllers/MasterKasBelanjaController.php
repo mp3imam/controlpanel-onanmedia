@@ -108,7 +108,6 @@ class MasterKasBelanjaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        // dd($request->all());
         $validasi = [
             'deskripsi'   => 'required',
             'total_nilai' => 'required',
@@ -329,7 +328,6 @@ class MasterKasBelanjaController extends Controller
                     'kas_id' => $id,
                     'status' => 1,
                 ]);
-
             }
 
             // Edit Jurnal Umum, hapus detail dan file Jurnal Umum
@@ -354,6 +352,7 @@ class MasterKasBelanjaController extends Controller
                 ];
                 JurnalUmumDetail::create($data);
             }
+
             JurnalUmumDetail::create([
                 'jurnal_umum_id' => $nomor->id,
                 'account_id'     => $request->account_id,
@@ -421,10 +420,9 @@ class MasterKasBelanjaController extends Controller
     }
 
     function approve_finance(Request $request) {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             // All Approve
-            $status = 2;
             $checked = 2;
 
             $request['kategori'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
@@ -436,46 +434,97 @@ class MasterKasBelanjaController extends Controller
             $belanja_id = explode(',', $request->id);
             $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
             $request['keterangan'] = count($belanja_id)." Transaksi";
-            // dd($request->all());
-            $MasterBankCashModel = MasterBankCashModel::create($request->except('_token'));
+            MasterBankCashModel::create($request->except('_token'));
 
             foreach ($belanja_id as $id) {
-                foreach (MasterKasBelanja::find($id)->whereChecked(1)->with('belanja_barang', function ($q) {$q->whereStatus(1);})->get() as $kasBelanja) {
-                    // foreach ($kasBelanja->belanja_barang as $belanja) {
-                    //     TransaksiKasDetail::create([
-                    //         'kas_id'        => $MasterBankCashModel->id,
-                    //         'account_id'    => $belanja->account_id,
-                    //         'keterangan'    => $belanja->keterangan,
-                    //         'nominal'       => $belanja->nominal,
-                    //         'nama_item'     => $belanja->nama_item,
-                    //         'qty'           => $belanja->qty,
-                    //         'satuan_id'     => $belanja->satuan_id,
-                    //         'harga'         => $belanja->harga,
-                    //         'jumlah'        => $belanja->jumlah,
-                    //         'file'          => $belanja->file ?? '',
-                    //         'status'        => 1,
-                    //     ]);
-                    // }
-
-                    MasterKasBelanjaDetail::find($kasBelanja->id)->update([
-                        'status' => $status,
-                    ]);
-
-                }
-
                 MasterKasBelanja::find($id)->update([
-                    'status'  => $status,
                     'checked' => $checked,
                 ]);
             }
 
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
 
+        return redirect('master_kas_belanja');
+    }
 
-            //     DB::commit();
+    function upload_bukti_transfer_divisi_finance(Request $request) {
+        // DB::beginTransaction();
+        // try {
+            // All Approve
+            $file = $request->file('upload_bukti');
+            $path = public_path('upload_bukti/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            // $file->move($path, $imageName);
+
+            MasterKasBelanja::find($request->id_detail)->update([
+                'status' => 3,
+                'bukti_transfer_finance_to_divisi'   => asset('upload_bukti/')."/".$imageName,
+            ]);
+
+            foreach ($request->selectDetail as $item => $i) {
+                if ($i == 1)
+                MasterKasBelanjaDetail::find($request->id_item[$item])->update([
+                    'status' => 3,
+                ]);
+            }
+
+        //     DB::commit();
         // } catch (\Throwable $th) {
         //     DB::rollBack();
         //     //throw $th;
         // }
+
+        return redirect('master_kas_belanja');
+    }
+
+    function upload_bukti_transfer_finance_divisi(Request $request) {
+        // dd($request->all());
+        // DB::beginTransaction();
+        // try {
+            // All Approve
+            $file = $request->file('upload_bukti_belanja');
+            $path = public_path('upload_bukti/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            // $file->move($path, $imageName);
+
+            MasterKasBelanja::find($request->id_detail)->update([
+                'bukti_transfer_divisi_to_finance'   => asset('upload_bukti/')."/".$imageName,
+            ]);
+
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     //throw $th;
+        // }
+
+        return redirect('master_kas_belanja');
+    }
+
+    function finance_selesai(Request $request) {
+        DB::beginTransaction();
+        try {
+            MasterKasBelanja::find($request->id_detail)->update([
+                'status' => 5,
+            ]);
+
+            foreach ($request->selectDetail as $item => $i) {
+                if ($i == 1)
+                MasterKasBelanjaDetail::find($request->id_item[$item])->update([
+                    'status' => 5,
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
 
         return redirect('master_kas_belanja');
     }

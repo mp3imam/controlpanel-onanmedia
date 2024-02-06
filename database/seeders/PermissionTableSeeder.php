@@ -299,6 +299,7 @@ class PermissionTableSeeder extends Seeder
                 ['name'=>'hrd'],
                 ['name'=>'customer_service'],
                 ['name'=>'help_desk'],
+                ['name'=>'direktur'],
             ];
 
             $users = [
@@ -352,6 +353,16 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
+                ],[
+                    'id' => 6,
+                    'username' => 'Direktur',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Bapak Dolok Siregar',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
                 ]
             ];
 
@@ -388,6 +399,13 @@ class PermissionTableSeeder extends Seeder
             $csUser = User::create($users[4]);
             $csRole->givePermissionTo(['Dashboard']);
             $csUser->assignRole($csRole);
+            // end
+
+            // create user administrator & roles
+            $direkturRole = Role::create($role[5]);
+            $direkturUser = User::create($users[5]);
+            $direkturRole->givePermissionTo(Permission::all());
+            $direkturUser->assignRole($direkturRole);
             // end
 
             DB::commit();

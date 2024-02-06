@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
             $table->string('checked')->default(0);
             $table->string('nominal_approve')->default(0);
+            $table->string('bukti_transfer_finance_to_divisi')->nullable();
+            $table->string('bukti_transfer_divisi_to_finance')->nullable();
             $table->integer('account_id')->nullable()->change();
         });
     }

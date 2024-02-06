@@ -7,6 +7,7 @@ use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
 use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
+use App\Models\MasterKasBelanjaDetail;
 use App\Models\TemporaryFileUploadHelpdesk;
 use App\Models\TransaksiKasFileModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -14,9 +15,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
+use Svg\Tag\Rect;
 use Yajra\DataTables\Facades\DataTables;
 
 class MasterBankCashController extends Controller
@@ -39,7 +42,9 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('master_bank_cash.index', $title);
+        $user = Auth::user()->roles->pluck('name');
+
+        return view('master_bank_cash.index', $title, compact(['user']));
     }
 
     function get_datatable(Request $request){
@@ -257,6 +262,71 @@ class MasterBankCashController extends Controller
 
         $checked_sum = $detail_belanja->sum(function ($item) {return $item->belanja_barang->sum('jumlah');});
         return view('master_bank_cash.approve', $title, compact(['detail','detail_belanja','checked_sum']));
+    }
+
+    function approve_direktur(Request $request) {
+        DB::beginTransaction();
+        try {
+            // All Approve
+            $status = 2;
+
+            $file = $request->file('file');
+            $path = public_path('kas_saldo/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            // $file->move($path, $imageName);
+
+            MasterBankCashModel::find($request->id)->update([
+                'status'  => 2,
+                'image'   => asset('kas_belanja/')."/".$imageName,
+                'bank_id' => $request->sumber_dana,
+                'tujuan_id' => 7,
+                'nominal_approve' => $request->seluruh_total,
+            ]);
+
+            foreach ($request->belanja_id as $id) {
+                MasterKasBelanja::find($id)->update([
+                    'status'  => $status
+                ]);
+            }
+            foreach ($request->belanja_id_detail as $kasBelanja => $belanja) {
+                MasterKasBelanjaDetail::find($belanja)->update([
+                    'status' => $status,
+                    'keterangan' => $request->keterangan[$kasBelanja],
+                ]);
+            }
+
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            $request['dokumen'] = MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi;
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+
+            $request['debet'] = $request->seluruh_total;
+            $request['kredit'] = $request->seluruh_total;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
+            $masterJurnal = MasterJurnal::create($request->except('_token'));
+            $request['jurnal_umum_id'] = $masterJurnal->id;
+            $request['account_id'] = 7;
+            $request['debet'] = $request->seluruh_total;
+            $request['kredit'] = 0;
+            $request['keterangan'] = "";
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = $request->sumber_dana;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->seluruh_total;
+            JurnalUmumDetail::create($request->except('_token'));
+
+
+                DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
+
+        return redirect('master_kas_belanja');
     }
 
     /**
