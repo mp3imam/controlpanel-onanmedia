@@ -452,14 +452,14 @@ class MasterKasBelanjaController extends Controller
     }
 
     function upload_bukti_transfer_divisi_finance(Request $request) {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             // All Approve
             $file = $request->file('upload_bukti');
             $path = public_path('upload_bukti/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            // $file->move($path, $imageName);
+            $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'status' => 3,
@@ -473,35 +473,34 @@ class MasterKasBelanjaController extends Controller
                 ]);
             }
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     //throw $th;
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
 
         return redirect('master_kas_belanja');
     }
 
     function upload_bukti_transfer_finance_divisi(Request $request) {
-        // dd($request->all());
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             // All Approve
             $file = $request->file('upload_bukti_belanja');
             $path = public_path('upload_bukti/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            // $file->move($path, $imageName);
+            $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'bukti_transfer_divisi_to_finance'   => asset('upload_bukti/')."/".$imageName,
             ]);
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
         //     //throw $th;
-        // }
+        }
 
         return redirect('master_kas_belanja');
     }
@@ -519,6 +518,29 @@ class MasterKasBelanjaController extends Controller
                     'status' => 5,
                 ]);
             }
+
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            $request['dokumen'] = MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi;
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+
+            $request['debet'] = $request->seluruh_total;
+            $request['kredit'] = $request->seluruh_total;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
+            $masterJurnal = MasterJurnal::create($request->except('_token'));
+            $request['jurnal_umum_id'] = $masterJurnal->id;
+            $request['account_id'] = $request->sumber_dana;
+            $request['debet'] = 0;
+            $request['kredit'] = $request->seluruh_total;
+            $request['keterangan'] = "";
+            JurnalUmumDetail::create($request->except('_token'));
+            $request['account_id'] = 7;
+            $request['debet'] = $request->seluruh_total;
+            $request['kredit'] = 0;
+            JurnalUmumDetail::create($request->except('_token'));
 
             DB::commit();
         } catch (\Throwable $th) {

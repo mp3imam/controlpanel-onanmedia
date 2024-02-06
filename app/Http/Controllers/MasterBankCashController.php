@@ -274,7 +274,7 @@ class MasterBankCashController extends Controller
             $path = public_path('kas_saldo/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            // $file->move($path, $imageName);
+            $file->move($path, $imageName);
 
             MasterBankCashModel::find($request->id)->update([
                 'status'  => 2,
