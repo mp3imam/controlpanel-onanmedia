@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
     // Transaksi Kas
     Route::resource('master_bank_cash', MasterBankCashController::class);
     Route::get('getDataTableBankCash', [MasterBankCashController::class, 'get_datatable'])->name('getDataTableBankCash');
+    Route::post('master_kas_belanja/approve_direktue', [MasterKasBelanjaController::class, 'approve_direktue'])->name('approve_direktue');
     Route::post('softdelete_kas_isi_saldo', [MasterBankCashController::class, 'softdelete_kas_isi_saldo'])->name('softdelete_kas_isi_saldo');
     Route::get('approve_list', [MasterBankCashController::class, 'approve_list'])->name('approve_list');
     Route::post('approve_direktur', [MasterBankCashController::class, 'approve_direktur'])->name('approve_direktur');

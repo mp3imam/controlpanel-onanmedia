@@ -91,13 +91,13 @@
                                                     @break
                                                     @default
                                                     @php
-                                                        $color = "#ffffff";
+                                                        $color = "#00bd9d";
                                                     @endphp
                                                 @endswitch
 
                                                 @hasrole('finance')
                                                     <div class="col-md">
-                                                        <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control text-white selectDetail" @hasrole('finance') style="background-color:#00bd9d" @else style="background-color:{{ $color }}" @endhasrole >
+                                                        <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control text-white selectDetail" style="background-color:{{ $color }}" >
                                                             <option value="1" {{ $b->status == 1 || $b->status == 0 ? "selected" : "" }}>Approve</option>
                                                             <option value="6" {{ $b->status == 6 ? "selected" : "" }}>Pending</option>
                                                             <option value="4" {{ $b->status == 4 ? "selected" : "" }}>Tolak</option>
@@ -158,15 +158,15 @@
                             </div>
                         </div>
                         <div class="float-end">
+                            @if($detail->status < 2)
                             @hasrole('finance')
                                 <button class="btn bg-animation btn-success mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"
                                     ></i> Approve</button>
                             @else
-                                @if($detail->status < 2)
-                                    <button class="btn bg-animation btn-warning mr-5 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Update</button>
-                                @endif
+                                <button class="btn bg-animation btn-warning mr-5 rounded-5" style="background-color: #4E36E2"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Update</button>
                             @endhasrole
                                     &nbsp;&nbsp;&nbsp;
+                            @endif
                             <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
                         </div>
                     </form>
@@ -183,7 +183,7 @@
     var f = {!! json_encode($detail->belanja_barang) !!}
     $(function() {
         $.each(f, function(i, item) {
-            var data = {id: 1,text: "Pembelian Barang", selected: true};
+            var data = {id: 74,text: "Pembelian Barang", selected: true};
             var newOption = new Option(data.text, data.id, false, false)
             $('#akun'+item.id).append(newOption).trigger('change')
             $('#akun'+item.id).select2()
@@ -215,18 +215,22 @@
 
             $('#selectDetail' + item.id).change(function (e) {
                 if (this.value == 1) {
+                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#00bd9d");
                     $('#keterangan' + item.id).prop('required',false);
                 }
                 if (this.value == 6) {
+                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 if (this.value == 4) {
+                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#f06548");
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 $('#keterangan'+ item.id).val("")
+                $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
             });
 
 
@@ -243,6 +247,7 @@
             });
         }
         if (this.value == 'Pending') {
+            countNilai()
             $('#selectAll').css("background-color", "#25a0e2");
             $.each(f, function(i, item) {
                 $('#selectDetail' + item.id).css("background-color", "#25a0e2");
@@ -251,6 +256,7 @@
             });
         }
         if (this.value == 'Tolak') {
+            countNilai()
             $('#selectAll').css("background-color", "#f06548");
             $.each(f, function(i, item) {
                 $('#selectDetail' + item.id).css("background-color", "#f06548");

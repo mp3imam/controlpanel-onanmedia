@@ -21,7 +21,9 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     </div>
                 </div>
 
-                <form action="{{ route('master_bank_cash.update', $detail->id) }}" method="POST">
+                @php {{ $route = Auth::user()->roles[0]->name == 'Administrator' ? route('master_bank_cash.approve_direktur', $detail->id) : route('master_bank_cash.update', $detail->id) }}@endphp
+
+                <form action="" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -29,16 +31,6 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <div class="row mb-5">
-                                    <div class="col-md-6">
-                                        <label for="sumber_dana">Sumber Dana</label>
-                                        <select id="sumber_dana" name="sumber_dana" class="form-control sumber_dana" required></select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="sumber_dana">Upload Foto</label>
-                                        <input type="file" id="file" name="file" class="form-control" value="" readonly required />
-                                    </div>
-                                </div>
                                 @foreach ($detail_belanja as $detail)
                                     <div class="card">
                                         <div class="card-header">
@@ -55,27 +47,27 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                             <div class="card-header text-center fs-16" style="background-color: #CCC4FF">
                                                 <div class="row font-weight-bold">
                                                     <div class="col-md">
-                                                        <select id="selectAll" name="selectAll" class="form-control text-white selectAll" style="background-color:#00bd9d">
-                                                            <option value="Approve" selected>Approve All</option>
-                                                            <option value="Pending">Pending All</option>
-                                                            <option value="Tolak">Tolak All</option>
+                                                        <select id="selectAll{{ $detail->id }}" name="selectAll" class="form-control text-white selectAll" style="background-color:#00bd9d">
+                                                            <option value="1" selected>Approve All</option>
+                                                            <option value="6">Pending All</option>
+                                                            <option value="4">Tolak All</option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-2">Akun</div>
-                                                    <div class="col-md">Item</div>
-                                                    <div class="col-md">Qty</div>
-                                                    <div class="col-md">Satuan</div>
-                                                    <div class="col-md-2">Harga</div>
-                                                    <div class="col-md">Ket</div>
-                                                    <div class="col-md-2">Jumlah</div>
-                                                    <div class="col-md">Foto</div>
+                                                    <div class="col-md-2 mt-2">Akun</div>
+                                                    <div class="col-md mt-2">Item</div>
+                                                    <div class="col-md mt-2">Qty</div>
+                                                    <div class="col-md mt-2">Satuan</div>
+                                                    <div class="col-md-2 mt-2">Harga</div>
+                                                    <div class="col-md mt-2">Ket</div>
+                                                    <div class="col-md-2 mt-2">Jumlah</div>
+                                                    <div class="col-md mt-2">Foto</div>
                                                 </div>
                                             </div>
                                             <div class="card-body tambah_detail">
                                                 @foreach ($detail->belanja_barang as $belanja => $b)
                                                     <div class="row delete_detail {{ $belanja != 0 ? "mt-3" : "" }}">
                                                         <div class="col-md">
-                                                            <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control selectDetail" >
+                                                            <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control selectDetail text-white" style="background-color: #00bd9d" >
                                                                 <option value="1" {{ $b->status == 1 || $b->status == 0 ? "selected" : "" }}>Approve</option>
                                                                 <option value="6" {{ $b->status == 6 ? "selected" : "" }}>Pending</option>
                                                                 <option value="4" {{ $b->status == 4 ? "selected" : "" }}>Tolak</option>
@@ -118,7 +110,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                                         TOTAL
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input class="form-control text-end total fs-20 text-white mt-1 total_nilai" id="total_nilai{{ $b->id }}" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal }}" name="total_nilai{{ $b->id }}"  readonly/>
+                                                        <input class="form-control text-end total fs-20 text-white mt-1 total_nilai" id="total_nilai{{ $detail->id }}" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal_approve }}" name="total_nilai{{ $detail->id }}"  readonly/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -127,10 +119,22 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 @endforeach
 
                                 <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="sumber_dana">Sumber Dana</label>
+                                                <select id="sumber_dana" name="sumber_dana" class="form-control sumber_dana" required></select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="sumber_dana">Upload Foto</label>
+                                                <input type="file" id="file" name="file" class="form-control" required />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="card-body rounded-top-4">
                                         <div class="row">
                                             <div class="col-md-2">
-                                                <select id="selectAll" name="selectAll" class="form-control selectAll" >
+                                                <select id="selectTotal" name="selectTotal" class="form-control text-white selectTotal" style="background-color: #00bd9d">
                                                     <option value="1" selected="selected">Approve All</option>
                                                     <option value="6">Pending All</option>
                                                     <option value="4">Tolak All</option>
@@ -162,15 +166,38 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
     var e = {!! json_encode($detail_belanja) !!}
     $(function() {
         $.each(e, function(ei, eitem) {
+            $('#selectAll'+eitem.id).change(function (e) {
+                if (this.value == 1) {
+                    $('#selectAll'+eitem.id).css("background-color", "#00bd9d");
+                    $.each(eitem.belanja_barang, function(i, item) {
+                        $('#selectDetail' + item.id).css("background-color", "#00bd9d");
+                        $('#selectDetail' + item.id).val(1).change();
+                        $('#keterangan' + item.id).val("")
+                    });
+                }
+                if (this.value == 6) {
+                    $('#selectAll'+eitem.id).css("background-color", "#25a0e2");
+                    $.each(eitem.belanja_barang, function(i, item) {
+                        $('#selectDetail' + item.id).css("background-color", "#25a0e2");
+                        $('#selectDetail' + item.id).val(6).change();
+                        $('#keterangan' + item.id).val("Pending All")
+                    });
+                }
+                if (this.value == 4) {
+                    $('#selectAll'+eitem.id).css("background-color", "#f06548");
+                    $.each(eitem.belanja_barang, function(i, item) {
+                        $('#selectDetail' + item.id).css("background-color", "#f06548");
+                        $('#selectDetail' + item.id).val(4).change();
+                        $('#keterangan' + item.id).val("Tolak All")
+                    });
+                }
+            });
 
             $.each(eitem.belanja_barang, function(i, item) {
-                console.log(item);
-
                 var data = {id: item.coa_belanja.id,text: item.coa_belanja.uraian, selected: true};
                 var newOption = new Option(data.text, data.id, false, false)
                 $('#akun'+item.id).append(newOption).trigger('change')
                 $('#akun'+item.id).select2()
-
 
                 var data = {id: item.satuan_barang.id,text: item.satuan_barang.nama, selected: true};
                 var newOption = new Option(data.text, data.id, false, false)
@@ -179,55 +206,93 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
                 $('#selectDetail' + item.id).change(function (e) {
                     if (this.value == 1) {
+                        $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                         $('#selectDetail' + item.id).css("background-color", "#00bd9d");
                         $('#keterangan' + item.id).prop('required',false);
                     }
                     if (this.value == 6) {
+                        $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                         $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                         $('#keterangan' + item.id).prop('required',true);
                     }
                     if (this.value == 4) {
+                        $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                         $('#selectDetail' + item.id).css("background-color", "#f06548");
                         $('#keterangan' + item.id).prop('required',true);
                     }
+                    countSeluruhTotal()
                     $('#keterangan'+ item.id).val("")
                 });
             });
         });
-    })
 
-    $('#selectAll').change(function (e) {
-        if (this.value == 'Approve') {
-            $('#selectAll').css("background-color", "#00bd9d");
-            $.each(f, function(i, item) {
-                $('#selectDetail' + item.id).css("background-color", "#00bd9d");
-                $('#selectDetail' + item.id).val(1).change();
-                $('#keterangan' + item.id).val("")
-            });
-        }
-        if (this.value == 'Pending') {
-            $('#selectAll').css("background-color", "#25a0e2");
-            $.each(f, function(i, item) {
-                $('#selectDetail' + item.id).css("background-color", "#25a0e2");
-                $('#selectDetail' + item.id).val(6).change();
-                $('#keterangan' + item.id).val("Pending All")
-            });
-        }
-        if (this.value == 'Tolak') {
-            $('#selectAll').css("background-color", "#f06548");
-            $.each(f, function(i, item) {
-                $('#selectDetail' + item.id).css("background-color", "#f06548");
-                $('#selectDetail' + item.id).val(4).change();
-                $('#keterangan' + item.id).val("Tolak All")
-            });
-        }
-    });
+        $('#selectTotal').change(function (ef) {
+            if (this.value == 1) {
+                $('#selectTotal').css("background-color", "#00bd9d");
+                $.each(e, function(i, eitem) {
+                    $('#selectAll' + eitem.id).css("background-color", "#00bd9d");
+                    $('#selectAll' + eitem.id).val(1).change();
+                    $.each(eitem.belanja_barang, function(i, item) {
+                        $('#selectDetail' + item.id).css("background-color", "#00bd9d");
+                        $('#selectDetail' + item.id).val(1).change();
+                        $('#keterangan' + item.id).val("")
+                    });
+                });
+            }
+            if (this.value == 6) {
+                $('#selectTotal').css("background-color", "#25a0e2");
+                $.each(e, function(i, eitem) {
+                    $('#selectAll' + eitem.id).css("background-color", "#25a0e2");
+                    $('#selectAll' + eitem.id).val(6).change();
+                    $.each(eitem.belanja_barang, function(i, it) {
+                        $('#selectDetail' + it.id).css("background-color", "#25a0e2");
+                        $('#selectDetail' + it.id).val(6).change();
+                        $('#keterangan' + it.id).val("Pending All")
+                    });
+                });
+            }
+            if (this.value == 4) {
+                $('#selectTotal').css("background-color", "#f06548");
+                $.each(e, function(i, eitem) {
+                    $('#selectAll' + eitem.id).css("background-color", "#f06548");
+                    $('#selectAll' + eitem.id).val(4).change();
+                    $.each(eitem.belanja_barang, function(i, item) {
+                        $('#selectDetail' + item.id).css("background-color", "#f06548");
+                        $('#selectDetail' + item.id).val(4).change();
+                        $('#keterangan' + item.id).val("Tolak All")
+                    });
+                });
+            }
+        });
+    })
 
     function zoomOutImage(url){
         Swal.fire({
             imageUrl: url
         });
     }
+
+
+    $("#sumber_dana").select2({
+        allowClear: true,
+        width: '100%',
+        ajax: {
+            url: "{{ route('api.get_select2_banks_coa') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+            return {
+                results: $.map(data.data, function(item) {
+                    return {
+                        id: item.id,
+                        text: item.name
+                    }
+                })
+            };
+            }
+        }
+    });
+
 
     $(".akun").select2({
         allowClear: true,
@@ -271,126 +336,31 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         $("#jenis_sumber").val(e.params.data.item);
     });
 
-    var count = 100
-    function tambah_detail() {
-        $('.tambah_detail').append(`
-            <div class="row delete_detail mt-4">
-                <div class="col-md">
-                    <select id="akun`+count+`" name="akun[]" class="form-control akun" required ></select>
-                </div>
-                <div class="col-md">
-                    <input id="nama_item`+count+`" name="nama_item[]" class="form-control" required />
-                </div>
-                <div class="col-md-1">
-                    <input id="qty`+count+`" name="qty[]" class="form-control" onkeyup="updateTotal(`+count+`)" type="number" min="1" value="1" required />
-                </div>
-                <div class="col-md-1">
-                    <select id="satuan`+count+`" name="satuan[]" class="form-control satuan" required ></select>
-                </div>
-                <div class="col-md">
-                    <input id="harga`+count+`" name="harga[]" class="form-control harga" onkeyup="updateTotal(`+count+`)" value="1" min="1" required />
-                </div>
-                <div class="col-md">
-                    <input id="keterangan`+count+`" name="keterangan[]" class="form-control" />
-                </div>
-                <div class="col-md">
-                    <input id="jumlah`+count+`" name="jumlah[]" class="form-control jumlah" value="0" readonly />
-                </div>
-                <div class="col-md">
-                    <input id="file`+count+`" name="file[]" type="file" class="form-control" accept="image/*" />
-                </div>
-                <div class="col-md text-center float-end hapus_detail">
-                    <i class="ri-delete-bin-line text-danger ri-2x"></i>
-                </div>
-            </div>
-
-        `);
-
-        $(".satuan").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_satuan_barang') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name
-                            };
-                        })
-                    };
-                }
-            }
-        }).on('select2:select', function(e) {
-            $("#jenis_sumber").val(e.params.data.item);
-        });
-
-        $(".akun").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_belanja') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            }
-        }).on('select2:select', function (e) {
-            $("#jenis_sumber").val(e.params.data.item);
-        });
-
-        $('.hapus_detail').click(function() {
-            $(this).closest('.delete_detail').remove();
-            countNilai()
-        });
-        $(".harga").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        $(".jumlah").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-
-        count++;
-    }
-
-    function updateTotal(data) {
-        var qty = $('#qty'+data).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
-        var harga = $('#harga'+data).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
-        var total = qty * harga;
-
-        $('#jumlah'+data).val(total);
-        $(".jumlah").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-        countNilai()
-    }
-
-
-    $('.hapus_detail').click(function(){
-        $(this).closest('.delete_detail').remove();
-        countNilai()
-    })
-
-    function countNilai() {
+    function countSeluruhTotal() {
         var sum_value = 0;
-        $('.jumlah').each(function(){
+        $('.total_nilai').each(function(){
             sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
-            $('#total_nilai').val(sum_value);
+            $('.seluruh_total').text(sum_value);
         })
+        if ($('#selectTotal').val() != 1) {
+            $('.seluruh_total').text(0);
+            $('.total_nilai').val(0);
+        }else{
+            console.log($('.total_nilai').text());
+            $('.seluruh_total').text(parseInt(sum_value) / 2);
+            $('.total_nilai').val(parseInt($('.total_nilai').text().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) / 2);
+        }
 
-        $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
         $(".harga").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $(".jumlah").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('.seluruh_total').priceFormat({prefix: 'Total Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+        $('.total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
     $(".harga").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     $(".jumlah").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
-    $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     $('.seluruh_total').priceFormat({prefix: 'Total Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $('.total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
 
 </script>

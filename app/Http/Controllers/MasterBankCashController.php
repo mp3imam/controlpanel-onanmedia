@@ -65,6 +65,58 @@ class MasterBankCashController extends Controller
 
     }
 
+    function approve_finance(Request $request) {
+        // DB::beginTransaction();
+        // try {
+            // All Approve
+            $status = 2;
+            $checked = 2;
+
+            MasterBankCashModel::find($request->id)->update([
+                'status' => 2
+            ]);
+
+            foreach ($belanja_id as $id) {
+                foreach (MasterKasBelanja::find($id)->whereChecked(1)->with('belanja_barang', function ($q) {$q->whereStatus(1);})->get() as $kasBelanja) {
+                    // foreach ($kasBelanja->belanja_barang as $belanja) {
+                    //     TransaksiKasDetail::create([
+                    //         'kas_id'        => $MasterBankCashModel->id,
+                    //         'account_id'    => $belanja->account_id,
+                    //         'keterangan'    => $belanja->keterangan,
+                    //         'nominal'       => $belanja->nominal,
+                    //         'nama_item'     => $belanja->nama_item,
+                    //         'qty'           => $belanja->qty,
+                    //         'satuan_id'     => $belanja->satuan_id,
+                    //         'harga'         => $belanja->harga,
+                    //         'jumlah'        => $belanja->jumlah,
+                    //         'file'          => $belanja->file ?? '',
+                    //         'status'        => 1,
+                    //     ]);
+                    // }
+
+                    MasterKasBelanjaDetail::find($kasBelanja->id)->update([
+                        'status' => $status,
+                    ]);
+
+                }
+
+                MasterKasBelanja::find($id)->update([
+                    'status'  => $status,
+                    'checked' => $checked,
+                ]);
+            }
+
+
+
+            //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     //throw $th;
+        // }
+
+        return redirect('master_kas_belanja');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
