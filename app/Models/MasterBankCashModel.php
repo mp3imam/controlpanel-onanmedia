@@ -15,6 +15,7 @@ class MasterBankCashModel extends Model
 
     const KATEGORY_KAS_SALDO = "1";
     const KATEGORY_KAS_PENGEMBALIAN = "2";
+    const KATEGORY_KAS_BELANJA = "3";
 
     public function banks(){
         return $this->hasOne(BankModel::class, 'id', 'tujuan_id');

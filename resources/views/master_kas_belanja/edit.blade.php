@@ -39,20 +39,40 @@
                     @csrf
                         <div class="row">
                             <div class="row mb-3">
-                                <div class="col-md">
-                                    <label for="account_id" class="form-label">Deskripsi</label>
+                                <div class="col-md mb-3">
+                                    <label for="id_detail" class="form-label">Deskripsi</label>
                                     <input id="id_detail" name="id_detail" class="form-control" value="{{ $detail->id }}" hidden />
                                     <textarea class="form-control" rows="4" cols="50" placeholder="Tulis deskripsi pembelanjaan di sini...." name="deskripsi" required @hasrole('finance') readonly @endhasrole>{{ $detail->keterangan_kas }}</textarea>
                                 </div>
                                 @hasrole('finance')
                                     @if ($detail->status == 2)
-                                        <div class="col-md">
+                                        <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label for="account_id" class="form-label">Upload Bukti Transfer</label>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <input type="file" name="upload_bukti" accept="image/*" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="account_id" class="form-label">Pilih Bank</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <select id="account_id" name="account_id" class="form-control" required></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="account_id" class="form-label">Keterangan</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <textarea class="form-control" type="file" name="keterangan_upload" rows="1" cols="50" ></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -74,11 +94,11 @@
                                 @if ($detail->bukti_transfer_finance_to_divisi != null)
                                     <div class="col-md">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-12 text-center">
                                                 <label for="account_id" class="form-label">Foto Bukti Transfer</label>
                                             </div>
-                                            <div class="col-md-12">
-                                                <img src="{{ $detail->bukti_transfer_finance_to_divisi }}" alt="">
+                                            <div class="col-md-12 text-center" onclick="zoomOutImage(`{{ $detail->bukti_transfer_finance_to_divisi }}`)">
+                                                <img src="{{ $detail->bukti_transfer_finance_to_divisi }}" alt="" width="100px" height="100px">
                                             </div>
                                         </div>
                                     </div>
@@ -86,11 +106,11 @@
                                 @if ($detail->bukti_transfer_divisi_to_finance != null)
                                 <div class="col-md">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-12 text-center">
                                             <label for="account_id" class="form-label">Foto Bukti Belanja</label>
                                         </div>
-                                        <div class="col-md-12">
-                                            <img src="{{ $detail->bukti_transfer_divisi_to_finance }}" alt="">
+                                        <div class="col-md-12 text-center" onclick="zoomOutImage(`{{ $detail->bukti_transfer_divisi_to_finance }}`)">
+                                            <img src="{{ $detail->bukti_transfer_divisi_to_finance }}" alt="" width="100px" height="100px">
                                         </div>
                                     </div>
                                 </div>
@@ -306,6 +326,26 @@
 
         });
     })
+
+    $("#account_id").select2({
+        allowClear: true,
+        width: '100%',
+        ajax: {
+            url: "{{ route('api.get_select2_banks') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+            return {
+                results: $.map(data.data, function(item) {
+                    return {
+                        id: item.id,
+                        text: item.name
+                    }
+                })
+            };
+            }
+        }
+    });
 
     $('#selectAll').change(function (e) {
         if (this.value == 'Approve') {

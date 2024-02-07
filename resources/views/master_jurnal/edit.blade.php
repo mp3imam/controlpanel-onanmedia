@@ -127,7 +127,7 @@
                                             <div class="col">Keterangan</div>
                                             <div class="col">Debit</div>
                                             <div class="col">Kredit</div>
-                                            @if ($detail->jenis == 0)
+                                            @if ($detail->jenis == 0 && $belanja !== 0)
                                                 <div class="col text-center"></div>
                                             @endif
                                         </div>
@@ -147,13 +147,13 @@
                                                 <div class="col">
                                                     <input class="form-control text-end kredit" id="kredit[]" name="kredit_detail[]" value="{{ $b->kredit ?? '0' }}" onkeyup="countKredit()" {{ $detail->jenis == 0 ? "" : "disabled" }} required/>
                                                 </div>
-                                                <div class="col">
-                                                    @if ($detail->jenis == 0 && $belanja !== 0)
-                                                        <div class="text-center float-end hapus_detail">
-                                                                <i class="ri-delete-bin-line text-danger ri-2x"></i>
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                                @if ($detail->jenis == 0 && $belanja !== 0)
+                                                    <div class="col">
+                                                            <div class="text-center float-end hapus_detail">
+                                                                    <i class="ri-delete-bin-line text-danger ri-2x"></i>
+                                                            </div>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
@@ -167,7 +167,7 @@
                                             <div class="col">
                                                 <input class="form-control text-end total text-white" style="background-color: #4E36E2" id="total_kredit" name="total_kredit" value="{{ $detail->kredit }}" readonly/>
                                             </div>
-                                            @if ($detail->jenis == 0)
+                                            @if ($detail->jenis == 0 && $belanja !== 0)
                                                 <div class="col">
                                                     <div id="ubahwarna" class="col text-white text-end rounded-3" style="background-color: #4E36E2; padding-right: 20px">
                                                         <label class="mt-2" id="total_all" name="total_all">Rp. 0</label>
@@ -263,10 +263,11 @@
 
     var f = {!! json_encode($detail->details) !!}
     var s = {!! json_encode($detail->sumber_data) !!}
+    console.log(f,s);
     $.each(f, function(i, item) {
         var dataId = item.coa_jurnal.id
         var dataText = item.coa_jurnal.uraian
-        if (i !== 0 && s == 2 || i !== 1 && s == 1) {
+        if (i !== 0 && s == 2 || i !== 1 && s == 1 || i !== 1 && s == 3) {
             dataId = item.jurnal_banks.id
             dataText = item.jurnal_banks.nama
         }
