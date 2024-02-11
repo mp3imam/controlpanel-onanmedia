@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth']], function () {
     // Kas Belanja
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class)->except('show');
     Route::post('master_kas_belanja/checked_finance', [MasterKasBelanjaController::class, 'checked_finance'])->name('checked_finance');
+    Route::post('master_kas_belanja/pending_finance', [MasterKasBelanjaController::class, 'pending_finance'])->name('pending_finance');
     Route::post('approve_finance', [MasterKasBelanjaController::class, 'approve_finance'])->name('approve_finance');
     Route::post('upload_bukti_transfer_divisi_finance', [MasterKasBelanjaController::class, 'upload_bukti_transfer_divisi_finance'])->name('upload_bukti_transfer_divisi_finance');
     Route::post('upload_bukti_transfer_finance_divisi', [MasterKasBelanjaController::class, 'upload_bukti_transfer_finance_divisi'])->name('upload_bukti_transfer_finance_divisi');

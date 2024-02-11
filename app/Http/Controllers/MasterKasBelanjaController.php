@@ -262,12 +262,15 @@ class MasterKasBelanjaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id){
+    public function edit(Request $request, $id){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['coa_belanja','belanja_barang.satuan_barang','banks_belanja','kas_file'])->findOrFail($id);
-        // dd($detail);
+        $detail = MasterKasBelanja::with(['belanja_barang' => function ($q) use ($request) {
+            $q->with('satuan_barang')->when($request->filled('q'), function($q) use($request) {
+                $q->where('status', $request->q);
+            });
+        }])->findOrFail($id);
 
         return view('master_kas_belanja.edit', $title, compact(['detail']));
     }

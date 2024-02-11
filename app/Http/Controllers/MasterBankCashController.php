@@ -212,8 +212,8 @@ class MasterBankCashController extends Controller
     }
 
     function approve_direktur(Request $request) {
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
             // All Approve
             $status = 2;
 
@@ -239,7 +239,7 @@ class MasterBankCashController extends Controller
             foreach ($request->belanja_id_detail as $kasBelanja => $belanja) {
                 MasterKasBelanjaDetail::find($belanja)->update([
                     'status' => $status,
-                    'keterangan' => $request->keterangan[$kasBelanja],
+                    // 'keterangan' => $request->keterangan[$kasBelanja],
                 ]);
             }
 
@@ -267,11 +267,11 @@ class MasterBankCashController extends Controller
             JurnalUmumDetail::create($request->except('_token'));
 
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            //throw $th;
-        }
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     //throw $th;
+        // }
 
         return redirect('master_kas_belanja');
     }

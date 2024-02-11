@@ -149,11 +149,11 @@
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
-                }, {
+                },{
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function(data, type, row, meta) {
-                        return `<a href="{{ url('master_kas_belanja') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                        return '<a href="' + "{{ url('master_kas_belanja') }}/" + row.id + '/edit?q=' + $('#q').val() + '" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">' + data + '</a>';
                     }
                 }, {
                     data: 'tanggal',
