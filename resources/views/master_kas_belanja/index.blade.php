@@ -86,7 +86,7 @@
                                     </tbody>
                                     @hasrole('finance')
                                         @if ($checked_sum > 0)
-                                            <tfoot>
+                                        <tfoot>
                                                 <tr>
                                                     <td class="text-end" colspan="8">
                                                         <label class="fs-20 rounded-4 py-2 px-4">Total</label>
@@ -121,6 +121,7 @@
 @section('script')
     <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
     <script type="text/javascript">
+        var route = "{{ url('master_kas_belanja') }}";
         $(function() {
             var table = $('#dataTable').DataTable({
                 dom: 'lrtip',
@@ -153,7 +154,7 @@
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function(data, type, row, meta) {
-                        return '<a href="' + "{{ url('master_kas_belanja') }}/" + row.id + '/edit?q=' + $('#q').val() + '" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">' + data + '</a>';
+                        return '<a href="' + route +"/" + row.id + '/edit?q=' + $('#q').val() + '" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">' + data + '</a>';
                     }
                 }, {
                     data: 'tanggal',
@@ -224,6 +225,7 @@
             $('#pending_filter').click(function () {
                 $('#q').val({{ App\Models\MasterKasBelanja::STATUS_PENDING }})
                 resetWarna()
+                route = "{{ url('list_pending_finance') }}";
                 $('#pending_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
                 table.draw();
             });

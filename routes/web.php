@@ -85,9 +85,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Kas Belanja
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class)->except('show');
-    Route::post('master_kas_belanja/checked_finance', [MasterKasBelanjaController::class, 'checked_finance'])->name('checked_finance');
-    Route::post('master_kas_belanja/pending_finance', [MasterKasBelanjaController::class, 'pending_finance'])->name('pending_finance');
+    Route::post('checked_finance', [MasterKasBelanjaController::class, 'checked_finance'])->name('checked_finance');
+    Route::post('checked_pending_finance', [MasterKasBelanjaController::class, 'checked_pending_finance'])->name('checked_pending_finance');
     Route::post('approve_finance', [MasterKasBelanjaController::class, 'approve_finance'])->name('approve_finance');
+    Route::get('list_pending_finance/{id}/edit', [MasterKasBelanjaController::class, 'list_pending_finance'])->name('list_pending_finance');
     Route::post('upload_bukti_transfer_divisi_finance', [MasterKasBelanjaController::class, 'upload_bukti_transfer_divisi_finance'])->name('upload_bukti_transfer_divisi_finance');
     Route::post('upload_bukti_transfer_finance_divisi', [MasterKasBelanjaController::class, 'upload_bukti_transfer_finance_divisi'])->name('upload_bukti_transfer_finance_divisi');
     Route::post('softdelete_kas_belanja', [MasterKasBelanjaController::class, 'softdelete_kas_belanja'])->name('softdelete_kas_belanja');
@@ -124,6 +125,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Pengaturan
     Route::resource('users', UserController::class);
+    Route::post('ganti-passowrd', [UserController::class, 'ganti_password'])->name('ganti.password');
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
     Route::resource('users_role_page', UserRolePageController::class);
     Route::resource('menu_page', MenuPageController::class);

@@ -233,7 +233,7 @@
                                                 TOTAL
                                             </div>
                                             <div class="col-md-8" style="background-color: #4E36E2">
-                                                <input class="form-control text-end total fs-20 text-white mt-1" id="total_nilai" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal }}" name="total_nilai"  readonly/>
+                                                <input class="form-control text-end total fs-20 text-white mt-1" id="total_nilai" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal_approve }}" name="total_nilai"  readonly/>
                                             </div>
                                         </div>
                                     </div>

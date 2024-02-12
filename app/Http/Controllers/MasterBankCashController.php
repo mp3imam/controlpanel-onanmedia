@@ -204,7 +204,7 @@ class MasterBankCashController extends Controller
     public function approve_list(Request $request){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
-        $detail = MasterBankCashModel::find($request->id)->first();
+        $detail = MasterBankCashModel::whereId($request->id)->first();
         $detail_belanja = MasterKasBelanja::whereIn('id', explode(',',$detail->belanjas_id))->with(['belanja_barang' => function ($q) {$q->whereStatus(1)->with(['satuan_barang','coa_belanja']);}])->get();
 
         $checked_sum = $detail_belanja->sum(function ($item) {return $item->belanja_barang->sum('jumlah');});
@@ -212,8 +212,8 @@ class MasterBankCashController extends Controller
     }
 
     function approve_direktur(Request $request) {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             // All Approve
             $status = 2;
 
@@ -267,11 +267,11 @@ class MasterBankCashController extends Controller
             JurnalUmumDetail::create($request->except('_token'));
 
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     //throw $th;
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
 
         return redirect('master_kas_belanja');
     }

@@ -262,6 +262,26 @@ class MasterKasBelanjaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function list_pending_finance(Request $request, $id){
+        $title['title'] = $this->title;
+        $title['li_1'] = $this->li_1;
+
+        $detail = MasterKasBelanja::with(['belanja_barang' => function ($q) use ($request) {
+            $q->with('satuan_barang')->when($request->filled('q'), function($q) use($request) {
+                $q->where('status', $request->q);
+            });
+        }])->findOrFail($id);
+
+        return view('master_kas_belanja.pending', $title, compact(['detail']));
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function edit(Request $request, $id){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
@@ -379,6 +399,77 @@ class MasterKasBelanjaController extends Controller
 
         return redirect('master_kas_belanja');
     }
+
+    function checked_pending_finance(Request $request) {
+        DB::beginTransaction();
+        try {
+            $kasBelanja = MasterKasBelanja::find($request->id_detail)->first();
+
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['nomor_transaksi'] = $nomor.'/TRAN/BLJ/'.$tahun;
+            $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
+            $request['nominal_approve'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
+            $request['status'] = 2;
+            $request['checked'] = 1;
+            $request['keterangan_kas'] = $kasBelanja->keterangan_kas." - ".$kasBelanja->nomor_transaksi;
+            $request['user_id'] = $kasBelanja->user_id;
+
+            // Store your file into directory and db
+            $kasBelanja = MasterKasBelanja::create($request->except('_token'));
+
+
+            foreach ($request->nama_item as $item => $i) {
+                $harga = str_replace(".","",str_replace("Rp. ","",$request->harga[$item]));
+                $jumlah = str_replace(".","",str_replace("Rp. ","",$request->jumlah[$item]));
+
+                $data = [
+                    'kas_id'     => $kasBelanja->id,
+                    'nama_item'  => $i,
+                    'qty'        => $request->qty[$item],
+                    'satuan_id'  => $request->satuan[$item],
+                    'harga'      => $harga,
+                    'jumlah'     => $jumlah,
+                    'keterangan' => $request->keterangan[$item] ?? '',
+                    'nominal'    => $request->nominal,
+                    'status'     => $request->selectDetail[$item],
+                    'account_id' => $request->akun[$item],
+                ];
+
+                $file = $kasBelanja->file;
+
+                if ($file != null) {
+                    $path = public_path('kas_belanja/');
+                    $rand = rand(1000,9999);
+                    $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+                    $file->move($path, $imageName);
+
+                    $data += [
+                        'file'        => asset('kas_belanja/')."/".$imageName,
+                    ];
+
+                }
+
+
+                MasterKasBelanjaDetail::create($data);
+            }
+
+
+            // Hapus pending
+            foreach ($request->id_item as $id => $i) {
+                MasterKasBelanjaDetail::find($i)->delete();
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+        }
+
+        return redirect('master_kas_belanja');
+    }
+
 
     function checked_finance(Request $request) {
         DB::beginTransaction();

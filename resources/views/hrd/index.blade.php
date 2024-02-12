@@ -12,7 +12,6 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                        <a href="{{ route('data_karyawan.create') }}" class="btn btn-success waves-effect waves-light text-right">Tambah</a>
                         <a type="button" class="btn btn-primary btn-label btn-pdf">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
@@ -29,9 +28,11 @@
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
+                            <div class="col-md-4 col-md-6 p-3">
+                                <input id='cari' name="cari" class="form-control rounded-3" />
+                            </div>
+                            <div class="col p-3">
+                                <a href="{{ route('data_karyawan.create') }}" class="btn btn-white float-end fs-16" style="color: #4E36E2; border-color:#4E36E2"><i class="ri-add-line"></i> Tambah Karyawan</a>
                             </div>
                         </div>
                     </div>
@@ -43,15 +44,9 @@
                                     <tr>
                                         <th width="50px">No</th>
                                         <th>Nama</th>
-                                        <th>Email</th>
-                                        <th hidden>Divisi Id</th>
                                         <th>Divisi</th>
+                                        <th>Email</th>
                                         <th>Telepon</th>
-                                        <th>Rekening Bank</th>
-                                        <th>Tanggal Masuk</th>
-                                        <th>Kontrak</th>
-                                        <th>Gaji</th>
-                                        <th>Alamat</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -110,38 +105,19 @@
                         return `<a href="{{ url('data_karyawan/') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
                     }
                 },{
-                    data: 'email',
-                    name: 'Email',
-                },{
-                    data: 'cl_divisi_id',
-                    visible: false
-                },{
                     data: 'divisis',
                     name: 'Divisi'
+                },{
+                    data: 'email',
+                    name: 'Email',
                 },{
                     data: 'no_hp',
                     name: 'Telepon',
                 },{
-                    data: 'no_rek',
-                    name: 'Rekening Bank',
-                },{
-                    data: 'create_date',
-                    name: 'Tanggal Masuk',
-                },{
-                    data: 'kontrak',
-                    name: 'Kontrak',
-                },{
-                    data: 'gaji',
-                    name: 'Gaji',
-                },{
-                    data: 'alamat',
-                    name: 'Alamat',
-                },{
                     data: 'status_pegawai',
                     name: 'Status',
                     render: function (data) {
-                        status = data == 0 ? `<span class="badge bg-danger-subtle text-danger badge-border">${data}</span>` : `<span class="badge bg-danger-subtle text-success badge-border">${data}</span>`
-                        return status;
+                        return data == 0 ? `<span class="badge bg-danger-subtle text-danger badge-border">${data}</span>` : `<span class="badge bg-danger-subtle text-success badge-border">${data}</span>`
                     }
                 }
             ]

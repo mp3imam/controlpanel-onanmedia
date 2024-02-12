@@ -266,10 +266,10 @@
     $.each(f, function(i, item) {
         var dataId = item.coa_jurnal.id
         var dataText = item.coa_jurnal.uraian
-        // if (i !== 0 && s == 2 || i !== 1 && s == 1) {
-        //     dataId = item.jurnal_banks.id
-        //     dataText = item.jurnal_banks.nama
-        // }
+        if (i !== 1 && s == 3) {
+            dataId = item.jurnal_banks.id
+            dataText = item.jurnal_banks.nama
+        }
 
         var data = {id: dataId, text: dataText, selected: true};
         var newOption = new Option(data.text, data.id, false, false)
