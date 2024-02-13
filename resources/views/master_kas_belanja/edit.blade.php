@@ -312,11 +312,13 @@
                 if (this.value == 6) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#25a0e2");
+                    $('#keterangan' + item.id).val("Finance")
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 if (this.value == 4) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#f06548");
+                    $('#keterangan' + item.id).val("Finance")
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 $('#keterangan'+ item.id).val("")
@@ -362,7 +364,7 @@
             $.each(f, function(i, item) {
                 $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                 $('#selectDetail' + item.id).val(6).change();
-                $('#keterangan' + item.id).val("Pending All")
+                $('#keterangan' + item.id).val("Finance Pending a")
             });
         }
         if (this.value == 'Tolak') {
@@ -371,7 +373,7 @@
             $.each(f, function(i, item) {
                 $('#selectDetail' + item.id).css("background-color", "#f06548");
                 $('#selectDetail' + item.id).val(4).change();
-                $('#keterangan' + item.id).val("Tolak All")
+                $('#keterangan' + item.id).val("Finance Tolak All")
             });
         }
     });

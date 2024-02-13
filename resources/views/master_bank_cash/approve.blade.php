@@ -134,7 +134,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                             <div class="col-md-2">
                                                 <select id="selectTotal" name="selectTotal" class="form-control text-white selectTotal" onchange="checked_keseluruhan()" style="background-color: #00bd9d">
                                                     <option value="1" selected="selected">Approve All</option>
-                                                    <option value="6">Pending All</option>
+                                                    <opt value="6">Pending All</opt  ion>
                                                     <option value="4">Tolak All</option>
                                                 </select>
                                             </div>
@@ -179,7 +179,6 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     $.each(eitem.belanja_barang, function(i, item) {
                         $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                         $('#selectDetail' + item.id).val(6).change();
-                        $('#keterangan' + item.id).val("Pending All")
                     });
                 }
                 if (this.value == 4) {
@@ -187,7 +186,6 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     $.each(eitem.belanja_barang, function(i, item) {
                         $('#selectDetail' + item.id).css("background-color", "#f06548");
                         $('#selectDetail' + item.id).val(4).change();
-                        $('#keterangan' + item.id).val("Tolak All")
                     });
                 }
             });
@@ -208,21 +206,23 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                         $('#selectDetail' + item.id).css("background-color", "#00bd9d");
                         $('#keterangan' + item.id).prop('required',false);
+                        $('#keterangan'+ item.id).val("")
                     }
                     if (this.value == 6) {
                         $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                         if ($('#total_nilai'+eitem.id).val() < 1) $('#total_nilai'+eitem.id).val(0)
-                        $('#selectDetail' + item.id).css("background-color", "#25a0e2");
-                        $('#keterangan' + item.id).prop('required',true);
+                        $('#selectDetail'+item.id).css("background-color", "#25a0e2");
+                        $('#keterangan'+item.id).prop('required',true);
+                        $('#keterangan'+ item.id).val("Direktur")
                     }
                     if (this.value == 4) {
                         $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                         if ($('#total_nilai'+eitem.id).val() < 1) $('#total_nilai'+eitem.id).val(0)
                         $('#selectDetail' + item.id).css("background-color", "#f06548");
                         $('#keterangan' + item.id).prop('required',true);
+                        $('#keterangan'+ item.id).val("Direktur")
                     }
                     countSeluruhTotal()
-                    $('#keterangan'+ item.id).val("")
                 });
             });
         });
@@ -248,7 +248,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     $.each(eitem.belanja_barang, function(i, it) {
                         $('#selectDetail' + it.id).css("background-color", "#25a0e2");
                         $('#selectDetail' + it.id).val(6).change();
-                        $('#keterangan' + it.id).val("Pending All")
+                        $('#keterangan' + it.id).val("Direktur Pending All")
                     });
                 });
             }
@@ -260,7 +260,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                     $.each(eitem.belanja_barang, function(i, item) {
                         $('#selectDetail' + item.id).css("background-color", "#f06548");
                         $('#selectDetail' + item.id).val(4).change();
-                        $('#keterangan' + item.id).val("Tolak All")
+                        $('#keterangan' + item.id).val("Direktur Tolak All")
                     });
                 });
             }

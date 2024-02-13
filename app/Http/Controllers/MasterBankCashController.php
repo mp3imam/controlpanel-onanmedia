@@ -44,7 +44,11 @@ class MasterBankCashController extends Controller
 
         $user = Auth::user()->roles->pluck('name');
 
-        return view('master_bank_cash.index', $title, compact(['user']));
+        $semua = count(MasterBankCashModel::get());
+        $permintaan = count(MasterBankCashModel::whereNull('status')->get());
+        $disetujui = count(MasterBankCashModel::whereStatus(2)->get());
+
+        return view('master_bank_cash.index', $title, compact(['user','permintaan','disetujui','semua']));
     }
 
     function get_datatable(Request $request){
@@ -78,11 +82,10 @@ class MasterBankCashController extends Controller
     public function create(){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
-        $path = public_path("Finance/Kas_Isi_saldo/".date('Y')."/".date('m')."/".date('d'));
+        $path = public_path("Finance/Kas_Saldo/".date('Y')."/".date('m')."/".date('d'));
         !is_dir($path) && mkdir($path, 0777, true);
 
         $random_string = Str::random(25);
-        // dd($random_string);
 
         return view('master_bank_cash.create', $title, compact('random_string'));
     }
@@ -376,6 +379,12 @@ class MasterBankCashController extends Controller
 
     public function models($request){
         return MasterBankCashModel::kasSaldo()->with(['coa_kas_saldo','banks'])
+        ->when($request->q == MasterBankCashModel::STATUS_PERMINTAAN || $request->q == null, function ($q){
+            $q->whereNull('status');
+        })
+        ->when($request->q == MasterBankCashModel::STATUS_DISETUJUI, function ($q){
+            $q->whereStatus(2);
+        })
         ->when($request->cari_cash, function($q) use($request){
             $q->where('nomor_transaksi', 'ilike','%'.$request->cari_cash."%")
             ->orWhere('keterangan', 'ilike','%'.$request->cari_cash."%");

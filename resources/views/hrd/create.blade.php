@@ -19,18 +19,19 @@
                     <div class="row">
                         <div class="col-md-2">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 btn" onclick="$('#inputField').click()">
                                     <div class="card bg-transparent border-0">
-                                        <img class="card-img rounded-circle" src="{{ asset('images/user-dummy-img.jpg') }}" width="50%" height="50%" alt="Card image">
+                                        <img class="card-img rounded-circle" src="{{ asset('images/user-dummy-img.jpg') }}" width="50%" height="50%" alt="Card image"  for="files">
                                         <div class="card-img-overlay p-0 d-flex flex-column">
                                             <div class="card-body bg-transparent"></div>
                                             <div class="bg-transparent text-end mb-3 ml-3">
-                                                <button type="button" class="btn btn-icon waves-effect waves-light text-white" style="background-color: #4E36E2"><i class="ri-pencil-line"></i></button>
+                                                <button type="button" for="files" class="btn btn-icon waves-effect waves-light text-white" style="background-color: #4E36E2"><i class="ri-pencil-line"></i></button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 fs-24 text-center">
+                                    <input type="file" id="inputField" hidden/>
                                     -
                                 </div>
                                 <div class="col-md-12 fs-22 text-muted text-center">
@@ -106,18 +107,46 @@
                             <div class="tab-content mt-4">
                                 <div class="tab-pane active" id="base-justified-umum" role="tabpanel">
                                     <!-- Konten untuk Isi Saldo Kasir -->
+                                    <form action="#" method="post"></form>
                                     <div class="row">
-                                        <div class="col-lg-12">
-                                            <label class="control-form">Nama</label>
+                                        <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Nama</label>
                                             <input class="form-control" id="nama_user" name="nama_user">
                                         </div>
-                                        <div class="col-lg-6">
-                                            <label class="control-form">NIK</label>
+                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">NIK Khusus (optional)</label>
                                             <input class="form-control" id="nama_user" name="nama_user">
                                         </div>
-                                        <div class="col-lg-6">
-                                            <label class="control-form">Nama</label>
-                                            <input class="form-control" id="nama_user" name="nama_user">
+                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Agama</label>
+                                            <select class="form-control" id='agama_id' name="agama_id"></select>
+                                        </div>
+                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Tempat</label>
+                                            <input class="form-control" id="tempat" name="tempat">
+                                        </div>
+                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Tanggal Lahir</label>
+                                            <input type="text" class="form-control flatpickr-input" id="tanggal_lahir" name="tanggal_lahir" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly">
+                                        </div>
+                                        <div class="col-lg-6 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Jenis Kelamin</label>
+                                            <select class="form-control" id='jenis_kelamin' name="jenis_kelamin">
+                                                <option value="1" selected>Laki-Laki</option>
+                                                <option value="2">Perempuan</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">No. Handphone</label>
+                                            <input class="form-control" id="no_hp" name="no_hp">
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Email</label>
+                                            <input class="form-control" id="email" name="email">
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Pendidikan Terakhir</label>
+                                            <input class="form-control" id="pendidikan_terakhir" name="pendidikan_terakhir">
                                         </div>
                                     </div>
                                 </div>
@@ -177,4 +206,37 @@
         <!-- end col -->
     </div>
     <!--end row-->
+@endsection
+@section('script')
+    <script type="text/javascript">
+        $(function() {
+            var dataRole = {
+                id: 1,
+                text: "Islam",
+                selected: true
+            };
+            var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+            $('#agama_id').append(newOptionRole).trigger('change');
+            $('#agama_id').select2();
+
+            $('#agama_id').select2({
+                ajax: {
+                    url: "{{ route('api.agama') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
 @endsection

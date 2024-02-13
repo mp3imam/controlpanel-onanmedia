@@ -23,13 +23,23 @@
         <div class="tab-pane active" id="base-justified-home" role="tabpanel">
             <!-- Konten untuk Isi Saldo Kasir -->
             <div class="col-lg-12">
-                <a href="{{ route('master_bank_cash.create') }}" type="button" class="btn btn-success my-2" >
-                    Tambah
-                </a>
+                <div class="col-sm-auto mb-3">
+                    <button id="permintaan_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
+                        Permintaan ({{ $permintaan }})
+                    </button>
+                    <button id="disetujui_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
+                        Disetujui ({{ $disetujui }})
+                    </button>
+                    <button id="all_filter" type="button" class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
+                        Semua ({{ $semua }})
+                    </button>
+                </div>
+
                 <form action="#">
                     <div class="row">
                         <div class="col-md-3 p-3">
                             <label>Filter Tanggal</label>
+                            <input class="form-control flatpickr-input" id="q" hidden>
                             <input type="text" class="form-control flatpickr-input" id="tanggal_cash" name="tanggal_cash" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                         </div>
                         <div class="col-md-3 p-3">
@@ -130,6 +140,7 @@
                 url: "{{ route('getDataTableBankCash') }}",
                 data: function (d) {
                     d.tanggal_cash = $('#tanggal_cash').val(),
+                    d.q = $('#q').val(),
                     d.cari_cash = $('#cari_cash').val()
                 }
             },
@@ -143,9 +154,9 @@
                     data: 'nomor_transaksi',
                     name: 'No. Transaksi',
                     render: function (data, type, row, meta) {
-                        route = "{{ url('master_bank_cash') }}/"+row.id+"/edit"
-                        if (user == 'direktur') route = "{{ url('approve_list') }}?id="+row.id
-                        return `<a href="${route}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
+                        route = data
+                        if (user == 'direktur') route = `<a href="{{ url('approve_list') }}?id=`+row.id+`" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`
+                        return route;
                     }
                 },{
                     data: 'tanggal',
@@ -166,13 +177,12 @@
                     data: 'keterangan',
                     name: 'KETERANGAN'
                 }, {
-                    data: 'id',
+                    data: 'status',
                     name: 'Action',
                     render: function(data, type, row, meta) {
-                        return `
-                        <a type="button" href="${route}" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(1, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
-                        `;
+                        button = `<i class="ri-alert-line me-3 align-middle text-warning fs-21"></i><strong class="text-warning m-3 p-2 rounded-5" style="background-color: #FFF6C6">Permintaan</strong>`
+                        if (row.status == 2) button = `<i class="bx bx-like me-3 align-middle text-success fs-21"></i><strong class="text-success m-3 p-2 rounded-5" style="background-color: #ECFDF3">Approve</strong>`
+                        return button;
                     }
                 }
             ]
@@ -185,7 +195,54 @@
         $('#cari_cash').keypress(function() {
             table.draw();
         });
+
+        $('#permintaan_filter').click(function () {
+            $('#q').val({{ App\Models\MasterKasBelanja::STATUS_CREATE }})
+            resetWarna()
+            $('#permintaan_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+            table.draw();
+        });
+
+        $('#disetujui_filter').click(function () {
+            $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
+            resetWarna()
+            $('#disetujui_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+            table.draw();
+        });
+
+        $('#pending_filter').click(function () {
+            $('#q').val({{ App\Models\MasterKasBelanja::STATUS_PENDING }})
+            resetWarna()
+            $('#pending_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+            table.draw();
+        });
+
+        $('#cancell_filter').click(function () {
+            $('#q').val({{ App\Models\MasterKasBelanja::STATUS_TOLAK }})
+            resetWarna()
+            $('#cancell_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+            table.draw();
+        });
+
+        $('#all_filter').click(function () {
+            $('#q').val("ALL")
+            resetWarna()
+            $('#all_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+            table.draw();
+        });
     });
+
+    function resetWarna(){
+        $('#permintaan_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+        $('#disetujui_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+        $('#pending_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+        $('#cancell_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+        $('#all_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+    }
+
+    resetWarna()
+    $('#permintaan_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+
 
     $(function () {
         var table = $('#dataTableReturn').DataTable({

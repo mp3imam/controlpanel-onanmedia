@@ -55,3 +55,6 @@ Route::get('count_kdrek1_coa', [OnanmediaAPIController::class,'count_kdrek1_coa'
 Route::get('count_kdrek2_coa', [OnanmediaAPIController::class,'count_kdrek2_coa'])->name('api.count_kdrek2_coa');
 Route::get('count_kdrek3_coa', [OnanmediaAPIController::class,'count_kdrek3_coa'])->name('api.count_kdrek3_coa');
 Route::get('count_kdrek_coa', [OnanmediaAPIController::class,'count_kdrek_coa'])->name('api.count_kdrek_coa');
+
+// Select2 HRD
+Route::get('agama', [OnanmediaAPIController::class,'select2_agama'])->name('api.agama');

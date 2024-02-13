@@ -17,6 +17,10 @@ class MasterBankCashModel extends Model
     const KATEGORY_KAS_PENGEMBALIAN = "2";
     const KATEGORY_KAS_BELANJA = "3";
 
+    const STATUS_PERMINTAAN = "1";
+    const STATUS_DISETUJUI = "2";
+    const STATUS_SEMUA = "3";
+
     public function banks(){
         return $this->hasOne(BankModel::class, 'id', 'tujuan_id');
     }
