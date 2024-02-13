@@ -569,7 +569,7 @@ class MasterKasBelanjaController extends Controller
             }
 
             $tahun = Carbon::now()->format('Y');
-            $masterKasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
+            $masterKasBelanja = MasterKasBelanja::with('users')->whereId($request->id_detail)->first();
 
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
             $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
@@ -586,8 +586,9 @@ class MasterKasBelanjaController extends Controller
             $request['account_id'] = $request->account_id;
             $request['debet'] = $masterKasBelanja->nominal_approve;
             $request['kredit'] = 0;
-            $request['keterangan'] = "";
+            $request['keterangan'] = $masterKasBelanja->users->nama_lengkap;
             JurnalUmumDetail::create($request->except('_token'));
+            $request['keterangan'] = "";
             $request['account_id'] = 7;
             $request['debet'] = 0;
             $request['kredit'] = $masterKasBelanja->nominal_approve;

@@ -356,7 +356,7 @@ class PermissionTableSeeder extends Seeder
                 ],[
                     'id' => 6,
                     'username' => 'Direktur',
-                    'password' => bcrypt('12345678'),
+                    'password' => bcrypt('3333'),
                     'status' => 1,
                     'nama_lengkap' => 'Bapak Dolok Siregar',
                     'cl_perusahaan_id' => 1,
@@ -383,21 +383,21 @@ class PermissionTableSeeder extends Seeder
             // create user HRD & roles
             $hrdRole = Role::create($role[2]);
             $hrdUser = User::create($users[2]);
-            $hrdRole->givePermissionTo(['Dashboard']);
+            $financeRole->givePermissionTo(['Dashboard','Finance','Transaksi Kas','HRD','Data Karyawan','Data Absensi']);
             $hrdUser->assignRole($hrdRole);
             // end
 
             // create user Costumer Service & roles
             $csRole = Role::create($role[3]);
             $csUser = User::create($users[3]);
-            $csRole->givePermissionTo(['Dashboard']);
+            $financeRole->givePermissionTo(['Dashboard','Finance','Transaksi Kas']);
             $csUser->assignRole($csRole);
             // end
 
             // create user Costumer Service & roles
             $csRole = Role::create($role[4]);
             $csUser = User::create($users[4]);
-            $csRole->givePermissionTo(['Dashboard']);
+            $financeRole->givePermissionTo(['Dashboard','Finance','Transaksi Kas']);
             $csUser->assignRole($csRole);
             // end
 
