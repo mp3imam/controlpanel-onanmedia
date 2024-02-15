@@ -86,7 +86,7 @@
                                     </tbody>
                                     @hasrole('finance')
                                         @if ($checked_sum > 0)
-                                        <tfoot>
+                                        <tfoot id="footer_nominal">
                                                 <tr>
                                                     <td class="text-end" colspan="8">
                                                         <label class="fs-20 rounded-4 py-2 px-4">Total</label>
@@ -190,6 +190,7 @@
             $('#approve_filter').click(function () {
                 $('#q').val({{ App\Models\MasterKasBelanja::STATUS_CREATE }})
                 resetWarna()
+                $('#footer_nominal').attr('hidden',false)
                 $('#approve_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
                 table.draw();
             });
@@ -254,11 +255,14 @@
             $('#cancell_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
             $('#done_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
             $('#all_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
+            $('#footer_nominal').attr('hidden',true)
+            route = "{{ url('master_kas_belanja') }}";
         }
 
         resetWarna()
         $('#create_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
         $('#approve_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+        $('#footer_nominal').attr('hidden',false)
 
         $.ajaxSetup({
             headers: {

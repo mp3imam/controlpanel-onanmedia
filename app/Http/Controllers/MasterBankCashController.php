@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
-use Svg\Tag\Rect;
 use Yajra\DataTables\Facades\DataTables;
 
 class MasterBankCashController extends Controller
@@ -217,57 +216,74 @@ class MasterBankCashController extends Controller
     function approve_direktur(Request $request) {
         DB::beginTransaction();
         try {
-            // All Approve
-            $status = 2;
 
-            $file = $request->file('file');
-            $path = public_path('kas_saldo/');
-            $rand = rand(1000,9999);
-            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            $file->move($path, $imageName);
-
-            MasterBankCashModel::find($request->id)->update([
-                'status'  => 2,
-                'image'   => asset('kas_belanja/')."/".$imageName,
-                'bank_id' => $request->sumber_dana,
-                'tujuan_id' => 7,
-                'nominal_approve' => $request->seluruh_total,
-            ]);
-
-            foreach ($request->belanja_id as $id) {
-                MasterKasBelanja::find($id)->update([
-                    'status'  => $status
-                ]);
-            }
+            $status = 0;
             foreach ($request->belanja_id_detail as $kasBelanja => $belanja) {
-                MasterKasBelanjaDetail::find($belanja)->update([
-                    'status' => $status,
-                    // 'keterangan' => $request->keterangan[$kasBelanja],
-                ]);
+                if ($request->selectDetail[$kasBelanja] == 1){
+                    $status = 2;
+
+                    $file = $request->file('file');
+                    $path = public_path('kas_saldo/');
+                    $rand = rand(1000,9999);
+                    $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+                    // $file->move($path, $imageName);
+
+                    MasterBankCashModel::find($request->id)->update([
+                        'status'  => $status,
+                        'image'   => asset('kas_belanja/')."/".$imageName,
+                        'bank_id' => $request->sumber_dana,
+                        'tujuan_id' => 7,
+                        'nominal_approve' => $request->seluruh_total,
+                    ]);
+
+                    MasterKasBelanjaDetail::find($belanja)->update([
+                        'status' => 2,
+                        // 'keterangan' => $request->keterangan[$kasBelanja],
+                    ]);
+                    MasterKasBelanja::find($request->id)->update([
+                        'status'  => 2
+                    ]);
+                }else{
+                    MasterKasBelanjaDetail::find($belanja)->update([
+                        'status' => $request->selectDetail[$kasBelanja],
+                        // 'keterangan' => $request->keterangan[$kasBelanja],
+                    ]);
+
+                    MasterKasBelanja::find($request->id)->update([
+                        'status'  => $status
+                    ]);
+                }
+
             }
 
-            $tahun = Carbon::now()->format('Y');
-            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
-            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
-            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
-            $request['dokumen'] = MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi;
-            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
-            $request['debet'] = $request->seluruh_total;
-            $request['kredit'] = $request->seluruh_total;
-            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
-            $masterJurnal = MasterJurnal::create($request->except('_token'));
-            $request['jurnal_umum_id'] = $masterJurnal->id;
-            $request['account_id'] = 7;
-            $request['debet'] = $request->seluruh_total;
-            $request['kredit'] = 0;
-            $request['keterangan'] = "";
-            JurnalUmumDetail::create($request->except('_token'));
-            $request['account_id'] = $request->sumber_dana;
-            $request['debet'] = 0;
-            $request['kredit'] = $request->seluruh_total;
-            JurnalUmumDetail::create($request->except('_token'));
+            if($status == 2){
+                $tahun = Carbon::now()->format('Y');
+                $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+                $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+                $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+                $request['dokumen'] = MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi;
+                $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+                $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+
+                $request['debet'] = $request->seluruh_total;
+                $request['kredit'] = $request->seluruh_total;
+                $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
+                $masterJurnal = MasterJurnal::create($request->except('_token'));
+                $request['jurnal_umum_id'] = $masterJurnal->id;
+                $request['account_id'] = 7;
+                $request['debet'] = $request->seluruh_total;
+                $request['kredit'] = 0;
+                $request['keterangan'] = "";
+                JurnalUmumDetail::create($request->except('_token'));
+                $request['account_id'] = $request->sumber_dana;
+                $request['debet'] = 0;
+                $request['kredit'] = $request->seluruh_total;
+                JurnalUmumDetail::create($request->except('_token'));
+            }else{
+                MasterBankCashModel::find($request->id)->delete();
+            }
+
 
 
             DB::commit();
@@ -276,7 +292,7 @@ class MasterBankCashController extends Controller
             //throw $th;
         }
 
-        return redirect('master_kas_belanja');
+        return redirect('master_bank_cash');
     }
 
     /**
@@ -389,8 +405,8 @@ class MasterBankCashController extends Controller
             $q->where('nomor_transaksi', 'ilike','%'.$request->cari_cash."%")
             ->orWhere('keterangan', 'ilike','%'.$request->cari_cash."%");
         })
-        ->when($request->tanggal_bank, function($q) use($request){
-            $tanggal = explode(" to ",$request->tanggal_bank);
+        ->when($request->tanggal_cash, function($q) use($request){
+            $tanggal = explode(" to ",$request->tanggal_cash);
             $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
                 $q->where('tanggal_transaksi', Carbon::parse($tanggal[0])->format('Y-m-d'));
             });
@@ -399,7 +415,7 @@ class MasterBankCashController extends Controller
             });
         })
         // Default 3 Bulan Ke Belakang
-        ->when($request->tanggal_bank == null, function($q) use($request){
+        ->when($request->tanggal_cash == null, function($q) use($request){
             $q->where('tanggal_transaksi', '>=', Carbon::now()->subMonths(3)->firstOfMonth()->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::now()->format('Y-m-d'));
         })
         ->orderBy('id','desc')

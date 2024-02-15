@@ -178,11 +178,13 @@
 
                                                 @hasrole('finance')
                                                     <div class="col-md">
-                                                        <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control text-white selectDetail" @if($detail->status > 1) readonly @endif style="background-color:{{ $color }}" >
-                                                            <option value="1" {{ $b->status == 1 || $b->status == 0 ? "selected" : "" }}>Approve</option>
-                                                            <option value="6" {{ $b->status == 6 ? "selected" : "" }}>Pending</option>
-                                                            <option value="4" {{ $b->status == 4 ? "selected" : "" }}>Tolak</option>
-                                                        </select>
+                                                        @if ($detail->status == 1 && $b->status == 1 || $b->status == 6)
+                                                            <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control text-white selectDetail" @if($detail->status > 1) readonly @endif style="background-color:{{ $color }}" >
+                                                                <option value="1" {{ $b->status == 1 || $b->status == 0 ? "selected" : "" }}>Approve</option>
+                                                                <option value="6" {{ $b->status == 6 ? "selected" : "" }}>Pending</option>
+                                                                <option value="4" {{ $b->status == 4 ? "selected" : "" }}>Tolak</option>
+                                                            </select>
+                                                        @endif
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select id="akun{{ $b->id }}" name="akun[]" class="form-control akun" @if($detail->status == 2) disabled @endif required></select>
@@ -233,7 +235,7 @@
                                                 TOTAL
                                             </div>
                                             <div class="col-md-8" style="background-color: #4E36E2">
-                                                <input class="form-control text-end total fs-20 text-white mt-1" id="total_nilai" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal_approve }}" name="total_nilai"  readonly/>
+                                                <input class="form-control text-end total fs-20 text-white mt-1" id="total_nilai" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail->nominal_approve == 0 ? $detail->nominal : $detail->nominal_approve }}" name="total_nilai"  readonly/>
                                             </div>
                                         </div>
                                     </div>
@@ -246,7 +248,7 @@
                                     <button class="btn bg-animation btn-success mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Approve</button>
                                 @elseif ($detail->status == 2)
                                     <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti Transfer</button>
-                                @elseif ($detail->bukti_transfer_divisi_to_finance != null)
+                                @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
                                     <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>
                                 @endif
                             @else
@@ -308,20 +310,20 @@
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#00bd9d");
                     $('#keterangan' + item.id).prop('required',false);
+                    $('#keterangan'+ item.id).val("")
                 }
                 if (this.value == 6) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#25a0e2");
-                    $('#keterangan' + item.id).val("Finance")
+                    $('#keterangan' + item.id).val("Finance Pending")
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 if (this.value == 4) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#f06548");
-                    $('#keterangan' + item.id).val("Finance")
+                    $('#keterangan' + item.id).val("Finance Tolak")
                     $('#keterangan' + item.id).prop('required',true);
                 }
-                $('#keterangan'+ item.id).val("")
                 $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
             });
 
@@ -364,7 +366,7 @@
             $.each(f, function(i, item) {
                 $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                 $('#selectDetail' + item.id).val(6).change();
-                $('#keterangan' + item.id).val("Finance Pending a")
+                $('#keterangan' + item.id).val("Finance Pending All")
             });
         }
         if (this.value == 'Tolak') {

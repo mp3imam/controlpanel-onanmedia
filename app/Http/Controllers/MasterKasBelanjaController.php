@@ -10,7 +10,6 @@ use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\MasterKasBelanjaFile;
 use App\Models\TemporaryFileUpload;
-use App\Models\TransaksiKasDetail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -82,7 +81,7 @@ class MasterKasBelanjaController extends Controller
             return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
         })
         ->addColumn('status_name', function ($row){
-            return $row->statuses->nama;
+            return $row->statuses->nama ?? '';
         })
         ->rawColumns(['banks','nominals','jenis_transaksi','tanggal','status_name'])
         ->make(true);
@@ -289,6 +288,9 @@ class MasterKasBelanjaController extends Controller
         $detail = MasterKasBelanja::with(['belanja_barang' => function ($q) use ($request) {
             $q->with('satuan_barang')->when($request->filled('q'), function($q) use($request) {
                 $q->where('status', $request->q);
+            })
+            ->when($request->q == null, function($q) use($request) {
+                $q->where('status', 1);
             });
         }])->findOrFail($id);
 
@@ -419,52 +421,47 @@ class MasterKasBelanjaController extends Controller
             // Store your file into directory and db
             $kasBelanja = MasterKasBelanja::create($request->except('_token'));
 
-
             foreach ($request->nama_item as $item => $i) {
-                $harga = str_replace(".","",str_replace("Rp. ","",$request->harga[$item]));
-                $jumlah = str_replace(".","",str_replace("Rp. ","",$request->jumlah[$item]));
+                if ($request->selectDetail[$item] == 1){
+                    $harga = str_replace(".","",str_replace("Rp. ","",$request->harga[$item]));
+                    $jumlah = str_replace(".","",str_replace("Rp. ","",$request->jumlah[$item]));
 
-                $data = [
-                    'kas_id'     => $kasBelanja->id,
-                    'nama_item'  => $i,
-                    'qty'        => $request->qty[$item],
-                    'satuan_id'  => $request->satuan[$item],
-                    'harga'      => $harga,
-                    'jumlah'     => $jumlah,
-                    'keterangan' => $request->keterangan[$item] ?? '',
-                    'nominal'    => $request->nominal,
-                    'status'     => $request->selectDetail[$item],
-                    'account_id' => $request->akun[$item],
-                ];
-
-                $file = $kasBelanja->file;
-
-                if ($file != null) {
-                    $path = public_path('kas_belanja/');
-                    $rand = rand(1000,9999);
-                    $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-                    $file->move($path, $imageName);
-
-                    $data += [
-                        'file'        => asset('kas_belanja/')."/".$imageName,
+                    $data = [
+                        'kas_id'     => $kasBelanja->id,
+                        'nama_item'  => $i,
+                        'qty'        => $request->qty[$item],
+                        'satuan_id'  => $request->satuan[$item],
+                        'harga'      => $harga,
+                        'jumlah'     => $jumlah,
+                        'keterangan' => $request->keterangan[$item] ?? '',
+                        'nominal'    => $request->nominal,
+                        'status'     => $request->selectDetail[$item],
+                        'account_id' => $request->akun[$item],
                     ];
 
+                    $file = $kasBelanja->file;
+
+                    if ($file != null) {
+                        $path = public_path('kas_belanja/');
+                        $rand = rand(1000,9999);
+                        $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+                        $file->move($path, $imageName);
+
+                        $data += [
+                            'file'        => asset('kas_belanja/')."/".$imageName,
+                        ];
+
+                    }
+
+                    MasterKasBelanjaDetail::create($data);
+                    MasterKasBelanjaDetail::find($request->id_item[$item])->delete();
                 }
-
-
-                MasterKasBelanjaDetail::create($data);
-            }
-
-
-            // Hapus pending
-            foreach ($request->id_item as $id => $i) {
-                MasterKasBelanjaDetail::find($i)->delete();
             }
 
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            //throw $th;
+        //     //throw $th;
         }
 
         return redirect('master_kas_belanja');
@@ -547,6 +544,7 @@ class MasterKasBelanjaController extends Controller
     }
 
     function upload_bukti_transfer_divisi_finance(Request $request) {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             // All Approve
@@ -554,16 +552,15 @@ class MasterKasBelanjaController extends Controller
             $path = public_path('upload_bukti/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            $file->move($path, $imageName);
+            // $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'status' => 3,
                 'bukti_transfer_finance_to_divisi'   => asset('upload_bukti/')."/".$imageName,
             ]);
 
-            foreach ($request->selectDetail as $item => $i) {
-                if ($i == 1)
-                MasterKasBelanjaDetail::find($request->id_item[$item])->update([
+            foreach ($request->id_item as $item => $i) {
+                MasterKasBelanjaDetail::find($i)->update([
                     'status' => 3,
                 ]);
             }
@@ -604,6 +601,7 @@ class MasterKasBelanjaController extends Controller
     }
 
     function upload_bukti_transfer_finance_divisi(Request $request) {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             // All Approve
@@ -611,7 +609,7 @@ class MasterKasBelanjaController extends Controller
             $path = public_path('upload_bukti/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            $file->move($path, $imageName);
+            // $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'bukti_transfer_divisi_to_finance'   => asset('upload_bukti/')."/".$imageName,
@@ -633,9 +631,8 @@ class MasterKasBelanjaController extends Controller
                 'status' => 5,
             ]);
 
-            foreach ($request->selectDetail as $item => $i) {
-                if ($i == 1)
-                MasterKasBelanjaDetail::find($request->id_item[$item])->update([
+            foreach ($request->id_item as $item) {
+                MasterKasBelanjaDetail::find($item)->update([
                     'status' => 5,
                 ]);
             }

@@ -394,10 +394,10 @@ class PermissionTableSeeder extends Seeder
             $csUser->assignRole($csRole);
             // end
 
-            // create user Costumer Service & roles
+            // create user Helper
             $csRole = Role::create($role[4]);
             $csUser = User::create($users[4]);
-            $csRole->givePermissionTo(['Dashboard','Finance','Transaksi Belanja']);
+            $csRole->givePermissionTo(['Dashboard','Finance','Transaksi Belanja','Help Desk','List Helpdest']);
             $csUser->assignRole($csRole);
             // end
 

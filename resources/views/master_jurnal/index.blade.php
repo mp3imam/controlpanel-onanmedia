@@ -12,9 +12,9 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                        <a href="{{ route('master_jurnal.create') }}" type="button" class="btn btn-success" >
+                        {{-- <a href="{{ route('master_jurnal.create') }}" type="button" class="btn btn-success" >
                             Tambah
-                        </a>
+                        </a> --}}
                         <a type="button" class="btn btn-primary btn-label btn-pdf" href="{{ route('master_jurnal.pdf', ['cari' => Request::get('cari'), 'tanggal' => Request::get('tanggal') ] ) }}">
                             <div class="d-flex">
                                 <div class="flex-shrink-0">

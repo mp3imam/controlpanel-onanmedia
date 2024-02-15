@@ -82,9 +82,11 @@
         <div class="tab-pane" id="base-justified-product" role="tabpanel">
             <!-- Konten untuk Pengembalian Kas -->
             <div class="col-lg-12">
-                <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
-                    Tambah
-                </a>
+                @hasrole('finance')
+                    <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
+                        Tambah
+                    </a>
+                @endhasrole()
                 <form action="#">
                     <div class="row">
                         <div class="col-md-3 p-3">
@@ -108,14 +110,6 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>No. Transaksi</th>
-                                    <th>Tanggal Transaksi</th>
-                                    <th>Sumber</th>
-                                    <th>Tujuan</th>
-                                    <th>Jenis Transaksi</th>
-                                    <th>Nominal</th>
-                                    <th>Keterangan</th>
-                                    <th width="20%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -192,7 +186,7 @@
             table.draw();
         });
 
-        $('#cari_cash').keypress(function() {
+        $('#cari_cash').keyup(function() {
             table.draw();
         });
 
@@ -261,42 +255,6 @@
                     sortable: false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                },{
-                    data: 'nomor_transaksi',
-                    name: 'No. Transaksi',
-                    render: function (data, type, row, meta) {
-                        return `<a href="{{ url('master_return_bank_cash') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
-                    }
-                },{
-                    data: 'tanggal',
-                    name: 'TANGGAL TRANSAKSI'
-                },{
-                    data: 'banks',
-                    name: 'sumber'
-                },{
-                    data: 'tujuan',
-                    name: 'Tujuan'
-                },{
-                    data: 'jenis',
-                    name: 'JENIS TRANSAKSI'
-                },{
-                    data: 'nominal_number',
-                    name: 'Nilai'
-                },{
-                    data: 'keterangan',
-                    name: 'KETERANGAN'
-                }, {
-                    data: 'belanjas_id',
-                    visibled: false
-                }, {
-                    data: 'id',
-                    name: 'Action',
-                    render: function(data, type, row, meta) {
-                        return `
-                        <a type="button" href="{{ url('master_return_bank_cash') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill"></i></a>
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus(2, '${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>
-                        `;
                     }
                 }
             ]
