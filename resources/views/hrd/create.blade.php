@@ -46,7 +46,7 @@
                                     Status
                                 </div>
                                 <div class="col-md-12 text-center my-4">
-                                    <button type="button" class="btn btn-light waves-effect waves-light mx-2">Aktif</button>
+                                    <button type="button" class="btn btn-success waves-effect waves-light mx-2">Aktif</button>
                                     <button type="button" class="btn btn-light waves-effect waves-light mx-2">Tidak Aktif</button>
                                 </div>
                                 <div class="col-md-12 mb-4">
@@ -63,51 +63,48 @@
                                     <label class="mx-4">Hari</label>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md">
                             <ul class="nav nav-tabs nav-justified nav-border-bottom animation-nav" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link active" data-bs-toggle="tab" href="#base-justified-umum" role="tab" aria-selected="true">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#base-umum" role="tab" aria-selected="true">
                                         Umum
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-personal" role="tab" aria-selected="false">
                                         Personal
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-pekerjaan" role="tab" aria-selected="false">
                                         Pekerjaan
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-keluarga" role="tab" aria-selected="false">
                                         Keluarga
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-pendidikan" role="tab" aria-selected="false">
                                         Pendidikan
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-pendidikan" role="tab" aria-selected="false">
                                         Pelatihan
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-justified-product" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-riwayat" role="tab" aria-selected="false">
                                         Riwayat Kerja
                                     </a>
                                 </li>
                             </ul>
 
                             <div class="tab-content mt-4">
-                                <div class="tab-pane active" id="base-justified-umum" role="tabpanel">
-                                    <!-- Konten untuk Isi Saldo Kasir -->
-                                    <form action="#" method="post"></form>
+                                <div class="tab-pane active" id="base-umum" role="tabpanel">
                                     <div class="row">
                                         <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Nama</label>
@@ -115,7 +112,7 @@
                                         </div>
                                         <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">NIK Khusus (optional)</label>
-                                            <input class="form-control" id="nama_user" name="nama_user">
+                                            <input class="form-control" id="nik_khusus" name="nik_khusus">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Agama</label>
@@ -146,11 +143,221 @@
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Pendidikan Terakhir</label>
-                                            <input class="form-control" id="pendidikan_terakhir" name="pendidikan_terakhir">
+                                            <select class="form-control" id='pendidikan_id' name="pendidikan_id"></select>
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1">
+                                            <button id="save_umum" class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="base-justified-product" role="tabpanel">
+                                <div class="tab-pane" id="base-personal" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Nomor Identitas (KTP)</label>
+                                            <input class="form-control" id="no_identitas" name="no_identitas">
+                                        </div>
+                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">NPWP</label>
+                                            <input class="form-control" id="NPWP" name="NPWP">
+                                        </div>
+                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Tipe Pajak</label>
+                                            <select class="form-control" id='tipe_pajak' name="tipe_pajak"></select>
+                                        </div>
+                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Tunjangan Pajak dalam %</label>
+                                            <input class="form-control" id="tunjangan_pajak" name="tunjangan_pajak">
+                                        </div>
+                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Nama Bank</label>
+                                            <input class="form-control" id="nama_bank" name="nama_bank">
+                                        </div>
+                                        <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Nomor Akun Bank</label>
+                                            <input class="form-control" id="no_akun_bank" name="no_akun_bank">
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Nomor Kartu Asuransi Ketenagakerjaan</label>
+                                            <input class="form-control" id="no_ketenagakerjaan" name="no_ketenagakerjaan">
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1">
+                                            <button id="save_personal" class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="base-pekerjaan" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Divisi</label>
+                                            <input class="form-control" id="divisi" name="divisi">
+                                        </div>
+                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Tanggal Masuk</label>
+                                            <input type="text" class="form-control flatpickr-input" id="tanggal_masuk" name="tanggal_masuk" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly">
+                                        </div>
+                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Kontrak Selesai</label>
+                                            <input type="text" class="form-control flatpickr-input" id="kontrak_selesai" name="kontrak_selesai" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly">
+                                        </div>
+                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Status</label>
+                                            <input class="form-control" id="status_kontrak" name="status_kontrak">
+                                        </div>
+                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Periode Kontrak</label>
+                                            <input class="form-control" id="periode_kontrak" name="periode_kontrak">
+                                        </div>
+                                        <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Potongan Terlambat</label>
+                                            <input class="form-control" id="potongan_terlambat" name="potongan_terlambat">
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Toleransi Keterlambatan (menit)</label>
+                                            <input class="form-control" id="toleransi_keterlambatan" name="toleransi_keterlambatan">
+                                        </div>
+                                        <div class="col-lg-12 p-2 mb-3 mx-1">
+                                            <button id="save_personal" class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
+                                        </div>
+                                    </div>                                </div>
+                                <div class="tab-pane" id="base-keluarga" role="tabpanel">
+                                    <!-- Konten untuk Pengembalian Kas -->
+                                    <div class="col-lg-12">
+                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
+                                            Tambah
+                                        </a>
+                                        <form action="#">
+                                            <div class="row">
+                                                <div class="col-md-3 p-3">
+                                                    <label>Filter Tanggal</label>
+                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                </div>
+                                                <div class="col-md-3 p-3">
+                                                    <label>Filter All</label>
+                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
+                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                </div>
+                                                <div class="col-md-3 p-3 text-center mt-4">
+                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <!-- Tabel untuk menampilkan data -->
+                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>No. Transaksi</th>
+                                                            <th>Tanggal Transaksi</th>
+                                                            <th>Sumber</th>
+                                                            <th>Tujuan</th>
+                                                            <th>Jenis Transaksi</th>
+                                                            <th>Nominal</th>
+                                                            <th>Keterangan</th>
+                                                            <th width="20%">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="base-pendidikan" role="tabpanel">
+                                    <!-- Konten untuk Pengembalian Kas -->
+                                    <div class="col-lg-12">
+                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
+                                            Tambah
+                                        </a>
+                                        <form action="#">
+                                            <div class="row">
+                                                <div class="col-md-3 p-3">
+                                                    <label>Filter Tanggal</label>
+                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                </div>
+                                                <div class="col-md-3 p-3">
+                                                    <label>Filter All</label>
+                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
+                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                </div>
+                                                <div class="col-md-3 p-3 text-center mt-4">
+                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <!-- Tabel untuk menampilkan data -->
+                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>No. Transaksi</th>
+                                                            <th>Tanggal Transaksi</th>
+                                                            <th>Sumber</th>
+                                                            <th>Tujuan</th>
+                                                            <th>Jenis Transaksi</th>
+                                                            <th>Nominal</th>
+                                                            <th>Keterangan</th>
+                                                            <th width="20%">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="base-pendidikan" role="tabpanel">
+                                    <!-- Konten untuk Pengembalian Kas -->
+                                    <div class="col-lg-12">
+                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
+                                            Tambah
+                                        </a>
+                                        <form action="#">
+                                            <div class="row">
+                                                <div class="col-md-3 p-3">
+                                                    <label>Filter Tanggal</label>
+                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                </div>
+                                                <div class="col-md-3 p-3">
+                                                    <label>Filter All</label>
+                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
+                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                </div>
+                                                <div class="col-md-3 p-3 text-center mt-4">
+                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <!-- Tabel untuk menampilkan data -->
+                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>No. Transaksi</th>
+                                                            <th>Tanggal Transaksi</th>
+                                                            <th>Sumber</th>
+                                                            <th>Tujuan</th>
+                                                            <th>Jenis Transaksi</th>
+                                                            <th>Nominal</th>
+                                                            <th>Keterangan</th>
+                                                            <th width="20%">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="base-riwayat" role="tabpanel">
                                     <!-- Konten untuk Pengembalian Kas -->
                                     <div class="col-lg-12">
                                         <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
@@ -210,11 +417,7 @@
 @section('script')
     <script type="text/javascript">
         $(function() {
-            var dataRole = {
-                id: 1,
-                text: "Islam",
-                selected: true
-            };
+            var dataRole = {id: 1,text: "Islam",selected: true};
             var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
             $('#agama_id').append(newOptionRole).trigger('change');
             $('#agama_id').select2();
@@ -237,6 +440,40 @@
                     cache: true
                 }
             });
+
+            var dataRole = {id: 20230505000065,text: "S1",selected: true};
+            var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+            $('#pendidikan_id').append(newOptionRole).trigger('change');
+            $('#pendidikan_id').select2();
+
+            $('#pendidikan_id').select2({
+                ajax: {
+                    url: "{{ route('api.pendidikan') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+
+        //
+        $('#save_umum').click(function(){
+            var activeTab = $('.tab-pane.active');
+            activeTab.removeClass('show active');
+            activeTab.removeClass('active');
+            activeTab.next('.tab-link').addClass('active');
+            activeTab.next('.tab-pane').addClass('show active');
+            activeTab.next('li.nav-item').find('.nav-link').tab('show');
         });
     </script>
 @endsection

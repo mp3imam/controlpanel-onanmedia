@@ -9,6 +9,7 @@ use App\Models\DivisiModel;
 use App\Models\KategoriModel;
 use App\Models\MasterCoaModel;
 use App\Models\MataUang;
+use App\Models\PendidikanModel;
 use App\Models\SatuanModel;
 use App\Models\UserPublicModel;
 use Illuminate\Http\Request;
@@ -369,6 +370,18 @@ class OnanmediaAPIController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => AgamaModel::select('id','nama as name')
+            ->when($request->q, function($q) use($request) {
+                return $q->where('nama','ilike','%'.$request->q.'%');
+            })
+            ->get()
+            ->all()
+        ]);
+    }
+
+    public function select2_pendidikan(Request $request){
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => PendidikanModel::select('id','nama as name')
             ->when($request->q, function($q) use($request) {
                 return $q->where('nama','ilike','%'.$request->q.'%');
             })
