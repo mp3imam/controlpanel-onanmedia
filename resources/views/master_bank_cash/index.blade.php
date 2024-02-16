@@ -149,7 +149,7 @@
                     name: 'No. Transaksi',
                     render: function (data, type, row, meta) {
                         route = data
-                        if (user == 'direktur') route = `<a href="{{ url('approve_list') }}?id=`+row.id+`" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`
+                        if (user == 'direktur' && $('#q').val() == "" || $('#q').val() == 1 ) route = `<a href="{{ url('approve_list') }}?id=`+row.id+`" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`
                         return route;
                     }
                 },{

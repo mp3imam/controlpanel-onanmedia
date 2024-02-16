@@ -45,7 +45,7 @@
                                     <textarea class="form-control" rows="4" cols="50" placeholder="Tulis deskripsi pembelanjaan di sini...." name="deskripsi" required @hasrole('finance') readonly @endhasrole>{{ $detail->keterangan_kas }}</textarea>
                                 </div>
                                 @hasrole('finance')
-                                    @if ($detail->status == 2)
+                                    @if ($detail->status == 2 && Request::get('q') == 2)
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -246,7 +246,7 @@
                             @hasrole('finance')
                                 @if($detail->status == 1)
                                     <button class="btn bg-animation btn-success mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Approve</button>
-                                @elseif ($detail->status == 2)
+                                @elseif ($detail->status == 2 && Request::get('q') == 2)
                                     <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti Transfer</button>
                                 @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
                                     <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>
@@ -314,12 +314,14 @@
                 }
                 if (this.value == 6) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                    if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
                     $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                     $('#keterangan' + item.id).val("Finance Pending")
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 if (this.value == 4) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                    if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
                     $('#selectDetail' + item.id).css("background-color", "#f06548");
                     $('#keterangan' + item.id).val("Finance Tolak")
                     $('#keterangan' + item.id).prop('required',true);

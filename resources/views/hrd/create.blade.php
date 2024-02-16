@@ -108,42 +108,42 @@
                                     <div class="row">
                                         <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Nama</label>
-                                            <input class="form-control" id="nama_user" name="nama_user">
+                                            <input class="form-control" id="nama_user_umum" name="nama_user">
                                         </div>
                                         <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">NIK Khusus (optional)</label>
-                                            <input class="form-control" id="nik_khusus" name="nik_khusus">
+                                            <input class="form-control" id="nik_khusus_umum" name="nik_khusus">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Agama</label>
-                                            <select class="form-control" id='agama_id' name="agama_id"></select>
+                                            <select class="form-control" id='agama_id_umum' name="agama_id"></select>
                                         </div>
                                         <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Tempat</label>
-                                            <input class="form-control" id="tempat" name="tempat">
+                                            <input class="form-control" id="tempat_umum" name="tempat">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Tanggal Lahir</label>
-                                            <input type="text" class="form-control flatpickr-input" id="tanggal_lahir" name="tanggal_lahir" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly">
+                                            <input type="date" class="form-control" id="tanggal_lahir_umum" name="tanggal_lahir">
                                         </div>
                                         <div class="col-lg-6 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Jenis Kelamin</label>
-                                            <select class="form-control" id='jenis_kelamin' name="jenis_kelamin">
+                                            <select class="form-control" id='jenis_kelamin_umum' name="jenis_kelamin">
                                                 <option value="1" selected>Laki-Laki</option>
                                                 <option value="2">Perempuan</option>
                                             </select>
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">No. Handphone</label>
-                                            <input class="form-control" id="no_hp" name="no_hp">
+                                            <input class="form-control" id="no_hp_umum" name="no_hp">
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Email</label>
-                                            <input class="form-control" id="email" name="email">
+                                            <input class="form-control" id="email_umum" name="email">
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Pendidikan Terakhir</label>
-                                            <select class="form-control" id='pendidikan_id' name="pendidikan_id"></select>
+                                            <select class="form-control" id='pendidikan_id_umum' name="pendidikan_id"></select>
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1">
                                             <button id="save_umum" class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
@@ -218,43 +218,35 @@
                                         <div class="col-lg-12 p-2 mb-3 mx-1">
                                             <button id="save_personal" class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
                                         </div>
-                                    </div>                                </div>
+                                    </div>
+                                </div>
                                 <div class="tab-pane" id="base-keluarga" role="tabpanel">
                                     <!-- Konten untuk Pengembalian Kas -->
                                     <div class="col-lg-12">
-                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
-                                            Tambah
-                                        </a>
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                    <input class="form-control flatpickr-input" id="tanggal_keluarga" name="tanggal_keluarga" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                                                 </div>
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
-                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
-                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                    <input id="cari_keluarga" name="cari_keluarga" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
-                                                <div class="col-md-3 p-3 text-center mt-4">
-                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                <div class="col-md p-3 text-center">
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_keluarga"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
                                         <div class="card">
                                             <div class="card-body">
                                                 <!-- Tabel untuk menampilkan data -->
-                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                <table id="dataTableKeluarga" class="table table-striped w-100">
                                                     <thead>
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>No. Transaksi</th>
-                                                            <th>Tanggal Transaksi</th>
-                                                            <th>Sumber</th>
-                                                            <th>Tujuan</th>
-                                                            <th>Jenis Transaksi</th>
-                                                            <th>Nominal</th>
-                                                            <th>Keterangan</th>
+                                                            <th>Nama</th>
+                                                            <th>Tanggal Lahir</th>
                                                             <th width="20%">Action</th>
                                                         </tr>
                                                     </thead>
@@ -268,39 +260,30 @@
                                 <div class="tab-pane" id="base-pendidikan" role="tabpanel">
                                     <!-- Konten untuk Pengembalian Kas -->
                                     <div class="col-lg-12">
-                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
-                                            Tambah
-                                        </a>
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                    <input class="form-control flatpickr-input" id="tanggal_pendidikan" name="tanggal_pendidikan" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                                                 </div>
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
-                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
-                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                    <input id="cari_pendidikan" name="cari_pendidikan" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
-                                                <div class="col-md-3 p-3 text-center mt-4">
-                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                <div class="col-md p-3 text-center">
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_pendidikan"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
                                         <div class="card">
                                             <div class="card-body">
                                                 <!-- Tabel untuk menampilkan data -->
-                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                <table id="dataTablePendidikan" class="table table-striped w-100">
                                                     <thead>
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>No. Transaksi</th>
-                                                            <th>Tanggal Transaksi</th>
-                                                            <th>Sumber</th>
-                                                            <th>Tujuan</th>
-                                                            <th>Jenis Transaksi</th>
-                                                            <th>Nominal</th>
-                                                            <th>Keterangan</th>
+                                                            <th>Nama</th>
+                                                            <th>Tanggal Lahir</th>
                                                             <th width="20%">Action</th>
                                                         </tr>
                                                     </thead>
@@ -311,42 +294,33 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="base-pendidikan" role="tabpanel">
+                                <div class="tab-pane" id="base-pelatihan" role="tabpanel">
                                     <!-- Konten untuk Pengembalian Kas -->
                                     <div class="col-lg-12">
-                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
-                                            Tambah
-                                        </a>
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                    <input class="form-control flatpickr-input" id="tanggal_pelatihan" name="tanggal_pelatihan" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                                                 </div>
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
-                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
-                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                    <input id="cari_pelatihan" name="cari_pelatihan" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
-                                                <div class="col-md-3 p-3 text-center mt-4">
-                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                <div class="col-md p-3 text-center">
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_pelatihan"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
                                         <div class="card">
                                             <div class="card-body">
                                                 <!-- Tabel untuk menampilkan data -->
-                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                <table id="dataTablePelatihan" class="table table-striped w-100">
                                                     <thead>
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>No. Transaksi</th>
-                                                            <th>Tanggal Transaksi</th>
-                                                            <th>Sumber</th>
-                                                            <th>Tujuan</th>
-                                                            <th>Jenis Transaksi</th>
-                                                            <th>Nominal</th>
-                                                            <th>Keterangan</th>
+                                                            <th>Nama</th>
+                                                            <th>Tanggal Lahir</th>
                                                             <th width="20%">Action</th>
                                                         </tr>
                                                     </thead>
@@ -360,39 +334,30 @@
                                 <div class="tab-pane" id="base-riwayat" role="tabpanel">
                                     <!-- Konten untuk Pengembalian Kas -->
                                     <div class="col-lg-12">
-                                        <a href="{{ route('master_return_bank_cash.create') }}" type="button" class="btn btn-success my-2">
-                                            Tambah
-                                        </a>
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_return" name="tanggal_return" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
+                                                    <input class="form-control flatpickr-input" id="tanggal_riwayat" name="tanggal_riwayat" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
                                                 </div>
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
-                                                    <input id="cari_return" name="cari_return" value="{{ old('cari_return', Request::get('cari_return')) }}"
-                                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                                                    <input id="cari_riwayat" name="cari_riwayat" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
-                                                <div class="col-md-3 p-3 text-center mt-4">
-                                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
+                                                <div class="col-md p-3 text-center">
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_riwayat"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
                                         <div class="card">
                                             <div class="card-body">
                                                 <!-- Tabel untuk menampilkan data -->
-                                                <table id="dataTableReturn" class="table table-striped w-100">
+                                                <table id="dataTableRiwayat" class="table table-striped w-100">
                                                     <thead>
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>No. Transaksi</th>
-                                                            <th>Tanggal Transaksi</th>
-                                                            <th>Sumber</th>
-                                                            <th>Tujuan</th>
-                                                            <th>Jenis Transaksi</th>
-                                                            <th>Nominal</th>
-                                                            <th>Keterangan</th>
+                                                            <th>Nama</th>
+                                                            <th>Tanggal Lahir</th>
                                                             <th width="20%">Action</th>
                                                         </tr>
                                                     </thead>
@@ -468,12 +433,34 @@
 
         //
         $('#save_umum').click(function(){
-            var activeTab = $('.tab-pane.active');
-            activeTab.removeClass('show active');
-            activeTab.removeClass('active');
-            activeTab.next('.tab-link').addClass('active');
-            activeTab.next('.tab-pane').addClass('show active');
-            activeTab.next('li.nav-item').find('.nav-link').tab('show');
+            var fd = new FormData()
+            fd.append('nama_user_umum', $('#nama_user_umum').val())
+            fd.append('nik_khusus_umum', $('#nik_khusus_umum').val())
+            fd.append('agama_id_umum', $('#agama_id_umum').val())
+            fd.append('tempat_umum', $('#tempat_umum').val())
+            fd.append('tanggal_lahir_umum', $('#tanggal_lahir_umum').val())
+            fd.append('jenis_kelamin_umum', $('#jenis_kelamin_umum').val())
+            fd.append('no_hp_umum', $('#no_hp_umum').val())
+            fd.append('email_umum', $('#email_umum').val())
+            fd.append('pendidikan_id_umum', $('#pendidikan_id_umum').val())
+            $.ajax({
+                type:'post',
+                url: "{{ route('simpan_karyawan_umum') }}",
+                data: fd,
+                processData: false,
+                contentType: false,
+                xhrFields: {
+                    responseType: 'blob' // to avoid binary data being mangled on charset conversion
+                },
+                success: function(blob, status, xhr) {
+                    var activeTab = $('.tab-pane.active');
+                    activeTab.removeClass('show active');
+                    activeTab.next('.tab-pane').addClass('show active');
+                    activeTab.next('li.nav-item').find('.nav-link').tab('show');
+
+                }
+            });
+
         });
     </script>
 @endsection

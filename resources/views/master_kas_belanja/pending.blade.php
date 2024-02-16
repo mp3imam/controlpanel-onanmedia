@@ -48,9 +48,9 @@
                                     <div class="card-header text-center fs-16" style="background-color: #CCC4FF">
                                         <div class="row font-weight-bold">
                                             <div class="col-md">
-                                                <select id="selectAll" name="selectAll" class="form-control text-white selectAll" style="background-color:#00bd9d">
-                                                    <option value="Approve" selected>Approve All</option>
-                                                    <option value="Pending">Pending All</option>
+                                                <select id="selectAll" name="selectAll" class="form-control text-white selectAll" style="background-color:#25a0e2">
+                                                    <option value="Approve">Approve All</option>
+                                                    <option value="Pending" selected>Pending All</option>
                                                     <option value="Tolak">Tolak All</option>
                                                 </select>
                                             </div>
@@ -177,11 +177,13 @@
                 }
                 if (this.value == 6) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                    if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
                     $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                     $('#keterangan' + item.id).prop('required',true);
                 }
                 if (this.value == 4) {
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                    if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
                     $('#selectDetail' + item.id).css("background-color", "#f06548");
                     $('#keterangan' + item.id).prop('required',true);
                 }

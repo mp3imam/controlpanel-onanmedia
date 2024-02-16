@@ -43,9 +43,9 @@ class MasterBankCashController extends Controller
 
         $user = Auth::user()->roles->pluck('name');
 
-        $semua = count(MasterBankCashModel::get());
-        $permintaan = count(MasterBankCashModel::whereNull('status')->get());
-        $disetujui = count(MasterBankCashModel::whereStatus(2)->get());
+        $semua = count(MasterBankCashModel::get()->where('kategori',1));
+        $permintaan = count(MasterBankCashModel::whereNull('status')->where('kategori',1)->get());
+        $disetujui = count(MasterBankCashModel::whereStatus(2)->where('kategori',1)->get());
 
         return view('master_bank_cash.index', $title, compact(['user','permintaan','disetujui','semua']));
     }
@@ -226,7 +226,7 @@ class MasterBankCashController extends Controller
                     $path = public_path('kas_saldo/');
                     $rand = rand(1000,9999);
                     $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-                    // $file->move($path, $imageName);
+                    $file->move($path, $imageName);
 
                     MasterBankCashModel::find($request->id)->update([
                         'status'  => $status,
@@ -418,6 +418,7 @@ class MasterBankCashController extends Controller
         ->when($request->tanggal_cash == null, function($q) use($request){
             $q->where('tanggal_transaksi', '>=', Carbon::now()->subMonths(3)->firstOfMonth()->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::now()->format('Y-m-d'));
         })
+        ->where('kategori',1)
         ->orderBy('id','desc')
         ->get();
     }

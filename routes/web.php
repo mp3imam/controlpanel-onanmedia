@@ -107,6 +107,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // HRD
     Route::resource('data_karyawan', HrdController::class);
+    Route::post('simpan_karyawan_umum', [HrdController::class, 'simpan_karyawan_umum'])->name('simpan_karyawan_umum');
     Route::get('getDataTableKaryawan', [HrdController::class, 'get_datatable'])->name('getDataTableKaryawan');
 
     // Master Data

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataKaryawanModel;
 use App\Models\TblDataKaryawan;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -232,5 +233,15 @@ class HrdController extends Controller
         )->setPaper('F4');
 
         return $pdf->download('Laporan-users-PDF');
+    }
+
+    public function simpan_karyawan_umum(Request $request){
+        $user = DataKaryawanModel::createOrNew([
+
+        ]);
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $user
+        ]);
     }
 }

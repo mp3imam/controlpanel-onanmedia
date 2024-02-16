@@ -472,6 +472,8 @@ class MasterKasBelanjaController extends Controller
         DB::beginTransaction();
         try {
             $nominal_approve = collect();
+            $nominal_pending = collect();
+            $nominal_tolak = collect();
             foreach ($request->id_item as $id => $i) {
                 MasterKasBelanjaDetail::find($i)->update([
                     'account_id' => $request->akun[$id],
@@ -480,6 +482,10 @@ class MasterKasBelanjaController extends Controller
                 ]);
                 if ($request->selectDetail[$id] == 1)
                     $nominal_approve->push((int)str_replace(".","",str_replace("Rp. ","",$request->jumlah[$id])));
+                if ($request->selectDetail[$id] == 6)
+                    $nominal_pending->push((int)str_replace(".","",str_replace("Rp. ","",$request->jumlah[$id])));
+                if ($request->selectDetail[$id] == 4)
+                    $nominal_tolak->push((int)str_replace(".","",str_replace("Rp. ","",$request->jumlah[$id])));
             }
 
             // All Approve
@@ -498,7 +504,9 @@ class MasterKasBelanjaController extends Controller
             MasterKasBelanja::find($request->id_detail)->update([
                 'status'  => $status,
                 'checked' => $checked,
-                'nominal_approve' => $nominal_approve->sum()
+                'nominal_approve' => $nominal_approve->sum(),
+                'nominal_pending' => $nominal_pending->sum(),
+                'nominal_tolak' => $nominal_tolak->sum()
             ]);
 
             DB::commit();
@@ -552,7 +560,7 @@ class MasterKasBelanjaController extends Controller
             $path = public_path('upload_bukti/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            // $file->move($path, $imageName);
+            $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'status' => 3,
@@ -609,7 +617,7 @@ class MasterKasBelanjaController extends Controller
             $path = public_path('upload_bukti/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-            // $file->move($path, $imageName);
+            $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'bukti_transfer_divisi_to_finance'   => asset('upload_bukti/')."/".$imageName,

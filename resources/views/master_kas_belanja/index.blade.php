@@ -78,6 +78,8 @@
                                             @endif
                                             <th class="text-uppercase">Deskripsi</th>
                                             <th class="text-uppercase">Nominal</th>
+                                            <th class="text-uppercase" hidden>Nominal Pending</th>
+                                            <th class="text-uppercase" hidden>Nominal Tolak</th>
                                             <th class="text-uppercase">Nominal Approve</th>
                                             <th class="text-uppercase" width="80px">Action</th>
                                         </tr>
@@ -122,6 +124,7 @@
     <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
     <script type="text/javascript">
         var route = "{{ url('master_kas_belanja') }}";
+        var userLogin = "{{ Auth::user()->id }}";
         $(function() {
             var table = $('#dataTable').DataTable({
                 dom: 'lrtip',
@@ -172,16 +175,28 @@
                     name: 'Deskripsi'
                 }, {
                     data: 'nominals',
-                    name: 'Nominal'
+                    name: 'Nominal',
                 }, {
-                    data: 'nominals_approve',
-                    name: 'Nominal Approve'
+                    data: 'nominal_pending',
+                    visible:false
+                }, {
+                    data: 'nominal_tolak',
+                    visible:false
+                }, {
+                    data: 'nominal_approve',
+                    name: 'Nominal Approve',
+                    render: function(data, type, row, meta) {
+                        if ($('#q').val() == 6) return row.nominal_pending
+                        if ($('#q').val() == 4) return row.nominal_tolak
+                        return data;
+                    }
                 }, {
                     data: 'id',
                     name: 'Action',
                     render: function(data, type, row, meta) {
                         button = `<a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>`
+                        if (userLogin == 2) button = ""
                         return row.status < 2 ? button : null;
                     }
                 }]
