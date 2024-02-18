@@ -59,3 +59,5 @@ Route::get('count_kdrek_coa', [OnanmediaAPIController::class,'count_kdrek_coa'])
 // Select2 HRD
 Route::get('agama', [OnanmediaAPIController::class,'select2_agama'])->name('api.agama');
 Route::get('pendidikan', [OnanmediaAPIController::class,'select2_pendidikan'])->name('api.pendidikan');
+Route::get('tipe_pajak', [OnanmediaAPIController::class,'select2_tipe_pajak'])->name('api.tipe_pajak');
+Route::get('divisi', [OnanmediaAPIController::class,'select2_api_divisi'])->name('api.divisi');

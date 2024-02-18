@@ -5,12 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\AgamaModel;
 use App\Models\BankModel;
+use App\Models\DepartementModel;
 use App\Models\DivisiModel;
 use App\Models\KategoriModel;
 use App\Models\MasterCoaModel;
 use App\Models\MataUang;
 use App\Models\PendidikanModel;
 use App\Models\SatuanModel;
+use App\Models\TipePajakModel;
 use App\Models\UserPublicModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -77,6 +79,24 @@ class OnanmediaAPIController extends Controller
 
     public function select2_divisi(Request $request){
         $datas = DivisiModel::select('id', 'nama as name')
+        ->when($request->id, function($q) use($request) {
+            return $q->whereIn('id',$request->id);
+        })
+        ->when($request->q, function($q) use($request) {
+            return $q->where('name','ilike','%'.$request->q.'%');
+        })
+        ->get();
+
+        $data = [
+            'status' => Response::HTTP_OK,
+            'data'   => $datas->all()
+        ];
+
+        return response()->json($data);
+    }
+
+    public function select2_api_divisi(Request $request){
+        $datas = DepartementModel::select('id', 'nama as name')
         ->when($request->id, function($q) use($request) {
             return $q->whereIn('id',$request->id);
         })
@@ -382,6 +402,18 @@ class OnanmediaAPIController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => PendidikanModel::select('id','nama as name')
+            ->when($request->q, function($q) use($request) {
+                return $q->where('nama','ilike','%'.$request->q.'%');
+            })
+            ->get()
+            ->all()
+        ]);
+    }
+
+    public function select2_tipe_pajak(Request $request){
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => TipePajakModel::select('id','nama as name')
             ->when($request->q, function($q) use($request) {
                 return $q->where('nama','ilike','%'.$request->q.'%');
             })

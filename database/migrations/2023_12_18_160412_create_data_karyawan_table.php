@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama_lengkap');
             $table->string('nama_panggilan');
             $table->string('nik_khusus');
-            $table->unsignedBigInteger('agama');
+            $table->unsignedBigInteger('agama_id');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin',['Laki-Laki','Perempuan']);
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->text('alamat_domisili');
             $table->string('pendidikan_terakhir');
             $table->string('foto');
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }

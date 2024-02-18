@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataKaryawanModel;
-use App\Models\TblDataKaryawan;
+use App\Models\DataKaryawanPekerjaanModel;
+use App\Models\DataKaryawanPersonalModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -37,16 +38,16 @@ class HrdController extends Controller
 
     function get_datatable(Request $request){
         return DataTables::of($this->models($request))
-        ->addColumn('divisis', function ($row){
-            return $row->divisis->nama;
-        })
-        ->addColumn('gaji', function ($row){
-            return $row->gaji->gaji;
-        })
-        ->addColumn('tanggal_masuk', function ($row){
-            return Carbon::parse($row->created_at)->format('d-m-Y');
-        })
-        ->rawColumns(['divisis','gaji','tanggal_masuk'])
+        // ->addColumn('divisis', function ($row){
+        //     return $row->divisis ? $row->divisis->nama : '';
+        // })
+        // ->addColumn('gaji', function ($row){
+        //     return $row->gaji->gaji;
+        // })
+        // ->addColumn('tanggal_masuk', function ($row){
+        //     return Carbon::parse($row->created_at)->format('d-m-Y');
+        // })
+        // ->rawColumns(['divisis','gaji','tanggal_masuk'])
 
         ->make(true);
     }
@@ -213,8 +214,9 @@ class HrdController extends Controller
     }
 
     public function models($request){
-        return TblDataKaryawan::with(['divisis','gaji'])
-        ->when($request->cari, function($q) use($request){
+        return DataKaryawanModel::
+        // with(['divisis','gaji'])->
+        when($request->cari, function($q) use($request){
             $q->where('nama','like', '%'.$request->cari.'%');
         })
         ->get();
@@ -236,12 +238,130 @@ class HrdController extends Controller
     }
 
     public function simpan_karyawan_umum(Request $request){
-        $user = DataKaryawanModel::createOrNew([
+        $validasi = [
+            'nama_lengkap_umum'         => 'required',
+            'nama_panggilan_umum'       => 'required',
+            'alamat_ktp_umum'           => 'required',
+            'alamat_domisili_umum'      => 'required',
+            'tempat_lahir_umum'         => 'required',
+            'tanggal_lahir_umum'        => 'required',
+            'no_hp_umum'                => 'required',
+            'pendidikan_id_umum'        => 'required',
+        ];
 
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $validator->messages()
+            ]);
+        }
+
+        $save = DataKaryawanModel::firstOrNew([
+            'nama_lengkap'    => $request->nama_lengkap_umum,
+            'tanggal_lahir'   => $request->tanggal_lahir_umum
         ]);
+
+        $save->nama_panggilan  = $request->nama_panggilan_umum;
+        $save->nik_khusus      = $request->nik_khusus_umum ?? '';
+        $save->alamat_ktp      = $request->alamat_ktp_umum;
+        $save->alamat_domisili = $request->alamat_domisili_umum;
+        $save->agama_id        = $request->agama_id_umum;
+        $save->tempat_lahir    = $request->tempat_lahir_umum;
+        $save->jenis_kelamin   = $request->jenis_kelamin_umum;
+        $save->no_handphone    = $request->no_hp_umum;
+        $save->email           = $request->email_umum ?? '';
+        $save->pendidikan_terakhir   = $request->pendidikan_id_umum;
+        $save->foto            = $request->foto_umum ?? asset('images/user-dummy-img.jpg');
+        $save->save();
+
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => $user
+            'message' => $save
+        ]);
+    }
+
+    public function simpan_karyawan_personal(Request $request){
+        $validasi = [
+            'id_update'             => 'required',
+            'no_identitas_personal' => 'required',
+            'nama_bank_personal'    => 'required',
+            'no_akun_bank_personal' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $validator->messages()
+            ]);
+        }
+
+        $save = DataKaryawanPersonalModel::firstOrNew([
+            'data_karyawan_id'    => $request->id_update
+        ]);
+
+        $save->no_ktp                       = $request->no_identitas_personal;
+        $save->no_npwp                      = $request->NPWP_personal ?? '';
+        $save->tipe_pajak                   = $request->tipe_pajak_personal;
+        $save->tunjangan_pajak              = $request->tunjangan_pajak_personal ?? '';
+        $save->tunjangan_pajak_dalam_persen = $request->tunjangan_pajak_dalam_persen_personal ?? '';
+        $save->bank                         = $request->nama_bank_personal;
+        $save->no_bank                      = $request->no_akun_bank_personal;
+        $save->no_ketenagakerjaan           = $request->no_ketenagakerjaan_personal ?? '';
+        $save->no_kesehatan                 = $request->no_kesehatan_personal ?? '';
+        $save->save();
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $save
+        ]);
+    }
+
+    public function simpan_karyawan_pekerjaan(Request $request){
+        $validasi = [
+            'cabang_pekerjaan'        => 'required',
+            'departement_pekerjaan'   => 'required',
+            'jabatan_pekerjaan'       => 'required',
+            'cost_center_pekerjaan'   => 'required',
+            'tanggal_masuk'           => 'required',
+            'kontrak_selesai'         => 'required',
+            'status_kontrak'          => 'required',
+            'periode_kontrak'         => 'required',
+            'potongan_terlambat'      => 'required',
+            'toleransi_keterlambatan' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $validator->messages()
+            ]);
+        }
+
+        $save = DataKaryawanPekerjaanModel::firstOrNew([
+            'data_karyawan_id'    => $request->id_update
+        ]);
+
+        $save->cabang_pekerjaan        = $request->cabang_pekerjaan;
+        $save->departement_pekerjaan        = $request->departement_pekerjaan;
+        $save->jabatan_pekerjaan        = $request->jabatan_pekerjaan;
+        $save->cost_center_pekerjaan        = $request->cost_center_pekerjaan;
+        $save->tanggal_masuk        = $request->tanggal_masuk;
+        $save->kontrak_selesai        = $request->kontrak_selesai;
+        $save->status_kontrak        = $request->status_kontrak;
+        $save->periode_kontrak        = $request->periode_kontrak;
+        $save->potongan_terlambat        = $request->potongan_terlambat;
+        $save->toleransi_keterlambatan        = $request->toleransi_keterlambatan;
+        $save->save();
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $save
         ]);
     }
 }
