@@ -26,6 +26,8 @@
                         @php  $route = route('checked_finance') @endphp
                         @if ($detail->status == 2)
                             @php  $route = route('upload_bukti_transfer_divisi_finance') @endphp
+                        @elseif ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null && $detail->users->roles[0]->name == 'finance')
+                            @php  $route = url('upload_bukti_transfer_finance_divisi') @endphp
                         @elseif ($detail->bukti_transfer_divisi_to_finance != null)
                             @php  $route = route('finance_selesai') @endphp
                         @endif
@@ -73,6 +75,17 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <textarea class="form-control" type="file" name="keterangan_upload" rows="1" cols="50" ></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null && $detail->users->roles[0]->name == 'finance')
+                                        <div class="col-md">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="account_id" class="form-label">Upload Bukti Belanja</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="file" name="upload_bukti_belanja" accept="image/*" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -247,6 +260,8 @@
                                 @if($detail->status == 1)
                                     <button class="btn bg-animation btn-success mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Approve</button>
                                 @elseif ($detail->status == 2 && Request::get('q') == 2)
+                                    <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti Transfer</button>
+                                @elseif ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null && $detail->users->roles[0]->name == 'finance')
                                     <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti Transfer</button>
                                 @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
                                     <button class="btn bg-animation btn-info mr-5 rounded-5"><i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>

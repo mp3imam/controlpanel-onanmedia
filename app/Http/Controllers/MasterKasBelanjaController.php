@@ -405,7 +405,7 @@ class MasterKasBelanjaController extends Controller
     function checked_pending_finance(Request $request) {
         DB::beginTransaction();
         try {
-            $kasBelanja = MasterKasBelanja::find($request->id_detail)->first();
+            $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
 
             $tahun = Carbon::now()->format('Y');
             $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();

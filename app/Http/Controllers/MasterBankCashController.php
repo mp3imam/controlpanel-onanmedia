@@ -217,16 +217,16 @@ class MasterBankCashController extends Controller
         DB::beginTransaction();
         try {
 
+            $file = $request->file('file');
+            $path = public_path('kas_saldo/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $file->move($path, $imageName);
+
             $status = 0;
             foreach ($request->belanja_id_detail as $kasBelanja => $belanja) {
                 if ($request->selectDetail[$kasBelanja] == 1){
                     $status = 2;
-
-                    $file = $request->file('file');
-                    $path = public_path('kas_saldo/');
-                    $rand = rand(1000,9999);
-                    $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
-                    $file->move($path, $imageName);
 
                     MasterBankCashModel::find($request->id)->update([
                         'status'  => $status,
@@ -283,8 +283,6 @@ class MasterBankCashController extends Controller
             }else{
                 MasterBankCashModel::find($request->id)->delete();
             }
-
-
 
             DB::commit();
         } catch (\Throwable $th) {

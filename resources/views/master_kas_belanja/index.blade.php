@@ -78,9 +78,7 @@
                                             @endif
                                             <th class="text-uppercase">Deskripsi</th>
                                             <th class="text-uppercase">Nominal</th>
-                                            <th class="text-uppercase" hidden>Nominal Pending</th>
-                                            <th class="text-uppercase" hidden>Nominal Tolak</th>
-                                            <th class="text-uppercase">Nominal Approve</th>
+                                            <th class="text-uppercase" id="data_nominal">Nominal Approve</th>
                                             <th class="text-uppercase" width="80px">Action</th>
                                         </tr>
                                     </thead>
@@ -177,18 +175,19 @@
                     data: 'nominals',
                     name: 'Nominal',
                 }, {
-                    data: 'nominal_pending',
-                    visible:false
-                }, {
-                    data: 'nominal_tolak',
-                    visible:false
-                }, {
                     data: 'nominal_approve',
                     name: 'Nominal Approve',
                     render: function(data, type, row, meta) {
-                        if ($('#q').val() == 6) return row.nominal_pending
-                        if ($('#q').val() == 4) return row.nominal_tolak
-                        return data;
+                        $('#data_nominal').text('Nominal Approve')
+                        if ($('#q').val() == 6) {
+                            data = row.nominal_pending
+                            $('#data_nominal').text('Nominal Pending')
+                        }
+                        if ($('#q').val() == 4) {
+                            data = row.nominal_tolak
+                            $('#data_nominal').text('Nominal Tolak')
+                        }
+                        return `<label class="checked_sum">`+data+`</label>`;
                     }
                 }, {
                     data: 'id',
