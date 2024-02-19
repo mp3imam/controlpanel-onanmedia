@@ -287,7 +287,6 @@ class HrdController extends Controller
             'id_update'             => 'required',
             'no_identitas_personal' => 'required',
             'nama_bank_personal'    => 'required',
-            'no_akun_bank_personal' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -309,7 +308,7 @@ class HrdController extends Controller
         $save->tunjangan_pajak              = $request->tunjangan_pajak_personal ?? '';
         $save->tunjangan_pajak_dalam_persen = $request->tunjangan_pajak_dalam_persen_personal ?? '';
         $save->bank                         = $request->nama_bank_personal;
-        $save->no_bank                      = $request->no_akun_bank_personal;
+        $save->no_bank                      = $request->no_akun_bank_personal ?? '-';
         $save->no_ketenagakerjaan           = $request->no_ketenagakerjaan_personal ?? '';
         $save->no_kesehatan                 = $request->no_kesehatan_personal ?? '';
         $save->save();
@@ -347,16 +346,16 @@ class HrdController extends Controller
             'data_karyawan_id'    => $request->id_update
         ]);
 
-        $save->cabang_pekerjaan        = $request->cabang_pekerjaan;
-        $save->departement_pekerjaan        = $request->departement_pekerjaan;
-        $save->jabatan_pekerjaan        = $request->jabatan_pekerjaan;
-        $save->cost_center_pekerjaan        = $request->cost_center_pekerjaan;
-        $save->tanggal_masuk        = $request->tanggal_masuk;
-        $save->kontrak_selesai        = $request->kontrak_selesai;
-        $save->status_kontrak        = $request->status_kontrak;
-        $save->periode_kontrak        = $request->periode_kontrak;
-        $save->potongan_terlambat        = $request->potongan_terlambat;
-        $save->toleransi_keterlambatan        = $request->toleransi_keterlambatan;
+        $save->cabang_id      = $request->cabang_pekerjaan;
+        $save->departement_id = $request->departement_pekerjaan;
+        $save->jabatan_id     = $request->jabatan_pekerjaan;
+        $save->cost_center_id = $request->cost_center_pekerjaan;
+        $save->tanggal_masuk  = $request->tanggal_masuk;
+        $save->status_kontrak = $request->status_kontrak;
+        $save->kontrak_selesai = $request->kontrak_selesai;
+        $save->potongan_terlambat = $request->potongan_terlambat;
+        $save->toleransi_keterlambatan = $request->toleransi_keterlambatan;
+        $save->absen_diluar_kantor = $request->absen_diluar_kantor;
         $save->save();
 
         return response()->json([

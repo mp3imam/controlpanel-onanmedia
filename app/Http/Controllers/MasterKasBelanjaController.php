@@ -499,7 +499,7 @@ class MasterKasBelanjaController extends Controller
             }
 
             // Pending
-            if(in_array(4, $request->selectDetail)) $status = 4;
+            // if(in_array(4, $request->selectDetail)) $status = 4;
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'status'  => $status,

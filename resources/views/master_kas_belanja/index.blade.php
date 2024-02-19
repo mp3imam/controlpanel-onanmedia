@@ -187,7 +187,12 @@
                             data = row.nominal_tolak
                             $('#data_nominal').text('Nominal Tolak')
                         }
-                        return `<label class="checked_sum">`+data+`</label>`;
+                        var nominalLabel = `<label class="nominal_approve">` + data + `</label>`;
+                        // Memastikan elemen '.nominal_approve' ada di DOM sebelum memformatnya
+                        $(document).ready(function() {
+                            $('.nominal_approve').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+                        });
+                        return nominalLabel;
                     }
                 }, {
                     data: 'id',
@@ -271,12 +276,14 @@
             $('#all_filter').css({'color': '#828282', 'background-color' : '#ffffff', 'border-color': '#E0E0E0'})
             $('#footer_nominal').attr('hidden',true)
             route = "{{ url('master_kas_belanja') }}";
+            $(".nominal_approve").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
         }
 
         resetWarna()
         $('#create_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
         $('#approve_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
         $('#footer_nominal').attr('hidden',false)
+        $(".nominal_approve").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
         $.ajaxSetup({
             headers: {
@@ -353,6 +360,7 @@
 
     })
     $("#checked_sum").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    $(".nominal_approve").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
     function konfirmasi_hapus(id, name) {
         Swal.fire({

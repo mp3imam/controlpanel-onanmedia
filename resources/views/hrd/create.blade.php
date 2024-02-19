@@ -30,7 +30,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 fs-24 text-center">
+                                <div class="col-md-12 fs-24 text-center nama_lengkap">
                                     <input type="file" id="foto_umum" name="foto_umum" hidden/>
                                     -
                                 </div>
@@ -235,11 +235,11 @@
                                         </div>
                                         <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Tanggal Masuk</label>
-                                            <input type="date" class="form-control" id="tanggal_masuk" name="tanggal_masuk">
+                                            <input type="date" class="form-control" id="tanggal_masuk" name="tanggal_masuk" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Kontrak Selesai</label>
-                                            <input type="date" class="form-control" id="kontrak_selesai" name="kontrak_selesai">
+                                            <input type="date" class="form-control" id="kontrak_selesai" name="kontrak_selesai" value="{{ Carbon\Carbon::now()->addMonth(3)->format('Y-m-d') }}">
                                         </div>
                                         <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Status</label>
@@ -266,6 +266,13 @@
                                             <label class="control-form text-muted">Toleransi Keterlambatan (menit)</label>
                                             <input class="form-control" id="toleransi_keterlambatan" name="toleransi_keterlambatan">
                                         </div>
+                                        <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Absen diluar kantor</label>
+                                            <select class="form-control" id='absen_diluar_kantor' name="absen_diluar_kantor">
+                                                <option value="0" selected>Tidak</option>
+                                                <option value="1">Iya</option>
+                                            </select>
+                                            </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1">
                                             <button id="save_pekerjaan" disabled class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
                                         </div>
@@ -506,6 +513,11 @@
                 }
             });
 
+            var dataRole = {id: 8,text: "Bank Bca",selected: true};
+            var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+            $('#nama_bank_personal').append(newOptionRole).trigger('change');
+            $('#nama_bank_personal').select2();
+
             $('#nama_bank_personal').select2({
                 ajax: {
                     url: "{{ route('api.get_select2_banks') }}",
@@ -582,6 +594,8 @@
                         activeTab.next('.tab-pane').addClass('show active');
                         $('.nav-link.active').removeClass('active').parent().next().find('.nav-link').addClass('active');
                         $('#save_umum').text('Update')
+                        console.log(response.message.nama_lengkap);
+                        $('.nama_lengkap').text(response.message.nama_lengkap)
                         Swal.fire({
                             title: "Good job!",
                             text: "You clicked the button!",
@@ -655,8 +669,6 @@
                             $('#alert_no_identitas_personal').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
                         if (response.message.nama_bank_personal)
                             $('#alert_nama_bank_personal').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                        if (response.message.no_akun_bank_personal)
-                            $('#alert_no_akun_bank_personal').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
                             Swal.fire({
                                 title: "Error!",
                                 text: "Cek kembali data yang anda masukan!",
