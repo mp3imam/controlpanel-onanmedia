@@ -32,12 +32,18 @@
                             @php  $route = route('finance_selesai') @endphp
                         @endif
                     @else
-                        @php  $route = url('master_kas_belanja.update') @endphp
+                        @php  $route = route('master_kas_belanja.update', $detail->id); @endphp
                         @if ($detail->status == 3)
                             @php  $route = url('upload_bukti_transfer_finance_divisi') @endphp
                         @endif
                     @endhasrole
                     <form action="{{ $route }}" method="POST" enctype="multipart/form-data">
+                    @hasrole('finance')
+                    @else
+                        @if ($detail->status == 1)
+                            @method('PUT')
+                        @endif
+                    @endhasrole
                     @csrf
                         <div class="row">
                             <div class="row mb-3">
@@ -223,8 +229,11 @@
                                                     <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah" value="{{ $b->jumlah }}" @if($detail->status > 1) disabled @endif readonly />
                                                 </div>
                                                 @if ($b->file)
-                                                    <div class="col-md text-center" onclick="zoomOutImage(`{{ $b->file }}`)">
-                                                        <img src="{{ $b->file }}" alt="" width="50px" height="50px">
+                                                    <div class="col-md text-center">
+                                                        <img src="{{ $b->file }}" alt="" width="50px" height="50px"  onclick="zoomOutImage(`{{ $b->file }}`)">
+                                                        @if($detail->status == 1)
+                                                            <input id="file" name="file{{ $b->id }}" type="file" class="form-control" accept="image/*" />
+                                                        @endif
                                                     </div>
                                                 @else
                                                     <div class="col-md text-center">Tidak ada Foto</div>
@@ -319,6 +328,28 @@
             var newOption = new Option(data.text, data.id, false, false)
             $('#satuan'+item.id).append(newOption).trigger('change')
             $('#satuan'+item.id).select2()
+
+            $(".satuan").select2({
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.get_select2_satuan_barang') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                    return {
+                        results: $.map(data.data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.name
+                            }
+                        })
+                    };
+                    }
+                }
+            }).on('select2:select', function (e) {
+                $("#jenis_sumber").val(e.params.data.item);
+            });
 
             $('#selectDetail' + item.id).change(function (e) {
                 if (this.value == 1) {

@@ -29,25 +29,17 @@
                             </div>
                         </a>
                     </div>
-                    <form action="{{ route('master_jurnal.index') }}">
-                        <div class="card mt-4">
-                            <div class="row">
-                                <div class="col-md-3 p-3">
-                                    <label>Filter Tanggal</label>
-                                    <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal') ?? Carbon\Carbon::now()->subMonths(3)->firstOfMonth()->format('d M, Y')." to ".Carbon\Carbon::now()->format('d M, Y')) }}">
-                                </div>
-                                <div class="col-md-3 p-3">
-                                    <label>Filter All</label>
-                                    <input type="text" id="cari" name="cari" value="{{ old('cari', Request::get('cari')) }}"
-                                    class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
-                                </div>
-                                <div class="col-md-3 p-3 text-center mt-4">
-                                    <button class="btn btn-success btn-icon waves-effect waves-light"><i class="ri-search-2-line"></i></button>
-                                    <button type="reset" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-repeat-2-line"></i></button>
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6 p-3">
+                            <label>Filter Tanggal</label>
+                            <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal') ?? Carbon\Carbon::now()->subMonths(3)->firstOfMonth()->format('d M, Y')." to ".Carbon\Carbon::now()->format('d M, Y')) }}">
                         </div>
-                    </form>
+                        <div class="col-md p-3">
+                            <label>Filter All</label>
+                            <input type="text" id="cari" name="cari" value="{{ old('cari', Request::get('cari')) }}"
+                            class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
