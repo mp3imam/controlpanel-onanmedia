@@ -157,6 +157,15 @@
                 }
             ]
         });
+
+        $('#tanggal').change(function () {
+            table.draw();
+        });
+
+        $('#cari').keyup(function () {
+            table.draw();
+        });
+
     });
 
     $.ajaxSetup({

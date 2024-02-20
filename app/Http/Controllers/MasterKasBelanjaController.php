@@ -726,10 +726,10 @@ class MasterKasBelanjaController extends Controller
         ->when($request->tanggal, function($q) use($request){
             $tanggal = explode(" to ",$request->tanggal);
             $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
-                $q->where('tanggal_transaksi', Carbon::parse($tanggal[0])->format('Y-m-d'));
+                $q->where('tanggal_transaksi', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'));
             });
             $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
-                $q->where('tanggal_transaksi', '>=',Carbon::parse($tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::parse($tanggal[1])->format('Y-m-d'));
+                $q->where('tanggal_transaksi', '>=',Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::createFromFormat('d M, Y', $tanggal[1])->format('Y-m-d'));
             });
         })
         ->orderBy('id','desc')
