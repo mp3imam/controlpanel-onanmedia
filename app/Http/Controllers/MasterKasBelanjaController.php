@@ -496,6 +496,9 @@ class MasterKasBelanjaController extends Controller
             if(in_array(1, $request->selectDetail)) {
                 $status = 2;
                 $checked = 1;
+            }else{
+                $status = 1;
+                $checked = 0;
             }
 
             // Pending
