@@ -46,7 +46,7 @@
                                     <div class="col-md-4 p-3">
                                         <label>Filter Tanggal</label>
                                         <input class="form-control flatpickr-input" id="q" hidden>
-                                        <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ Request::get('tanggal') }}">
+                                        <input type="text" class="form-control flatpickr-input" id="tanggal" name="tanggal" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('d M, Y')." to ".Carbon\Carbon::now()->format('d M, Y') }}">
                                     </div>
                                     <div class="col-md-6 p-3">
                                         <label>Filter All</label>
@@ -261,6 +261,14 @@
                 $('#q').val("ALL")
                 resetWarna()
                 $('#all_filter').css({'color': '#f7f6fb', 'border-color': '#4E36E2', 'background-color' : '#4E36E2'})
+                table.draw();
+            });
+
+            $('#tanggal').change(function () {
+                table.draw();
+            });
+
+            $('#cari').keyup(function () {
                 table.draw();
             });
         });
