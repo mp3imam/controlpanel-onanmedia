@@ -37,7 +37,7 @@
                     <div class="card">
                         <div class="card-body">
                             <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="200px">
+                            width="100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -84,16 +84,8 @@
     $(function () {
         var table = $('#dataTable').DataTable({
             dom: 'lrtip',
-            scrollY: "400px",
-            scrollX: true,
             processing: true,
             serverSide: true,
-            fixedColumns: {
-                left: 2,
-                right: 0,
-                width: 200,
-                targets: 10
-            },
             ajax: {
                 url: "{{ route('daftar_product_jasa.create') }}",
                 data: function (d) {
@@ -179,7 +171,7 @@
         msStatusJasaIdModal = msStatusJasaId == 1 ? img_ok : `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px" onclick="konfirmasi_verifikasi_jasa('${id}','${nama}')" style="cursor:pointer">`
         $('#modal_content').html(`
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">Detail Data</h5>
+                <h5 class="modal-title" id="exampleModalgridLabel">Detail Jasa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -187,109 +179,75 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Nama</div>
-                                        <div class="col-md-8">: ${nama}</div>
-                                    </div>
+                                <div class="form-group mb-3">
+                                    <div class="col-md-4 text-muted">Nama Jasa</div>
+                                    <div class="col-md-8 fs-14">${nama}</div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <div class="col-md-4 text-muted">SubKategori</div>
+                                    <div class="col-md-8 fs-14">${subkategori}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">SubKategori</div>
-                                        <div class="col-md-8">: ${subkategori}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Kategori</div>
+                                    <div class="col-md-8 fs-14">${kategori}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Kategori</div>
-                                        <div class="col-md-8">: ${kategori}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Impresi</div>
+                                    <div class="col-md-8 fs-14">${impresi}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Impresi</div>
-                                        <div class="col-md-8">: ${impresi}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">klik</div>
+                                    <div class="col-md-8 fs-14">${klik}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">klik</div>
-                                        <div class="col-md-8">: ${klik}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Nama User</div>
+                                    <div class="col-md-8 fs-14">${UserPosting}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Nama User</div>
-                                        <div class="col-md-8">: ${UserPosting}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Tags</div>
+                                    <div class="col-md-8 fs-14">${tags}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Tags</div>
-                                        <div class="col-md-8">: ${tags}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Deskripsi</div>
+                                    <div class="col-md-8 fs-14">${deskripsi}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Deskripsi</div>
-                                        <div class="col-md-8">: ${deskripsi}</div>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Status Verifikasi Jasa</div>
-                                        <div class="col-md-8">: ${msStatusJasaIdModal}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Status Verifikasi Jasa</div>
+                                    <div class="col-md-8 fs-14">${msStatusJasaIdModal}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Slug</div>
-                                        <div class="col-md-8">: ${slug}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Slug</div>
+                                    <div class="col-md-8 fs-14">${slug}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Harga Termahal</div>
-                                        <div class="col-md-8">: ${hargaTermahal}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Harga Termahal</div>
+                                    <div class="col-md-8 fs-14">${hargaTermahal}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Harga Termurah</div>
-                                        <div class="col-md-8">: ${hargaTermurah}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Harga Termurah</div>
+                                    <div class="col-md-8 fs-14">${hargaTermurah}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Status Jasa</div>
-                                        <div class="col-md-8">: ${statusjasa}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Status Jasa</div>
+                                    <div class="col-md-8 fs-14">${statusjasa}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Pengambilan</div>
-                                        <div class="col-md-8">: ${isPengambilanModal}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Pengambilan</div>
+                                    <div class="col-md-8 fs-14">${isPengambilanModal}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Pengiriman</div>
-                                        <div class="col-md-8">: ${isPengirimanModal}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Pengiriman</div>
+                                    <div class="col-md-8 fs-14">${isPengirimanModal}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Unggulan</div>
-                                        <div class="col-md-8">: ${isUnggulanModal}</div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Unggulan</div>
+                                    <div class="col-md-8 fs-14">${isUnggulanModal}</div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <div class="row">
-                                        <div class="col-md-4">Cover</div>
-                                        <div class="col-md-8">: <img src="${cover}" width="100px" height="100px"></div>
-                                    </div>
+                                    <div class="col-md-4 text-muted">Cover</div>
+                                    <div class="col-md-8 fs-14"><img src="${cover}" width="100px" height="100px"></div>
                                 </div>
                             </div>
                         </div>
