@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DaftarPricingModel;
-use App\Models\DaftarProductJasaModel;
 use App\Models\DaftarTenderModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -25,8 +23,8 @@ class DaftarTenderController extends Controller
      */
     function __construct()
     {
+        // dd(DaftarTenderModel::with('user','status')->limit(10)->get());
         //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
     }
 
     public function index(){
@@ -46,6 +44,12 @@ class DaftarTenderController extends Controller
         DataTables::of(
             $this->models($request)
         )
+        ->addColumn('namaUser', function ($row){
+            return $row->user->name ?? '';
+        })
+        ->addColumn('statusTender', function ($row){
+            return $row->status->nama ?? '';
+        })
         ->addColumn('tanggal_posting', function ($row){
             return Carbon::parse($row->createdAt);
         })
@@ -114,9 +118,9 @@ class DaftarTenderController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id)->first();
+        $detail = DaftarTenderModel::whereId($id)->first();
 
-        return view('users.detail', $title, compact(['detail']));
+        return view('daftar_tender.detail', $title, compact(['detail']));
     }
 
     /**
@@ -129,9 +133,9 @@ class DaftarTenderController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id);
+        $detail = DaftarTenderModel::whereId($id)->first();
 
-        return view('users.edit', $title, compact(['detail']));
+        return view('daftar_tender.edit', $title, compact(['detail']));
     }
 
     /**
@@ -203,10 +207,14 @@ class DaftarTenderController extends Controller
 
     public function models($request){
         return
-        DaftarTenderModel::query()
-        ->select('Tender.*', 'User.name as namaUser')
-        ->leftJoin('User','User.id','=','Tender.userId')
-        ->where('userId',$request->id)->get();
+        // DaftarTenderModel::query()
+        // ->select('Tender.*', 'User.name as namaUser','MsStatusTender.nama as statusTender','User.image as profileUser')
+        // ->leftJoin('User','User.id','=','Tender.userId')
+        // ->leftJoin('MsStatusTender','MsStatusTender.id','=','Tender.msStatusTenderId')
+        // // ->where('userId',$request->id)
+        // ->get();
+
+        DaftarTenderModel::with('user','status')->get();
     }
 
     public function daftar_pricing(Request $request){

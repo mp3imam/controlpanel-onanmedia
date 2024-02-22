@@ -48,4 +48,9 @@ class UserPublicModel extends Model
         return $this->belongsTo(JasaModel::class, 'userId','id');
     }
 
+    public function tender()
+    {
+        return $this->belongsTo(DaftarTenderModel::class, 'userId','id');
+    }
+
 }

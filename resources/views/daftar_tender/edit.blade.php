@@ -10,33 +10,101 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">Edit Satker</h4>
-                </div><!-- end card header -->
-                <div class="card-body">
-                    <form method="POST" action="{{ route('satkers.update', $detail->id) }}">
-                        @csrf
-                        @method('PUT')
-                        <div class="col-md-12 mb-4">
-                            <label for="provinsi_id" class="form-label">Provinsi</label>
-                            <select class="form-control" id='provinsi_id' name="provinsi_id"></select>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header bg-info">
+                            <h4 class="text-control text-white">Tender Detail</h4>
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="satker" class="form-label">Nama Satker</label>
-                            <input class="form-control" id="satker" name="satker" value="{{ $detail->name }}" />
+                        <div class="card-body">
+                            <div class="card p-2" style="background-color: #E0E0E0">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-1 text-center">
+                                            <img class="rounded-circle w-75 h-75" src="{{ $detail->user->image }}" />
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="fs-14">{{ $detail->user->name }}</div>
+                                            <div class="fs-12" style="color: #55B9DB">{{ $detail->kategori }}</div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <span class="text-muted">Budget</span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <span class="text-muted">Level Kualifikasi</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label class="fs-14">{{ $detail->budget }} / {{ $detail->MetodePembayaran }}</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="fs-14" style="color: #8682B9">{{ $detail->kategori }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h1>{{ $detail->judulTender }}</h1>
+                            <span class="text-muted">{{ Carbon\Carbon::parse($detail->createdAt)->diffForHumans() }}</span>
+                            <hr>
+
+                            <h6 class="fw-bold mt-5">Deskripsi</h6>
+                            <p>{!! $detail->deskripsiPekerjaan !!}</p>
+
+                            <h6 class="fw-bold mt-5">Lingkup Pekerjaan</h6>
+                            <p>{{ $detail->LingkupPekerjaan }}</p>
+
+                            <h6 class="fw-bold mt-5">Skills dan Keahlian</h6>
+                            @foreach (explode(',', $detail->skills) as $skill)
+                                <span class="badge bg-light fs-16 p-3" style="color: #828282">{{ trim($skill, '"{}') }}</span>
+                            @endforeach
+
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <label for="kode_satker" class="form-label">Kode Satker</label>
-                            <input class="form-control" id="kode_satker" name="kode_satker"
-                                value="{{ $detail->kode_satker }}" />
+                    </div>
+                    <div class="col-md">
+                        <div class="card">
+                            <div class="card-header bg-info">
+                                <h4 class="text-control text-white">Status</h4>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="text-control text-muted fs-12">Status Verifikasi Jasa</h5>
+                                <select class="form-control mb-3" id="verifikasi_jasa">
+                                    <option value="1" {{ $detail->status->id == 0 ? "selected" : "" }}>Draft</option>
+                                    <option value="1" {{ $detail->status->id == 1 ? "selected" : "" }}>Aktif</option>
+                                    <option value="2" {{ $detail->status->id == 2 ? "selected" : "" }}>Sedang Verifikasi</option>
+                                    <option value="3" {{ $detail->status->id == 3 ? "selected" : "" }}>Diminta Perubahan</option>
+                                    <option value="4" {{ $detail->status->id == 4 ? "selected" : "" }}>Ditolak</option>
+                                    <option value="5" {{ $detail->status->id == 5 ? "selected" : "" }}>Ditahan</option>
+                                    <option value="6" {{ $detail->status->id == 6 ? "selected" : "" }}>Non Aktif</option>
+                                </select>
+                                <h5 class="text-control text-muted fs-12">Pengambilan</h5>
+                                <select class="form-control mb-3" id="pengambilan">
+                                    <option value="0" {{ $detail->isPengambilan == 0 ? "selected" : "" }}>Tidak Aktif</option>
+                                    <option value="1"  {{ $detail->isPengambilan == 1 ? "selected" : "" }}>Aktif</option>
+                                </select>
+                                <h5 class="text-control text-muted fs-12">Pengiriman</h5>
+                                <select class="form-control mb-3" id="pengiriman">
+                                    <option value="0" {{ $detail->isPengiriman == 0 ? "selected" : "" }}>Tidak Aktif</option>
+                                    <option value="1"  {{ $detail->isPengiriman == 1 ? "selected" : "" }}>Aktif</option>
+                                </select>
+                                <h5 class="text-control text-muted fs-12">Unggulan</h5>
+                                <select class="form-control mb-3" id="unggulan">
+                                    <option value="0" {{ $detail->isUnggulan == 0 ? "selected" : "" }}>Tidak Aktif</option>
+                                    <option value="1"  {{ $detail->isUnggulan == 1 ? "selected" : "" }}>Aktif</option>
+                                </select>
+                            </div>
+                            <div class="card-footer">
+                                <a href="javascript:void(0);" class="btn btn-success" onclick="simpan()">Simpan</a>
+                                <a href="javascript:void(0);" class="btn btn-warning">Batal </a>
+                            </div>
                         </div>
-                        <div class="col-md-12 mb-4">
-                            <label for="address" class="form-label">Alamat</label>
-                            <input class="form-control" id="address" name="address" value="{{ $detail->address }}" />
-                        </div>
-                        <button class="btn btn-success form-control">Ubah</button>
-                    </form>
-                </div><!-- end card -->
+                    </div>
+                </div>
             </div>
             <!-- end col -->
         </div>
@@ -46,34 +114,40 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-        $(function() {
-            var dataRole = {
-                id: "{{ $detail->provinsi_id }}",
-                text: "{{ $detail->provinsis->name }}",
-                selected: true
-            };
-            var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-            $('#provinsi_id').append(newOptionRole).trigger('change');
-            $('#provinsi_id').select2();
+    function simpan() {
+        var detailId = "{{ $detail->id }}";
+        var url = "{{ route('daftar_product_jasa.update', ':detailId') }}";
+        url = url.replace(':detailId', detailId);
 
-            $('#provinsi_id').select2({
-                ajax: {
-                    url: "{{ route('api.provinsi') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data.data, function(item) {
-                                return {
-                                    text: item.name,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
+        $.ajax({
+            type: "PUT",
+            url: url,
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                detail_id: detailId,
+                verifikasi_jasa: $('#verifikasi_jasa').val(),
+                pengambilan: $('#pengambilan').val(),
+                pengiriman: $('#pengiriman').val(),
+                unggulan: $('#unggulan').val(),
+            },
+            dataType: "json",
+            success: function (response) {
+                Swal.fire({
+                    title: "Good job!",
+                    text: "Data Berhasil disimpan",
+                    icon: "success",
+                    timer: 1500
+                });
+            },
+            error:function(res){
+                Swal.fire({
+                    title: "Error!",
+                    text: "You clicked the button!",
+                    icon: "Error",
+                    timer: 1500
+                });
+            },
         });
+    }
     </script>
 @endsection
