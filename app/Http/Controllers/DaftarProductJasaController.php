@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\DaftarPricingModel;
-use App\Models\DaftarProductJasaModel;
 use App\Models\JasaModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -25,8 +24,8 @@ class DaftarProductJasaController extends Controller
      */
     function __construct()
     {
+        // dd(JasaModel::with('status')->get());
         //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
     }
 
     public function index(){
@@ -42,8 +41,18 @@ class DaftarProductJasaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request){
-        return
-        DataTables::of($this->models($request))->make(true);
+        return DataTables::of($this->models($request))
+        ->addColumn('UserPosting', function ($row){
+            return $row->user->name;
+        })
+        ->addColumn('kategori', function ($row){
+            return $row->kategori->nama;
+        })
+        ->addColumn('subKategori', function ($row){
+            return $row->subKategori->nama;
+        })
+        ->rawColumns(['UserPosting','kategori','subKategori'])
+        ->make(true);
     }
 
     /**
@@ -107,7 +116,7 @@ class DaftarProductJasaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id)->first();
+        $detail = JasaModel::findOrFail($id)->first();
 
         return view('users.detail', $title, compact(['detail']));
     }
@@ -122,9 +131,8 @@ class DaftarProductJasaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = User::findOrFail($id);
-
-        return view('users.edit', $title, compact(['detail']));
+        $detail = JasaModel::whereId($id)->with('productDoc','user','kategori','subKategori','status')->first();
+        return view('daftar_product_jasa.edit', $title, compact(['detail']));
     }
 
     /**
@@ -135,45 +143,22 @@ class DaftarProductJasaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        $validasi = [
-            'id'           => 'required',
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
-        ];
-
-        $validator = Validator::make($request->all(), $validasi);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status'  => Response::HTTP_BAD_REQUEST,
-                'message' => $validator->messages()
-            ]);
-        }
-
         $user = 'Data Tidak Tersimpan';
-        DB::beginTransaction();
-        try{
+        // DB::beginTransaction();
+        // try{
             // Store your file into directory and db
             $update = [
-                'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
-                'update_by'         => 'Administrator',
+                "msStatusJasaId" => $request->verifikasi_jasa,
+                "isPengambilan" => $request->pengambilan,
+                "isPengiriman" => $request->pengiriman,
+                "isUnggulan" => $request->unggulan,
             ];
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
+            $user = JasaModel::whereId($id)->update($update);
+        //     DB::commit();
+        // }catch(\Exception $e){
+        //     DB::rollback();
+        // }
 
         return response()->json([
             'status'  => Response::HTTP_OK,
@@ -195,33 +180,37 @@ class DaftarProductJasaController extends Controller
     }
 
     public function models($request){
-        return DaftarProductJasaModel::query()
-        ->select('Jasa.*', 'User.name as UserPosting', 'MsKategori.nama as kategori', 'MsSubkategori.nama as subkategori', 'MsStatusJasa.nama as statusjasa', DB::raw('to_char("Jasa"."createdAt", \'DD-MM-YYYY\') AS tanggal_posting'))
-        ->leftJoin('User', 'User.id', '=', 'Jasa.userId')
-        ->leftJoin('MsKategori', 'MsKategori.id', '=', 'Jasa.msKategoriId')
-        ->leftJoin('MsSubkategori', 'MsSubkategori.id', '=', 'Jasa.msSubkategoriId')
-        ->leftJoin('MsStatusJasa', 'MsStatusJasa.id', '=', 'Jasa.msStatusJasaId')
+        return JasaModel::with('productDoc','user')
         ->when($request->cari, function($q) use($request){
             $q->where('Jasa.nama', 'ilike', '%'.$request->cari.'%');
         })
         ->get();
+
+        // ->select('Jasa.*', 'User.name as UserPosting', 'MsKategori.nama as kategori', 'MsSubkategori.nama as subkategori', 'MsStatusJasa.nama as statusjasa', DB::raw('to_char("Jasa"."createdAt", \'DD-MM-YYYY\') AS tanggal_posting'))
+        // ->leftJoin('User', 'User.id', '=', 'Jasa.userId')
+        // ->leftJoin('MsKategori', 'MsKategori.id', '=', 'Jasa.msKategoriId')
+        // ->leftJoin('MsSubkategori', 'MsSubkategori.id', '=', 'Jasa.msSubkategoriId')
+        // ->leftJoin('MsStatusJasa', 'MsStatusJasa.id', '=', 'Jasa.msStatusJasaId')
+
     }
 
     function verifikasi_jasa(Request $request){
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => JasaModel::findOrFail($request->id)->update([
-                            'msStatusJasaId' => 1
-                        ])
+                'msStatusJasaId' => 1
+            ])
         ]);
     }
 
     public function daftar_pricing(Request $request){
         return DataTables::of(
-            DaftarPricingModel::query()
-            ->select('JasaPricing.*', 'Jasa.nama as namaJasa')
-            ->leftJoin('Jasa','Jasa.id','=','JasaPricing.jasaId')
-            ->where('jasaId',$request->id)->get()
+            DaftarPricingModel::with('jasas.productDoc')
+            ->when($request->cari, function($q) use($request){
+                $q->where('Jasa.nama', 'ilike', '%'.$request->cari.'%');
+            })
+            ->where('jasaId',$request->id)
+            ->get()
             )->make(true);
     }
 

@@ -36,25 +36,15 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="100%">
+                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th width="30px">User Posting</th>
+                                        <th>User Posting</th>
                                         <th>Nama Jasa</th>
-                                        <th>Status</th>
                                         <th>Kategory</th>
                                         <th>SubKategory</th>
-                                        <th>Tags</th>
-                                        <th>Jumlah View</th>
-                                        <th hidden>is</th>
-                                        <th hidden>is</th>
-                                        <th hidden>is</th>
-                                        <th hidden>is</th>
                                         <th>Gambar Product</th>
-                                        <th>Harga Termurah</th>
-                                        <th>Harga Termahal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
+                <div class="modal fade flip" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content" id="modal_content">
                         </div>
@@ -77,7 +67,6 @@
 @endsection
 
 @section('script')
-<script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
 <script type="text/javascript">
     var img_ok = `<img src="{{ URL::asset('assets/images/logo/ok.png') }}" alt=""height="30px">`
     var img_not_ok = `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px">`
@@ -102,58 +91,23 @@
                     data: 'UserPosting',
                     name: 'User Posting',
                     render: function (data, type, row, meta) {
-                        return '<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud(`'+row.id+'`, `'+row.nama+'`, `'+row.subkategori+'`, `'+row.kategori+'`, `'+row.impresi+'`, `'+row.klik+'`, `'+row.UserPosting+'`, `'+row.tags+'`, `'+row.deskripsi+'`, `'+row.msStatusJasaId+'`, `'+row.slug+'`, `'+row.cover+'`, `'+row.hargaTermahal+'`, `'+row.hargaTermurah+'`, `'+row.statusjasa+'`, `'+row.isPengambilan+'`, `'+row.isPengiriman+'`, `'+row.isUnggulan+'`)" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">'+data+'</button>';
+                        return `<a href="/daftar_product_jasa/${row.id}/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">${data}</a>`;
                     }
                 },{
                     data: 'nama',
                     name: 'Nama Jasa'
                 },{
-                    data: 'msStatusJasaId',
-                    name: 'Status',
-                    render: function (data) {
-                        return data ? 'Aktif' : 'False'
-                    }
-                },{
                     data: 'kategori',
                     name: 'Kategori'
                 },{
-                    data: 'subkategori',
+                    data: 'subKategori',
                     name: 'SubKategori'
-                },{
-                    data: 'tags',
-                    name: 'Tags'
-                },{
-                    data: 'klik',
-                    name: 'Jumlah View'
-                },{
-                    data: 'impresi',
-                    visible: false
-                },{
-                    data: 'isPengambilan',
-                    visible: false
-                },{
-                    data: 'isPengiriman',
-                    visible: false
-                },{
-                    data: 'isUnggulan',
-                    visible: false
                 },{
                     data: 'cover',
                     name: 'Gambar Product',
+                    class:'text-center',
                     render: function (data) {
-                        return `<a href="`+ data +`" target="_blank" > Lihat Gambar </a>`
-                    }
-                },{
-                    data: 'hargaTermurah',
-                    name: 'Harga Termurah',
-                    render: function (data) {
-                        return `Rp. `+data
-                    }
-                },{
-                    data: 'hargaTermahal',
-                    name: 'Harga Termahal',
-                    render: function (data) {
-                        return `Rp. `+data
+                        return `<a href="`+ data +`" target="_blank" > <img src="${data}" width="100px" height="100px"> </a>`
                     }
                 }
             ]
@@ -165,110 +119,145 @@
     });
 
     function modal_crud(id, nama, subkategori, kategori, impresi, klik, UserPosting, tags, deskripsi, msStatusJasaId, slug, cover, hargaTermahal, hargaTermurah, statusjasa, isPengambilan, isPengiriman, isUnggulan){
-        isPengambilanModal = isPengambilan == 1 ? img_ok : img_not_ok
-        isPengirimanModal = isPengiriman == 1 ? img_ok : img_not_ok
-        isUnggulanModal = isUnggulan == 1 ? img_ok : img_not_ok
         msStatusJasaIdModal = msStatusJasaId == 1 ? img_ok : `<img src="{{ URL::asset('assets/images/logo/not-ok.png') }}" alt=""height="30px" onclick="konfirmasi_verifikasi_jasa('${id}','${nama}')" style="cursor:pointer">`
         $('#modal_content').html(`
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">Detail Jasa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <div class="col-md-4 text-muted">Nama Jasa</div>
-                                    <div class="col-md-8 fs-14">${nama}</div>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <div class="col-md-4 text-muted">SubKategori</div>
-                                    <div class="col-md-8 fs-14">${subkategori}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Kategori</div>
-                                    <div class="col-md-8 fs-14">${kategori}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Impresi</div>
-                                    <div class="col-md-8 fs-14">${impresi}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">klik</div>
-                                    <div class="col-md-8 fs-14">${klik}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Nama User</div>
-                                    <div class="col-md-8 fs-14">${UserPosting}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Tags</div>
-                                    <div class="col-md-8 fs-14">${tags}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Deskripsi</div>
-                                    <div class="col-md-8 fs-14">${deskripsi}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Status Verifikasi Jasa</div>
-                                    <div class="col-md-8 fs-14">${msStatusJasaIdModal}</div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header bg-info">
+                                <h4 class="text-control text-white">Jasa Detail</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-pills arrow-navtabs bg-info nav-success bg-light mb-3" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#arrow-detail" role="tab" aria-selected="true">
+                                            <span class="d-block d-sm-none"><i class="mdi mdi-home-variant"></i></span>
+                                            <span class="d-none d-sm-block">Detail</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#arrow-deskripsi" role="tab" aria-selected="false" tabindex="-1">
+                                            <span class="d-block d-sm-none"><i class="mdi mdi-account"></i></span>
+                                            <span class="d-none d-sm-block">Deskripsi</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#arrow-foto" role="tab" aria-selected="false" tabindex="-1">
+                                            <span class="d-block d-sm-none"><i class="mdi mdi-email"></i></span>
+                                            <span class="d-none d-sm-block">Foto</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#arrow-pricing" role="tab" aria-selected="false" tabindex="-1">
+                                            <span class="d-block d-sm-none"><i class="mdi mdi-email"></i></span>
+                                            <span class="d-none d-sm-block">Pricing</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <!-- Tab panes -->
+                                <div class="tab-content text-muted">
+                                    <div class="tab-pane active show" id="arrow-detail" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Nama Jasa</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${nama}</div>
+                                            </div>
+                                            <div class="col-md mb-3">
+                                                <div class="col-md-4 text-muted">Nama User</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${UserPosting}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Kategori</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${kategori}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Tags</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${tags}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">SubKategori</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${subkategori}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Slug</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${slug}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Impresi</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${impresi}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Harga Termahal</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${hargaTermahal}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Klik</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${klik}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="col-md-4 text-muted">Harga Termurah</div>
+                                                <div class="col-md-8 fs-14 fw-bold">${hargaTermurah}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="arrow-deskripsi" role="tabpanel">
+                                        <p class="mb-0">
+                                            ${deskripsi}
+                                        </p>
+                                    </div>
+                                    <div class="tab-pane" id="arrow-foto" role="tabpanel">
+                                        <p class="mb-0">
+                                            ${deskripsi}
+                                        </p>
+                                    </div>
+                                    <div class="tab-pane" id="arrow-pricing" role="tabpanel">
+                                        <p class="mb-0">
+                                            ${deskripsi}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Slug</div>
-                                    <div class="col-md-8 fs-14">${slug}</div>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="card">
+                                <div class="card-header bg-info">
+                                    <h4 class="text-control text-white">Status</h4>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Harga Termahal</div>
-                                    <div class="col-md-8 fs-14">${hargaTermahal}</div>
+                                <div class="card-body">
+                                    <h5 class="text-control text-muted fs-12">Status Verifikasi Jasa</h5>
+                                    <select class="form-control mb-3" id="verifikasi_jasa">
+                                        <option value="1" selected>Aktif</option>
+                                        <option value="2" >Tidak Aktif</option>
+                                        <option value="3" >Pending</option>
+                                        <option value="4" >Tolak</option>
+                                    </select>
+                                    <h5 class="text-control text-muted fs-12">Status Jasa</h5>
+                                    <select class="form-control mb-3" id="status_jasa">
+                                        <option value="1" selected>Aktif</option>
+                                        <option value="2" >Tidak Aktif</option>
+                                    </select>
+                                    <h5 class="text-control text-muted fs-12">Pengambilan</h5>
+                                    <select class="form-control mb-3" id="pengambilan">
+                                        <option value="1" selected>Aktif</option>
+                                        <option value="2" >Tidak Aktif</option>
+                                    </select>
+                                    <h5 class="text-control text-muted fs-12">Pengiriman</h5>
+                                    <select class="form-control mb-3" id="pengiriman">
+                                        <option value="1" selected>Aktif</option>
+                                        <option value="2" >Tidak Aktif</option>
+                                    </select>
                                 </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Harga Termurah</div>
-                                    <div class="col-md-8 fs-14">${hargaTermurah}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Status Jasa</div>
-                                    <div class="col-md-8 fs-14">${statusjasa}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Pengambilan</div>
-                                    <div class="col-md-8 fs-14">${isPengambilanModal}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Pengiriman</div>
-                                    <div class="col-md-8 fs-14">${isPengirimanModal}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Unggulan</div>
-                                    <div class="col-md-8 fs-14">${isUnggulanModal}</div>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <div class="col-md-4 text-muted">Cover</div>
-                                    <div class="col-md-8 fs-14"><img src="${cover}" width="100px" height="100px"></div>
+                                <div class="card-footer">
+                                    <a href="javascript:void(0);" class="card-link link-secondary">Simpan</a>
+                                    <a href="javascript:void(0);" class="card-link link-success">Bookmark <i class="ri-bookmark-line align-middle ms-1 lh-1"></i></a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <hr>
-                <h1>Jasa Pricing</h1>
-                <table id="jasaPricing" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th width="100px">Nama Jasa</th>
-                            <th width="100px">Nama Pricing</th>
-                            <th width="30px">Deskripsi</th>
-                            <th width="30px">Periode</th>
-                            <th width="30px">Harga</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
             </div>
         `)
 

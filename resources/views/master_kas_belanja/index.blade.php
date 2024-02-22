@@ -122,7 +122,7 @@
     <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
     <script type="text/javascript">
         var route = "{{ url('master_kas_belanja') }}";
-        var userLogin = "{{ Auth::user()->id }}";
+        var userLogin = "{{ Auth::user()->roles[0]->name }}";
         $(function() {
             var table = $('#dataTable').DataTable({
                 dom: 'lrtip',
@@ -200,7 +200,8 @@
                     render: function(data, type, row, meta) {
                         button = `<a type="button" href="{{ url('master_kas_belanja') }}/` + row.id + `/edit" class="btn btn-warning btn-icon waves-effect waves-light"><i class="ri-pencil-fill" target="_blank"></i></a>
                         <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="konfirmasi_hapus('${data}','${row.nomor_transaksi}')" target="_blank"><i class="ri-delete-bin-5-line"></i></button>`
-                        if (userLogin == 2) button = ""
+                        if (userLogin == 'finance' || row.role == 'finance') button = ""
+                        if (row.keterangan_kas == 'f') console.log(row.role);
                         return row.status < 2 ? button : null;
                     }
                 }]

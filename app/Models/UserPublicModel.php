@@ -43,4 +43,9 @@ class UserPublicModel extends Model
         return $this->hasOne(HelpdeskModel::class, 'userId','id');
     }
 
+    public function jasa()
+    {
+        return $this->belongsTo(JasaModel::class, 'userId','id');
+    }
+
 }

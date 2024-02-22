@@ -5,21 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KategoriModel extends Model
+class MsStatusJasaModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
-    protected $table = 'MsKategori';
+    protected $table = 'MsStatusJasa';
     protected $guarded = ['id'];
     public $timestamps = false;
+    public $incrementing = false;
+    public $keyType = 'string';
 
     public function jasa()
     {
-        return $this->belongsTo(JasaModel::class, 'msKategoriId','id');
+        return $this->belongsTo(JasaModel::class, 'msStatusJasaId');
     }
-
-    public function scopeActive($q){
-        $q->where('MsKategori.isAktif',1);
-    }
-
 }

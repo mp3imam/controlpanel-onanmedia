@@ -13,6 +13,11 @@ class SubKategoriModel extends Model
     protected $guarded = ['id'];
     public $timestamps = false;
 
+    public function jasa()
+    {
+        return $this->belongsTo(JasaModel::class, 'msSubKategoriId','id');
+    }
+
     public function scopeActive($q){
         $q->where('MsSubkategori.isAktif',1);
     }

@@ -24,4 +24,38 @@ class JasaModel extends Model
         return $this->hasOne(HelpdeskModel::class, 'jasaId','id');
     }
 
+    public function productJasa()
+    {
+        return $this->hasOne(DaftarPricingModel::class, 'jasaId','id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(UserPublicModel::class, 'id','userId');
+    }
+
+    public function kategori()
+    {
+        return $this->hasOne(KategoriModel::class, 'id','msKategoriId');
+    }
+
+    public function subKategori()
+    {
+        return $this->hasOne(SubKategoriModel::class, 'id','msSubkategoriId');
+    }
+
+    public function status()
+    {
+        return $this->hasOne(MsStatusJasaModel::class, 'id','msStatusJasaId');
+    }
+
+    public function productDoc()
+    {
+        return $this->hasMany(JasaDocModel::class, 'jasaId','id');
+    }
+
+    public function productPricing()
+    {
+        return $this->hasMany(JasaPricingModel::class, 'jasaId','id');
+    }
 }

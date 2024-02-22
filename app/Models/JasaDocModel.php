@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DaftarPricingModel extends Model
+class JasaDocModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
-    protected $table = 'JasaPricing';
+    protected $table = 'JasaDoc';
+    protected $guarded = ['id'];
+    public $timestamps = false;
     public $incrementing = false;
-    protected $keyType = 'string';
+    public $keyType = 'string';
 
     public function jasas()
     {

@@ -5,16 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DaftarPricingModel extends Model
+class JasaPricingModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
     protected $table = 'JasaPricing';
+    protected $guarded = ['id'];
+    public $timestamps = false;
     public $incrementing = false;
-    protected $keyType = 'string';
+    public $keyType = 'string';
 
     public function jasas()
     {
         return $this->belongsTo(JasaModel::class, 'jasaId');
     }
+
 }
