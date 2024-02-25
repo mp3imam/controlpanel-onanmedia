@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class DaftarTenderController extends Controller
@@ -147,11 +148,12 @@ class DaftarTenderController extends Controller
      */
     public function update(Request $request, $id){
         $validasi = [
-            'id'           => 'required',
-            'username'     => 'required',
-            'nama_lengkap' => 'required',
-            'role'         => 'required',
+            'detail_id'         => 'required',
+            'verifikasi_tender' => 'required',
         ];
+
+        if ($request->verifikasi_tender == 3 || $request->verifikasi_tender == 4 || $request->verifikasi_tender == 5)
+        $validasi += ['keterangan' => 'required'];
 
         $validator = Validator::make($request->all(), $validasi);
 
@@ -166,21 +168,11 @@ class DaftarTenderController extends Controller
         DB::beginTransaction();
         try{
             // Store your file into directory and db
-            $update = [
-                'username'          => $request->username,
-                'name'              => $request->nama_lengkap,
-                'cl_perusahaan_id'  => 1,
-                'cl_user_group_id'  => 1,
-                'status'            => 1,
-                'update_date'       => Carbon::now(),
-                'update_by'         => 'Administrator',
-            ];
+            $update = ['msStatusTenderId'  => $request->verifikasi_tender];
+            if ($request->verifikasi_tender == 3 || $request->verifikasi_tender == 4 || $request->verifikasi_tender == 5)
+            $update += ['keterangan' => $request->keterangan];
 
-            $role = Role::whereName($request->role)->first();
-            $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
+            $user = DaftarTenderModel::whereId($id)->update($update);
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();

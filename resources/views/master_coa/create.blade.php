@@ -28,17 +28,17 @@
                                         <option value="4" selected>Detail</option>
                                     </select>
                                 </div>
-                                <div class="col-md mb-4" id="kdrek1_coa_hidden">
-                                    <label for="kdrek1_coa" class="form-label">Header Coa</label>
-                                    <select id="kdrek1_coa_id" name="kdrek1_coa_id" class="form-control" required></select>
+                                <div class="col-md mb-4 kdrek1_coa_hidden">
+                                    <label for="kdrek1_coa" class="form-label kdrek1_coa_hidden">Header Coa</label>
+                                    <select id="kdrek1_coa_id" name="kdrek1_coa_id" class="form-control kdrek1_coa_hidden" required></select>
                                 </div>
-                                <div class="col-md mb-4" id="kdrek2_coa_hidden">
-                                    <label for="kdrek2_coa" class="form-label">Deskripsi Coa</label>
-                                    <select id="kdrek2_coa_id" name="kdrek2_coa_id" class="form-control" required></select>
+                                <div class="col-md mb-4 kdrek2_coa_hidden">
+                                    <label for="kdrek2_coa" class="form-label kdrek2_coa_hidden">Deskripsi Coa</label>
+                                    <select id="kdrek2_coa_id" name="kdrek2_coa_id" class="form-control kdrek2_coa_hidden" required></select>
                                 </div>
-                                <div class="col-md mb-4" id="kdrek3_coa_hidden">
-                                    <label for="kdrek3_coa" class="form-label">Uraian Coa</label>
-                                    <select id="kdrek3_coa_id" name="kdrek3_coa_id" class="form-control"></select>
+                                <div class="col-md mb-4 kdrek3_coa_hidden">
+                                    <label for="kdrek3_coa" class="form-label kdrek3_coa_hidden">Uraian Coa</label>
+                                    <select id="kdrek3_coa_id" name="kdrek3_coa_id" class="form-control kdrek3_coa_hidden"></select>
                                 </div>
                             </div>
                             <div class="row">
@@ -197,9 +197,7 @@
         $("#kdrek3_coa_id").val('').trigger('change')
         switch (this.value) {
             case "1":
-                $('#kdrek1_coa_hidden').hide()
-                $('#kdrek2_coa_hidden').hide()
-                $('#kdrek3_coa_hidden').hide()
+                hiddenSelect2()
                 $.ajax({
                     type: "get",
                     url: "{{ route('api.count_kdrek1_coa') }}",
@@ -209,23 +207,36 @@
                 });
             break;
             case "2":
-                $('#kdrek1_coa_hidden').show()
-                $('#kdrek2_coa_hidden').hide()
-                $('#kdrek3_coa_hidden').hide()
+                hiddenSelect2()
+                $('.kdrek1_coa_hidden').prop('hidden', false)
+                $('.kdrek1_coa_hidden').prop('required', true)
             break;
             case "3":
-                $('#kdrek1_coa_hidden').show()
-                $('#kdrek2_coa_hidden').show()
-                $('#kdrek3_coa_hidden').hide()
+                $('.kdrek1_coa_hidden').prop('hidden', false)
+                $('.kdrek1_coa_hidden').prop('required', true)
+                $('.kdrek2_coa_hidden').prop('hidden', false)
+                $('.kdrek2_coa_hidden').prop('required', true)
             break;
 
             default:
-                $('#kdrek1_coa_hidden').show()
-                $('#kdrek2_coa_hidden').show()
-                $('#kdrek3_coa_hidden').show()
+                $('.kdrek1_coa_hidden').prop('hidden', false)
+                $('.kdrek1_coa_hidden').prop('required', true)
+                $('.kdrek2_coa_hidden').prop('hidden', false)
+                $('.kdrek2_coa_hidden').prop('required', true)
+                $('.kdrek3_coa_hidden').prop('hidden', false)
+                $('.kdrek3_coa_hidden').prop('required', true)
             break;
         }
     });
+
+    function hiddenSelect2(){
+        $('.kdrek1_coa_hidden').prop('hidden', true)
+        $('.kdrek1_coa_hidden').prop('required', false)
+        $('.kdrek2_coa_hidden').prop('hidden', true)
+        $('.kdrek2_coa_hidden').prop('required', false)
+        $('.kdrek3_coa_hidden').prop('hidden', true)
+        $('.kdrek3_coa_hidden').prop('required', false)
+    }
 
 </script>
 @endsection

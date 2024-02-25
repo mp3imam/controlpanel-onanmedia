@@ -61,7 +61,7 @@ class MasterCoaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        dd($request->all());
+        // dd($request->all());
         $validasi = [
             'pilih_data_id' => 'required',
             'kode_coa'      => 'required',
@@ -70,8 +70,8 @@ class MasterCoaController extends Controller
             'nama_bank'     => 'required',
         ];
 
-        if ($request->pilih_data_id == 2) $validasi += ['kdrek1_coa_id'];
-        if ($request->pilih_data_id == 3) $validasi += ['kdrek2_coa_id'];
+        if ($request->pilih_data_id > 2) $validasi += ['kdrek1_coa_id' => 'required'];
+        if ($request->pilih_data_id > 3) $validasi += ['kdrek2_coa_id' => 'required'];
 
         $validator = Validator::make($request->all(), $validasi);
 
@@ -100,7 +100,8 @@ class MasterCoaController extends Controller
         $input['uraian']        = $request->nama_akun;
         $input['rekening_bank'] = $request->rekening_bank;
         $input['nama_bank']     = $request->nama_bank;
-        // dd($input);
+        $input['account_name']  = $request->nama_akun;
+
         MasterCoaModel::insert($input);
 
         return redirect('master_coa');
