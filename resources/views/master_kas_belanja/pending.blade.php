@@ -174,18 +174,18 @@
                     $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
                     $('#selectDetail' + item.id).css("background-color", "#00bd9d");
                     $('#keterangan' + item.id).prop('required',false);
-                }
-                if (this.value == 6) {
-                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-                    if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
-                    $('#selectDetail' + item.id).css("background-color", "#25a0e2");
-                    $('#keterangan' + item.id).prop('required',true);
-                }
-                if (this.value == 4) {
-                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-                    if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
-                    $('#selectDetail' + item.id).css("background-color", "#f06548");
-                    $('#keterangan' + item.id).prop('required',true);
+                }else{
+                    if (this.value == 6) {
+                        $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                        if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
+                            $('#selectDetail' + item.id).css("background-color", "#25a0e2");
+                        $('#keterangan' + item.id).prop('required',true);
+                    }else{
+                        $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                        if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
+                            $('#selectDetail' + item.id).css("background-color", "#f06548");
+                        $('#keterangan' + item.id).prop('required',true);
+                    }
                 }
                 $('#keterangan'+ item.id).val("")
                 $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
