@@ -97,15 +97,12 @@
                                 <div class="tab-pane" id="arrow-foto" role="tabpanel">
                                     <p class="mb-0">
                                         @foreach ($detail->productDoc as $productDoc)
-                                            <img class="m-3" src="{{ $productDoc->url }}" width="250px" height="250px">
+                                            <img class="m-3" src="{{ $productDoc->url }}" width="250px" height="250px" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" onclick="gambar_besar('{{ $productDoc->url }}')">
                                         @endforeach
                                     </p>
                                 </div>
                                 <div class="tab-pane" id="arrow-pricing" role="tabpanel">
-                                    <p class="mb-0">
-                                        Tabel Harga
-                                    </p>
-                                    <table class="table table-striped table-bordered table-nowrap">
+                                    <table class="table table-striped table-bordered" width="100%">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Nama</th>
@@ -118,7 +115,7 @@
                                             @foreach ($detail->productPricing as $productPricing)
                                                 <tr>
                                                     <th scope="row">{{ $productPricing->nama }}</th>
-                                                    <td>{!! $productPricing->deskripsi !!}</td>
+                                                    <td width="30%">{!! $productPricing->deskripsi !!}</td>
                                                     <td>{{ $productPricing->jumlahPeriode }} {{ $productPricing->periode }}</td>
                                                     <td>{{ $productPricing->harga }}</td>
                                                 </tr>
@@ -161,15 +158,25 @@
                                     <option value="0" {{ $detail->isUnggulan == 0 ? "selected" : "" }}>Tidak Aktif</option>
                                     <option value="1"  {{ $detail->isUnggulan == 1 ? "selected" : "" }}>Aktif</option>
                                 </select>
+                                <h5 class="text-control text-muted fs-12" id="keterangan_label" hidden>Keterangan</h5>
+                                <textarea class="form-control mb-3" id="keterangan" hidden></textarea>
                             </div>
                             <div class="card-footer">
                                 <a href="javascript:void(0);" class="btn btn-success" onclick="simpan()">Simpan</a>
-                                <a href="javascript:void(0);" class="btn btn-warning">Batal </a>
+                                <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('daftar_product_jasa.index') }}" >
+                                    <i class="ri-arrow-go-back-line"></i> Kembali
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true" role="dialog" style="display: none;">
+                <div class="modal-dialog modal-xl" id="modal_content">
+                </div>
+            </div>
+
             <!-- end col -->
         </div>
         <!-- end col -->
@@ -212,6 +219,22 @@
                 });
             },
         });
+    }
+
+    $('#verifikasi_jasa').change(function (q) {
+        if (this.value == 3){
+            $('#keterangan').prop('hidden', false)
+        }else{
+
+        }
+    });
+
+    function gambar_besar(params) {
+        $('#modal_content').html(`
+            <div class="modal-content">
+                <img src="${params}" />
+            </div>
+        `);
     }
     </script>
 @endsection
