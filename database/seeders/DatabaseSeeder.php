@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             // JasaSeeder::class,
             TblDataKaryawanGajiSeeder::class,
             ClcoaSeeder::class,
-            CoaBelanjaSeeder::class,
+            // CoaBelanjaSeeder::class,
             JenisPembayaranClCoaSeeder::class,
             TransaksiKasBelanjaStatusSeeder::class,
             SatuanSeeder::class,

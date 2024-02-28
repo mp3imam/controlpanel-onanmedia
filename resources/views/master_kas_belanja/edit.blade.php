@@ -77,10 +77,10 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <label for="account_id" class="form-label">Keterangan</label>
+                                                    <label for="keterangan_id" class="form-label">Keterangan</label>
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <textarea class="form-control" type="file" name="keterangan_upload" rows="1" cols="50" ></textarea>
+                                                    <textarea class="form-control" type="file" id="keterangan_upload" name="keterangan_upload" rows="1" cols="50" ></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -391,13 +391,16 @@
                 results: $.map(data.data, function(item) {
                     return {
                         id: item.id,
-                        text: item.name
+                        text: item.name,
+                        kode:item.kode
                     }
                 })
-            };
-            }
+            }}
         }
+    }).on('select2:select', function(e) {
+        $('#keterangan_upload').text(e.params.data.kode);
     });
+
 
     $('#selectAll').change(function (e) {
         if (this.value == 'Approve') {

@@ -134,7 +134,7 @@ class OnanmediaAPIController extends Controller
     public function select2_banks(Request $request){
         return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => BankModel::select('id', 'nama as name')
+            'data'   => BankModel::select('id', 'nama as name','kode')
                 ->when($request->id, function($q) use($request) {
                     return $q->whereIn('id',$request->id);
                 })
@@ -209,25 +209,21 @@ class OnanmediaAPIController extends Controller
     }
 
     public function select2_kdrek1_coa(Request $request){
-        $bankMergeCoa = MasterCoaModel::select('id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
-        ->where('type','H')
-        ->when($request->id, function($q) use($request) {
-            return $q->whereIn('id',$request->id);
-        })
-        ->when($request->q, function($q) use($request) {
-            return $q->where('name','ilike','%'.$request->q.'%');
-        })->get();
-
-        $data = [
+        return response()->json([
             'status' => Response::HTTP_OK,
-            'data'   => $bankMergeCoa->all()
-        ];
-
-        return response()->json($data);
+            'data'   => MasterCoaModel::select('kdrek1 as id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
+            ->where('type','H')
+            ->when($request->id, function($q) use($request) {
+                return $q->whereIn('id',$request->id);
+            })
+            ->when($request->q, function($q) use($request) {
+                return $q->where('name','ilike','%'.$request->q.'%');
+            })->get()->all()
+        ]);
     }
 
     public function select2_kdrek2_coa(Request $request){
-        $bankMergeCoa = MasterCoaModel::select('id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
+        $bankMergeCoa = MasterCoaModel::select('kdrek2 as id','uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
         ->where('kdrek1',$request->kdrek1)
         ->where('type','S')
         ->when($request->id, function($q) use($request) {
@@ -276,7 +272,7 @@ class OnanmediaAPIController extends Controller
 
     public function get_select2_kdrek3(Request $request){
         if (
-            MasterCoaModel::select('id', 'uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
+            MasterCoaModel::select('kdrek3 as id', 'uraian as name', 'kdrek1', 'kdrek2', 'kdrek3')
             ->when($request->q, function($q) use($request) {
                 return $q->where('uraian','ilike','%'.$request->q.'%');
             })

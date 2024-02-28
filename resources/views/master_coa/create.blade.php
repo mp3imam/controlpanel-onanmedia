@@ -195,6 +195,7 @@
         $("#kdrek1_coa_id").val('').trigger('change')
         $("#kdrek2_coa_id").val('').trigger('change')
         $("#kdrek3_coa_id").val('').trigger('change')
+
         switch (this.value) {
             case "1":
                 hiddenSelect2()
@@ -212,6 +213,7 @@
                 $('.kdrek1_coa_hidden').prop('required', true)
             break;
             case "3":
+                hiddenSelect2()
                 $('.kdrek1_coa_hidden').prop('hidden', false)
                 $('.kdrek1_coa_hidden').prop('required', true)
                 $('.kdrek2_coa_hidden').prop('hidden', false)

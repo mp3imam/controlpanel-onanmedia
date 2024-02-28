@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankModel;
 use App\Models\MasterCoaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -103,6 +104,17 @@ class MasterCoaController extends Controller
         $input['account_name']  = $request->nama_akun;
 
         MasterCoaModel::insert($input);
+
+        if ($pilih_data = "D" && $request->kdrek1_coa_id == 1 && $request->kdrek2_coa_id == 1 && $request->kdrek3_coa_id == 1){
+            // insert to Banks
+            BankModel::create([
+                'nama'  => $request->nama_akun,
+                'kode'  => $request->rekening_bank,
+                'aktif' => 1,
+                'icon'  =>'-'
+            ]);
+        }
+
 
         return redirect('master_coa');
     }
