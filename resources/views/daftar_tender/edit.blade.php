@@ -98,11 +98,13 @@
                                     <option value="1"  {{ $detail->isUnggulan == 1 ? "selected" : "" }}>Aktif</option>
                                 </select>
                                 <h5 class="text-control text-muted fs-12 keterangan" hidden>Keterangan</h5>
-                                <textarea class="form-control keterangan" id="keterangan" hidden required></textarea>
+                                <textarea class="form-control keterangan" id="keterangan" hidden required>{{ $detail->keterangan }}</textarea>
                             </div>
                             <div class="card-footer">
                                 <a href="javascript:void(0);" class="btn btn-success" onclick="simpan()">Simpan</a>
-                                <a href="javascript:void(0);" class="btn btn-warning">Batal </a>
+                                <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('daftar_tender.index') }}" >
+                                    <i class="ri-arrow-go-back-line"></i> Kembali
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -121,6 +123,9 @@
         if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 5)
             $('.keterangan').attr('hidden', false)
     });
+
+    if ("{{ $detail->status->id == 3 || $detail->status->id == 4 || $detail->status->id == 5 }}")
+    $('.keterangan').attr('hidden', false)
 
     function simpan() {
         var detailId = "{{ $detail->id }}";

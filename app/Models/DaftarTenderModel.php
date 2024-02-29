@@ -12,6 +12,7 @@ class DaftarTenderModel extends Model
     protected $table = 'Tender';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     protected $casts = [
         'id' => 'string',

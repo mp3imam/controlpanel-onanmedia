@@ -165,18 +165,18 @@ class DaftarTenderController extends Controller
         }
 
         $user = 'Data Tidak Tersimpan';
-        DB::beginTransaction();
-        try{
+        // DB::beginTransaction();
+        // try{
             // Store your file into directory and db
             $update = ['msStatusTenderId'  => $request->verifikasi_tender];
             if ($request->verifikasi_tender == 3 || $request->verifikasi_tender == 4 || $request->verifikasi_tender == 5)
             $update += ['keterangan' => $request->keterangan];
 
             $user = DaftarTenderModel::whereId($id)->update($update);
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
+        //     DB::commit();
+        // }catch(\Exception $e){
+        //     DB::rollback();
+        // }
 
         return response()->json([
             'status'  => Response::HTTP_OK,

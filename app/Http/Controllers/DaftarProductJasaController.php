@@ -144,21 +144,22 @@ class DaftarProductJasaController extends Controller
      */
     public function update(Request $request, $id){
         $user = 'Data Tidak Tersimpan';
-        // DB::beginTransaction();
-        // try{
+        DB::beginTransaction();
+        try{
             // Store your file into directory and db
             $update = [
                 "msStatusJasaId" => $request->verifikasi_jasa,
                 "isPengambilan" => $request->pengambilan,
                 "isPengiriman" => $request->pengiriman,
                 "isUnggulan" => $request->unggulan,
+                "keterangan" => $request->keterangan,
             ];
 
             $user = JasaModel::whereId($id)->update($update);
-        //     DB::commit();
-        // }catch(\Exception $e){
-        //     DB::rollback();
-        // }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+        }
 
         return response()->json([
             'status'  => Response::HTTP_OK,

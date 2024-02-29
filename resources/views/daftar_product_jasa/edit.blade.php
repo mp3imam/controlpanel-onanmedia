@@ -158,8 +158,8 @@
                                     <option value="0" {{ $detail->isUnggulan == 0 ? "selected" : "" }}>Tidak Aktif</option>
                                     <option value="1"  {{ $detail->isUnggulan == 1 ? "selected" : "" }}>Aktif</option>
                                 </select>
-                                <h5 class="text-control text-muted fs-12" id="keterangan_label" hidden>Keterangan</h5>
-                                <textarea class="form-control mb-3" id="keterangan" hidden></textarea>
+                                <h5 class="text-control text-muted fs-12 keterangan" id="keterangan_label" hidden>Keterangan</h5>
+                                <textarea class="form-control mb-3 keterangan" id="keterangan" hidden>{{ $detail->keterangan }}</textarea>
                             </div>
                             <div class="card-footer">
                                 <a href="javascript:void(0);" class="btn btn-success" onclick="simpan()">Simpan</a>
@@ -185,6 +185,17 @@
 @endsection
 @section('script')
     <script type="text/javascript">
+    $('#verifikasi_jasa').change(function(){
+        $('.keterangan').attr('hidden', true)
+        if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 5)
+            $('.keterangan').attr('hidden', false)
+        console.log($(this).val() == 4);
+
+    });
+
+    if ("{{ $detail->status->id == 3 || $detail->status->id == 4 || $detail->status->id == 5 }}")
+    $('.keterangan').attr('hidden', false)
+
     function simpan() {
         var detailId = "{{ $detail->id }}";
         var url = "{{ route('daftar_product_jasa.update', ':detailId') }}";
@@ -200,6 +211,7 @@
                 pengambilan: $('#pengambilan').val(),
                 pengiriman: $('#pengiriman').val(),
                 unggulan: $('#unggulan').val(),
+                keterangan: $('#keterangan').val(),
             },
             dataType: "json",
             success: function (response) {
