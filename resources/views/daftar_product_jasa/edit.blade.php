@@ -135,7 +135,7 @@
                             <div class="card-body">
                                 <h5 class="text-control text-muted fs-12">Status Verifikasi Jasa</h5>
                                 <select class="form-control mb-3" id="verifikasi_jasa">
-                                    <option value="1" {{ $detail->status->id == 0 ? "selected" : "" }}>Draft</option>
+                                    <option value="0" {{ $detail->status->id == 0 ? "selected" : "" }}>Draft</option>
                                     <option value="1" {{ $detail->status->id == 1 ? "selected" : "" }}>Aktif</option>
                                     <option value="2" {{ $detail->status->id == 2 ? "selected" : "" }}>Sedang Verifikasi</option>
                                     <option value="3" {{ $detail->status->id == 3 ? "selected" : "" }}>Diminta Perubahan</option>
@@ -189,8 +189,6 @@
         $('.keterangan').attr('hidden', true)
         if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 5)
             $('.keterangan').attr('hidden', false)
-        console.log($(this).val() == 4);
-
     });
 
     if ("{{ $detail->status->id == 3 || $detail->status->id == 4 || $detail->status->id == 5 }}")

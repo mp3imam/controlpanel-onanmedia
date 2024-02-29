@@ -72,7 +72,7 @@
                                 <h4 class="text-control text-white">Status</h4>
                             </div>
                             <div class="card-body">
-                                <h5 class="text-control text-muted fs-12">Status Verifikasi Jasa</h5>
+                                <h5 class="text-control text-muted fs-12">Status Verifikasi Tender</h5>
                                 <select class="form-control mb-3" id="verifikasi_tender">
                                     <option value="0" {{ $detail->status->id == 0 ? "selected" : "" }}>Draft</option>
                                     <option value="1" {{ $detail->status->id == 1 ? "selected" : "" }}>Aktif</option>

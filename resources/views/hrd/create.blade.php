@@ -14,8 +14,14 @@
                     <h4 class="card-title mb-0">{{ $title }}</h4>
                 </div><!-- end card header -->
 
-                <div class="card-body">
+                <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true" role="dialog" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content" id="modal_content">
+                        </div>
+                    </div>
+                </div>
 
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-2">
                             <div class="row">
@@ -292,7 +298,7 @@
                                                     <input id="cari_keluarga" name="cari_keluarga" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
                                                 <div class="col-md p-3 text-center">
-                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_keluarga"><i class="ri-add-line"></i> Tambah</button>
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_keluarga" onclick="modal_crud_keluarga('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -304,6 +310,7 @@
                                                         <tr>
                                                             <th>No</th>
                                                             <th>Nama</th>
+                                                            <th>Agama</th>
                                                             <th>Tanggal Lahir</th>
                                                             <th width="20%">Action</th>
                                                         </tr>
@@ -439,7 +446,234 @@
 @endsection
 @section('script')
     <script type="text/javascript">
+    function modal_crud_keluarga(data, id, nama, agama, tanggal_lahir){
+        var nama_modal = nama ?? ''
+        var agama_modal = agama ?? ''
+        var tanggal_lahir_modal = tanggal_lahir ?? ''
+
+        button_hapus = id ? `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` : ''
+
+        $('#modal_content').html(`
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-xxl-12" id="modal_nama_append">
+                        <label for="nama" class="form-label">nama</label>
+                        <input class="form-control" id="modal_nama" placeholder="Enter Nama" value="${nama_modal}">
+                    </div>
+                    <div class="col-xxl-12">
+                        <label for="agama" class="form-label">SubAgama</label>
+                        <select id="modal_agama_id" class="form-control"></select>
+                    </div>
+                    <div class="col-xxl-12">
+                        <label for="tanggal_lahir" class="form-label">tanggal_lahir</label>
+                        <input type="date" class="form-control" id="modal_tanggal_lahir" placeholder="Enter Tanggal Lahir" value="${tanggal_lahir_modal}">
+                    </div>
+                    <div class="col-lg-12 d-flex justify-content-between">
+                        <div class="d-flex">
+                            ${button_hapus}
+                        </div>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;
+                            <button type="submit" class="btn btn-primary add" id="row`+id+`">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `)
+
+
+        if (id !== undefined){
+            var datarole = {id: id,text: kategori, selected: true};
+            var newOptionrole = new Option(datarole.text, datarole.id, false, false)
+            $('#modal_kategori_id').append(newOptionrole).trigger('change')
+            $('#modal_kategori_id').select2()
+
+            $('#row'+id).removeClass('add')
+            $('#row'+id).removeClass('btn-primary')
+            $('#row'+id).addClass('edit')
+            $('#row'+id).addClass('btn-warning')
+        }else{
+            $('#rowundefined').removeClass('edit')
+            $('#rowundefined').addClass('add')
+            $('#rowundefined').removeClass('btn-warning')
+            $('#rowundefined').addClass('btn-primary')
+        }
+
+        $("#modal_agama_id").select2({
+            allowClear: true,
+            width: '100%',
+            ajax: {
+                url: "{{ route('api.agama') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        }
+                    })
+                };
+                }
+            },
+            dropdownParent: $("#modal_content")
+        });
+
+        $('#modal_agama_id').change(function() {
+            $("#nama_agama").val($("#modal_agama_id option:selected").text());
+        });
+        $("#nama_agama").val($("#modal_agama_id option:selected").text());
+
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('.add').on('click', function() {
+            var data = new FormData()
+            data.append('nama_id', $('#modal_nama_id').val())
+            data.append('agama_id', $('#modal_agama_id').val())
+            data.append('tanggal_lahir', $('#modal_tanggal_lahir').val())
+            data.append('url', $('#modal_url').val())
+            $.ajax({
+                type: "post",
+                url: "{{ url('karyawan_keluarga') }}",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.status == 200){
+                        Swal.fire({
+                            title: 'Add!',
+                            text: 'Your file has been add.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.remove_username').remove()
+                        $('.remove_nama_lengkap').remove()
+                        $('.remove_role').remove()
+                        // if (result.)
+                        $('.modal_username_append').append(`
+                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+
+                    }
+
+                }
+            });
+
+        })
+
+        $('.edit').on('click', function() {
+            var data = new FormData()
+            data.append('_method', 'PUT')
+            data.append('id', id)
+            data.append('kategori_id', $('#modal_kategori_id').val())
+            data.append('subkategori', $('#modal_subkategori').val())
+            data.append('url', $('#modal_url').val())
+            $.ajax({
+                url: "{{ url('subkategori') }}/" + id,
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.status == 200){
+                        Swal.fire({
+                            title: 'Edit!',
+                            text: 'Your file has been edit.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.remove_username').remove()
+                        $('.remove_nama_lengkap').remove()
+                        $('.remove_role').remove()
+                        // if (result.)
+                        $('.modal_username_append').append(`
+                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+
+                    }
+
+                }
+            });
+
+        })
+    }
+
         $(function() {
+            // Datatable Keluarga
+            var table = $('#dataTableKeluarga').DataTable({
+                dom: 'lrtip',
+                scrollY: "400px",
+                scrollX: true,
+                processing: true,
+                serverSide: true,
+                fixedColumns: {
+                    left: 2,
+                    right: 0,
+                    width: 200,
+                    targets: 10
+                },
+                ajax: {
+                    url: "{{ route('dataTableKeluarga') }}",
+                    data: function (d) {
+                        d.username_id = $('#username_id').val()
+                        d.roles_id = $('#roles_id').val()
+                    }
+                },
+                columns: [{
+                        data: "id",
+                        sortable: false,
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },{
+                        data: 'kategori',
+                        name: 'Kategori',
+                        render: function (data, type, row, meta) {
+                            return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('Edit','`+row.id+`', '`+row.msKategoriId+`', '`+row.kategori+`', '`+row.nama+`', '`+row.url+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        }
+                    },{
+                        data: 'nama',
+                        name: 'SubKategori',
+                    },{
+                        data: 'url',
+                        name: 'URl',
+                    },{
+                        data: 'msKategoriId',
+                        visible: false,
+                    }
+                ]
+            });
+
+            $('#username_id').keyup(function () {
+                table.draw();
+            });
+
+            $('#roles_id').change(function () {
+                table.draw();
+            });
+
+
+
             var dataRole = {id: 1,text: "Islam",selected: true};
             var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
             $('#agama_id_umum').append(newOptionRole).trigger('change');
@@ -736,17 +970,6 @@
                         if (response.message.toleransi_keterlambatan)
                             $('#alert_toleransi_keterlambatan').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
 
-
-
-
-
-
-
-
-
-
-
-
                             Swal.fire({
                                 title: "Error!",
                                 text: "Cek kembali data yang anda masukan!",
@@ -757,14 +980,5 @@
             });
 
         });
-
-
-
-
-
-
-
-
-
 </script>
 @endsection
