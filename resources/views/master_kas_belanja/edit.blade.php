@@ -351,31 +351,22 @@
                 $("#jenis_sumber").val(e.params.data.item);
             });
 
+            const select_prev = 'select_prev';
+            const dynamicVariables = {};
+            dynamicVariables[select_prev + item.id] = '1';
+
             $('#selectDetail' + item.id).change(function (e) {
-                if (this.value == 1) {
-                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-                    $('#selectDetail' + item.id).css("background-color", "#00bd9d");
-                    $('#keterangan' + item.id).prop('required',false);
-                    $('#keterangan'+ item.id).val("")
-                }else{
-                    if (this.value == 6) {
-                    $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-                        if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
-                            $('#selectDetail' + item.id).css("background-color", "#25a0e2");
-                        $('#keterangan' + item.id).val("Finance Pending")
-                        $('#keterangan' + item.id).prop('required',true);
-                    }else{
-                        $('#total_nilai').val(parseInt($('#total_nilai').val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
-                        if ($('#total_nilai').val() < 1) $('#total_nilai').val(0)
-                            $('#selectDetail' + item.id).css("background-color", "#f06548");
-                        $('#keterangan' + item.id).val("Finance Tolak")
-                        $('#keterangan' + item.id).prop('required',true);
-                    }
-                }
-                $('#total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+                var total_nilai = parseInt($('#total_nilai').val().replace(/\D/g,''));
+                var jumlah_item = parseInt($('#jumlah' + item.id).val().replace(/\D/g,''));
+
+                total_nilai += (this.value == 1 ? jumlah_item : (dynamicVariables[select_prev + item.id] == '1' ? -jumlah_item : 0));
+
+                $('#selectDetail' + item.id).css("background-color", this.value == 1 ? "#00bd9d" : (this.value == 6 ? "#25a0e2" : "#f06548"));
+                $('#keterangan' + item.id).val(this.value == 6 ? "Finance Pending" : "Finance Tolak").prop('required', this.value == 6);
+                dynamicVariables[select_prev + item.id] = this.value;
+
+                $('#total_nilai').val('Rp. ' + total_nilai.toLocaleString('id-ID', {maximumFractionDigits: 0}));
             });
-
-
         });
     })
 
@@ -410,24 +401,23 @@
                 $('#selectDetail' + item.id).val(1).change();
                 $('#keterangan' + item.id).val("")
             });
-        }
-        if (this.value == 'Pending') {
+        }else{
             countNilai()
-            $('#selectAll').css("background-color", "#25a0e2");
-            $.each(f, function(i, item) {
-                $('#selectDetail' + item.id).css("background-color", "#25a0e2");
-                $('#selectDetail' + item.id).val(6).change();
-                $('#keterangan' + item.id).val("Finance Pending All")
-            });
-        }
-        if (this.value == 'Tolak') {
-            countNilai()
-            $('#selectAll').css("background-color", "#f06548");
-            $.each(f, function(i, item) {
-                $('#selectDetail' + item.id).css("background-color", "#f06548");
-                $('#selectDetail' + item.id).val(4).change();
-                $('#keterangan' + item.id).val("Finance Tolak All")
-            });
+            if (this.value == 'Pending') {
+                $('#selectAll').css("background-color", "#25a0e2");
+                $.each(f, function(i, item) {
+                    $('#selectDetail' + item.id).css("background-color", "#25a0e2");
+                    $('#selectDetail' + item.id).val(6).change();
+                    $('#keterangan' + item.id).val("Finance Pending All")
+                });
+            }else{
+                $('#selectAll').css("background-color", "#f06548");
+                $.each(f, function(i, item) {
+                    $('#selectDetail' + item.id).css("background-color", "#f06548");
+                    $('#selectDetail' + item.id).val(4).change();
+                    $('#keterangan' + item.id).val("Finance Tolak All")
+                });
+            }
         }
     });
 
