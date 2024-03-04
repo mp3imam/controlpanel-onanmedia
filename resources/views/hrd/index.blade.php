@@ -99,7 +99,7 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },{
-                    data: 'nama',
+                    data: 'nama_lengkap',
                     name: 'Nama',
                     render: function (data, type, row, meta) {
                         return `<a href="{{ url('data_karyawan/') }}/`+row.id+`/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">`+data+`</a>`;
@@ -111,13 +111,13 @@
                     data: 'email',
                     name: 'Email',
                 },{
-                    data: 'no_hp',
+                    data: 'no_handphone',
                     name: 'Telepon',
                 },{
-                    data: 'status_pegawai',
+                    data: 'status',
                     name: 'Status',
                     render: function (data) {
-                        return data == 0 ? `<span class="badge bg-danger-subtle text-danger badge-border">${data}</span>` : `<span class="badge bg-danger-subtle text-success badge-border">${data}</span>`
+                        return data == 0 ? `<h4><span class="badge bg-danger-subtle text-danger badge-border">Tidak Aktif</span></h4>` : `<h4><span class="badge bg-danger-subtle text-success badge-border">Aktif</span></h4>`
                     }
                 }
             ]

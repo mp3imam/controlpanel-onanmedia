@@ -150,7 +150,8 @@ class HrdController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = UserPublicModel::findOrFail($id)->first();
+        $detail = DataKaryawanModel::with(['agama_personal'])->whereId($id)->first();
+        dd($detail);
 
         return view('users.detail', $title, compact(['detail']));
     }
@@ -161,11 +162,12 @@ class HrdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id){
+    public function edit(Request $request, $id){
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = UserPublicModel::findOrFail($id);
+        $detail = DataKaryawanModel::with(['agama_personal','pendidikan_terakhir_banget'])->whereId($id)->first();
+        // dd($detail);
 
         return view('hrd.edit', $title, compact(['detail']));
     }

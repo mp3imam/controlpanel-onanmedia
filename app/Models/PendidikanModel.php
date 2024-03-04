@@ -17,4 +17,7 @@ class PendidikanModel extends Model
         $q->where('MsTingkatEdukasi.status', 1);
     }
 
+    public function data_karyawan(){
+        return $this->belongsTo(DataKaryawanModel::class, 'id');
+    }
 }
