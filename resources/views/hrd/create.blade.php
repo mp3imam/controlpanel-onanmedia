@@ -622,18 +622,10 @@
             // Datatable Keluarga
             var table = $('#dataTableKeluarga').DataTable({
                 dom: 'lrtip',
-                scrollY: "400px",
-                scrollX: true,
                 processing: true,
                 serverSide: true,
-                fixedColumns: {
-                    left: 2,
-                    right: 0,
-                    width: 200,
-                    targets: 10
-                },
                 ajax: {
-                    url: "{{ route('dataTableKeluarga') }}",
+                    url: "{{ route('tabel.karyawan.keluarga') }}",
                     data: function (d) {
                         d.username_id = $('#username_id').val()
                         d.roles_id = $('#roles_id').val()

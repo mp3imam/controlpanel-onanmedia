@@ -358,7 +358,7 @@ class PermissionTableSeeder extends Seeder
                     'username' => 'Direktur',
                     'password' => bcrypt('3333'),
                     'status' => 1,
-                    'nama_lengkap' => 'Bapak Dolok Siregar',
+                    'nama_lengkap' => 'Bapak Dolok Biantara Siregar',
                     'cl_perusahaan_id' => 1,
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',

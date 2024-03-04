@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataKaryawanModel;
 use App\Models\DataKaryawanPekerjaanModel;
 use App\Models\DataKaryawanPersonalModel;
+use App\Models\KeluargaKaryawanModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -38,6 +39,24 @@ class HrdController extends Controller
 
     function get_datatable(Request $request){
         return DataTables::of($this->models($request))
+        // ->addColumn('divisis', function ($row){
+        //     return $row->divisis ? $row->divisis->nama : '';
+        // })
+        // ->addColumn('gaji', function ($row){
+        //     return $row->gaji->gaji;
+        // })
+        // ->addColumn('tanggal_masuk', function ($row){
+        //     return Carbon::parse($row->created_at)->format('d-m-Y');
+        // })
+        // ->rawColumns(['divisis','gaji','tanggal_masuk'])
+
+        ->make(true);
+    }
+
+    function tabel_karyawan_keluarga(Request $request){
+        return DataTables::of(
+            KeluargaKaryawanModel::whereDataKaryawanId($request->id)->get()
+        )
         // ->addColumn('divisis', function ($row){
         //     return $row->divisis ? $row->divisis->nama : '';
         // })

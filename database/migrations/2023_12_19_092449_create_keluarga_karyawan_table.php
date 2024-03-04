@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('data_karyawan_id');
             $table->string('nama');
+            $table->string('agama');
             $table->date('tgl_lahir');
             $table->timestamps();
         });
