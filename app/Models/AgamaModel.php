@@ -14,4 +14,8 @@ class AgamaModel extends Model
     public function data_karyawan(){
         return $this->belongsTo(DataKaryawanModel::class, 'id');
     }
+
+    public function keluarga_karyawan(){
+        return $this->belongsTo(KeluargaKaryawanModel::class, 'id');
+    }
 }

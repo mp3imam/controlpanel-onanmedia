@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::connection('pgsql')->table('keluarga_karyawan', function (Blueprint $table) {
             $table->string('hubungan');
+            $table->string('agama_id');
             $table->string('pekerjaan');
+            $table->string('no_hp')->nullable();
             $table->text('alamat');
-            $table->string('usia');
         });
     }
 
@@ -25,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::connection('pgsql')->table('keluarga_karyawan', function (Blueprint $table) {
-            $table->dropColumn(['hubungan','pekerjaan','alamat','usia']);
+            $table->dropColumn(['hubungan','agama_id','pekerjaan','alamat','no_hp']);
         });
     }
 };

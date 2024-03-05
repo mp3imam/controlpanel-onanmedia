@@ -111,6 +111,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('simpan_karyawan_personal', [HrdController::class, 'simpan_karyawan_personal'])->name('simpan_karyawan_personal');
     Route::post('simpan_karyawan_pekerjaan', [HrdController::class, 'simpan_karyawan_pekerjaan'])->name('simpan_karyawan_pekerjaan');
     Route::get('tabel-karyawan-keluarga', [HrdController::class, 'tabel_karyawan_keluarga'])->name('tabel.karyawan.keluarga');
+    Route::post('simpan-karyawan-keluarga', [HrdController::class, 'simpan_karyawan_keluarga'])->name('simpan.karyawan.keluarga');
+    Route::get('tabel-karyawan-pendidikan', [HrdController::class, 'tabel_karyawan_pendidikan'])->name('tabel.karyawan.pendidikan');
+    Route::post('simpan-karyawan-pendidikan', [HrdController::class, 'simpan_karyawan_pendidikan'])->name('simpan.karyawan.pendidikan');
     Route::get('getDataTableKaryawan', [HrdController::class, 'get_datatable'])->name('getDataTableKaryawan');
 
     // Master Data

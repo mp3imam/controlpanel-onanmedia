@@ -17,6 +17,9 @@ return new class extends Migration
             $table->year('tahun_keluar');
             $table->text('sertifikat')->nullable();
         });
+        Schema::connection('pgsql')->table('pendidikan_karyawan', function (Blueprint $table) {
+            $table->dropColumn('tahun_lulus');
+        });
     }
 
     /**

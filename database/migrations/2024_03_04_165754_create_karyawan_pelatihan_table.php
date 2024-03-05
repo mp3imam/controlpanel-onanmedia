@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('karyawan_pelatihan', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('periode_masuk');
-            $table->string('periode_keluar');
+            $table->string('periode');
             $table->string('sertifikat')->nullable();
             $table->timestamps();
         });
