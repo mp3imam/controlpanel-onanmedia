@@ -201,34 +201,29 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 $('#satuan'+item.id).append(newOption).trigger('change')
                 $('#satuan'+item.id).select2()
 
-                    const select_prev = 'select_prev';
-                    const dynamicVariables = {};
+                $('#selectDetail' + item.id).change(function (e) {
+                    if (this.value == 1) {
+                        $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                        $('#selectDetail' + item.id).css("background-color", "#00bd9d");
+                        $('#keterangan' + item.id).prop('required',false);
+                        $('#keterangan'+ item.id).val("")
+                    }else{
+                        if (this.value == 6) {
+                            $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                            if ($('#total_nilai'+eitem.id).val() < 1) $('#total_nilai'+eitem.id).val(0)
+                                $('#selectDetail'+item.id).css("background-color", "#25a0e2");
+                            $('#keterangan'+item.id).prop('required',true);
+                            $('#keterangan'+ item.id).val("Direktur")
+                        }else{
+                            $('#total_nilai'+eitem.id).val(parseInt($('#total_nilai'+eitem.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) - parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")))
+                            if ($('#total_nilai'+eitem.id).val() < 1) $('#total_nilai'+eitem.id).val(0)
+                                $('#selectDetail' + item.id).css("background-color", "#f06548");
+                            $('#keterangan' + item.id).prop('required',true);
+                            $('#keterangan'+ item.id).val("Direktur")
 
-                    dynamicVariables[select_prev + item.id] = '1';
-
-                    $('#selectDetail' + item.id).change(function (e) {
-                        const total_nilai = $('#total_nilai' + eitem.id);
-                        const jumlah_item_val = parseInt($('#jumlah' + item.id).val().replace("Rp. ","").replaceAll(",","").replaceAll(".",""));
-
-                        if (this.value == 1) {
-                            total_nilai.val(parseInt(total_nilai.val().replace("Rp. ","").replaceAll(",","").replaceAll(".","")) + jumlah_item_val);
-                            $('#selectDetail' + item.id).css("background-color", "#00bd9d");
-                            $('#keterangan' + item.id).prop('required', false).val("");
-                        } else {
-                            const total_nilai_val = parseInt(total_nilai.val().replace("Rp. ","").replaceAll(",","").replaceAll(".",""));
-
-                            if (dynamicVariables[select_prev + item.id] == 1)
-                                total_nilai.val(total_nilai_val - jumlah_item_val);
-
-                            if (total_nilai_val < 1) total_nilai.val(0);
-
-                            $('#selectDetail' + item.id).css("background-color", this.value == 6 ? "#25a0e2" : "#f06548");
-                            $('#keterangan' + item.id).prop('required', true).val("Direktur");
                         }
-
-                        dynamicVariables[select_prev + item.id] = this.value;
-                        countSeluruhTotal();
-                    });
+                    }
+                    countSeluruhTotal()
                 });
             });
         });
