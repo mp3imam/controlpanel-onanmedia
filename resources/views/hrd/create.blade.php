@@ -655,7 +655,7 @@
         })
     }
 
-    ('Edit','`+row.data+`', '`+row.jurusan+`','`+row.IPK+`', '`+row.alamat+`', '`+row.tahun_masuk+`', '`+row.tahun_keluar+`', '`+row.sertifikat+`')
+    // ('Edit','`+row.data+`', '`+row.jurusan+`','`+row.IPK+`', '`+row.alamat+`', '`+row.tahun_masuk+`', '`+row.tahun_keluar+`', '`+row.sertifikat+`')
     function modal_crud_pendidikan(data, id, nama, jurusan, IPK, alamat, tahun_masuk, tahun_keluar, sertifikat){
         var nama_modal = nama ?? ''
         var jurusan_modal = jurusan ?? ''
@@ -708,7 +708,7 @@
                     </div>
                     <div class="col-lg-12 d-flex justify-content-between">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>&nbsp;
-                        <button type="submit" class="btn btn-primary add float-end" id="row`+id+`">Simpan</button>
+                        <button type="submit" class="btn btn-primary float-end" id="pendidikanRow`+id+`">Simpan</button>
                     </div>
                 </div>
             </div>
@@ -759,7 +759,7 @@
             }
         });
 
-        $('.add').on('click', function() {
+        $('#pendidikanRow'+id).on('click', function() {
             var data = new FormData()
             data.append('id_update', $('#id_update').val())
             data.append('nama', $('#modal_nama').val())
