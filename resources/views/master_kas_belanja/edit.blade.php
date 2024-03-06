@@ -211,7 +211,7 @@
                                                 @endhasrole()
                                                 <div class="col-md">
                                                     <input id="id_item" name="id_item[]" class="form-control" value="{{ $b->id }}" hidden />
-                                                    <input id="nama_item" name="nama_item[]" class="form-control" value="{{ $b->nama_item }}" @hasrole('finance') readonly @endhasrole  @if($detail->status > 1) disabled @endif required />
+                                                    <input id="nama_item" name="nama_item[]" class="form-control" value="{{ $b->nama_item }}" @hasrole('finance') readonly @endhasrole  @if($detail->status > 1) readonly @endif required />
                                                 </div>
                                                 <div class="col-md">
                                                     <input id="qty{{ $b->id }}" name="qty[]" class="form-control" type="number" onkeyup="updateTotal({{ $b->id }})" min="1" value="{{ $b->qty }}" @hasrole('finance') readonly @endhasrole  @if($detail->status > 1) disabled @endif required />
@@ -226,7 +226,7 @@
                                                     <input id="keterangan{{ $b->id }}" name="keterangan[]" class="form-control keterangan" value="{{ $b->keterangan }}" style="background-color:{{ $color }}" @if($detail->status > 1) disabled @endif />
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah" value="{{ $b->jumlah }}" @if($detail->status > 1) disabled @endif readonly />
+                                                    <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah" value="{{ $b->jumlah }}" @if($detail->status > 1) readonly @endif readonly />
                                                 </div>
                                                 @if ($b->file)
                                                     <div class="col-md text-center">
@@ -299,30 +299,32 @@
     var f = {!! json_encode($detail->belanja_barang) !!}
     $(function() {
         $.each(f, function(i, item) {
-            var data = {id: 74,text: "Pembelian Barang", selected: true};
+            var data = {id: 78,text: "Pembelian Barang", selected: true};
             var newOption = new Option(data.text, data.id, false, false)
             $('#akun'+item.id).append(newOption).trigger('change')
             $('#akun'+item.id).select2()
 
-            $("#akun"+item.id).select2({
-                allowClear: true,
-                width: '100%',
-                ajax: {
-                    url: "{{ route('api.get_select2_belanja') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name
-                            }
-                        })
-                    };
+            if (item.status < 2){
+                $("#akun"+item.id).select2({
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "{{ route('api.get_select2_belanja') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        processResults: function(data) {
+                        return {
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                }
+                            })
+                        };
+                        }
                     }
-                }
-            })
+                })
+            }
 
             var data = {id: item.satuan_barang.id,text: item.satuan_barang.nama, selected: true};
             var newOption = new Option(data.text, data.id, false, false)

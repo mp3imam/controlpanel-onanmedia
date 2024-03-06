@@ -263,6 +263,8 @@
 
     var f = {!! json_encode($detail->details) !!}
     var s = {!! json_encode($detail->sumber_data) !!}
+    var akun_belanja = {!! json_encode($detail->coa_jurnal) !!}
+    console.log(f);
     $.each(f, function(i, item) {
         var dataId = item.coa_jurnal.id
         var dataText = item.coa_jurnal.uraian

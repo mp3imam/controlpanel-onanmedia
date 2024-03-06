@@ -619,7 +619,6 @@ class MasterKasBelanjaController extends Controller
     }
 
     function upload_bukti_transfer_finance_divisi(Request $request) {
-        // dd($request->all());
         DB::beginTransaction();
         try {
             // All Approve
@@ -649,11 +648,40 @@ class MasterKasBelanjaController extends Controller
                 'status' => 5,
             ]);
 
-            foreach ($request->id_item as $item) {
-                MasterKasBelanjaDetail::find($item)->update([
+            $tahun = Carbon::now()->format('Y');
+            $masterKasBelanja = MasterKasBelanja::with('users')->whereId($request->id_detail)->first();
+
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            $request['dokumen'] = $masterKasBelanja->nomor_transaksi;
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+
+            $request['debet'] = $masterKasBelanja->nominal_approve;
+            $request['kredit'] = $masterKasBelanja->nominal_approve;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_PEMBELIAN;
+            $masterJurnal = MasterJurnal::create($request->except('_token'));
+            $request['jurnal_umum_id'] = $masterJurnal->id;
+
+            foreach ($request->id_item as $item => $i) {
+                MasterKasBelanjaDetail::find($i)->update([
                     'status' => 5,
                 ]);
+                $nominal = str_replace(".","",str_replace("Rp. ","",$request->jumlah[$item]));
+
+                $request['account_id'] = $request->akun[$item];
+                $request['debet'] = $nominal;
+                $request['kredit'] = 0;
+                $request['keterangan'] = $request->nama_item[$item];
+                JurnalUmumDetail::create($request->except('_token'));
             }
+
+            $request['keterangan'] = "";
+            $request['account_id'] = 7;
+            $request['debet'] = 0;
+            $request['kredit'] = $masterKasBelanja->nominal_approve;
+            JurnalUmumDetail::create($request->except('_token'));
 
             DB::commit();
         } catch (\Throwable $th) {
