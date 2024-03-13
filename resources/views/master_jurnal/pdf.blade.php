@@ -29,7 +29,7 @@
         </table>
     </div>
     @if (!$datas->isEmpty())
-        <table class='table table-bordered' border="0" width="100%" style="margin-bottom: 50px;">
+        <table class='table' border="0" width="100%" style="margin-bottom: 50px;">
             <thead>
                 <tr>
                     <th style="text-align: center">Tanggal</th>
@@ -42,33 +42,36 @@
             </thead>
             <tbody>
                 @foreach($datas as $data)
-                    @foreach ($data->details as $detail => $d)
-                        <tr>
-                            <td>{{ Carbon\Carbon::parse($data->tanggal_transaksi)->format('d-m-Y') }}</td>
-                            <td>{{ $data->nomor_transaksi }}</td>
-                            @if ($data->sumber_data == 3 && $detail !== 1)
-                                <td>{{ $d->jurnal_banks->nama }}</td>
-                            @else
-                                <td>{{ $d->coa_jurnal->uraian }}</td>
-                            @endif
-                            <td>Rp.</td>
-                            <td style="text-align: right">{{ number_format($d->debet, 0); }}</td>
-                            <td>Rp.</td>
-                            <td style="text-align: right">{{ number_format($d->kredit, 0); }}</td>
-                            <td>{{ $data->keterangan_jurnal_umum }}</td>
-                        </tr>
-                    @endforeach
+                @foreach ($data->details as $detail => $d)
+                <tr>
+                    <td>{{ Carbon\Carbon::parse($data->tanggal_transaksi)->format('d-m-Y') }}</td>
+                    <td>{{ $data->nomor_transaksi }}</td>
+                    <td>
+                        @if ($data->sumber_data == 3 && $detail !== 1 || $data->sumber_data == 4 && $loop->last)
+                        {{ $d->jurnal_banks->nama }}
+                        @else
+                        {{ $d->coa_jurnal->uraian }}
+                        @endif
+                    </td>
+                    <td>Rp.</td>
+                    <td style="text-align: right">{{ number_format($d->debet, 0) }}</td>
+                    <td>Rp.</td>
+                    <td style="text-align: right">{{ number_format($d->kredit, 0) }}</td>
+                    <td>{{ $data->keterangan_jurnal_umum }}</td>
+                </tr>
+                @endforeach
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
                     <th style="text-align: center" colspan="3">TOTAL</th>
                     <td>Rp.</td>
-                    @php $color = $total[0]->jumlah_debet == $total[0]->jumlah_kredit ? '4E36E2' : 'FF0000'
+                    @php
+                    $color = $total[0]->jumlah_debet == $total[0]->jumlah_kredit ? '4E36E2' : 'FF0000';
                     @endphp
-                    <th style="color: white; background-color: #{{ $color }}; text-align: right">{{ number_format($total[0]->jumlah_debet, 0); }}</th>
+                    <th style="color: white; background-color: #{{ $color }}; text-align: right">{{ number_format($total[0]->jumlah_debet, 0) }}</th>
                     <td>Rp.</td>
-                    <th style="color: white; background-color: #{{ $color }}; text-align: right">{{ number_format($total[0]->jumlah_kredit, 0); }}</th>
+                    <th style="color: white; background-color: #{{ $color }}; text-align: right">{{ number_format($total[0]->jumlah_kredit, 0) }}</th>
                 </tr>
             </tfoot>
         </table>
