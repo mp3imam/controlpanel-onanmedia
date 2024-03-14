@@ -3,22 +3,24 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="{{ URL('/') }}" class="logo logo-dark py-3">
-            <span class="logo-sm">
-                <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" height="30">
-            </span>
-            <span class="logo-lg">
-                <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="100%">
-            </span>
-        </a>
+        <div class="container">
+            <a href="{{ URL('/') }}" class="logo logo-dark py-3">
+                <span class="logo-sm">
+                    <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="">
+                </span>
+                <span class="logo-lg">
+                    <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="100%">
+                </span>
+            </a>
+            <span style="position: absolute; top: 65px; right:45px;" class="badge badge-gradient-success">{{ auth::user()->roles[0]->name }}</span>
+        </div>
         <!-- Light Logo-->
         <a href="{{ URL('/') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('assets/images/logo/logo-onanmedia.png') }}" alt="" height="100">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="50"
-                    height="100">
+                <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="50" height="100">
             </span>
         </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"

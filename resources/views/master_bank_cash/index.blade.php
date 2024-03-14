@@ -110,6 +110,15 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>No. Transaksi</th>
+                                    <th>Tanggal Transaksi</th>
+                                    <th>Sumber</th>
+                                    <th>Tujuan</th>
+                                    <th>Jenis Transaksi</th>
+                                    <th>Nominal</th>
+                                    <th>Keterangan</th>
+                                    <th hidden>Belanjas Id</th>
+                                    <th width="20%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -252,10 +261,39 @@
                 }
             },
             columns: [{
-                    data: "id",
+                data: "id",
                     sortable: false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },{
+                    data: 'nomor_transaksi',
+                    name: 'No. Transaksi'
+                },{
+                    data: 'tanggal',
+                    name: 'TANGGAL TRANSAKSI'
+                },{
+                    data: 'banks',
+                    name: 'sumber'
+                },{
+                    data: 'tujuan',
+                    name: 'Tujuan'
+                },{
+                    data: 'jenis',
+                    name: 'JENIS TRANSAKSI'
+                },{
+                    data: 'nominal_number',
+                    name: 'Nilai'
+                },{
+                    data: 'keterangan',
+                    name: 'KETERANGAN'
+                }, {
+                    data: 'status',
+                    name: 'Action',
+                    render: function(data, type, row, meta) {
+                        button = `<i class="ri-alert-line me-3 align-middle text-warning fs-21"></i><strong class="text-warning m-3 p-2 rounded-5" style="background-color: #FFF6C6">Permintaan</strong>`
+                        if (row.status == 2) button = `<i class="bx bx-like me-3 align-middle text-success fs-21"></i><strong class="text-success m-3 p-2 rounded-5" style="background-color: #ECFDF3">Approve</strong>`
+                        return button;
                     }
                 }
             ]
