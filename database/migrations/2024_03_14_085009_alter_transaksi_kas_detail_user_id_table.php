@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas_detail', function (Blueprint $table) {
+            $table->string('file')->nullable()->change();
             $table->string('username');
             $table->string('nomor_transaksi');
         });

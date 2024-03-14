@@ -96,6 +96,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                                         </div>
                                                         @if ($b->file)
                                                             <div class="col-md text-center" onclick="zoomOutImage(`{{ $b->file }}`)">
+                                                                <input name="foto{{ $b->id }}" value="{{ $b->file }}" hidden>
                                                                 <img src="{{ $b->file }}" alt="" width="50px" height="50px">
                                                             </div>
                                                         @else

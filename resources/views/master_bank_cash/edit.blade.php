@@ -150,6 +150,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     $('.total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
+    function zoomOutImage(url){
+        Swal.fire({
+            imageUrl: url
+        });
+    }
 
 </script>
 

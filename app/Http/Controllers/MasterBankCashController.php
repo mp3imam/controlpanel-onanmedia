@@ -248,7 +248,7 @@ class MasterBankCashController extends Controller
                         'nominal_approve' => $request->seluruh_total,
                     ]);
 
-                    TransaksiKasDetail::create([
+                    $kasDetail = [
                         'kas_id'     => $request->id,
                         'account_id' => $request->akun[$kasBelanja],
                         'keterangan' => $request->keterangan[$kasBelanja],
@@ -258,11 +258,15 @@ class MasterBankCashController extends Controller
                         'satuan_id'  => $request->satuan[$kasBelanja],
                         'harga'      => $request->harga[$kasBelanja],
                         'jumlah'     => $request->jumlah[$kasBelanja],
-                        'file'       => asset('kas_belanja/')."/".$imageName,
                         'username'   => $request->username[$kasBelanja],
                         'status'     => 1,
                         'nomor_transaksi' => $request->nomor_transaksi[$kasBelanja],
-                    ]);
+                    ];
+
+                    $foto = $request->{"foto" . $belanja};
+                    if ($foto) $kasDetail += ['file' => $foto];
+
+                    TransaksiKasDetail::create($kasDetail);
 
 
                     MasterKasBelanjaDetail::find($belanja)->update([
