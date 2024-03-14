@@ -118,7 +118,6 @@
                                     <th>Nominal</th>
                                     <th>Keterangan</th>
                                     <th hidden>Belanjas Id</th>
-                                    <th width="20%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -287,14 +286,6 @@
                 },{
                     data: 'keterangan',
                     name: 'KETERANGAN'
-                }, {
-                    data: 'status',
-                    name: 'Action',
-                    render: function(data, type, row, meta) {
-                        button = `<i class="ri-alert-line me-3 align-middle text-warning fs-21"></i><strong class="text-warning m-3 p-2 rounded-5" style="background-color: #FFF6C6">Permintaan</strong>`
-                        if (row.status == 2) button = `<i class="bx bx-like me-3 align-middle text-success fs-21"></i><strong class="text-success m-3 p-2 rounded-5" style="background-color: #ECFDF3">Approve</strong>`
-                        return button;
-                    }
                 }
             ]
         });

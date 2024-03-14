@@ -47,7 +47,7 @@
                     <td>{{ Carbon\Carbon::parse($data->tanggal_transaksi)->format('d-m-Y') }}</td>
                     <td>{{ $data->nomor_transaksi }}</td>
                     <td>
-                        @if ($data->sumber_data == 3 && $detail !== 1 || $data->sumber_data == 4 && $loop->last)
+                        @if ($data->sumber_data == 3 && $detail !== 1 || $data->sumber_data == 4 && $loop->last || $data->sumber_data == 2 && $loop->last)
                         {{ $d->jurnal_banks->nama }}
                         @else
                         {{ $d->coa_jurnal->uraian }}
