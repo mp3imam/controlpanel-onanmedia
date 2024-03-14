@@ -16,123 +16,113 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 <div class="card-header">
                     <div class="row justify-content-between">
                         <div class="col-md-8">
-                            <h4 class="card-title mb-0">Edit Kas Isi Saldo</h4>
-                        </div>
-                        <div class="col-md-4 d-flex justify-content-md-end">
-                            <button onclick="konfirmasi_hapus({{ $detail->id }},'{{ $detail->nomor_transaksi }}')" class="btn float-end btn-danger text-white rounded-5 me-3">
-                                <i class="bx bxs-trash label-icon align-middle fs-16 me-2"></i> Hapus
-                            </button>
+                            <h4 class="card-title mb-0">Permintaan Pembelanjaan Barang</h4>
                         </div>
                     </div>
                 </div>
-
-                <div class="row mb-3">
-                    @if ($detail->file->isNotEmpty())
-                        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
-                            <div class="carousel-indicators">
-                                @foreach ($detail->file as $foto => $f)
-                                    <button id="carousel-role{{ $f->id }}" type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ $foto }}" class="active" aria-current="true" aria-label="Slide {{ $foto }}"></button>
-                                @endforeach
-                            </div>
-                            <div class="carousel-inner">
-                                @foreach ($detail->file as $foto => $f)
-                                    <div id="carousel{{ $f->id }}" class="carousel-item {{ $foto == 0 ? 'active' : '' }}" data-bs-interval="2000">
-                                        <iframe src="{{ $f->url }}" align="top" height="300px" width="100%" frameborder="0" scrolling="auto"></iframe>
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <a href="{{ $f->url }}" target="_blank" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-external-link-line"></i></a>
-                                            @if ($detail->jenis == 0)
-                                                <button type="button" class="btn btn-danger btn-icon waves-effect waves-light" onclick="hapus_gambar('{{ $f->id }}')"><i class="ri-delete-bin-5-line"></i></button>
-                                            @endif
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            @foreach ($nomor_transaksi as $detail)
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="card-title mb-0">{{ $detail['nomor'] }} - {{ $detail['detail'][0]->username }}</h6>
+                                            </div>
+                                            <div class="col-md-6 text-end text-mute">
+                                                <input id="id" name="id" value="{{ Request::get('id') }}" class="form-control" hidden />
+                                                <input id="belanja_id" name="belanja_id[]" value="{{ $detail['detail'][0]->id }}" class="form-control" hidden />
+                                                {{ Carbon\Carbon::parse($detail['detail'][0]->created_at)->format('d F Y') }}
+                                            </div>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    @endif
-                </div>
-
-                @if ($detail->jenis == 0)
-                    <form action="{{ route('helpdesk.upload.image') }}" enctype="multipart/form-data" class="dropzone dz-clickable" id="image-upload" method="post" id="gambar-dropzone">
-                        @csrf
-                        <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
-                        <div class="dz-default dz-message">
-                            <div>Drag & drop a photo or</div>
-                            <span class="text-primary">Browse</span>
-                        </div>
-                        <ul class="list-unstyled mb-0" id="dropzone-preview"></ul>
-                    </form>
-                @endif
-
-                <div class="card-body">
-                    <form action="{{ route('master_bank_cash.update', $detail->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
-                                <label for="tanggal_transaksi" class="form-label">TANGGAL TRANSAKSI</label>
-                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $detail->tanggal_transaksi }}" />
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="bank_id" class="form-label">SUMBER</label>
-                                <select id="modal_bank_id" name="bank_id" class="form-control"></select>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div>
-                                    <p class="text-muted fw-medium text-uppercase">Jenis Transaksi</p>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_1" value="1" {{ $detail->jenis_transaksi == "1" ? "checked" : "" }} >
-                                        <label class="form-check-label" for="jenis_transaksi_1">
-                                            Transfer
-                                        </label>
+                                    <div class="card-body rounded-top-4">
+                                        <div class="card-header text-center fs-16" style="background-color: #CCC4FF">
+                                            <div class="row font-weight-bold">
+                                                <div class="col-md">
+                                                    <select id="selectAll{{ $detail['detail'][0]->id }}" name="selectAll[]" class="form-control text-white selectAll" style="background-color:#00bd9d" disabled>
+                                                        <option value="1" selected>Approve All</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 mt-2">Akun</div>
+                                                <div class="col-md mt-2">Item</div>
+                                                <div class="col-md mt-2">Qty</div>
+                                                <div class="col-md mt-2">Satuan</div>
+                                                <div class="col-md-2 mt-2">Harga</div>
+                                                <div class="col-md mt-2">Ket</div>
+                                                <div class="col-md-2 mt-2">Jumlah</div>
+                                                <div class="col-md mt-2">Foto</div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body tambah_detail">
+                                            @foreach ($detail['detail'] as $belanja => $b)
+                                                <div class="row delete_detail {{ $belanja != 0 ? "mt-3" : "" }}">
+                                                    <div class="col-md">
+                                                        <select id="selectDetail{{ $b->id }}" name="selectDetail[]" class="form-control selectDetail text-white" style="background-color: #00bd9d" disabled>
+                                                            <option selected>Approve</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select id="akun{{ $b->id }}" name="akun[]" class="form-control akun" disabled>
+                                                            <option selected>{{ $b->akun_belanja->uraian }}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <input id="nama_item" name="nama_item[]" class="form-control" value="{{ $b->nama_item }}" disabled />
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <input id="qty{{ $b->id }}" name="qty[]" class="form-control" type="number" onkeyup="updateTotal({{ $b->id }})" min="1" value="{{ $b->qty }}" disabled />
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <select id="satuan{{ $b->id }}" name="satuan[]" class="form-control satuan" disabled >
+                                                            <option selected>{{ $b->satuan_belanja->nama }}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input id="harga{{ $b->id }}" name="harga[]" class="form-control harga" value="{{ $b->harga }}" onkeyup="updateTotal({{ $b->id }})" min="1" disabled />
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <input id="keterangan{{ $b->id }}" name="keterangan[]" class="form-control keterangan" value="{{ $b->keterangan }}" disabled/>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah{{ $belanja }}" value="{{ $b->jumlah }}" disabled />
+                                                    </div>
+                                                    @if ($b->file)
+                                                        <div class="col-md text-center" onclick="zoomOutImage(`{{ $b->file }}`)">
+                                                            <img src="{{ $b->file }}" alt="" width="50px" height="50px">
+                                                        </div>
+                                                    @else
+                                                        <div class="col-md text-center">Tidak ada Foto</div>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="col-md text-uppercase text-center mt-3 fs-16 fw-bold">
+                                                    TOTAL
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control text-end total fs-20 text-white mt-1 total_nilai" id="total_nilai{{ $b->id }}" style="border-color:#4E36E2; background-color: #4E36E2" value="{{ $detail['jumlah'] }}" name="total_nilai[]"  readonly/>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_2" value="2" {{ $detail->jenis_transaksi == 2 ? "checked" : "" }} >
-                                        <label class="form-check-label" for="jenis_transaksi_2">
-                                            Cash
-                                        </label>
+                                </div>
+                            @endforeach
+
+                            <div class="card bg-success">
+                                <div class="card-body rounded-top-4">
+                                    <div class="row">
+                                        <div class="col-md text-end fs-20 text-white">
+                                            Total Pembayaran <span class=" seluruh_total mb-2">-</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="tujuan_id" class="form-label text-uppercase">Tujuan</label>
-                                <select id="modal_tujuan_id" name="tujuan_id" class="form-control"></select>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="nominal" class="form-label text-uppercase">Nominal</label>
-                                <input class="form-control" id="nominal" name="nominal" value="{{ $detail->nominal }}" />
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="keterangan" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1">{{ $detail->keterangan }}</textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-auto mb-4">
-                                    <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('master_bank_cash.index') }}" >
-                                        <i class="ri-arrow-go-back-line"></i> Kembali
-                                    </a>
-                                    <button class="btn float-end btn-info text-white rounded-5 me-3">
-                                        <i class="bx bxs-pencil label-icon align-middle fs-16 me-2"></i> Ubah
-                                    </button>
-                                </div>
-                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div><!-- end card -->
             </div>
             <!-- end col -->
@@ -142,148 +132,25 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!--end row-->
 @endsection
 @section('script')
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
-integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
-crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js" integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    $("#nominal").priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
+    countSeluruhTotal()
 
-    $(document).ready(function() {
-        $("#modal_bank_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_banks_coa') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            }
-        });
+    function countSeluruhTotal() {
+        var sum_value = 0;
+        $('.total_nilai').each(function(){
+            sum_value += +$(this).val().replace("Rp. ","").replaceAll(",","").replaceAll(".","");
+            $('.seluruh_total').text(sum_value);
+        })
 
-        $("#modal_tujuan_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_banks') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            }
-        });
-    });
-
-    var dataId = {!! json_encode($detail->coa_kas_saldo) !!}
-    var dataBank = {id: dataId.id,text: dataId.uraian, selected: true};
-    var newOptionBank = new Option(dataBank.text, dataBank.id, false, false)
-    $('#modal_bank_id').append(newOptionBank).trigger('change')
-    $('#modal_bank_id').select2()
-
-    var dataId = {!! json_encode($detail->banks) !!}
-    var dataTujuan = {id: dataId.id,text: dataId.nama, selected: true};
-    var newOptionTujuan = new Option(dataTujuan.text, dataTujuan.id, false, false)
-    $('#modal_tujuan_id').append(newOptionTujuan).trigger('change')
-    $('#modal_tujuan_id').select2()
-
-    function konfirmasi_hapus(id, name) {
-        Swal.fire({
-            title: "Masukan Alasan menghapus data transaksi " + name,
-            input: "text",
-            inputAttributes: {
-                autocapitalize: "off"
-            },
-            showCancelButton: true,
-            confirmButtonText: "Hapus",
-        }).then((result) => {
-            if (result.isConfirmed && result.value) {
-                var data = new FormData();
-                data.append('id', id);
-                data.append('alasan', result.value);
-                $.ajax({
-                    type: "post",
-                    url: "{{ route('softdelete_pengembalian_kas') }}",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function(result) {
-                        Swal.fire({
-                            title: 'Hapus!',
-                            text: 'Data berhasil di hapus',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false,
-                            timer: 2500
-                        }).then(function() {
-                            window.location = "{{ route('master_bank_cash.index') }}"
-                        });
-                    }
-                });
-            }
-
-        });
+        $('.seluruh_total').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
     }
 
-    function hapus_gambar(id) {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '{{ route("hapus_foto_kas_kembalian") }}',
-                    data: { '_token': $('meta[name=csrf-token]').attr('content'), id: id },
-                    type: 'POST',
-                    success: function (resp) {
-                        if (resp.status == 200) {
-                            Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
-                                icon: "success",
-                                showConfirmButton: false, // Hide the confirmation button
-                                timer: 1500 // Automatically close after 1.5 seconds
-                            });
-                            $('#' + id).remove(); // Remove the image
-                            $('#carousel' + id).remove(); // Remove the image
-                            $('#carousel-role' + id).remove(); // Remove the image
-                        } else {
-                            Swal.fire("Failed !!!", "An error occurred while deleting the image", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Failed !!!", "An error occurred while deleting the image", "error");
-                    }
-                });
-            }
-        });
-    }
+    $('.total_nilai').priceFormat({prefix: 'Rp. ', centsSeparator: ',', thousandsSeparator: '.', centsLimit: 0});
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+
 </script>
+
 @endsection

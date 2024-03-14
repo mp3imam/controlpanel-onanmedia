@@ -26,8 +26,12 @@ class MasterBankCashModel extends Model
         return $this->hasOne(BankModel::class, 'id', 'tujuan_id');
     }
 
-    public function details(){
+    public function detail_one(){
         return $this->hasOne(TransaksiKasDetail::class, 'id', 'kas_id');
+    }
+
+    public function details(){
+        return $this->hasMany(TransaksiKasDetail::class, 'kas_id','id')->orderBy('nomor_transaksi');
     }
 
     public function coa_kas_saldo(){

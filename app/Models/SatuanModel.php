@@ -15,4 +15,7 @@ class SatuanModel extends Model
         return $this->hasOne(MasterKasBelanjaDetail::class, 'satuan_id');
     }
 
+    public function satuan_kas(){
+        return $this->belongsTo(TransaksiKasDetail::class);
+    }
 }

@@ -9,4 +9,9 @@ class ClcoaModel extends Model
 {
     use HasFactory;
     protected $table = 'cl_coa';
+
+    public function kas_details(){
+        return $this->belongsTo(TransaksiKasDetail::class);
+    }
+
 }

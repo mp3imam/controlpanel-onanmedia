@@ -69,6 +69,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                                                 <option value="6" {{ $b->status == 6 ? "selected" : "" }}>Pending</option>
                                                                 <option value="4" {{ $b->status == 4 ? "selected" : "" }}>Tolak</option>
                                                             </select>
+                                                            <input id="username" name="username[]" value="{{ $detail->users->username }}" class="form-control" hidden />
+                                                            <input id="nomor_transaksi" name="nomor_transaksi[]" value="{{ $detail->nomor_transaksi }}" class="form-control" hidden />
                                                         </div>
                                                         <div class="col-md-2">
                                                             <input id="belanja_id_detail" name="belanja_id_detail[]" value="{{ $b->id }}" class="form-control" hidden />

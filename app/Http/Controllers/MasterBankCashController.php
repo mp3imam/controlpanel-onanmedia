@@ -9,6 +9,7 @@ use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\TemporaryFileUploadHelpdesk;
+use App\Models\TransaksiKasDetail;
 use App\Models\TransaksiKasFileModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -191,10 +192,22 @@ class MasterBankCashController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterBankCashModel::with(['coa_kas_saldo','banks','file'])->findOrFail($id);
-        $random_string = Str::random(25);
+        $details = MasterBankCashModel::with(['details.akun_belanja','details.satuan_belanja'])->findOrFail($id);
+        $nomor_transaksi = collect();
 
-        return view('master_bank_cash.edit', $title, compact(['detail','random_string']));
+        $nomor_transaksi = $details->details->groupBy('nomor_transaksi')->map(function ($group) {
+            $total_jumlah = $group->sum(function ($item) {
+                return (int) str_replace('Rp.', '', $item->jumlah);
+            });
+            $transaction = $group->first();
+            return [
+                'nomor' => $transaction->nomor_transaksi,
+                'detail' => $group,
+                'jumlah' => $total_jumlah
+            ];
+        });
+
+        return view('master_bank_cash.edit', $title, compact(['details','nomor_transaksi']));
     }
 
     /**
@@ -216,7 +229,6 @@ class MasterBankCashController extends Controller
     function approve_direktur(Request $request) {
         DB::beginTransaction();
         try {
-
             $file = $request->file('file');
             $path = public_path('kas_saldo/');
             $rand = rand(1000,9999);
@@ -235,6 +247,23 @@ class MasterBankCashController extends Controller
                         'tujuan_id' => 7,
                         'nominal_approve' => $request->seluruh_total,
                     ]);
+
+                    TransaksiKasDetail::create([
+                        'kas_id'     => $request->id,
+                        'account_id' => $request->akun[$kasBelanja],
+                        'keterangan' => $request->keterangan[$kasBelanja],
+                        'nominal'    => $request->jumlah[$kasBelanja],
+                        'nama_item'  => $request->nama_item[$kasBelanja],
+                        'qty'        => $request->qty[$kasBelanja],
+                        'satuan_id'  => $request->satuan[$kasBelanja],
+                        'harga'      => $request->harga[$kasBelanja],
+                        'jumlah'     => $request->jumlah[$kasBelanja],
+                        'file'       => asset('kas_belanja/')."/".$imageName,
+                        'username'   => $request->username[$kasBelanja],
+                        'status'     => 1,
+                        'nomor_transaksi' => $request->nomor_transaksi[$kasBelanja],
+                    ]);
+
 
                     MasterKasBelanjaDetail::find($belanja)->update([
                         'status' => 2,
@@ -255,7 +284,6 @@ class MasterBankCashController extends Controller
                 }
 
             }
-
 
             if($status == 2){
                 $tahun = Carbon::now()->format('Y');
