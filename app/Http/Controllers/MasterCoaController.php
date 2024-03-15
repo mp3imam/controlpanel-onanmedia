@@ -144,13 +144,18 @@ class MasterCoaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterCoaModel::findOrFail($id);
-        $kdrek1 = MasterCoaModel::whereId($detail->kdrek1)->first();
-        $kdrek2 = MasterCoaModel::whereId($detail->kdrek2)->first();
-        $kdrek3 = MasterCoaModel::whereId($detail->kdrek3)->first();
-        dd($detail, $kdrek1, $kdrek2, $kdrek3);
+        $detail = MasterCoaModel::whereId($id)->first();
+        $details = MasterCoaModel::with([
+            'relasi_kdrek1',
+            'relasi_kdrek2' => function ($query) use ($detail) {
+                $query->whereKdrek1($detail->kdrek1);
+            },
+            'relasi_kdrek3' => function ($query) use ($detail) {
+                $query->whereKdrek3($detail->kdrek3);
+            }
+        ])->whereId($id)->first();
 
-        return view('master_coa.edit', $title, compact(['detail', 'kdrek1', 'kdrek2', 'kdrek3']));
+        return view('master_coa.edit', $title, compact(['details']));
     }
 
     /**
@@ -162,27 +167,16 @@ class MasterCoaController extends Controller
      */
     public function update(Request $request, $id){
         $request->validate([
-            'uraian'        => 'required',
-            'rekening_bank' => 'required',
-            'alamat_bank'   => 'required',
-            'nama_bank'     => 'required',
-            'account_name'  => 'required',
-            'swift_code'    => 'required',
+            'nama_akun' => 'required',
+            'kode_coa'  => 'required',
         ]);
 
         // Store your file into directory and db
         $update = [
-            'kdrek1'        => 1,
-            'kdrek2'        => 1,
-            'kdrek3'        => 1,
-            'kdrek'         => 1,
-            'type'          => "H",
-            'uraian'        => $request->uraian,
+            'kdrek'         => $request->kode_coa,
+            'uraian'        => $request->nama_akun,
             'rekening_bank' => $request->rekening_bank,
-            'alamat_bank'   => $request->alamat_bank,
             'nama_bank'     => $request->nama_bank,
-            'account_name'  => $request->account_name,
-            'swift_code'    => $request->swift_code,
         ];
         MasterCoaModel::find($id)->update($update);
 

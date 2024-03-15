@@ -13,6 +13,20 @@ class MasterCoaModel extends Model
     protected $table = 'cl_coa';
     protected $guarded = ['id'];
     public $timestamps = false;
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    public function relasi_kdrek1(){
+        return $this->belongsTo(MasterCoaModel::class, 'kdrek1','kdrek1')->whereType('H');
+    }
+
+    public function relasi_kdrek2() {
+        return $this->hasOne(MasterCoaModel::class, 'kdrek2','kdrek2')->where('type', 'S');
+    }
+
+    public function relasi_kdrek3() {
+        return $this->hasOne(MasterCoaModel::class, 'kdrek3','kdrek3')->where('type', 'C');
+    }
 
     public static function getMaxIdRecord()
     {
