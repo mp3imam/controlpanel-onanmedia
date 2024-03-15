@@ -672,47 +672,69 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-xxl-6" id="modal_nama_append">
+                    <div class="col-md-6" id="modal_nama_append">
                         <label for="nama" class="form-label">Nama</label>
                         <input class="form-control" id="modal_nama" placeholder="Masukan Nama" value="${nama_modal}">
                     </div>
-                    <div class="col-xxl-6" id="modal_hubungan_append">
-                        <label for="hubungan" class="form-label">Hubungan</label>
-                        <select class="form-control" id="modal_hubungan">
-                            <option value="1">Ayah</option>
-                            <option value="2">Ibu</option>
-                            <option value="3">Suami/Istri</option>
-                            <option value="4">Saudara</option>
-                            <option value="5">Anak</option>
-                        </select>
+
+                    <div class="col-md-6" id="modal_nama_append">
+                        <label for="nama" class="form-label">Jurusan</label>
+                        <input class="form-control" id="modal_nama" placeholder="Jurusan" value="${jurusan_modal}">
                     </div>
-                    <div class="col-xxl-6" id="modal_agama_append">
-                        <label for="agama" class="form-label">Agama</label>
-                        <select id="modal_agama_id" class="form-control"></select>
+                    <div class="col-md-6" id="modal_handphone_append">
+                        <label for="no_hp" class="form-label">IPK</label>
+                        <input type="number" class="form-control" id="modal_no_hp" placeholder="" value="${IPK_modal}">
                     </div>
-                    <div class="col-xxl-6" id="modal_handphone_append">
-                        <label for="no_hp" class="form-label">Nomor Hanphone</label>
-                        <input type="number" class="form-control" id="modal_no_hp" placeholder="Masukan Nomor Handphone" value="${nomor_handphone_modal}">
+                    <div class="col-md-6">
+                        <label for="pekerjaan" class="form-label">Alamat</label>
+                        <input class="form-control" id="modal_pekerjaan" placeholder="Masukan Alamat" value="${alamat_modal}">
                     </div>
-                    <div class="col-xxl-6">
-                        <label for="pekerjaan" class="form-label">Pekerjaan</label>
-                        <input class="form-control" id="modal_pekerjaan" placeholder="Masukan Pekerjaan" value="${pekerjaan_modal}">
+                    <div class="col-md-6" id="modal_tanggal_masuk_append">
+                        <label for="tanggal_masuk" class="form-label">Tahun Masuk</label>
+                        <input type="date" class="form-control" id="modal_tanggal_masuk" placeholder="Masukan Tahun Masuk" value="${tahun_masuk_modal}">
                     </div>
-                    <div class="col-xxl-6" id="modal_tanggal_lahir_append">
-                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                        <input type="date" class="form-control" id="modal_tanggal_lahir" placeholder="Masukan Tanggal Lahir" value="${tanggal_lahir_modal}">
+                    <div class="col-md-6" id="modal_tanggal_keluar_append">
+                        <label for="tanggal_keluar" class="form-label">Tahun Keluar</label>
+                        <input type="date" class="form-control" id="modal_tanggal_keluar" placeholder="Masukan Tahun Keluar" value="${tahun_keluar_modal}">
                     </div>
-                    <div class="col-xxl-12">
-                        <label for="alamat" class="form-label">Alamat</label>
-                        <textarea class="form-control" id="modal_alamat" placeholder="Masukan Alamat">${alamat_modal}</textarea>
-                    </div>
-                    <div class="col-lg-12 d-flex justify-content-between">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>&nbsp;
-                        <button type="submit" class="btn btn-primary float-end" id="pendidikanRow`+id+`">Simpan</button>
-                    </div>
+                    <div class="col-md-12">
+                    <label for="sertifikat" class="form-label">Sertifikat</label>
+                    <input type="file" class="form-control" id="sertifikat" accept="image/*" data-sertifikat="${sertifikat_modal}">
+                </div>
+                <div class="col-lg-12 d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>&nbsp;
+                    <button type="submit" class="btn btn-primary float-end" id="pendidikanRow`+id+`">Simpan</button>
                 </div>
             </div>
         `)
+
+        $('#pendidikanRow'+id).click(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('nama', $('#modal_nama').val());
+            formData.append('jurusan', $('#modal_nama').val());
+            formData.append('IPK', $('#modal_no_hp').val());
+            formData.append('alamat', $('#modal_pekerjaan').val());
+            formData.append('tahun_masuk', $('#modal_tanggal_masuk').val());
+            formData.append('tahun_keluar', $('#modal_tanggal_keluar').val());
+
+            var sertifikatFiles = $('#sertifikat')[0].files;
+            if(sertifikatFiles.length > 0) {
+                formData.append('sertifikat', sertifikatFiles[0]);
+            }
+
+            $.ajax({
+                url: '/simpan-pendidikan',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    alert('Data berhasil disimpan');
+                }
+            });
+        });
 
         if (id !== undefined) {
             var dataRole = {id: agama_id_modal,text: agama_modal,selected: true};
