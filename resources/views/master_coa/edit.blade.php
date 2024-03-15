@@ -28,6 +28,8 @@
                             <div class="row mb-4">
                                 <div class="col-md">
                                     <label for="pilih_data" class="form-label">Tambahkan Data</label>
+                                    <input name="akun_bank" value="{{ $details->akun_bank }}" hidden>
+                                    <input name="pilih_data" value="{{ $details->type }}" hidden>
                                     <select id="pilih_data_id" name="pilih_data_id" class="form-control" disabled>
                                         <option value="1" {{ $details->type == "H" ? "selected" : "" }}>Header</option>
                                         <option value="2" {{ $details->type == "S" ? "selected" : "" }}>SubHeader</option>
@@ -37,14 +39,17 @@
                                 </div>
                                 <div class="col-md kdrek1_coa_hidden">
                                     <label for="kdrek1_coa" class="form-label">Header Coa</label>
+                                    <input name="kdrek1_coa" value="{{ $details->kdrek1 }}" hidden>
                                     <select id="kdrek1_coa_id" name="kdrek1_coa_id" class="form-control" disabled></select>
                                 </div>
                                 <div class="col-md kdrek2_coa_hidden">
                                     <label for="kdrek2_coa" class="form-label">Deskripsi Coa</label>
+                                    <input name="kdrek2_coa" value="{{ $details->kdrek2 }}" hidden>
                                     <select id="kdrek2_coa_id" name="kdrek2_coa_id" class="form-control" disabled></select>
                                 </div>
                                 <div class="col-md kdrek3_coa_hidden">
                                     <label for="kdrek3_coa" class="form-label">Uraian Coa</label>
+                                    <input name="kdrek3_coa" value="{{ $details->kdrek3 }}" hidden>
                                     <select id="kdrek3_coa_id" name="kdrek3_coa_id" class="form-control" disabled></select>
                                 </div>
                             </div>

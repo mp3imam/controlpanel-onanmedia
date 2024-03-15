@@ -82,10 +82,10 @@ class MasterCoaController extends Controller
 
         // Store your file into directory and db
         $input = $request->except(['_token','kode_coa','nama_akun','kdrek1_coa_id','kdrek2_coa_id','kdrek3_coa_id','pilih_data_id']);
-        $input['id']            = MasterCoaModel::getMaxIdRecord()->first()->id+1;
-        $input['kdrek1']        = 0;
-        $input['kdrek2']        = 0;
-        $input['kdrek3']        = 0;
+        $input['id']     = MasterCoaModel::getMaxIdRecord()->first()->id+1;
+        $input['kdrek1'] = 0;
+        $input['kdrek2'] = 0;
+        $input['kdrek3'] = 0;
 
         if ($request->pilih_data_id > 1) $input['kdrek1'] = $request->kdrek1_coa_id;
         if ($request->pilih_data_id > 2) $input['kdrek2'] = $request->kdrek2_coa_id;
@@ -96,25 +96,26 @@ class MasterCoaController extends Controller
         if ($request->pilih_data_id == 2) $pilih_data = "S";
         if ($request->pilih_data_id == 3) $pilih_data = "C";
 
-        $input['kdrek']         = $request->kode_coa;
-        $input['type']          = $pilih_data;
-        $input['uraian']        = $request->nama_akun;
-        $input['rekening_bank'] = $request->rekening_bank;
-        $input['nama_bank']     = $request->nama_bank;
-        $input['account_name']  = $request->nama_akun;
-
-        MasterCoaModel::insert($input);
-
-        if ($pilih_data = "D" && $request->kdrek1_coa_id == 1 && $request->kdrek2_coa_id == 1 && $request->kdrek3_coa_id == 1){
+        if ($pilih_data == "D" && $request->kdrek1_coa_id == 1 && $request->kdrek2_coa_id == 1 && $request->kdrek3_coa_id == 1){
             // insert to Banks
-            BankModel::create([
+            $BankModel = BankModel::create([
                 'nama'  => $request->nama_akun,
                 'kode'  => $request->rekening_bank,
                 'aktif' => 1,
                 'icon'  =>'-'
             ]);
+
+            $input['akun_bank'] = $BankModel->id;
         }
 
+        $input['kdrek']     = $request->kode_coa;
+        $input['type']      = $pilih_data;
+        $input['uraian']    = $request->nama_akun;
+        $input['nama_bank'] = $request->nama_bank;
+        $input['account_name']  = $request->nama_akun;
+        $input['rekening_bank'] = $request->rekening_bank;
+
+        MasterCoaModel::insert($input);
 
         return redirect('master_coa');
     }
@@ -170,6 +171,14 @@ class MasterCoaController extends Controller
             'nama_akun' => 'required',
             'kode_coa'  => 'required',
         ]);
+
+        if ($request->pilih_data == "D" && $request->kdrek1_coa == 1 && $request->kdrek2_coa == 1 && $request->kdrek3_coa == 1){
+            // insert to Banks
+            BankModel::whereId($request->akun_bank)->update([
+                'nama'  => $request->nama_akun,
+                'kode'  => $request->rekening_bank,
+            ]);
+        }
 
         // Store your file into directory and db
         $update = [
