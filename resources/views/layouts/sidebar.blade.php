@@ -12,7 +12,11 @@
                     <img src="{{ URL::asset('assets/images/logo/logo.webp') }}" alt="" width="100%">
                 </span>
             </a>
-            <span style="position: absolute; top: 65px; right:45px;" class="badge badge-gradient-success">{{ auth::user()->roles[0]->name }}</span>
+            @if (Route::is('dashboard'))
+                <span style="position: absolute; top: 55px; right:45px;" class="badge badge-gradient-success">{{ auth::user()->roles[0]->name }}</span>
+            @else
+                <span style="position: absolute; top: 70px; right:45px;" class="badge badge-gradient-success">{{ auth::user()->roles[0]->name }}</span>
+            @endif
         </div>
         <!-- Light Logo-->
         <a href="{{ URL('/') }}" class="logo logo-light">
