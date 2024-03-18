@@ -9,6 +9,7 @@ use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\MasterKasBelanjaFile;
+use App\Models\MasterKasBelanjaString;
 use App\Models\TemporaryFileUpload;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -281,7 +282,7 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanja::with(['belanja_barang' => function ($q) use ($request) {
+        $detail = MasterKasBelanjaString::with(['belanja_barang.coa_belanja','belanja_barang' => function ($q) use ($request) {
             $q->with('satuan_barang')->when($request->filled('q'), function($q) use($request) {
                 $q->where('status', $request->q);
             })
@@ -477,12 +478,14 @@ class MasterKasBelanjaController extends Controller
     }
 
     function checked_finance(Request $request) {
-        DB::beginTransaction();
-        try {
+        // dd($request->all());
+        // DB::beginTransaction();
+        // try {
             $nominal_approve = collect();
             $nominal_pending = collect();
             $nominal_tolak = collect();
             foreach ($request->id_item as $id => $i) {
+                // dd($request->akun[$id]);
                 MasterKasBelanjaDetail::find($i)->update([
                     'account_id' => $request->akun[$id],
                     'status'     => $request->selectDetail[$id],
@@ -520,11 +523,11 @@ class MasterKasBelanjaController extends Controller
                 'nominal_tolak' => $nominal_tolak->sum()
             ]);
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            //throw $th;
-        }
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     //throw $th;
+        // }
 
         return redirect('master_kas_belanja');
     }

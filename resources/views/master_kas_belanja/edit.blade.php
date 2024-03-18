@@ -8,7 +8,6 @@
 @section('css')
 @endsection
 @include('components.breadcrumb')
-
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -19,8 +18,7 @@
                     <div class="col">
                         <a href="{{ route('master_kas_belanja.index') }}" class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end" style="color: #4E36E2">Kembali</a>
                     </div>
-                </div><!-- end card header -->
-
+                </div>
                 <div class="card-body">
                     @hasrole('finance')
                         @php  $route = route('checked_finance') @endphp
@@ -297,9 +295,11 @@
 @section('script')
 <script>
     var f = {!! json_encode($detail->belanja_barang) !!}
+
     $(function() {
         $.each(f, function(i, item) {
-            var data = {id: 78,text: "Pembelian Barang", selected: true};
+            var data = {id: 78, text: "Pembelian Barang", selected: true};
+            if (item.account_id !== null)data = {id: item.account_id, text: item.coa_belanja.uraian, selected: true};
             var newOption = new Option(data.text, data.id, false, false)
             $('#akun'+item.id).append(newOption).trigger('change')
             $('#akun'+item.id).select2()

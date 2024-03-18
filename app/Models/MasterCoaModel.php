@@ -20,16 +20,15 @@ class MasterCoaModel extends Model
         return $this->belongsTo(MasterCoaModel::class, 'kdrek1','kdrek1')->whereType('H');
     }
 
-    public function relasi_kdrek2() {
+    public function relasi_kdrek2(){
         return $this->hasOne(MasterCoaModel::class, 'kdrek2','kdrek2')->where('type', 'S');
     }
 
-    public function relasi_kdrek3() {
+    public function relasi_kdrek3(){
         return $this->hasOne(MasterCoaModel::class, 'kdrek3','kdrek3')->where('type', 'C');
     }
 
-    public static function getMaxIdRecord()
-    {
+    public static function getMaxIdRecord(){
         return self::select('*')
         ->orderBy(DB::raw('CAST(id AS INTEGER)'), 'DESC')
         ->limit(1)
@@ -38,6 +37,10 @@ class MasterCoaModel extends Model
 
     public function coa_belanja(){
         return $this->belongsTo(MasterBankCashModel::class, 'bank_id');
+    }
+
+    public function coa_kas_belanja(){
+        return $this->belongsTo(MasterKasBelanja::class, 'account_id');
     }
 
     public function coa_kas_saldo(){
