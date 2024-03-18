@@ -339,6 +339,14 @@ class HrdController extends Controller
     }
 
     public function simpan_karyawan_personal(Request $request){
+        $time = time();
+        dd(
+            asset('keluarga/personal'),  $time. '.' . $request->no_ktp->extension(),
+            public_path('keluarga/personal'), $time . '.' . $request->no_ktp->extension()
+        );
+
+        dd($request->no_ktp->move(public_path('keluarga/personal'), $time . '.' . $request->no_ktp->extension()));
+        // dd($request->no_ktp);
         $validasi = [
             'id_update'             => 'required',
             'no_identitas_personal' => 'required',
@@ -358,15 +366,21 @@ class HrdController extends Controller
             'data_karyawan_id'    => $request->id_update
         ]);
 
-        $save->no_ktp                       = $request->no_identitas_personal;
-        $save->no_npwp                      = $request->NPWP_personal ?? '';
-        $save->tipe_pajak                   = $request->tipe_pajak_personal;
-        $save->tunjangan_pajak              = $request->tunjangan_pajak_personal ?? '';
+        $save->no_ktp           = $request->no_identitas_personal;
+        $save->no_npwp          = $request->NPWP_personal ?? '';
+        $save->tipe_pajak       = $request->tipe_pajak_personal;
+        $save->bank             = $request->nama_bank_personal;
+        $save->no_bank          = $request->no_akun_bank_personal ?? '-';
+        if ($request->no_ktp)
+        $save->foto_ktp         = $request->no_ktp('');
+        $request->no_ktp->move(public_path('keluarga/personal'), $time . '.' . $request->no_ktp->extension());
+        if ($request->no_kk)
+        $save->foto_kk          =
+        $request->no_ktp->move(public_path('keluarga/personal'), $time . '.' . $request->foto_kk->extension());
+        $save->no_kesehatan     = $request->no_kesehatan_personal ?? '';
+        $save->tunjangan_pajak  = $request->tunjangan_pajak_personal ?? '';
+        $save->no_ketenagakerjaan = $request->no_ketenagakerjaan_personal ?? '';
         $save->tunjangan_pajak_dalam_persen = $request->tunjangan_pajak_dalam_persen_personal ?? '';
-        $save->bank                         = $request->nama_bank_personal;
-        $save->no_bank                      = $request->no_akun_bank_personal ?? '-';
-        $save->no_ketenagakerjaan           = $request->no_ketenagakerjaan_personal ?? '';
-        $save->no_kesehatan                 = $request->no_kesehatan_personal ?? '';
         $save->save();
 
         return response()->json([

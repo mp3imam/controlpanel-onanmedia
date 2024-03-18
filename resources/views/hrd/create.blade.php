@@ -212,11 +212,11 @@
                                         </div>
                                         <div class="col-lg-6 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Upload KTP</label>
-                                            <input type="file" class="form-control" id="no_ktp" name="no_ktp">
+                                            <input type="file" class="form-control" id="no_ktp" name="no_ktp" accept="image/*">
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Upload Kartu Keluarga</label>
-                                            <input type="file" class="form-control" id="no_kartu_keluarga" name="no_kartu_keluarga">
+                                            <input type="file" class="form-control" id="no_kartu_keluarga" name="no_kartu_keluarga" accept="image/*">
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1">
                                             <button id="save_personal" disabled class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
@@ -1318,8 +1318,8 @@
         fd.append('no_akun_bank_personal', $('#no_akun_bank_personal').val())
         fd.append('no_ketenagakerjaan_personal', $('#no_ketenagakerjaan_personal').val())
         fd.append('no_kesehatan_personal', $('#no_kesehatan_personal').val())
-        fd.append('no_ktp', $('#no_ktp').val())
-        fd.append('no_kartu_keluarga', $('#no_kartu_keluarga').val())
+        if ($('#no_ktp')[0].files.length !== 0) fd.append('no_ktp', $('#no_ktp')[0].files[0])
+        if ($('#no_kartu_keluarga')[0].files.length !== 0) fd.append('no_kartu_keluarga', $('#no_kartu_keluarga')[0].files[0])
         $.ajax({
             type:'post',
             url: "{{ route('simpan_karyawan_personal') }}",
