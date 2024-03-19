@@ -53,7 +53,7 @@
                                 </div>
                                 <div class="col-md-12 mt-4">
                                     <div class="fs-18"><strong>Pesan</strong></div>
-                                    <div class="fs-18 mt-1">{{ $detail->pesan }}</div>
+                                    <div class="fs-18 mt-1">{!! nl2br(e($detail->pesan)) !!}</div>
                                 </div>
                                 <div class="col-md-12 my-4">
                                     @if ($detail->file->isNotEmpty())
@@ -104,7 +104,7 @@
                                     <div class="row mb-4">
                                         <div class="col-md-12 mt-4">
                                             <div class="fs-18"><strong>Pesan</strong></div>
-                                            <div class="fs-18 mt-1">{{ $d->pesan }}</div>
+                                            <div class="fs-18 mt-1">{!! nl2br(e($d->pesan)) !!}</div>
                                         </div>
                                         <div class="col-md-12 my-4">
                                             @if ($d->file_details->isNotEmpty())
