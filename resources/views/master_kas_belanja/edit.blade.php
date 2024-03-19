@@ -226,16 +226,14 @@
                                                 <div class="col-md-2">
                                                     <input id="jumlah{{ $b->id }}" name="jumlah[]" class="form-control jumlah" value="{{ $b->jumlah }}" @if($detail->status > 1) readonly @endif readonly />
                                                 </div>
-                                                @if ($b->file)
-                                                    <div class="col-md text-center">
+                                                <div class="col-md text-center">
+                                                    @if ($b->file)
                                                         <img src="{{ $b->file }}" alt="" width="50px" height="50px"  onclick="zoomOutImage(`{{ $b->file }}`)">
-                                                        @if($detail->status == 1)
-                                                            <input id="file" name="file{{ $b->id }}" type="file" class="form-control" accept="image/*" />
-                                                        @endif
-                                                    </div>
-                                                @else
-                                                    <div class="col-md text-center">Tidak ada Foto</div>
-                                                @endif
+                                                    @endif
+                                                    @if($detail->status == 1)
+                                                        <input id="file" name="file{{ $b->id }}" type="file" class="form-control" accept="image/*" />
+                                                    @endif
+                                                </div>
                                                 @hasrole('finance')
                                                 @else
                                                     <div class="col-md text-center float-end {{ !$loop->first ? "hapus_detail" : "" }}" >
@@ -476,25 +474,22 @@
         $('.tambah_detail').append(`
             <div class="row delete_detail mt-4">
                 <div class="col-md">
-                    <select id="akun`+count+`" name="akun[]" class="form-control akun" required ></select>
-                </div>
-                <div class="col-md">
                     <input id="nama_item`+count+`" name="nama_item[]" class="form-control" required />
                 </div>
-                <div class="col-md-1">
+                <div class="col-md">
                     <input id="qty`+count+`" name="qty[]" class="form-control" onkeyup="updateTotal(`+count+`)" type="number" min="1" value="1" required />
                 </div>
-                <div class="col-md-1">
+                <div class="col-md">
                     <select id="satuan`+count+`" name="satuan[]" class="form-control satuan" required ></select>
                 </div>
-                <div class="col-md">
+                <div class="col-md-2">
                     <input id="harga`+count+`" name="harga[]" class="form-control harga" onkeyup="updateTotal(`+count+`)" value="1" min="1" required />
                 </div>
                 <div class="col-md">
                     <input id="keterangan`+count+`" name="keterangan[]" class="form-control" />
                 </div>
-                <div class="col-md">
-                    <input id="jumlah`+count+`" name="jumlah[]" class="form-control jumlah" value="0" readonly />
+                <div class="col-md-2">
+                    <input id="jumlah`+count+`" name="jumlah[]" class="form-control jumlah" value="1" readonly />
                 </div>
                 <div class="col-md">
                     <input id="file`+count+`" name="file[]" type="file" class="form-control" accept="image/*" />

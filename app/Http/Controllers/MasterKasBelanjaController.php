@@ -123,6 +123,7 @@ class MasterKasBelanjaController extends Controller
             $request['nominal'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
             $request['keterangan_kas'] = $request->deskripsi;
             $request['user_id'] = Auth::user()->id;
+            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
 
             // Store your file into directory and db
             $kasBelanja = MasterKasBelanja::create($request->except('_token'));
@@ -158,46 +159,6 @@ class MasterKasBelanjaController extends Controller
 
                 MasterKasBelanjaDetail::create($data);
             }
-
-            // Create Master Jurnal
-            // $request['dokumen'] = $request->nomor_transaksi;
-            // $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
-            // $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
-            // $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-            // $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
-            // $request['bank_id'] = $request->account_id;
-            // $request['sumber_data'] = 3;
-            // $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
-            // $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->nominal));
-            // $masterJurnal = MasterJurnal::create($request->except('_token'));
-
-            // // Create Master Jurnal Detail
-            // foreach ($request->akun_belanja as $akun => $a) {
-            //     $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
-
-            //     $data = [
-            //         'jurnal_umum_id' => $masterJurnal->id,
-            //         'account_id'     => $a,
-            //         'keterangan'     => $request->keterangan[$akun] ?? '',
-            //         'debet'         => $nominal,
-            //     ];
-            //     JurnalUmumDetail::create($data);
-            // }
-            // JurnalUmumDetail::create([
-            //     'jurnal_umum_id' => $masterJurnal->id,
-            //     'account_id'     => $request->account_id,
-            //     'keterangan'     => '',
-            //     'kredit'          => $request->nominal,
-            // ]);
-
-            // //
-            // foreach (MasterKasBelanjaFile::whereKasId($kas->id)->get() as $file) {
-            //     MasterJurnalFile::create([
-            //         'jurnal_umum_id' => $masterJurnal->id,
-            //         'path'           => 'kas_belanja',
-            //         'filename'       => $file->filename,
-            //     ]);
-            // }
 
             DB::commit();
         } catch (\Throwable $th) {
