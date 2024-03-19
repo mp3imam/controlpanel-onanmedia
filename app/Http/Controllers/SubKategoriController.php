@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\SubKategoriModel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class SubKategoriController extends Controller
@@ -23,7 +23,7 @@ class SubKategoriController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:SubKategori');
+        $this->middleware('permission:'.Permission::whereId(20)->active()->first()->name);
     }
 
     public function index(){

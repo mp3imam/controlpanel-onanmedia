@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class DaftarProductJasaController extends Controller
@@ -25,7 +26,7 @@ class DaftarProductJasaController extends Controller
     function __construct()
     {
         // dd(JasaModel::with('status')->get());
-        //  $this->middleware('permission:Users Public');
+        $this->middleware('permission:'.Permission::whereId(7)->active()->first()->name);
     }
 
     public function index(){

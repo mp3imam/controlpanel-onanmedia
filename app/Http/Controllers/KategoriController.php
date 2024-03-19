@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BahasaModel;
 use App\Models\KategoriModel;
-use App\Models\MasterCoaModel;
-use App\Models\RequestPencarianDanaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class KategoriController extends Controller
@@ -26,7 +23,7 @@ class KategoriController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:Kategori');
+         $this->middleware('permission:'.Permission::whereId(19)->active()->first()->name);
     }
 
     public function index(){

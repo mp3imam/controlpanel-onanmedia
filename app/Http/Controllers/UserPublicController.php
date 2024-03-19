@@ -7,13 +7,13 @@ use App\Models\UserAlamatModel;
 use App\Models\UserBahasaModel;
 use App\Models\UserKeahlianModel;
 use App\Models\UserPendidikanModel;
-use App\Models\UserPublic;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserPublicController extends Controller
@@ -29,7 +29,7 @@ class UserPublicController extends Controller
     function __construct()
     {
         //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+        $this->middleware('permission:'.Permission::whereId(4)->active()->first()->name);
     }
 
     public function index(){

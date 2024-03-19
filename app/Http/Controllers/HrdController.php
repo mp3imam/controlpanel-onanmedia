@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class HrdController extends Controller
@@ -28,8 +29,7 @@ class HrdController extends Controller
      */
     function __construct()
     {
-        // dd(KeluargaKaryawanModel::whereDataKaryawanId($request->id)->with(['agama_keluarga'])->get());
-        $this->middleware('permission:HRD');
+        $this->middleware('permission:'.Permission::whereId(14)->active()->first()->name);
     }
 
     public function index(){

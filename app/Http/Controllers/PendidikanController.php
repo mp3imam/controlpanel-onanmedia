@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\IdStringRandom;
 use App\Models\PendidikanModel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class PendidikanController extends Controller
@@ -25,7 +24,7 @@ class PendidikanController extends Controller
     function __construct()
     {
         // dd(IdStringRandom::stringRandom());
-         $this->middleware('permission:Pendidikan');
+        $this->middleware('permission:'.Permission::whereId(22)->active()->first()->name);
     }
 
     public function index(){

@@ -10,11 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class DaftarTenderController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Data Tender';
     private $li_1 = 'Index';
 
     /**
@@ -25,7 +26,7 @@ class DaftarTenderController extends Controller
     function __construct()
     {
         // dd(DaftarTenderModel::with('user','status')->limit(10)->get());
-        //  $this->middleware('permission:Users Public');
+         $this->middleware('permission:'.Permission::whereId(6)->active()->first()->name);
     }
 
     public function index(){

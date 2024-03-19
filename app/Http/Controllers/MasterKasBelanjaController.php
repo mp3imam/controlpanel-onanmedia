@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
-use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\MasterKasBelanjaFile;

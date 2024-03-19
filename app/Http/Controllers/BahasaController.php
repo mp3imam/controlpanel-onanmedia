@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BahasaModel;
-use App\Models\MasterCoaModel;
-use App\Models\RequestPencarianDanaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class BahasaController extends Controller
@@ -25,8 +23,8 @@ class BahasaController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:Bahasa');
-    }
+         $this->middleware('permission:'.Permission::whereId(18)->active()->first()->name);
+        }
 
     public function index(){
         $title['title'] = $this->title;

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class PekerjaanController extends Controller
@@ -22,7 +23,7 @@ class PekerjaanController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:Pekerjaan');
+         $this->middleware('permission:'.Permission::whereId(21)->active()->first()->name);
     }
 
     public function index(){

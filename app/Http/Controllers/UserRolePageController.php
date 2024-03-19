@@ -27,7 +27,7 @@ class UserRolePageController extends Controller
     function __construct()
     {
         // dd(Role::with(['pages.rolePage'])->get());
-        //  $this->middleware('permission:Users Panel');
+        $this->middleware('permission:'.Permission::whereId(24)->active()->first()->name);
     }
 
     public function index(){
