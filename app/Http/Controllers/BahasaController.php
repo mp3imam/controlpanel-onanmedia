@@ -23,8 +23,8 @@ class BahasaController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:'.Permission::whereId(18)->active()->first()->name);
-        }
+        $this->middleware('permission:'.Permission::whereId(18)->active()->first()->name);
+    }
 
     public function index(){
         $title['title'] = $this->title;

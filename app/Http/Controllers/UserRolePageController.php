@@ -74,8 +74,6 @@ class UserRolePageController extends Controller
             ->whereRoleId($request->get('role_id'))
             ->delete();
 
-
-
         return response()->json([
             'status'    => Response::HTTP_OK,
             'message'   => $save
@@ -151,9 +149,8 @@ class UserRolePageController extends Controller
 
             $role = Role::whereName($request->role)->first();
             $user = User::findOrFail($id)->update($update);
-            DB::table('model_has_roles')
-            ->where('model_id', $id)
-            ->update(['role_id' =>  $role->id]);
+            $role->assignRole($request->role);
+
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
