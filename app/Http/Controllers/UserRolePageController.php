@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\PagesRoleModel;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -26,7 +25,6 @@ class UserRolePageController extends Controller
      */
     function __construct()
     {
-        // dd(Role::with(['pages.rolePage'])->get());
         $this->middleware('permission:'.Permission::whereId(24)->active()->first()->name);
     }
 
@@ -64,19 +62,17 @@ class UserRolePageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        $save = $request->status ?
-            PagesRoleModel::insert([
-                'permission_id'  => $request->get('permission_id'),
-                'role_id'  => $request->get('role_id'),
-            ])
-        :
-            PagesRoleModel::wherePermissionId($request->get('permission_id'))
-            ->whereRoleId($request->get('role_id'))
-            ->delete();
+        $role = Role::findOrFail($request->role_id);
+
+        if ($request->status) {
+            $role->assignRole($request->name);
+        } else {
+            $role->removeRole($request->name);
+        }
 
         return response()->json([
-            'status'    => Response::HTTP_OK,
-            'message'   => $save
+            'status' => Response::HTTP_OK,
+            'message' => $role,
         ]);
     }
 
@@ -121,6 +117,7 @@ class UserRolePageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
+        dd($request->all());
         $validasi = [
             'id'           => 'required',
             'username'     => 'required',
@@ -138,8 +135,8 @@ class UserRolePageController extends Controller
         }
 
         $user = 'Data Tidak Tersimpan';
-        DB::beginTransaction();
-        try{
+        // DB::beginTransaction();
+        // try{
             // Store your file into directory and db
             $update = [
                 'username'          => $request->username,
@@ -149,12 +146,12 @@ class UserRolePageController extends Controller
 
             $role = Role::whereName($request->role)->first();
             $user = User::findOrFail($id)->update($update);
-            $role->assignRole($request->role);
+            $role->syncRoles($request->role);
 
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
+        //     DB::commit();
+        // }catch(\Exception $e){
+        //     DB::rollback();
+        // }
 
         return response()->json([
             'status'  => Response::HTTP_OK,

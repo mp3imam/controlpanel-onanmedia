@@ -125,6 +125,7 @@
                         <thead>
                             <tr>
                                 <th width="100px">Nama Pages</th>
+                                <th hidden>Nama Pages</th>
                                 <th width="100px">Action</th>
                             </tr>
                         </thead>
@@ -147,6 +148,9 @@
                     data: 'alias',
                     name: 'Nama Pages'
                 },{
+                    data: 'name',
+                    visible: false
+                },{
                     data: 'role_id',
                     name: 'Action',
                     render: function (data, type, row) {
@@ -154,7 +158,7 @@
                         checked = data !== null ? "Checked" : ""
                         return `
                         <div class="form-check form-switch form-switch-success mb-3">
-                            <input class="form-check-input" type="checkbox" role="switch" ${checked} id="swicth${row.id}" onclick="modal_role_status(${id},${row.id})">
+                            <input class="form-check-input" type="checkbox" role="switch" ${checked} id="swicth${row.id}" onclick="modal_role_status(${id},'${row.name}','${row.id}')">
                             <label class="form-check-label" for="SwitchCheck3" id="labelSwicth${row.id}">${status}</label>
                         </div>
                         `
@@ -171,13 +175,14 @@
 
     }
 
-    function modal_role_status(role_id, permission_id){
+    function modal_role_status(role_id, name, permission_id){
         var status = $('#swicth'+permission_id).is(':checked') ? 1 : 0
 
         status ? $('#labelSwicth'+permission_id).text('Aktif') : $('#labelSwicth'+permission_id).text('Tidak Aktif')
 
         Fdata = new FormData()
         Fdata.append('role_id', role_id )
+        Fdata.append('name', name )
         Fdata.append('permission_id', permission_id )
         Fdata.append('status', status )
         Fdata.append('_token', "{{ csrf_token() }}" )
