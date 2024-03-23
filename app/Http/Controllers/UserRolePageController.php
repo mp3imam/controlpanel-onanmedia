@@ -25,7 +25,7 @@ class UserRolePageController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(24)->active()->first()->name);
+        $this->middleware('permission:Role Page');
     }
 
     public function index(){
@@ -63,12 +63,9 @@ class UserRolePageController extends Controller
      */
     public function store(Request $request){
         $role = Role::findOrFail($request->role_id);
+        $permission = Permission::findOrFail($request->permission_id);
 
-        if ($request->status) {
-            $role->assignRole($request->name);
-        } else {
-            $role->removeRole($request->name);
-        }
+        $request->status ? $role->givePermissionTo($permission) : $role->revokePermissionTo($permission);
 
         return response()->json([
             'status' => Response::HTTP_OK,

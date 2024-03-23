@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class RequestPencarianDanaController extends Controller
@@ -23,9 +22,7 @@ class RequestPencarianDanaController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
-        $this->middleware('permission:'.Permission::whereId(8)->active()->first()->name);
+        $this->middleware('permission:Request Pencarian Dana');
     }
 
     public function index(){

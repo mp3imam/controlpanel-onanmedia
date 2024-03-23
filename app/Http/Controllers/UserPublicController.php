@@ -13,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserPublicController extends Controller
@@ -29,7 +28,7 @@ class UserPublicController extends Controller
     function __construct()
     {
         //  $this->middleware('permission:Users Public');
-        $this->middleware('permission:'.Permission::whereId(4)->active()->first()->name);
+        $this->middleware('permission:Users');
     }
 
     public function index(){

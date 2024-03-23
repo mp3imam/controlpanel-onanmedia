@@ -19,7 +19,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class MasterBankCashController extends Controller
@@ -35,7 +34,7 @@ class MasterBankCashController extends Controller
     function __construct()
     {
         // dd(MasterBankCashModel::with(['banks'])->first());
-        $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
+        $this->middleware('permission:Transaksi Kas');
     }
 
     public function index(){

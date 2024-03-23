@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\DataTables;
 
 class RekeningBankController extends Controller
@@ -20,7 +19,7 @@ class RekeningBankController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(10)->active()->first()->name);
+        $this->middleware('permission:Rekening Bank');
     }
 
     public function index(){

@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class HelpdeskController extends Controller
@@ -33,7 +32,7 @@ class HelpdeskController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(25)->active()->first()->name);
+        $this->middleware('permission:List Helpdest');
     }
 
     public function index(){

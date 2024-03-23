@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
@@ -31,8 +30,7 @@ class MasterReturnBankCashController extends Controller
      */
     function __construct()
     {
-        // dd(MasterReturnBankCashModel::KasPengembalian()->with(['file'])->get());
-        $this->middleware('permission:'.Permission::whereId(11)->active()->first()->name);
+        $this->middleware('permission:Transaksi Kas');
     }
 
     public function index(){

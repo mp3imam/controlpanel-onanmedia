@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class BahasaController extends Controller
@@ -23,7 +22,7 @@ class BahasaController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:'.Permission::whereId(18)->active()->first()->name);
+        $this->middleware('permission:Bahasa');
     }
 
     public function index(){

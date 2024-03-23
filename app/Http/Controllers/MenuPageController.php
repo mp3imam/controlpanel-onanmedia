@@ -24,7 +24,7 @@ class MenuPageController extends Controller
     function __construct()
     {
         // dd(Role::with(['pages.rolePage'])->get());
-        $this->middleware('permission:'.Permission::whereId(28)->active()->first()->name);
+        $this->middleware('permission:Menu Pages');
     }
 
     public function index(){
