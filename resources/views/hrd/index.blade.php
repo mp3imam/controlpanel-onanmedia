@@ -38,8 +38,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="100%">
+                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th width="50px">No</th>

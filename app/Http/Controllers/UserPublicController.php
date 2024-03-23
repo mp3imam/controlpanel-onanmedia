@@ -27,7 +27,6 @@ class UserPublicController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
         $this->middleware('permission:Users');
     }
 

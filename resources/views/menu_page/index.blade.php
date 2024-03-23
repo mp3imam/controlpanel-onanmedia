@@ -12,30 +12,13 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                    <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
-                        Tambah
-                    </button>
-                    <a type="button" class="btn btn-primary btn-label btn-pdf">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                    Loading...
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-no-loading">
-                                    PDF
-                                </div>
-                            </div>
-                        </a>
+                        <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
+                            Tambah
+                        </button>
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
-                            </div>
-                            <div class="col-xxl-3 col-md-2 mb-3">
+                            <div class="col-md-6 col-md-2 mb-3">
                                 <label>Filter Role</label>
                                 <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
                             </div>
@@ -43,8 +26,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm" cellspacing="0"
-                            width="100%">
+                            <table id="dataTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th width="10%">ID</th>
@@ -88,7 +70,6 @@
             ajax: {
                 url: "{{ route('menu_page.create') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
                     d.roles_id = $('#roles_id').val()
                 }
             },
@@ -140,10 +121,6 @@
                     }
                 }
             ]
-        });
-
-        $('#username_id').keyup(function () {
-            table.draw();
         });
 
         $('#roles_id').change(function () {

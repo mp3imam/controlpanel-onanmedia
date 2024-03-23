@@ -134,7 +134,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('users', UserController::class);
     Route::post('ganti-passowrd', [UserController::class, 'ganti_password'])->name('ganti.password');
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
-    Route::resource('users_role_page', UserRolePageController::class);
+    Route::resource('user_role_page', UserRolePageController::class);
     Route::resource('menu_page', MenuPageController::class);
     Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
 });

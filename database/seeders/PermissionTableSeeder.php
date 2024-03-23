@@ -236,7 +236,7 @@ class PermissionTableSeeder extends Seeder
                     'name'                  => 'Role Page',
                     'alias'                 => 'Role Page',
                     'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'users_role_page',
+                    'module_url'            => 'user_role_page',
                     'module_parent'         => 23,
                     'module_position'       => 2,
                     'module_description'    => '',
@@ -275,15 +275,6 @@ class PermissionTableSeeder extends Seeder
                     'module_url'            => 'menu_page',
                     'module_parent'         => 23,
                     'module_position'       => 3,
-                    'module_description'    => '',
-                    'module_status'         => 1
-                ],[
-                    'name'                  => 'HelpDesk',
-                    'alias'                 => 'Menu Pages',
-                    'module_icon'           => 'ri-file-user-fill',
-                    'module_url'            => 'menu_page',
-                    'module_parent'         => 0,
-                    'module_position'       => 8,
                     'module_description'    => '',
                     'module_status'         => 1
                 ]

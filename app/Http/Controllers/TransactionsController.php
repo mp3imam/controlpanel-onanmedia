@@ -24,8 +24,7 @@ class TransactionsController extends Controller
      */
     function __construct()
     {
-        //  $this->middleware('permission:Users Public');
-        // dd(DB::connection('pgsql2')->table('user'));
+        $this->middleware('permission:Transaksi');
     }
 
     public function index(){

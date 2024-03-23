@@ -225,7 +225,7 @@ class UserController extends Controller
     public function models($request){
         return User::query()
         ->when($request->username_id, function($q) use($request){
-            $q->where('username','like', '%'.$request->username_id.'%');
+            $q->where('username','ilike', '%'.$request->username_id.'%');
         })
         ->when($request->roles_id, function($q) use($request){
             return $q->whereIn('id', is_array($request->roles_id) ? $request->roles_id : explode(',', $request->roles_id));

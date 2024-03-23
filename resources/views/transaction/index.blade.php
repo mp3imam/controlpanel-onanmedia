@@ -10,58 +10,25 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
-                <div id="customerList">
-                    <div class="col-sm-auto mb-3">
-                    <a type="button" class="btn btn-primary btn-label btn-pdf">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                    Loading...
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-no-loading">
-                                    PDF
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="row g-4">
-                        <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-4 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm " cellspacing="0"
-                            width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="5px">No</th>
-                                        <th width="50px">Nomor Transaksi</th>
-                                        <th width="50px">Title</th>
-                                        <th width="50px">Aktifitas</th>
-                                        <th width="50px">Tgl. Order</th>
-                                        <th width="50px">User Penjual</th>
-                                        <th width="50px">User Pembeli</th>
-                                        <th width="50px">Jumlah Termin</th>
-                                        <th width="50px">Total Order</th>
-                                        <th width="50px">Biaya Aplikasi</th>
-                                        <th width="50px">Total Bayar</th>
-                                        <th width="50px">Komisi Onan</th>
-                                        <th width="50px">Dana Penjual</th>
-                                        <th hidden>Persentase Komisi Onan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <table id="dataTable" class="table table-striped" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nomor Transaksi</th>
+                            <th>Title</th>
+                            <th>Aktifitas</th>
+                            <th>Tgl. Order</th>
+                            <th>Total Order</th>
+                            <th>Biaya Aplikasi</th>
+                            <th>Total Bayar</th>
+                            <th>Komisi Onan</th>
+                            <th>Dana Penjual</th>
+                            <th hidden>Persentase Komisi Onan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
                 <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel" data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content" id="modal_content">
@@ -72,25 +39,13 @@
         </div>
     </div>
 </div>
-
 @endsection
-
 @section('script')
-<script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
 <script type="text/javascript">
     $(function () {
         var table = $('#dataTable').DataTable({
-            dom: 'lrtip',
-            scrollY: "400px",
-            scrollX: true,
             processing: true,
             serverSide: true,
-            fixedColumns: {
-                left: 2,
-                right: 0,
-                width: 200,
-                targets: 10
-            },
             ajax: {
                 url: "{{ route('transaksi.create') }}",
                 data: function (d) {
@@ -119,15 +74,6 @@
                 },{
                     data: 'tanggal_order',
                     name: 'Tgl. Order'
-                },{
-                    data: 'penjual',
-                    name: 'User Penjual'
-                },{
-                    data: 'pembeli',
-                    name: 'User Pembeli'
-                },{
-                    data: 'jumlahTermin',
-                    name: 'Jumlah Termin'
                 },{
                     data: 'totalPenawaran',
                     name: 'Total Order'

@@ -27,21 +27,20 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <table id="dataTable" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                        <table id="dataTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead class="text-white text-center text-uppercase" style="background-color: #405189">
                                 <tr>
-                                    <th >No</th>
-                                    <th >Nama Lengkap</th>
-                                    <th >No. Handphone</th>
-                                    <th >Username</th>
-                                    <th >Verif. Email</th>
-                                    <th >Verif. No.Hp</th>
-                                    <th >Terdaftar Seller</th>
+                                    <th>No</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>No. Handphone</th>
+                                    <th>Username</th>
+                                    <th>Verif. Email</th>
+                                    <th>Verif. No.Hp</th>
+                                    <th>Terdaftar Seller</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,18 +71,13 @@
     var img_pengajuan = `<img src="{{ URL::asset('assets/images/logo/pengajuan.png') }}" alt=""height="30px">`
     $(function () {
         var table = $('#dataTable').DataTable({
-            //dom: 'lrtip',
-            //dom: '<"top"f>rt<"bottom"lip><"clear">',
             processing: true,
             serverSide: true,
             ordering: false,
-            "deferRender": true,
+            deferRender: true,
             ajax: {
                 url: "{{ route('users_public.create') }}",
                 data: function (d) {
-                    //d.username_id = $('#username_id').val()
-                    //d.roles_id = $('#roles_id').val()
-
                     d.status_user = $('#status_user').val();
                 }
             },
@@ -183,7 +177,7 @@
                         </div>
                         <hr>
                         <h1>Product Jasa</h1>
-                        <table id="productJasa" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                        <table id="productJasa" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th width="100px">Nama Product</th>
@@ -202,7 +196,7 @@
 
                         <hr>
                         <h1>Keahlian</h1>
-                        <table id="keahlian" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                        <table id="keahlian" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th width="50px">Nama Keahlian</th>
@@ -215,7 +209,7 @@
 
                         <hr>
                         <h1>Pendidikan</h1>
-                        <table id="pendidikan" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                        <table id="pendidikan" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th width="100px">Tingkat Pendidikan</th>
@@ -229,7 +223,7 @@
 
                         <hr>
                         <h1>Keahlian Bahasa</h1>
-                        <table id="bahasa" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                        <table id="bahasa" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th width="100px">Bahasa</th>
@@ -242,7 +236,7 @@
 
                         <hr>
                         <h1>Alamat</h1>
-                        <table id="alamat" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+                        <table id="alamat" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th width="100px">Alamat</th>

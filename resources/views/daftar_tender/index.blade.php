@@ -11,32 +11,9 @@
         <div class="card">
             <div class="card-body">
                 <div id="customerList">
-                    <a type="button" class="btn btn-primary btn-label btn-pdf">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                    Loading...
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-no-loading">
-                                    PDF
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="row g-4">
-                        <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
-                                <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
-                            </div>
-                        </div>
-                    </div>
                     <div class="card">
                         <div class="card-body">
-                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
-                            width="100%">
+                            <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
