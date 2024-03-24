@@ -98,7 +98,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#base-pendidikan" role="tab" aria-selected="false">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#base-pelatihan" role="tab" aria-selected="false">
                                         Pelatihan
                                     </a>
                                 </li>
@@ -271,11 +271,14 @@
                                         </div>
                                         <div class="col-lg-6 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Potongan Terlambat</label>
-                                            <input type="number" class="form-control" id="potongan_terlambat" name="potongan_terlambat">
+                                            <select class="form-control" id='potongan_terlambat' name="potongan_terlambat">
+                                                <option value="0" selected>Tidak</option>
+                                                <option value="1">Iya</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Toleransi Keterlambatan (menit)</label>
-                                            <input class="form-control" id="toleransi_keterlambatan" name="toleransi_keterlambatan">
+                                            <input type="number" min="1" max="30" class="form-control" id="toleransi_keterlambatan" name="toleransi_keterlambatan">
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Absen diluar kantor</label>
@@ -283,7 +286,7 @@
                                                 <option value="0" selected>Tidak</option>
                                                 <option value="1">Iya</option>
                                             </select>
-                                            </div>
+                                        </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1">
                                             <button id="save_pekerjaan" disabled class="btn text-white float-end" style="background-color: #4E36E2">Simpan</button>
                                         </div>
@@ -293,10 +296,6 @@
                                     <div class="col-lg-12">
                                         <form action="#">
                                             <div class="row">
-                                                <div class="col-md-3 p-3">
-                                                    <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_keluarga" name="tanggal_keluarga" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
-                                                </div>
                                                 <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
                                                     <input id="cari_keluarga" name="cari_keluarga" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
@@ -337,10 +336,6 @@
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
-                                                    <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_pendidikan" name="tanggal_pendidikan" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
-                                                </div>
-                                                <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
                                                     <input id="cari_pendidikan" name="cari_pendidikan" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
@@ -377,15 +372,11 @@
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
-                                                    <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_pelatihan" name="tanggal_pelatihan" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
-                                                </div>
-                                                <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
                                                     <input id="cari_pelatihan" name="cari_pelatihan" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
                                                 <div class="col-md p-3 text-center">
-                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_pelatihan"><i class="ri-add-line"></i> Tambah</button>
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_pelatihan" onclick="modal_crud_pelatihan('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -413,15 +404,11 @@
                                         <form action="#">
                                             <div class="row">
                                                 <div class="col-md-3 p-3">
-                                                    <label>Filter Tanggal</label>
-                                                    <input class="form-control flatpickr-input" id="tanggal_riwayat" name="tanggal_riwayat" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" readonly="readonly" value="{{ old('tanggal', Request::get('tanggal')) }}">
-                                                </div>
-                                                <div class="col-md-3 p-3">
                                                     <label>Filter All</label>
                                                     <input id="cari_riwayat" name="cari_riwayat" class="form-control" placeholder="Cari semua data" aria-label="Amount (to the nearest dollar)">
                                                 </div>
                                                 <div class="col-md p-3 text-center">
-                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_riwayat"><i class="ri-add-line"></i> Tambah</button>
+                                                    <button type="button" class="btn btn-success waves-effect waves-light mt-4 float-end tambah_riwayat" onclick="modal_crud_riwayat('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid"><i class="ri-add-line"></i> Tambah</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -560,7 +547,6 @@
         });
         $("#nama_agama").val($("#modal_agama_id option:selected").text());
 
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -667,35 +653,34 @@
 
         $('#modal_content').html(`
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data Keluarga</h5>
+                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data Pendidikan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-md-6" id="modal_nama_append">
+                    <div class="col-md-6" id="modal_nama_pendidikan_append">
                         <label for="nama" class="form-label">Nama</label>
-                        <input class="form-control" id="modal_nama" placeholder="Masukan Nama" value="${nama_modal}">
+                        <input class="form-control" id="modal_nama_pendidikan" placeholder="Masukan Nama" value="${nama_modal}">
                     </div>
-
-                    <div class="col-md-6" id="modal_nama_append">
-                        <label for="nama" class="form-label">Jurusan</label>
-                        <input class="form-control" id="modal_nama" placeholder="Jurusan" value="${jurusan_modal}">
+                    <div class="col-md-6" id="modal_jurusan_pendidikan_append">
+                        <label for="jurusan" class="form-label">Jurusan</label>
+                        <input class="form-control" id="modal_jurusan_pendidikan" placeholder="Jurusan" value="${jurusan_modal}">
                     </div>
-                    <div class="col-md-6" id="modal_handphone_append">
-                        <label for="no_hp" class="form-label">IPK</label>
-                        <input type="number" class="form-control" id="modal_no_hp" placeholder="" value="${IPK_modal}">
+                    <div class="col-md-6" id="modal_ipk_pendidikan_append">
+                        <label for="ipk" class="form-label">IPK</label>
+                        <input type="number" class="form-control" id="modal_ipk_pendidikan" placeholder="" value="${IPK_modal}">
                     </div>
-                    <div class="col-md-6">
-                        <label for="pekerjaan" class="form-label">Alamat</label>
-                        <input class="form-control" id="modal_pekerjaan" placeholder="Masukan Alamat" value="${alamat_modal}">
+                    <div class="col-md-6" id="modal_alamat_pendidikan_append">
+                        <label for="alamat" class="form-label">Alamat</label>
+                        <input class="form-control" id="modal_alamat_pendidikan" placeholder="Masukan Alamat" value="${alamat_modal}">
                     </div>
-                    <div class="col-md-6" id="modal_tanggal_masuk_append">
+                    <div class="col-md-6" id="modal_tanggal_masuk_pendidikan_append">
                         <label for="tanggal_masuk" class="form-label">Tahun Masuk</label>
-                        <input type="date" class="form-control" id="modal_tanggal_masuk" placeholder="Masukan Tahun Masuk" value="${tahun_masuk_modal}">
+                        <input class="form-control" id="modal_tanggal_masuk_pendidikan" placeholder="Masukan Tahun Masuk" type="number" placeholder="YYYY" min="1900" max="2100" value="${tahun_masuk_modal}">
                     </div>
-                    <div class="col-md-6" id="modal_tanggal_keluar_append">
+                    <div class="col-md-6" id="modal_tanggal_keluar_pendidikan_append">
                         <label for="tanggal_keluar" class="form-label">Tahun Keluar</label>
-                        <input type="date" class="form-control" id="modal_tanggal_keluar" placeholder="Masukan Tahun Keluar" value="${tahun_keluar_modal}">
+                        <input class="form-control" id="modal_tanggal_keluar_pendidikan" placeholder="Masukan Tahun Keluar" type="number" placeholder="YYYY" min="1900" max="2100"value="${tahun_keluar_modal}">
                     </div>
                     <div class="col-md-12">
                     <label for="sertifikat" class="form-label">Sertifikat</label>
@@ -703,21 +688,21 @@
                 </div>
                 <div class="col-lg-12 d-flex justify-content-between mt-3">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>&nbsp;
-                    <button type="submit" class="btn btn-primary float-end" id="pendidikanRow`+id+`">Simpan</button>
+                    <button type="submit" class="btn btn-primary float-end" id="pendidikan">Simpan</button>
                 </div>
             </div>
         `)
 
-        $('#pendidikanRow'+id).click(function(e) {
+        $('#pendidikan').click(function(e) {
             e.preventDefault();
 
             var formData = new FormData();
-            formData.append('nama', $('#modal_nama').val());
-            formData.append('jurusan', $('#modal_nama').val());
-            formData.append('IPK', $('#modal_no_hp').val());
-            formData.append('alamat', $('#modal_pekerjaan').val());
-            formData.append('tahun_masuk', $('#modal_tanggal_masuk').val());
-            formData.append('tahun_keluar', $('#modal_tanggal_keluar').val());
+            formData.append('nama', $('#modal_nama_pendidikan').val());
+            formData.append('jurusan', $('#modal_jurusan_pendidikan').val());
+            formData.append('ipk', $('#modal_ipk_pendidikan').val());
+            formData.append('alamat', $('#modal_alamat_pendidikan').val());
+            formData.append('tahun_masuk', $('#modal_tanggal_masuk_pendidikan').val());
+            formData.append('tahun_keluar', $('#modal_tanggal_keluar_pendidikan').val());
 
             var sertifikatFiles = $('#sertifikat')[0].files;
             if(sertifikatFiles.length > 0) {
@@ -725,13 +710,50 @@
             }
 
             $.ajax({
-                url: '/simpan-pendidikan',
+                url: "{{ route('simpan.karyawan.pendidikan') }}",
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    alert('Data berhasil disimpan');
+                    if (response.status == 200){
+                        Swal.fire({
+                            title: 'Simpan!',
+                            text: 'Data Berhasil disimpan.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTablePendidikan').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.alert_hapus').remove()
+                        if (response.message.nama == "The nama field is required.")
+                        $('#modal_nama_pendidikan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.jurusan == "The jurusan field is required.")
+                        $('#modal_jurusan_pendidikan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.ipk == "The ipk field is required.")
+                        $('#modal_ipk_pendidikan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.alamat == "The alamat field is required.")
+                        $('#modal_alamat_pendidikan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.tahun_masuk == "The tahun masuk field is required.")
+                        $('#modal_tanggal_masuk_pendidikan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.tahun_keluar == "The tahun keluar field is required.")
+                        $('#modal_tanggal_keluar_pendidikan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                    }
                 }
             });
         });
@@ -781,53 +803,128 @@
             }
         });
 
-        $('#pendidikanRow'+id).on('click', function() {
+        $('.edit').on('click', function() {
             var data = new FormData()
-            data.append('id_update', $('#id_update').val())
-            data.append('nama', $('#modal_nama').val())
-            data.append('agama_id', $('#modal_agama_id').val())
-            data.append('no_hp', $('#modal_no_hp').val())
-            data.append('hubungan', $('#modal_hubungan').val())
-            data.append('pekerjaan', $('#modal_pekerjaan').val())
-            data.append('tanggal_lahir', $('#modal_tanggal_lahir').val())
-            data.append('alamat', $('#modal_alamat').val())
+            data.append('_method', 'PUT')
+            data.append('id', id)
+            data.append('kategori_id', $('#modal_kategori_id').val())
+            data.append('subkategori', $('#modal_subkategori').val())
+            data.append('url', $('#modal_url').val())
             $.ajax({
-                type: "post",
-                url: "{{ route('simpan.karyawan.keluarga') }}",
+                url: "{{ url('subkategori') }}/" + id,
+                type: "POST",
                 data: data,
                 processData: false,
                 contentType: false,
                 success: function (result) {
                     if (result.status == 200){
                         Swal.fire({
-                            title: 'Add!',
-                            text: 'Your file has been add.',
+                            title: 'Edit!',
+                            text: 'Your file has been edit.',
                             icon: 'success',
                             confirmButtonClass: 'btn btn-primary w-xs mt-2',
                             buttonsStyling: false
                         }).then(function(){
-                            $('#dataTableKeluarga').DataTable().ajax.reload()
+                            $('#dataTablePendidikan').DataTable().ajax.reload()
                             $('#exampleModalgrid').modal('hide')
                         });
                     }else{
-                        $('.remove_nama').remove()
-                        $('.remove_agama').remove()
-                        $('.remove_tanggal_lahir').remove()
-
-                        $('.modal_nama_append').append(`
-                            <span class="remove_nama text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-                        $('.modal_agama_append').append(`
-                            <span class="remove_agama text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-                        $('.modal_tanggal_lahir_append').append(`
-                            <span class="remove_tanggal_lahir text-danger">Data Tidak Boleh Kosong</span>
+                        $('.remove_username').remove()
+                        $('.remove_nama_lengkap').remove()
+                        $('.remove_role').remove()
+                        // if (result.)
+                        $('.modal_username_append').append(`
+                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
                         `)
                     }
                 }
             });
 
         })
+    }
+
+    function modal_crud_pelatihan(data, id, nama, periode, sertifikat){
+        var nama_modal = nama ?? ''
+        var periode_modal = periode ?? ''
+        var sertifikat_modal = sertifikat ?? ''
+
+        $('#modal_content').html(`
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data Pelatihan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6" id="modal_nama_pelatihan_append">
+                        <label for="nama" class="form-label">Nama</label>
+                        <input class="form-control" id="modal_nama_pelatihan" placeholder="Masukan Nama" value="${nama_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_periode_pelatihan_append">
+                        <label for="periode" class="form-label">Periode</label>
+                        <input type="number" min="1900" max="2100" class="form-control" id="modal_periode_pelatihan" placeholder="Periode" value="${periode_modal}">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="sertifikat" class="form-label">Sertifikat</label>
+                        <input type="file" class="form-control" id="modal_sertifikat_pelatihan" accept="image/*" data-sertifikat="${sertifikat_modal}">
+                    </div>
+                </div>
+                <div class="col-lg-12 d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>&nbsp;
+                    <button type="submit" class="btn btn-primary float-end" id="pelatihan">Simpan</button>
+                </div>
+            </div>
+        `)
+
+        $('#pelatihan').click(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('nama', $('#modal_nama_pelatihan').val());
+            formData.append('periode', $('#modal_periode_pelatihan').val());
+
+            var sertifikatFiles = $('#modal_sertifikat_pelatihan')[0].files;
+            if(sertifikatFiles.length > 0) {
+                formData.append('sertifikat', sertifikatFiles[0]);
+            }
+
+            $.ajax({
+                url: "{{ route('simpan.karyawan.pelatihan') }}",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == 200){
+                        Swal.fire({
+                            title: 'Simpan!',
+                            text: 'Data Berhasil disimpan.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTablePelatihan').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.alert_hapus').remove()
+                        if (response.message.nama == "The nama field is required.")
+                        $('#modal_nama_pelatihan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.periode == "The periode field is required.")
+                        $('#modal_periode_pelatihan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                    }
+                }
+            });
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $('.edit').on('click', function() {
             var data = new FormData()
@@ -962,97 +1059,6 @@
                 cache: true
             }
         });
-
-        var dataRole = {id: 20230505000065,text: "S1",selected: true};
-        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-        $('#pendidikan_id_umum').append(newOptionRole).trigger('change');
-        $('#pendidikan_id_umum').select2();
-
-        $('#pendidikan_id_umum').select2({
-            ajax: {
-                url: "{{ route('api.pendidikan') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-
-        var dataRole = {id: 2,text: "Kawin dengan 1 Tanggungan",selected: true};
-        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-        $('#tipe_pajak_personal').append(newOptionRole).trigger('change');
-        $('#tipe_pajak_personal').select2();
-
-        $('#tipe_pajak_personal').select2({
-            ajax: {
-                url: "{{ route('api.tipe_pajak') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-
-        var dataRole = {id: 8,text: "Bank Bca",selected: true};
-        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-        $('#nama_bank_personal').append(newOptionRole).trigger('change');
-        $('#nama_bank_personal').select2();
-
-        $('#nama_bank_personal').select2({
-            ajax: {
-                url: "{{ route('api.get_select2_banks') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-
-        $('#departement_pekerjaan').select2({
-            ajax: {
-                url: "{{ route('api.divisi') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
     });
 
     $(function() {
@@ -1076,7 +1082,7 @@
                     }
                 },{
                     data: 'nama',
-                    name: 'nama',
+                    name: 'Nama',
                     render: function (data, type, row, meta) {
                         return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_pendidikan('Edit','`+row.data+`','`+row.nama+`', '`+row.jurusan+`','`+row.IPK+`', '`+row.alamat+`', '`+row.tahun_masuk+`', '`+row.tahun_keluar+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
                     }
@@ -1139,97 +1145,58 @@
                 cache: true
             }
         });
+    });
 
-        var dataRole = {id: 20230505000065,text: "S1",selected: true};
-        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-        $('#pendidikan_id_umum').append(newOptionRole).trigger('change');
-        $('#pendidikan_id_umum').select2();
 
-        $('#pendidikan_id_umum').select2({
+    $(function() {
+        // Datatable Pelatihan
+        var table = $('#dataTablePelatihan').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
             ajax: {
-                url: "{{ route('api.pendidikan') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
+                url: "{{ route('tabel.karyawan.pelatihan') }}",
+                data: function (d) {
+                    d.username_id = $('#username_id').val()
+                    d.roles_id = $('#roles_id').val()
+                }
+            },
+            columns: [{
+                    data: "id",
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },{
+                    data: 'nama',
+                    name: 'Nama',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_pelatihan('Edit','`+row.data+`','`+row.nama+`', '`+row.periode+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
+                },{
+                    data: 'periode',
+                    name: "periode",
+                },{
+                    data: 'sertifikat',
+                    name: 'Sertifikat',
+                },{
+                    data: 'id',
+                    name: 'Action',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_pelatihan('Edit','`+row.data+`','`+row.nama+`', '`+row.periode+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus_keluarga(${data})">Hapus</button>`;
+                    }
+                }
+            ]
         });
 
-        var dataRole = {id: 2,text: "Kawin dengan 1 Tanggungan",selected: true};
-        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-        $('#tipe_pajak_personal').append(newOptionRole).trigger('change');
-        $('#tipe_pajak_personal').select2();
-
-        $('#tipe_pajak_personal').select2({
-            ajax: {
-                url: "{{ route('api.tipe_pajak') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
+        $('#username_id').keyup(function () {
+            table.draw();
         });
 
-        var dataRole = {id: 8,text: "Bank Bca",selected: true};
-        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-        $('#nama_bank_personal').append(newOptionRole).trigger('change');
-        $('#nama_bank_personal').select2();
-
-        $('#nama_bank_personal').select2({
-            ajax: {
-                url: "{{ route('api.get_select2_banks') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
+        $('#roles_id').change(function () {
+            table.draw();
         });
 
-        $('#departement_pekerjaan').select2({
-            ajax: {
-                url: "{{ route('api.divisi') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
     });
 
     $.ajaxSetup({
@@ -1237,6 +1204,7 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
 
     $('#save_umum').click(function(){
         var fd = new FormData()
@@ -1373,78 +1341,13 @@
         $('#kontrak_tahun').text(selisihTahun.toString().padStart(2, '0'));
     });
 
-    $('#save_pekerjaan').prop('disabled',false)
     $('#save_pekerjaan').click(function(){
-        var fd = new FormData()
-        // untuk testing
-        fd.append('id_update', 1)
-        // fd.append('id_update', $('#id_update').val())
-        fd.append('cabang_pekerjaan', $('#cabang_pekerjaan').val());
-        fd.append('departement_pekerjaan', $('#departement_pekerjaan').val());
-        fd.append('jabatan_pekerjaan', $('#jabatan_pekerjaan').val());
-        fd.append('status_kontrak', $('#status_kontrak').val());
-        fd.append('kontrak_masuk', $('#kontrak_masuk').val());
-        fd.append('kontrak_selesai', $('#kontrak_selesai').val());
-        fd.append('periode_kontrak', $('#periode_kontrak').val());
-        fd.append('potongan_terlambat', $('#potongan_terlambat').val());
-        fd.append('toleransi_keterlambatan', $('#toleransi_keterlambatan').val());
-        fd.append('absen_diluar_kantor', $('#absen_diluar_kantor').val());
-        $.ajax({
-            type:'post',
-            url: "{{ route('simpan_karyawan_pekerjaan') }}",
-            data: fd,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.status == 200){
-
-                    $('#id_update').val(response.message.id)
-                    var activeTab = $('.tab-pane.active');
-                    var activeTab = $('.tab-pane.active');
-                    activeTab.removeClass('show active');
-                    activeTab.next('.tab-pane').addClass('show active');
-                    $('.nav-link.active').removeClass('active').parent().next().find('.nav-link').addClass('active');
-                    $('#save_pekerjaan').prop('disabled', false)
-                    Swal.fire({
-                        title: "Good job!",
-                        text: "You clicked the button!",
-                        icon: "success"
-                    });
-                }else{
-                    $('.alert_hapus').remove()
-                    if (response.message.cabang_pekerjaan)
-                        $('#alert_cabang_pekerjaan').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.departement_pekerjaan)
-                        $('#alert_departement_pekerjaan').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.jabatan_pekerjaan)
-                        $('#alert_jabatan_pekerjaan').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.cost_center_pekerjaan)
-                        $('#alert_cost_center_pekerjaan').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.tanggal_masuk)
-                        $('#alert_tanggal_masuk').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.kontrak_selesai)
-                        $('#alert_kontrak_selesai').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.status_kontrak)
-                        $('#alert_status_kontrak').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.periode_kontrak)
-                        $('#alert_periode_kontrak').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.potongan_terlambat)
-                        $('#alert_potongan_terlambat').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-                    if (response.message.toleransi_keterlambatan)
-                        $('#alert_toleransi_keterlambatan').append(`<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`)
-
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Cek kembali data yang anda masukan!",
-                            icon: "error"
-                        });
-                }
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-    });
-
-    $('#save_pekerjaan').click(function(){
         var fd = new FormData()
         // untuk testing
         fd.append('id_update', 1)
