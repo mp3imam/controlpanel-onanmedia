@@ -12,13 +12,13 @@
             <div class="card-body">
                 <div id="customerList">
                     <div class="col-sm-auto mb-3">
-                        <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
+                        <button type="button" class="btn btn-success" onclick="modal_tambah_role()" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
                             Tambah
                         </button>
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-3 col-md-2 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label>Filter Role</label>
                                 <select id="roles_id" name="roles_id[]" multiple="multiple" class="form-control"></select>
                             </div>
@@ -89,6 +89,70 @@
             table.draw();
         });
     });
+
+    function modal_tambah_role(){
+        $('#modal_content').html(`
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalgridLabel">Tambah Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-xxl-12">
+                        <label for="basiInput" class="form-label">Nama Role</label>
+                        <input class="form-control" id="nama_role" name="nama_role" placeholder="Masukan Nama Role">
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary add">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `)
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('.add').on('click', function() {
+            var data = new FormData()
+            data.append('name', $('#nama_role').val())
+            $.ajax({
+                type: "post",
+                url: "{{ url('tambah_role') }}",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.status == 200){
+                        Swal.fire({
+                            title: 'Add!',
+                            text: 'Your file has been add.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.remove_nama_role').remove()
+                        // if (result.)
+                        $('.modal_nama_role_append').append(`
+                            <span class="remove_nama_role text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+
+                    }
+
+                }
+            });
+
+        })
+    }
 
     function modal_crud(id, username, nama_lengkap, role_id, role_name){
         $('#modal_content').html(`

@@ -42,7 +42,7 @@ class MenuPageController extends Controller
     public function create(Request $request){
         return DataTables::of($this->models($request))
         ->addColumn('parents', function ($row){
-            return Permission::whereId($row->module_parent)->first()->name ?? '-';
+            return Permission::whereId($row->module_parent)->first()->name ?? 'Head';
         })
         ->rawColumns(['parents'])
         ->make(true);

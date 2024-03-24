@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -74,6 +73,36 @@ class UserRolePageController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function tambah_role(Request $request){
+        $validasi = [
+            'name' => 'required|unique:roles',
+        ];
+
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $validator->messages()
+            ]);
+        }
+
+        $role = Role::create([
+            'name' => $request->name
+        ]);
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => $role,
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -114,10 +143,9 @@ class UserRolePageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        dd($request->all());
         $validasi = [
             'id'           => 'required',
-            'username'     => 'required',
+            'nama_role'     => 'required',
             'nama_lengkap' => 'required',
             'role'         => 'required',
         ];

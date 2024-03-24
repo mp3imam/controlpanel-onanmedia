@@ -18,9 +18,9 @@
                     </div>
                     <div class="row g-4">
                         <div class="row mt-4">
-                            <div class="col-xxl-4 col-md-6 p-3">
+                            <div class="col-md-6 p-3">
                                 <label>Filter UserName</label>
-                                <input id='username_id' name="username_id" />
+                                <input class="form-control" id='username_id' name="username_id" />
                             </div>
                         </div>
                     </div>

@@ -11,11 +11,11 @@
         <div class="card">
             <div class="card-body">
                 <div id="customerList">
-                    <div class="col-sm-auto mb-3">
+                    {{-- <div class="col-sm-auto mb-3">
                         <button type="button" class="btn btn-success" onclick="modal_crud('Tambah')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">
                             Tambah
                         </button>
-                    </div>
+                    </div> --}}
                     <div class="row g-4">
                         <div class="row mt-4">
                             <div class="col-md-6 col-md-2 mb-3">
@@ -98,7 +98,7 @@
                     data: 'parents',
                     name: 'Parent',
                     render: function (data) {
-                        btn = data !== '-' ? `
+                        btn = data !== 'Head' ? `
                         <span class="badge badge-label bg-primary"><i class="mdi mdi-circle-medium"></i> ${data}</span>
                         ` : `<span class="badge badge-label bg-danger"><i class="mdi mdi-circle-medium"></i> ${data}</span>`
                         return btn
