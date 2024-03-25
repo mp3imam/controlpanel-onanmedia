@@ -448,7 +448,7 @@
     <!--end row-->
 @endsection
 @section('script')
-    <script type="text/javascript">
+<script type="text/javascript">
     function modal_crud_keluarga(data, id, nama, hubungan_id, hubungan, agama_id, agama, pekerjaan, alamat, nomor_handphone, tanggal_lahir){
         var nama_modal = nama ?? ''
         var hubungan_id_modal = hubungan_id ?? ''
@@ -469,12 +469,13 @@
                 <div class="row g-3">
                     <div class="col-xxl-6" id="modal_nama_append">
                         <label for="nama" class="form-label">Nama</label>
+                        <input class="form-control" id="modal_id" value="${id}" hidden>
                         <input class="form-control" id="modal_nama" placeholder="Masukan Nama" value="${nama_modal}">
                     </div>
                     <div class="col-xxl-6" id="modal_hubungan_append">
                         <label for="hubungan" class="form-label">Hubungan</label>
                         <select class="form-control" id="modal_hubungan">
-                            <option value="1">Ayah</option>
+                            <option value="1" selected >Ayah</option>
                             <option value="2">Ibu</option>
                             <option value="3">Suami/Istri</option>
                             <option value="4">Saudara</option>
@@ -514,11 +515,15 @@
             var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
             $('#modal_agama_id').append(newOptionRole).trigger('change');
             $('#modal_agama_id').select2();
-            $("#modal_hubungan").val(hubungan_id_modal);
 
-            $('#row'+id).removeClass('add btn-primary').addClass('edit btn-warning').text('Update');
+            $('#row'+id).removeClass('btn-primary').addClass('btn-warning').text('Update');
         } else {
-            $('#rowundefined').removeClass('edit btn-warning').addClass('add btn-primary');
+            var dataRole = {id: 1,text: 'Islam',selected: true};
+            var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+            $('#modal_agama_id').append(newOptionRole).trigger('change');
+            $('#modal_agama_id').select2();
+
+            $('#row'+id).removeClass('btn-warning').addClass('btn-primary');
         }
 
         $("#modal_agama_id").select2({
@@ -555,6 +560,7 @@
 
         $('.add').on('click', function() {
             var data = new FormData()
+            data.append('id', $('#modal_id').val())
             data.append('id_update', $('#id_update').val())
             data.append('nama', $('#modal_nama').val())
             data.append('agama_id', $('#modal_agama_id').val())
@@ -582,62 +588,18 @@
                             $('#exampleModalgrid').modal('hide')
                         });
                     }else{
-                        $('.remove_nama').remove()
-                        $('.remove_agama').remove()
-                        $('.remove_tanggal_lahir').remove()
-
-                        $('.modal_nama_append').append(`
-                            <span class="remove_nama text-danger">Data Tidak Boleh Kosong</span>
+                        $('.alert_hapus').remove()
+                        if (result.message.nama == "The nama field is required.")
+                        $('#modal_nama_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
                         `)
-                        $('.modal_agama_append').append(`
-                            <span class="remove_agama text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-                        $('.modal_tanggal_lahir_append').append(`
-                            <span class="remove_tanggal_lahir text-danger">Data Tidak Boleh Kosong</span>
+                        if (result.message.tanggal_lahir == "The tanggal lahir field is required.")
+                        $('#modal_tanggal_lahir_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
                         `)
                     }
                 }
             });
-
-        })
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('kategori_id', $('#modal_kategori_id').val())
-            data.append('subkategori', $('#modal_subkategori').val())
-            data.append('url', $('#modal_url').val())
-            $.ajax({
-                url: "{{ url('subkategori') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTable').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-                    }
-                }
-            });
-
         })
     }
 
@@ -660,6 +622,7 @@
                 <div class="row g-3">
                     <div class="col-md-6" id="modal_nama_pendidikan_append">
                         <label for="nama" class="form-label">Nama</label>
+                        <input class="form-control" id="modal_id" value="${id}" hidden>
                         <input class="form-control" id="modal_nama_pendidikan" placeholder="Masukan Nama" value="${nama_modal}">
                     </div>
                     <div class="col-md-6" id="modal_jurusan_pendidikan_append">
@@ -697,6 +660,8 @@
             e.preventDefault();
 
             var formData = new FormData();
+            formData.append('id', $('#modal_id').val())
+            formData.append('id_update', $('#id_update').val())
             formData.append('nama', $('#modal_nama_pendidikan').val());
             formData.append('jurusan', $('#modal_jurusan_pendidikan').val());
             formData.append('ipk', $('#modal_ipk_pendidikan').val());
@@ -729,6 +694,7 @@
                         });
                     }else{
                         $('.alert_hapus').remove()
+                        console.log(response.message.nama == "The nama field is required.")
                         if (response.message.nama == "The nama field is required.")
                         $('#modal_nama_pendidikan_append').append(`
                             <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
@@ -758,89 +724,11 @@
             });
         });
 
-        if (id !== undefined) {
-            var dataRole = {id: agama_id_modal,text: agama_modal,selected: true};
-            var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-            $('#modal_agama_id').append(newOptionRole).trigger('change');
-            $('#modal_agama_id').select2();
-            $("#modal_hubungan").val(hubungan_id_modal);
-
-            $('#row'+id).removeClass('add btn-primary').addClass('edit btn-warning').text('Update');
-        } else {
-            $('#rowundefined').removeClass('edit btn-warning').addClass('add btn-primary');
-        }
-
-        $("#modal_agama_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.agama') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
-                }
-            },
-            dropdownParent: $("#modal_content")
-        });
-
-        $('#modal_agama_id').change(function() {
-            $("#nama_agama").val($("#modal_agama_id option:selected").text());
-        });
-        $("#nama_agama").val($("#modal_agama_id option:selected").text());
-
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-        $('.edit').on('click', function() {
-            var data = new FormData()
-            data.append('_method', 'PUT')
-            data.append('id', id)
-            data.append('kategori_id', $('#modal_kategori_id').val())
-            data.append('subkategori', $('#modal_subkategori').val())
-            data.append('url', $('#modal_url').val())
-            $.ajax({
-                url: "{{ url('subkategori') }}/" + id,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.status == 200){
-                        Swal.fire({
-                            title: 'Edit!',
-                            text: 'Your file has been edit.',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false
-                        }).then(function(){
-                            $('#dataTablePendidikan').DataTable().ajax.reload()
-                            $('#exampleModalgrid').modal('hide')
-                        });
-                    }else{
-                        $('.remove_username').remove()
-                        $('.remove_nama_lengkap').remove()
-                        $('.remove_role').remove()
-                        // if (result.)
-                        $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-                    }
-                }
-            });
-
-        })
     }
 
     function modal_crud_pelatihan(data, id, nama, periode, sertifikat){
@@ -857,6 +745,7 @@
                 <div class="row g-3">
                     <div class="col-md-6" id="modal_nama_pelatihan_append">
                         <label for="nama" class="form-label">Nama</label>
+                        <input class="form-control" id="modal_id" value="${id}" hidden>
                         <input class="form-control" id="modal_nama_pelatihan" placeholder="Masukan Nama" value="${nama_modal}">
                     </div>
                     <div class="col-md-6" id="modal_periode_pelatihan_append">
@@ -966,6 +855,191 @@
         })
     }
 
+    function modal_crud_riwayat(data, nama, alamat, jabatan, masuk, keluar, deskripsi, alasan, sertifikat){
+        var nama_modal = nama ?? ''
+        var alamat_modal = alamat ?? ''
+        var jabatan_modal = jabatan ?? ''
+        var masuk_modal = masuk ?? ''
+        var keluar_modal = keluar ?? ''
+        var deskripsi_modal = deskripsi ?? ''
+        var alasan_modal = alasan ?? ''
+        var sertifikat_modal = sertifikat ?? ''
+
+        $('#modal_content').html(`
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data Riwayat Pekerjaan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6" id="modal_nama_riwayat_append">
+                        <label for="nama" class="form-label">Nama</label>
+                        <input class="form-control" id="modal_id" value="${id}" hidden>
+                        <input class="form-control" id="modal_nama_riwayat" placeholder="Masukan Nama" value="${nama_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_alamat_riwayat_append">
+                        <label for="alamat" class="form-label">Alamat</label>
+                        <input class="form-control" id="modal_alamat_riwayat" placeholder="Alamat" value="${alamat_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_jabatan_riwayat_append">
+                        <label for="jabatan" class="form-label">Jabatan</label>
+                        <input class="form-control" id="modal_jabatan_riwayat" placeholder="Jabatan" value="${jabatan_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_periode_masuk_riwayat_append">
+                        <label for="periode_masuk" class="form-label">Periode Masuk</label>
+                        <input type="date" class="form-control" id="modal_periode_masuk_riwayat" placeholder="Periode" value="${masuk_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_periode_keluar_riwayat_append">
+                        <label for="periode_keluar" class="form-label">Periode keluar</label>
+                        <input type="date" class="form-control" id="modal_periode_keluar_riwayat" placeholder="Periode" value="${keluar_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_deskripsi_riwayat_append">
+                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                        <input class="form-control" id="modal_deskripsi_riwayat" placeholder="Deskripsi" value="${deskripsi_modal}">
+                    </div>
+                    <div class="col-md-6" id="modal_alasan_riwayat_append">
+                        <label for="alasan" class="form-label">Alasan</label>
+                        <input class="form-control" id="modal_alasan_riwayat" placeholder="Alasan" value="${alasan_modal}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="sertifikat" class="form-label">Sertifikat</label>
+                        <input type="file" class="form-control" id="modal_sertifikat_riwayat" accept="image/*" data-sertifikat="${sertifikat_modal}">
+                    </div>
+                </div>
+                <div class="col-lg-12 d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>&nbsp;
+                    <button type="submit" class="btn btn-primary float-end" id="riwayat_pekerjaan">Simpan</button>
+                </div>
+            </div>
+        `)
+
+        $('#riwayat_pekerjaan').click(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('nama', $('#modal_nama_riwayat').val());
+            formData.append('alamat', $('#modal_alamat_riwayat').val());
+            formData.append('jabatan', $('#modal_jabatan_riwayat').val());
+            formData.append('masuk', $('#modal_periode_masuk_riwayat').val());
+            formData.append('keluar', $('#modal_periode_keluar_riwayat').val());
+            formData.append('deskripsi', $('#modal_deskripsi_riwayat').val());
+            formData.append('alasan', $('#modal_alasan_riwayat').val());
+
+            var sertifikatFiles = $('#modal_sertifikat_riwayat')[0].files;
+            if(sertifikatFiles.length > 0) {
+                formData.append('sertifikat', sertifikatFiles[0]);
+            }
+
+            $.ajax({
+                url: "{{ route('simpan.karyawan.riwayat') }}",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == 200){
+                        Swal.fire({
+                            title: 'Simpan!',
+                            text: 'Data Berhasil disimpan.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTablePelatihan').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.alert_hapus').remove()
+                        if (response.message.nama == "The nama field is required.")
+                        $('#modal_nama_pelatihan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        if (response.message.periode == "The periode field is required.")
+                        $('#modal_periode_pelatihan_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                    }
+                }
+            });
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('.edit').on('click', function() {
+            var data = new FormData()
+            data.append('_method', 'PUT')
+            data.append('id', id)
+            data.append('kategori_id', $('#modal_kategori_id').val())
+            data.append('subkategori', $('#modal_subkategori').val())
+            data.append('url', $('#modal_url').val())
+            $.ajax({
+                url: "{{ url('subkategori') }}/" + id,
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.status == 200){
+                        Swal.fire({
+                            title: 'Edit!',
+                            text: 'Your file has been edit.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false
+                        }).then(function(){
+                            $('#dataTable').DataTable().ajax.reload()
+                            $('#exampleModalgrid').modal('hide')
+                        });
+                    }else{
+                        $('.remove_username').remove()
+                        $('.remove_nama_lengkap').remove()
+                        $('.remove_role').remove()
+                        // if (result.)
+                        $('.modal_username_append').append(`
+                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                    }
+                }
+            });
+
+        })
+    }
+
+    function konfirmasi_hapus(id, name, tabel){
+        Swal.fire({
+            title: "Apakah anda yakin menghapus "+name,
+            showCancelButton: true,
+            confirmButtonText: "Hapus",
+            }).then((result) => {
+            if (result.isConfirmed) {
+                var data = new FormData();
+                data.append('id', id);
+                $.ajax({
+                    type: "post",
+                    url: "{{ route('softdelete_jurnal_umum') }}",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        Swal.fire({
+                            title: 'Hapus!',
+                            text: 'Data berhasil di hapus',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 2500
+                        })
+                    }
+                });
+            }
+
+        });
+    }
+
     $(function() {
         // Datatable Keluarga
         var table = $('#dataTableKeluarga').DataTable({
@@ -975,8 +1049,9 @@
             ajax: {
                 url: "{{ route('tabel.karyawan.keluarga') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
-                    d.roles_id = $('#roles_id').val()
+                    d.username_id = $('#username_id').val(),
+                    d.roles_id = $('#roles_id').val(),
+                    d.karyawanId = $('#id_update').val()
                 }
             },
             columns: [{
@@ -989,7 +1064,7 @@
                     data: 'nama',
                     name: 'nama',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_keluarga('Edit','`+row.data+`','`+row.nama+`', '`+row.hubungan+`','`+row.hubungan_id+`', '`+row.agama_id+`', '`+row.agama+`', '`+row.pekerjaan+`', '`+row.alamat+`', '`+row.no_hp+`', '`+row.tgl_lahir+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_keluarga('Edit','`+row.id+`','`+row.nama+`', '`+row.hubungan+`','`+row.hubungan_id+`', '`+row.agama_id+`', '`+row.agama+`', '`+row.pekerjaan+`', '`+row.alamat+`', '`+row.no_hp+`', '`+row.tgl_lahir+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
                     }
                 },{
                     data: 'hubungan',
@@ -1022,7 +1097,7 @@
                     data: 'id',
                     name: 'Action',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_keluarga('Edit','`+row.data+`','`+row.nama+`', '`+row.hubungan+`','`+row.hubungan_id+`', '`+row.agama_id+`', '`+row.agama+`', '`+row.pekerjaan+`', '`+row.alamat+`', '`+row.no_hp+`', '`+row.tgl_lahir+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus_keluarga(${data})">Hapus</button>`;
+                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_keluarga('Edit','`+row.id+`','`+row.nama+`', '`+row.hubungan+`','`+row.hubungan_id+`', '`+row.agama_id+`', '`+row.agama+`', '`+row.pekerjaan+`', '`+row.alamat+`', '`+row.no_hp+`', '`+row.tgl_lahir+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus(${data},'`+row.nama+`','keluarga')">Hapus</button>`;
                     }
                 }
             ]
@@ -1070,8 +1145,9 @@
             ajax: {
                 url: "{{ route('tabel.karyawan.pendidikan') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
-                    d.roles_id = $('#roles_id').val()
+                    d.username_id = $('#username_id').val(),
+                    d.roles_id = $('#roles_id').val(),
+                    d.karyawanId = $('#id_update').val()
                 }
             },
             columns: [{
@@ -1108,7 +1184,7 @@
                     data: 'id',
                     name: 'Action',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_pendidikan('Edit','`+row.data+`','`+row.nama+`', '`+row.jurusan+`','`+row.IPK+`', '`+row.alamat+`', '`+row.tahun_masuk+`', '`+row.tahun_keluar+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus_keluarga(${data})">Hapus</button>`;
+                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_pendidikan('Edit','`+row.data+`','`+row.nama+`', '`+row.jurusan+`','`+row.IPK+`', '`+row.alamat+`', '`+row.tahun_masuk+`', '`+row.tahun_keluar+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus(${data},'`+row.nama+`','pendidikan')">Hapus</button>`;
                     }
                 }
             ]
@@ -1147,7 +1223,6 @@
         });
     });
 
-
     $(function() {
         // Datatable Pelatihan
         var table = $('#dataTablePelatihan').DataTable({
@@ -1157,8 +1232,9 @@
             ajax: {
                 url: "{{ route('tabel.karyawan.pelatihan') }}",
                 data: function (d) {
-                    d.username_id = $('#username_id').val()
-                    d.roles_id = $('#roles_id').val()
+                    d.username_id = $('#username_id').val(),
+                    d.roles_id = $('#roles_id').val(),
+                    d.karyawanId = $('#id_update').val()
                 }
             },
             columns: [{
@@ -1183,7 +1259,74 @@
                     data: 'id',
                     name: 'Action',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_pelatihan('Edit','`+row.data+`','`+row.nama+`', '`+row.periode+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus_keluarga(${data})">Hapus</button>`;
+                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_pelatihan('Edit','`+row.data+`','`+row.nama+`', '`+row.periode+`', '`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus(${data},'`+row.nama+`','pelatihan')">Hapus</button>`;
+                    }
+                }
+            ]
+        });
+
+        $('#username_id').keyup(function () {
+            table.draw();
+        });
+
+        $('#roles_id').change(function () {
+            table.draw();
+        });
+
+    });
+
+    $(function() {
+        // Datatable Pelatihan
+        var table = $('#dataTableRiwayat').DataTable({
+            dom: 'lrtip',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('tabel.karyawan.riwayat') }}",
+                data: function (d) {
+                    d.username_id = $('#username_id').val(),
+                    d.roles_id = $('#roles_id').val(),
+                    d.karyawanId = $('#id_update').val()
+                }
+            },
+            columns: [{
+                data: "id",
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },{
+                    data: 'nama',
+                    name: 'Nama',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_riwayat('Edit','`+row.nama+`', '`+row.alamat+`','`+row.jabatan+`','`+row.masuk+`', '`+row.keluar+`', '`+row.deskripsi+`', '`+row.alasan+`','`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                    }
+                },{
+                    data: 'alamat',
+                    name: 'Alamat',
+                },{
+                    data: 'jabatan',
+                    name: "Jabatan",
+                },{
+                    data: 'masuk',
+                    name: 'Tanggal Masuk',
+                },{
+                    data: 'keluar',
+                    name: "Tanggal Keluar",
+                },{
+                    data: 'deskripsi',
+                    name: 'Deskripsi',
+                },{
+                    data: 'alasan',
+                    name: "Alasan",
+                },{
+                    data: 'sertifikat',
+                    name: 'Sertifikat',
+                },{
+                    data: 'id',
+                    name: 'Action',
+                    render: function (data, type, row, meta) {
+                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_riwayat('Edit','`+row.nama+`', '`+row.alamat+`','`+row.jabatan+`','`+row.masuk+`', '`+row.keluar+`', '`+row.deskripsi+`', '`+row.alasan+`','`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus(${data},'`+row.nama+`','riwayat')">Hapus</button>`;
                     }
                 }
             ]
@@ -1205,6 +1348,96 @@
         }
     });
 
+    var dataRole = {id: 20230505000065,text: "S1",selected: true};
+    var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+    $('#pendidikan_id_umum').append(newOptionRole).trigger('change');
+    $('#pendidikan_id_umum').select2();
+
+    $('#pendidikan_id_umum').select2({
+        ajax: {
+            url: "{{ route('api.pendidikan') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+
+    var dataRole = {id: 2,text: "Kawin dengan 1 Tanggungan",selected: true};
+    var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+    $('#tipe_pajak_personal').append(newOptionRole).trigger('change');
+    $('#tipe_pajak_personal').select2();
+
+    $('#tipe_pajak_personal').select2({
+        ajax: {
+            url: "{{ route('api.tipe_pajak') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+
+    var dataRole = {id: 8,text: "Bank Bca",selected: true};
+    var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+    $('#nama_bank_personal').append(newOptionRole).trigger('change');
+    $('#nama_bank_personal').select2();
+
+    $('#nama_bank_personal').select2({
+        ajax: {
+            url: "{{ route('api.get_select2_banks') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+
+    $('#departement_pekerjaan').select2({
+        ajax: {
+            url: "{{ route('api.divisi') }}",
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        }
+                    })
+                };
+            },
+            cache: true
+        }
+    });
 
     $('#save_umum').click(function(){
         var fd = new FormData()
@@ -1240,8 +1473,8 @@
 
                     $('.nama_lengkap').text(response.message.nama_lengkap)
                     Swal.fire({
-                        title: "Good job!",
-                        text: "You clicked the button!",
+                        title: "Berhasil!",
+                        text: "Data Berhasil di Simpan",
                         icon: "success"
                     });
                     $('#save_personal').prop('disabled', false)
@@ -1304,8 +1537,8 @@
                     $('.nav-link.active').removeClass('active').parent().next().find('.nav-link').addClass('active');
                     $('#save_pekerjaan').prop('disabled', false)
                     Swal.fire({
-                        title: "Good job!",
-                        text: "You clicked the button!",
+                        title: "Berhasil!",
+                        text: "Data Berhasil di Simpan",
                         icon: "success"
                     });
                 }else{
@@ -1349,9 +1582,7 @@
         });
 
         var fd = new FormData()
-        // untuk testing
-        fd.append('id_update', 1)
-        // fd.append('id_update', $('#id_update').val())
+        fd.append('id_update', $('#id_update').val())
         fd.append('cabang_pekerjaan', $('#cabang_pekerjaan').val());
         fd.append('departement_pekerjaan', $('#departement_pekerjaan').val());
         fd.append('jabatan_pekerjaan', $('#jabatan_pekerjaan').val());
@@ -1379,8 +1610,8 @@
                     $('.nav-link.active').removeClass('active').parent().next().find('.nav-link').addClass('active');
                     $('#save_pekerjaan').prop('disabled', false)
                     Swal.fire({
-                        title: "Good job!",
-                        text: "You clicked the button!",
+                        title: "Berhasil!",
+                        text: "Data Berhasil di Simpan",
                         icon: "success"
                     });
                 }else{

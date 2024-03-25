@@ -9,4 +9,5 @@ class RiwayatKaryawanModel extends Model
 {
     use HasFactory;
     protected $table = 'riwayat_karyawan';
+    protected $guarded = ['id'];
 }

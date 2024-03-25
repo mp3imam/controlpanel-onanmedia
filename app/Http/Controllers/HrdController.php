@@ -8,6 +8,7 @@ use App\Models\DataKaryawanPersonalModel;
 use App\Models\KeluargaKaryawanModel;
 use App\Models\PelatihanKaryawanModel;
 use App\Models\PendidikanKaryawanModel;
+use App\Models\RiwayatKaryawanModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -16,6 +17,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class HrdController extends Controller
 {
@@ -57,8 +59,7 @@ class HrdController extends Controller
 
     function tabel_karyawan_keluarga(Request $request){
         return DataTables::of(
-            // KeluargaKaryawanModel::whereDataKaryawanId($request->id)->with(['agama_keluarga'])->get()
-            KeluargaKaryawanModel::whereDataKaryawanId(1)->with(['agama_keluarga'])->get()
+            KeluargaKaryawanModel::whereDataKaryawanId($request->karyawanId)->with(['agama_keluarga'])->get()
         )
         ->addColumn('usia', function ($row){
             return Carbon::parse($row->tanggal_lahir)->age;
@@ -83,7 +84,7 @@ class HrdController extends Controller
 
     function tabel_karyawan_pendidikan(Request $request){
         return DataTables::of(
-            PendidikanKaryawanModel::whereDataKaryawanId(1)->get()
+            PendidikanKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
         )
         ->addColumn('usia', function ($row){
             return Carbon::parse($row->tanggal_lahir)->age;
@@ -105,7 +106,14 @@ class HrdController extends Controller
 
     function tabel_karyawan_pelatihan(Request $request){
         return DataTables::of(
-            PelatihanKaryawanModel::whereDataKaryawanId(1)->get()
+            PelatihanKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
+        )
+        ->make(true);
+    }
+
+    function tabel_karyawan_riwayat(Request $request){
+        return DataTables::of(
+            RiwayatKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
         )
         ->make(true);
     }
@@ -343,7 +351,6 @@ class HrdController extends Controller
     }
 
     public function simpan_karyawan_personal(Request $request){
-        $time = time();
         $validasi = [
             'id_update'             => 'required',
             'no_identitas_personal' => 'required',
@@ -368,12 +375,24 @@ class HrdController extends Controller
         $save->tipe_pajak       = $request->tipe_pajak_personal;
         $save->bank             = $request->nama_bank_personal;
         $save->no_bank          = $request->no_akun_bank_personal ?? '-';
-        // if ($request->no_ktp)
-        // $save->foto_ktp         = $request->no_ktp('');
-        // $request->no_ktp->move(public_path('keluarga/personal'), $time . '.' . $request->no_ktp->extension());
-        // if ($request->no_kk)
-        // $save->foto_kk          =
-        // $request->no_ktp->move(public_path('keluarga/personal'), $time . '.' . $request->foto_kk->extension());
+        if ($request->no_ktp){
+            $file = $request->file('no_ktp');
+
+            $path = public_path('keluarga/personal/ktp/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $file->move($path, $imageName);
+            $save->foto_ktp         = asset('keluarga/personal/ktp/')."/".$imageName;
+        }
+        if ($request->no_kartu_keluarga){
+            $file = $request->file('no_kartu_keluarga');
+
+            $path = public_path('keluarga/personal/kk/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $file->move($path, $imageName);
+            $save->foto_kk         = asset('keluarga/personal/kk/')."/".$imageName;
+        }
         $save->no_kesehatan     = $request->no_kesehatan_personal ?? '';
         $save->tunjangan_pajak  = $request->tunjangan_pajak_personal ?? '';
         $save->no_ketenagakerjaan = $request->no_ketenagakerjaan_personal ?? '';
@@ -430,7 +449,6 @@ class HrdController extends Controller
         $validasi = [
             'nama'          => 'required',
             'tanggal_lahir' => 'required',
-            'agama_id'      => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -443,7 +461,8 @@ class HrdController extends Controller
         }
 
         $save = KeluargaKaryawanModel::firstOrNew([
-            'data_karyawan_id'    => $request->id_update
+            'id'               => $request->id !== 'undefined' ? $request->id : KeluargaKaryawanModel::latest()->first()->id + 1,
+            'data_karyawan_id' => $request->id_update
         ]);
 
         $save->nama      = $request->nama;
@@ -482,9 +501,8 @@ class HrdController extends Controller
         }
 
         $save = PendidikanKaryawanModel::firstOrNew([
-            // 'data_karyawan_id'    => $request->id_update
-            // Testing
-            'data_karyawan_id'    => 1
+            'id'               => $request->id !== 'undefined' ? $request->id : PendidikanKaryawanModel::latest()->first()->id + 1,
+            'data_karyawan_id' => $request->id_update
         ]);
 
         $save->nama     = $request->nama;
@@ -493,7 +511,15 @@ class HrdController extends Controller
         $save->alamat   = $request->alamat;
         $save->tahun_masuk  = $request->tahun_masuk;
         $save->tahun_keluar = $request->tahun_keluar;
-        // $save->sertifikat   = $request->sertifikat;
+        if ($request->sertifikat){
+            $file = $request->file('sertifikat');
+
+            $path = public_path('keluarga/sertifikat/ktp/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $file->move($path, $imageName);
+            $save->foto_ktp         = asset('keluarga/sertifikat/ktp/')."/".$imageName;
+        }
 
         $save->save();
 
@@ -519,14 +545,55 @@ class HrdController extends Controller
         }
 
         $save = PelatihanKaryawanModel::firstOrNew([
-            // 'data_karyawan_id'    => $request->id_update
-            // Testing
-            'data_karyawan_id'    => 1
+            'id'               => $request->id !== 'undefined' ? $request->id : PelatihanKaryawanModel::latest()->first()->id + 1,
+            'data_karyawan_id' => $request->id_update
         ]);
 
         $save->nama     = $request->nama;
         $save->periode  = $request->periode;
         // $save->sertifikat   = $request->sertifikat;
+
+        $save->save();
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $save
+        ]);
+    }
+
+    public function simpan_karyawan_riwayat(Request $request){
+        $validasi = [
+            'nama'      => 'required',
+            'alamat'    => 'required',
+            'jabatan'   => 'required',
+            'masuk'     => 'required',
+            'keluar'    => 'required',
+            'deskripsi' => 'required',
+            'alasan'    => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $validasi);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $validator->messages()
+            ]);
+        }
+
+        $save = RiwayatKaryawanModel::firstOrNew([
+            'id'               => $request->id !== 'undefined' ? $request->id : RiwayatKaryawanModel::latest()->first()->id + 1,
+            'data_karyawan_id' => $request->id_update
+        ]);
+
+        $save->nama       = $request->nama;
+        $save->alamat     = $request->alamat;
+        $save->jabatan    = $request->jabatan;
+        $save->masuk      = $request->masuk;
+        $save->keluar     = $request->keluar;
+        $save->deskripsi  = $request->deskripsi;
+        $save->alasan     = $request->alasan;
+        // $save->sertifikat = $request->sertifikat;
 
         $save->save();
 
