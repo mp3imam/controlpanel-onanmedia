@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             TransaksiKasBelanjaStatusSeeder::class,
             SatuanSeeder::class,
             // AdminBalasanTemplateSeeder::class,
+            PermissionMenuPembayaranJasaSeeder::class
         ]);
     }
 }

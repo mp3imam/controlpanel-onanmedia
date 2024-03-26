@@ -138,15 +138,15 @@ class HrdController extends Controller
      */
     public function store(Request $request){
         $validasi = [
-            'nama' => 'required',
-            'email' => 'required',
-            'divisis' => 'required',
-            'no_hp' => 'required',
-            'no_rek' => 'required',
+            'nama'      => 'required',
+            'email'     => 'required',
+            'divisis'   => 'required',
+            'no_hp'     => 'required',
+            'no_rek'    => 'required',
             'create_date' => 'required',
-            'kontrak' => 'required',
-            'gaji' => 'required',
-            'alamat' => 'required'
+            'kontrak'   => 'required',
+            'gaji'      => 'required',
+            'alamat'    => 'required'
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -461,7 +461,7 @@ class HrdController extends Controller
         }
 
         $save = KeluargaKaryawanModel::firstOrNew([
-            'id'               => $request->id !== 'undefined' ? $request->id : KeluargaKaryawanModel::latest()->first()->id + 1,
+            'id'               => $request->id !== 'undefined' ? $request->id : (KeluargaKaryawanModel::latest()->first()->id ?? KeluargaKaryawanModel::first()->id ?? 0) + 1,
             'data_karyawan_id' => $request->id_update
         ]);
 
@@ -501,7 +501,7 @@ class HrdController extends Controller
         }
 
         $save = PendidikanKaryawanModel::firstOrNew([
-            'id'               => $request->id !== 'undefined' ? $request->id : PendidikanKaryawanModel::latest()->first()->id + 1,
+            'id'               => $request->id !== 'undefined' ? $request->id : (PendidikanKaryawanModel::latest()->first()->id ?? PendidikanKaryawanModel::first()->id ?? 0) + 1,
             'data_karyawan_id' => $request->id_update
         ]);
 
@@ -514,11 +514,11 @@ class HrdController extends Controller
         if ($request->sertifikat){
             $file = $request->file('sertifikat');
 
-            $path = public_path('keluarga/sertifikat/ktp/');
+            $path = public_path('keluarga/pendidikan/sertifikat/');
             $rand = rand(1000,9999);
             $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
             $file->move($path, $imageName);
-            $save->foto_ktp         = asset('keluarga/sertifikat/ktp/')."/".$imageName;
+            $save->sertifikat = asset('keluarga/pendidikan/sertifikat/')."/".$imageName;
         }
 
         $save->save();
@@ -545,13 +545,21 @@ class HrdController extends Controller
         }
 
         $save = PelatihanKaryawanModel::firstOrNew([
-            'id'               => $request->id !== 'undefined' ? $request->id : PelatihanKaryawanModel::latest()->first()->id + 1,
+            'id'               => $request->id !== 'undefined' ? $request->id : (PelatihanKaryawanModel::latest()->first()->id ?? PelatihanKaryawanModel::first()->id ?? 0) + 1,
             'data_karyawan_id' => $request->id_update
         ]);
 
         $save->nama     = $request->nama;
         $save->periode  = $request->periode;
-        // $save->sertifikat   = $request->sertifikat;
+        if ($request->sertifikat){
+            $file = $request->file('sertifikat');
+
+            $path = public_path('keluarga/pelatihan/sertifikat/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $file->move($path, $imageName);
+            $save->sertifikat = asset('keluarga/pelatihan/sertifikat/')."/".$imageName;
+        }
 
         $save->save();
 
@@ -582,7 +590,7 @@ class HrdController extends Controller
         }
 
         $save = RiwayatKaryawanModel::firstOrNew([
-            'id'               => $request->id !== 'undefined' ? $request->id : RiwayatKaryawanModel::latest()->first()->id + 1,
+            'id'               => $request->id !== 'undefined' ? $request->id : (RiwayatKaryawanModel::latest()->first()->id ?? RiwayatKaryawanModel::first()->id ?? 0) + 1,
             'data_karyawan_id' => $request->id_update
         ]);
 
@@ -593,7 +601,15 @@ class HrdController extends Controller
         $save->keluar     = $request->keluar;
         $save->deskripsi  = $request->deskripsi;
         $save->alasan     = $request->alasan;
-        // $save->sertifikat = $request->sertifikat;
+        if ($request->sertifikat){
+            $file = $request->file('sertifikat');
+
+            $path = public_path('keluarga/riwayat_kerja/sertifikat/');
+            $rand = rand(1000,9999);
+            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $file->move($path, $imageName);
+            $save->sertifikat = asset('keluarga/riwayat_kerja/sertifikat/')."/".$imageName;
+        }
 
         $save->save();
 

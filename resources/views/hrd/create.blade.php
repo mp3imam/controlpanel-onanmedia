@@ -25,15 +25,18 @@
                     <div class="row">
                         <div class="col-md-2">
                             <div class="row">
-                                <div class="col-md-12 btn" onclick="$('#inputField').click()">
+                                <div class="col-md-12 btn" onclick="$('#file-input').click()">
                                     <div class="card bg-transparent border-0">
-                                        <img class="card-img rounded-circle" src="{{ asset('images/user-dummy-img.jpg') }}" width="50%" height="50%" alt="Card image"  for="files">
-                                        <div class="card-img-overlay p-0 d-flex flex-column">
-                                            <div class="card-body bg-transparent"></div>
-                                            <div class="bg-transparent text-end mb-3 ml-3">
-                                                <button type="button" for="files" class="btn btn-icon waves-effect waves-light text-white" style="background-color: #4E36E2"><i class="ri-pencil-line"></i></button>
+                                        <label for="file-input" class="custom-file-upload">
+                                            <img class="card-img rounded-circle" src="{{ asset('images/user-dummy-img.jpg') }}" width="50%" height="50%" alt="Card image">
+                                            <div class="card-img-overlay p-0 d-flex flex-column">
+                                                <div class="card-body bg-transparent"></div>
+                                                <div class="bg-transparent text-end mb-3 ml-3">
+                                                    <button type="button" class="btn btn-icon waves-effect waves-light text-white" style="background-color: #4E36E2"><i class="ri-pencil-line"></i></button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </label>
+                                        <input id="file-input" type="file" style="display:none;">
                                     </div>
                                 </div>
                                 <div class="col-md-12 fs-24 text-center nama_lengkap">
@@ -768,6 +771,8 @@
             e.preventDefault();
 
             var formData = new FormData();
+            formData.append('id', $('#modal_id').val())
+            formData.append('id_update', $('#id_update').val())
             formData.append('nama', $('#modal_nama_pelatihan').val());
             formData.append('periode', $('#modal_periode_pelatihan').val());
 
@@ -855,7 +860,7 @@
         })
     }
 
-    function modal_crud_riwayat(data, nama, alamat, jabatan, masuk, keluar, deskripsi, alasan, sertifikat){
+    function modal_crud_riwayat(data, id, nama, alamat, jabatan, masuk, keluar, deskripsi, alasan, sertifikat){
         var nama_modal = nama ?? ''
         var alamat_modal = alamat ?? ''
         var jabatan_modal = jabatan ?? ''
@@ -917,6 +922,8 @@
             e.preventDefault();
 
             var formData = new FormData();
+            formData.append('id', $('#modal_id').val())
+            formData.append('id_update', $('#id_update').val())
             formData.append('nama', $('#modal_nama_riwayat').val());
             formData.append('alamat', $('#modal_alamat_riwayat').val());
             formData.append('jabatan', $('#modal_jabatan_riwayat').val());
@@ -945,7 +952,7 @@
                             confirmButtonClass: 'btn btn-primary w-xs mt-2',
                             buttonsStyling: false
                         }).then(function(){
-                            $('#dataTablePelatihan').DataTable().ajax.reload()
+                            $('#dataTableRiwayat').DataTable().ajax.reload()
                             $('#exampleModalgrid').modal('hide')
                         });
                     }else{
@@ -1299,7 +1306,7 @@
                     data: 'nama',
                     name: 'Nama',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_riwayat('Edit','`+row.nama+`', '`+row.alamat+`','`+row.jabatan+`','`+row.masuk+`', '`+row.keluar+`', '`+row.deskripsi+`', '`+row.alasan+`','`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
+                        return `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud_riwayat('Edit','`+row.id+`','`+row.nama+`', '`+row.alamat+`','`+row.jabatan+`','`+row.masuk+`', '`+row.keluar+`', '`+row.deskripsi+`', '`+row.alasan+`','`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">`+data+`</button>`;
                     }
                 },{
                     data: 'alamat',
@@ -1326,7 +1333,7 @@
                     data: 'id',
                     name: 'Action',
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_riwayat('Edit','`+row.nama+`', '`+row.alamat+`','`+row.jabatan+`','`+row.masuk+`', '`+row.keluar+`', '`+row.deskripsi+`', '`+row.alasan+`','`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus(${data},'`+row.nama+`','riwayat')">Hapus</button>`;
+                        return `<button class="btn btn-warning" type="button" target="_blank" onclick="modal_crud_riwayat('Edit','`+row.id+`','`+row.nama+`', '`+row.alamat+`','`+row.jabatan+`','`+row.masuk+`', '`+row.keluar+`', '`+row.deskripsi+`', '`+row.alasan+`','`+row.sertifikat+`')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">Edit</button> <button class="btn btn-danger" onclick="konfirmasi_hapus(${data},'`+row.nama+`','riwayat')">Hapus</button>`;
                     }
                 }
             ]
