@@ -12,6 +12,7 @@ use App\Models\RiwayatKaryawanModel;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +48,9 @@ class HrdController extends Controller
         return DataTables::of($this->models($request))
             ->addColumn('divisis', function ($row) {
                 return $row->pekerjaan ? $row->pekerjaan->departement->nama : '';
+            })
+            ->addColumn('sisa_kontrak', function ($row) {
+                return $row->pekerjaan ? (new DateTime($row->pekerjaan->kontrak_selesai))->diff(new DateTime)->format('%y tahun, %m bulan, %d hari') : '';
             })
             // ->addColumn('gaji', function ($row){
             //     return $row->gaji->gaji;
@@ -206,7 +210,7 @@ class HrdController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = DataKaryawanModel::with(['agama_personal'])->whereId($id)->first();
+        $detail = DataKaryawanModel::with(['agama_personal', 'pekerjaan.departement'])->whereId($id)->first();
         dd($detail);
 
         return view('users.detail', $title, compact(['detail']));
@@ -223,10 +227,13 @@ class HrdController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = DataKaryawanModel::with(['agama_personal', 'pendidikan_terakhir_banget'])->whereId($id)->first();
-        // dd($detail);
+        $detail = DataKaryawanModel::with(['agama_personal', 'pendidikan_terakhir_banget', 'pekerjaan.departement', 'personal'])->whereId($id)->first();
+        $selisih = (new DateTime($detail->pekerjaan->kontrak_selesai))->diff(new DateTime);
 
-        return view('hrd.edit', $title, compact(['detail']));
+        $sisa_tahun = $selisih->y;
+        $sisa_bulan = $selisih->m;
+        $sisa_hari = $selisih->d;
+        return view('hrd.edit', $title, compact(['detail', 'sisa_tahun', 'sisa_bulan', 'sisa_hari']));
     }
 
     /**

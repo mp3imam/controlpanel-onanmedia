@@ -1764,7 +1764,6 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status == 200) {
-                        $('#id_update').val(response.message.id)
                         var activeTab = $('.tab-pane.active');
                         var activeTab = $('.tab-pane.active');
                         activeTab.removeClass('show active');
@@ -1843,8 +1842,6 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status == 200) {
-
-                        $('#id_update').val(response.message.id)
                         var activeTab = $('.tab-pane.active');
                         var activeTab = $('.tab-pane.active');
                         activeTab.removeClass('show active');

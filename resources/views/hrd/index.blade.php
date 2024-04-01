@@ -35,6 +35,7 @@
                                             <th>Divisi</th>
                                             <th>Email</th>
                                             <th>Telepon</th>
+                                            <th>Sisa Kontrak</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
@@ -103,6 +104,9 @@
                 }, {
                     data: 'no_handphone',
                     name: 'Telepon',
+                }, {
+                    data: 'sisa_kontrak',
+                    name: 'Sisa Kontrak',
                 }, {
                     data: 'status',
                     name: 'Status',

@@ -16,6 +16,11 @@ class DataKaryawanModel extends Model
         return $this->hasOne(AgamaModel::class, 'id', 'agama_id');
     }
 
+    public function personal()
+    {
+        return $this->hasOne(DataKaryawanPersonalModel::class, 'data_karyawan_id');
+    }
+
     public function pendidikan_terakhir_banget()
     {
         return $this->hasOne(PendidikanModel::class, 'id', 'pendidikan_terakhir');
