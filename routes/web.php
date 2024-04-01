@@ -118,6 +118,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('simpan-karyawan-pelatihan', [HrdController::class, 'simpan_karyawan_pelatihan'])->name('simpan.karyawan.pelatihan');
     Route::get('tabel-karyawan-riwayat', [HrdController::class, 'tabel_karyawan_riwayat'])->name('tabel.karyawan.riwayat');
     Route::post('simpan-karyawan-riwayat', [HrdController::class, 'simpan_karyawan_riwayat'])->name('simpan.karyawan.riwayat');
+    Route::post('simpan-karyawan-status', [HrdController::class, 'simpan_karyawan_status'])->name('simpan.karyawan.status');
+    Route::post('hapus-data-data-karyawan', [HrdController::class, 'hapus_data_data_karyawan'])->name('hapus.data.data.karyawan');
 
 
     Route::get('getDataTableKaryawan', [HrdController::class, 'get_datatable'])->name('getDataTableKaryawan');
@@ -141,7 +143,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('ganti-passowrd', [UserController::class, 'ganti_password'])->name('ganti.password');
     Route::post('users.pdf', [UserController::class, 'pdf'])->name('users.pdf');
     Route::resource('user_role_page', UserRolePageController::class);
-    Route::post('tambah_role', [UserRolePageController::class,'tambah_role'])->name('tambah_role');
+    Route::post('tambah_role', [UserRolePageController::class, 'tambah_role'])->name('tambah_role');
     Route::resource('menu_page', MenuPageController::class);
     Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
 });

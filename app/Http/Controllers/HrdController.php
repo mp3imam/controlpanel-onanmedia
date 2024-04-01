@@ -17,7 +17,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
 
 class HrdController extends Controller
 {
@@ -31,91 +30,98 @@ class HrdController extends Controller
      */
     function __construct()
     {
+        // dd(DataKaryawanModel::with('pekerjaan.departement')->get());
         $this->middleware('permission:Data Karyawan');
     }
 
-    public function index(){
+    public function index()
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
         return view('hrd.index', $title);
     }
 
-    function get_datatable(Request $request){
+    function get_datatable(Request $request)
+    {
         return DataTables::of($this->models($request))
-        ->addColumn('divisis', function ($row){
-            return $row->divisis ? $row->divisis->nama : '';
-        })
-        // ->addColumn('gaji', function ($row){
-        //     return $row->gaji->gaji;
-        // })
-        // ->addColumn('tanggal_masuk', function ($row){
-        //     return Carbon::parse($row->created_at)->format('d-m-Y');
-        // })
-        ->rawColumns(['divisis'])
+            ->addColumn('divisis', function ($row) {
+                return $row->pekerjaan ? $row->pekerjaan->departement->nama : '';
+            })
+            // ->addColumn('gaji', function ($row){
+            //     return $row->gaji->gaji;
+            // })
+            // ->addColumn('tanggal_masuk', function ($row){
+            //     return Carbon::parse($row->created_at)->format('d-m-Y');
+            // })
+            ->rawColumns(['divisis'])
 
-        ->make(true);
+            ->make(true);
     }
 
-    function tabel_karyawan_keluarga(Request $request){
+    function tabel_karyawan_keluarga(Request $request)
+    {
         return DataTables::of(
             KeluargaKaryawanModel::whereDataKaryawanId($request->karyawanId)->with(['agama_keluarga'])->get()
         )
-        ->addColumn('usia', function ($row){
-            return Carbon::parse($row->tanggal_lahir)->age;
-        })
-        ->addColumn('agama', function ($row){
-            return $row->agama_keluarga->nama;
-        })
-        ->addColumn('hubungan_id', function ($row){
-            $hubungan = [
-                1 => 'Ayah',
-                2 => 'Ibu',
-                3 => 'Suami/Istri',
-                4 => 'Saudara',
-                5 => 'Anak'
-            ];
-            return $hubungan[$row->hubungan] ?? '';
-        })
-        ->rawColumns(['usia','agama'])
+            ->addColumn('usia', function ($row) {
+                return Carbon::parse($row->tanggal_lahir)->age;
+            })
+            ->addColumn('agama', function ($row) {
+                return $row->agama_keluarga->nama;
+            })
+            ->addColumn('hubungan_id', function ($row) {
+                $hubungan = [
+                    1 => 'Ayah',
+                    2 => 'Ibu',
+                    3 => 'Suami/Istri',
+                    4 => 'Saudara',
+                    5 => 'Anak'
+                ];
+                return $hubungan[$row->hubungan] ?? '';
+            })
+            ->rawColumns(['usia', 'agama'])
 
-        ->make(true);
+            ->make(true);
     }
 
-    function tabel_karyawan_pendidikan(Request $request){
+    function tabel_karyawan_pendidikan(Request $request)
+    {
         return DataTables::of(
             PendidikanKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
         )
-        ->addColumn('usia', function ($row){
-            return Carbon::parse($row->tanggal_lahir)->age;
-        })
-        ->addColumn('hubungan_id', function ($row){
-            $hubungan = [
-                1 => 'Ayah',
-                2 => 'Ibu',
-                3 => 'Suami/Istri',
-                4 => 'Saudara',
-                5 => 'Anak'
-            ];
-            return $hubungan[$row->hubungan] ?? '';
-        })
-        ->rawColumns(['usia','agama'])
+            ->addColumn('usia', function ($row) {
+                return Carbon::parse($row->tanggal_lahir)->age;
+            })
+            ->addColumn('hubungan_id', function ($row) {
+                $hubungan = [
+                    1 => 'Ayah',
+                    2 => 'Ibu',
+                    3 => 'Suami/Istri',
+                    4 => 'Saudara',
+                    5 => 'Anak'
+                ];
+                return $hubungan[$row->hubungan] ?? '';
+            })
+            ->rawColumns(['usia', 'agama'])
 
-        ->make(true);
+            ->make(true);
     }
 
-    function tabel_karyawan_pelatihan(Request $request){
+    function tabel_karyawan_pelatihan(Request $request)
+    {
         return DataTables::of(
             PelatihanKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
         )
-        ->make(true);
+            ->make(true);
     }
 
-    function tabel_karyawan_riwayat(Request $request){
+    function tabel_karyawan_riwayat(Request $request)
+    {
         return DataTables::of(
             RiwayatKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
         )
-        ->make(true);
+            ->make(true);
     }
 
     /**
@@ -123,7 +129,8 @@ class HrdController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -136,7 +143,8 @@ class HrdController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validasi = [
             'nama'      => 'required',
             'email'     => 'required',
@@ -161,20 +169,20 @@ class HrdController extends Controller
         $user = 'Data Tidak Tersimpan';
         // DB::beginTransaction();
         // try{
-            // Store your file into directory and db
-            $user = new TblDataKaryawan();
-            $user->id     = TblDataKaryawan::orderBy('id','desc')->first()->id+1;
-            $user->nama             = $request->nama;
-            $user->email            = $request->email;
-            $user->divisis          = $request->divisis;
-            $user->no_hp            = $request->no_hp;
-            $user->no_rek           = $request->no_rek;
-            $user->create_date      = $request->create_date;
-            $user->kontrak          = $request->kontrak;
-            $user->gaji             = $request->gaji;
-            $user->alamat           = $request->alamat;
-            $user->status_pegawai   = 1;
-            $user->save();
+        // Store your file into directory and db
+        $user = new TblDataKaryawan();
+        $user->id     = TblDataKaryawan::orderBy('id', 'desc')->first()->id + 1;
+        $user->nama             = $request->nama;
+        $user->email            = $request->email;
+        $user->divisis          = $request->divisis;
+        $user->no_hp            = $request->no_hp;
+        $user->no_rek           = $request->no_rek;
+        $user->create_date      = $request->create_date;
+        $user->kontrak          = $request->kontrak;
+        $user->gaji             = $request->gaji;
+        $user->alamat           = $request->alamat;
+        $user->status_pegawai   = 1;
+        $user->save();
 
         //     DB::commit();
         // }catch(\Exception $e){
@@ -193,7 +201,8 @@ class HrdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id){
+    public function show(Request $request, $id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -209,11 +218,12 @@ class HrdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id){
+    public function edit(Request $request, $id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = DataKaryawanModel::with(['agama_personal','pendidikan_terakhir_banget'])->whereId($id)->first();
+        $detail = DataKaryawanModel::with(['agama_personal', 'pendidikan_terakhir_banget'])->whereId($id)->first();
         // dd($detail);
 
         return view('hrd.edit', $title, compact(['detail']));
@@ -226,7 +236,8 @@ class HrdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $validasi = [
             'nama' => 'required',
             'email' => 'required',
@@ -250,7 +261,7 @@ class HrdController extends Controller
 
         $user = 'Data Tidak Tersimpan';
         DB::beginTransaction();
-        try{
+        try {
             // Store your file into directory and db
             $update = [
                 'nama' => $request->pendidikan,
@@ -258,7 +269,7 @@ class HrdController extends Controller
 
             $user = UserPublicModel::findOrFail($id)->update($update);
             DB::commit();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
         }
 
@@ -274,28 +285,32 @@ class HrdController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id){
+    public function hapus_data_data_karyawan(Request $request)
+    {
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => UserPublicModel::findOrFail($id)->delete()
+            'message' => DB::table($request->tabel)->whereId($request->id)->delete()
         ]);
     }
 
-    public function models($request){
-        return DataKaryawanModel::
-        // with(['divisis','gaji'])->
-        when($request->cari, function($q) use($request){
-            $q->where('nama','like', '%'.$request->cari.'%');
-        })
-        ->get();
+    public function models($request)
+    {
+        return DataKaryawanModel::with('pekerjaan.departement')
+            ->when($request->cari, function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->cari . '%');
+            })
+            ->get();
     }
 
-    public function pdf(Request $request){
+    public function pdf(Request $request)
+    {
         $datas = $this->models($request);
         $satker['name']     = "Kejati DKI Jakarta";
         $satker['address']  = "Jl. H. R. Rasuna Said No.2, RT.5/RW.4, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950";
 
-        $pdf = Pdf::loadview('users.pdf',[
+        $pdf = Pdf::loadview(
+            'users.pdf',
+            [
                 'name'  => 'Data Satker',
                 'satker' => $satker,
                 'datas' => $datas
@@ -305,7 +320,8 @@ class HrdController extends Controller
         return $pdf->download('Laporan-users-PDF');
     }
 
-    public function simpan_karyawan_umum(Request $request){
+    public function simpan_karyawan_umum(Request $request)
+    {
         $validasi = [
             'nama_lengkap_umum'         => 'required',
             'nama_panggilan_umum'       => 'required',
@@ -341,7 +357,15 @@ class HrdController extends Controller
         $save->no_handphone    = $request->no_hp_umum;
         $save->email           = $request->email_umum ?? '';
         $save->pendidikan_terakhir   = $request->pendidikan_id_umum;
-        $save->foto            = $request->foto_umum ?? asset('images/user-dummy-img.jpg');
+        if ($request->foto_umum) {
+            $file = $request->file('foto_umum');
+
+            $path = public_path('karyawan/foto/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+            $file->move($path, $imageName);
+            $save->foto = asset('karyawan/foto/') . "/" . $imageName;
+        }
         $save->save();
 
         return response()->json([
@@ -350,7 +374,8 @@ class HrdController extends Controller
         ]);
     }
 
-    public function simpan_karyawan_personal(Request $request){
+    public function simpan_karyawan_personal(Request $request)
+    {
         $validasi = [
             'id_update'             => 'required',
             'no_identitas_personal' => 'required',
@@ -375,23 +400,23 @@ class HrdController extends Controller
         $save->tipe_pajak       = $request->tipe_pajak_personal;
         $save->bank             = $request->nama_bank_personal;
         $save->no_bank          = $request->no_akun_bank_personal ?? '-';
-        if ($request->no_ktp){
+        if ($request->no_ktp) {
             $file = $request->file('no_ktp');
 
-            $path = public_path('keluarga/personal/ktp/');
-            $rand = rand(1000,9999);
-            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $path = public_path('karywan/keluarga/personal/ktp/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->foto_ktp         = asset('keluarga/personal/ktp/')."/".$imageName;
+            $save->foto_ktp         = asset('karywan/keluarga/personal/ktp/') . "/" . $imageName;
         }
-        if ($request->no_kartu_keluarga){
+        if ($request->no_kartu_keluarga) {
             $file = $request->file('no_kartu_keluarga');
 
-            $path = public_path('keluarga/personal/kk/');
-            $rand = rand(1000,9999);
-            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $path = public_path('karywan/keluarga/personal/kk/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->foto_kk         = asset('keluarga/personal/kk/')."/".$imageName;
+            $save->foto_kk         = asset('karywan/keluarga/personal/kk/') . "/" . $imageName;
         }
         $save->no_kesehatan     = $request->no_kesehatan_personal ?? '';
         $save->tunjangan_pajak  = $request->tunjangan_pajak_personal ?? '';
@@ -405,7 +430,8 @@ class HrdController extends Controller
         ]);
     }
 
-    public function simpan_karyawan_pekerjaan(Request $request){
+    public function simpan_karyawan_pekerjaan(Request $request)
+    {
         $validasi = [
             'cabang_pekerjaan'      => 'required',
             'departement_pekerjaan' => 'required',
@@ -445,7 +471,8 @@ class HrdController extends Controller
         ]);
     }
 
-    public function simpan_karyawan_keluarga(Request $request){
+    public function simpan_karyawan_keluarga(Request $request)
+    {
         $validasi = [
             'nama'          => 'required',
             'tanggal_lahir' => 'required',
@@ -481,7 +508,8 @@ class HrdController extends Controller
         ]);
     }
 
-    public function simpan_karyawan_pendidikan(Request $request){
+    public function simpan_karyawan_pendidikan(Request $request)
+    {
         $validasi = [
             'nama'          => 'required',
             'jurusan'       => 'required',
@@ -511,14 +539,14 @@ class HrdController extends Controller
         $save->alamat   = $request->alamat;
         $save->tahun_masuk  = $request->tahun_masuk;
         $save->tahun_keluar = $request->tahun_keluar;
-        if ($request->sertifikat){
+        if ($request->sertifikat) {
             $file = $request->file('sertifikat');
 
-            $path = public_path('keluarga/pendidikan/sertifikat/');
-            $rand = rand(1000,9999);
-            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $path = public_path('karywan/keluarga/pendidikan/sertifikat/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->sertifikat = asset('keluarga/pendidikan/sertifikat/')."/".$imageName;
+            $save->sertifikat = asset('karywan/keluarga/pendidikan/sertifikat/') . "/" . $imageName;
         }
 
         $save->save();
@@ -529,7 +557,8 @@ class HrdController extends Controller
         ]);
     }
 
-    public function simpan_karyawan_pelatihan(Request $request){
+    public function simpan_karyawan_pelatihan(Request $request)
+    {
         $validasi = [
             'nama'          => 'required',
             'periode'       => 'required',
@@ -551,14 +580,14 @@ class HrdController extends Controller
 
         $save->nama     = $request->nama;
         $save->periode  = $request->periode;
-        if ($request->sertifikat){
+        if ($request->sertifikat) {
             $file = $request->file('sertifikat');
 
-            $path = public_path('keluarga/pelatihan/sertifikat/');
-            $rand = rand(1000,9999);
-            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $path = public_path('karywan/keluarga/pelatihan/sertifikat/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->sertifikat = asset('keluarga/pelatihan/sertifikat/')."/".$imageName;
+            $save->sertifikat = asset('karywan/keluarga/pelatihan/sertifikat/') . "/" . $imageName;
         }
 
         $save->save();
@@ -569,7 +598,8 @@ class HrdController extends Controller
         ]);
     }
 
-    public function simpan_karyawan_riwayat(Request $request){
+    public function simpan_karyawan_riwayat(Request $request)
+    {
         $validasi = [
             'nama'      => 'required',
             'alamat'    => 'required',
@@ -601,14 +631,14 @@ class HrdController extends Controller
         $save->keluar     = $request->keluar;
         $save->deskripsi  = $request->deskripsi;
         $save->alasan     = $request->alasan;
-        if ($request->sertifikat){
+        if ($request->sertifikat) {
             $file = $request->file('sertifikat');
 
-            $path = public_path('keluarga/riwayat_kerja/sertifikat/');
-            $rand = rand(1000,9999);
-            $imageName = Carbon::now()->format('H:i:s')."_$rand.".$file->extension();
+            $path = public_path('karywan/keluarga/riwayat_kerja/sertifikat/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->sertifikat = asset('keluarga/riwayat_kerja/sertifikat/')."/".$imageName;
+            $save->sertifikat = asset('karywan/keluarga/riwayat_kerja/sertifikat/') . "/" . $imageName;
         }
 
         $save->save();
@@ -619,4 +649,18 @@ class HrdController extends Controller
         ]);
     }
 
+    public function simpan_karyawan_status(Request $request)
+    {
+        $save = DataKaryawanModel::firstOrNew([
+            'id' => $request->id
+        ]);
+
+        $save->status = $request->status;
+        $save->save();
+
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $save
+        ]);
+    }
 }

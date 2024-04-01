@@ -13,11 +13,15 @@ class DataKaryawanModel extends Model
 
     public function agama_personal()
     {
-        return $this->hasOne(AgamaModel::class, 'id','agama_id');
+        return $this->hasOne(AgamaModel::class, 'id', 'agama_id');
     }
 
     public function pendidikan_terakhir_banget()
     {
-        return $this->hasOne(PendidikanModel::class, 'id','pendidikan_terakhir');
+        return $this->hasOne(PendidikanModel::class, 'id', 'pendidikan_terakhir');
+    }
+    public function pekerjaan()
+    {
+        return $this->hasOne(DataKaryawanPekerjaanModel::class, 'data_karyawan_id');
     }
 }

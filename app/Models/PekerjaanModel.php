@@ -12,4 +12,9 @@ class PekerjaanModel extends Model
     protected $table = 'MsPekerjaan';
     protected $guarded = ['id'];
     public $timestamps = false;
+
+    public function divisi()
+    {
+        return $this->belongsTo(DataKaryawanModel::class, 'pekerjaan_id');
+    }
 }
