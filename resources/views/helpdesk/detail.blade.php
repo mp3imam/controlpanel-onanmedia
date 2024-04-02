@@ -43,7 +43,7 @@
                                 </div>
                                 <div class="col-md-3 text-end text-muted mt-2">
                                     <label
-                                        class="mt-2 fs-16">{{ Carbon\Carbon::parse($detail->createdAt)->format('D, d M - H:i a') }}</label>
+                                        class="mt-2 fs-16">{{ Carbon\Carbon::parse($detail->createdAt)->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}</label>
                                 </div>
                             </div>
                             <div class="row mt-4">
@@ -98,7 +98,7 @@
                                         </div>
                                         <div class="col-md-3 text-end text-muted mt-2">
                                             <label
-                                                class="mt-2 fs-16">{{ Carbon\Carbon::parse($d->createdAt)->format('D, d M - H:i a') }}</label>
+                                                class="mt-2 fs-16">{{ Carbon\Carbon::parse($d->createdAt)->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}</label>
                                         </div>
                                     </div>
                                     <div class="row mb-4">
@@ -149,12 +149,13 @@
                                             <input id="helpdeskId" value="{{ $detail->id }}" hidden />
                                         </div>
                                         <div class="col-md">
-                                            <form action="{{ route('helpdesk.upload.image') }}" enctype="multipart/form-data"
-                                                class="dropzone dz-clickable"
+                                            <form action="{{ route('helpdesk.upload.image') }}"
+                                                enctype="multipart/form-data" class="dropzone dz-clickable"
                                                 style="width: 100%; height: 100px; min-height: 0px !important;"
                                                 id="image-upload" method="post" id="gambar-dropzone">
                                                 @csrf
-                                                <input id="random_text" name="random_text" value="{{ Str::random(25) }}" hidden />
+                                                <input id="random_text" name="random_text" value="{{ Str::random(25) }}"
+                                                    hidden />
                                                 <div class="dz-default dz-message"
                                                     style="margin:0px !important; font-size: 20px">
                                                     <div>Drag & drop a photo or</div>
@@ -175,7 +176,8 @@
                                     </a>
                                     @if ($detail->isAktif == 0)
                                         <button id="support_seller" type="button"
-                                            class="btn btn-border rounded-5 me-3 text-white" style="background-color: #F97316"
+                                            class="btn btn-border rounded-5 me-3 text-white"
+                                            style="background-color: #F97316"
                                             onclick="konfirmasi_seller('{{ $detail->id }}','{{ $detail->order->pembeli->name }}','{{ $detail->order->penjual->name }}','{{ $detail->order->penjual->email }}')">
                                             <i class="ri-customer-service-2-fill ri-1x"></i> Support Penjual
                                         </button>
@@ -192,7 +194,9 @@
                                             <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Pembeli
                                         </a>
                                     @endif
-                                    <button id="done_button" onclick="button_selesai(`{{ $detail->id }}`,`{{ $detail->order->nomor }}`)" class="btn btn-danger text-white rounded-5 me-3">
+                                    <button id="done_button"
+                                        onclick="button_selesai(`{{ $detail->id }}`,`{{ $detail->order->nomor }}`)"
+                                        class="btn btn-danger text-white rounded-5 me-3">
                                         <i class="ri-pushpin-fill label-icon align-middle fs-16 me-2"></i>
                                         Selesai
                                     </button>
@@ -235,7 +239,7 @@
                             </div>
                             <div class="col-md-3 text-end text-muted mt-2">
                                 <label class="mt-2 fs-16">
-                                    {{ Carbon\Carbon::now()->format('D, d M - H:i a') }}
+                                    {{ Carbon\Carbon::now()->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}
                                 </label>
                             </div>
                         </div>
@@ -323,7 +327,7 @@
                         </div>
                         <div class="col-md-3 text-end text-muted mt-2">
                             <label class="mt-2 fs-16">
-                                {{ Carbon\Carbon::now()->format('D, d M - H:i a') }}
+                                {{ Carbon\Carbon::now()->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}
                             </label>
                         </div>
                     </div>
@@ -369,54 +373,55 @@
                 }
             });
         }
+
         function button_selesai(id, nomor) {
-        // Disable the button with id 'done_button' when the function is called
-        $('#done_button').prop('disabled', true);
+            // Disable the button with id 'done_button' when the function is called
+            $('#done_button').prop('disabled', true);
 
-        // Show a confirmation dialog using Swal (SweetAlert)
-        Swal.fire({
-            title: "Menyelesaikan Keluhan dengan nomor " + nomor,
-            showCancelButton: true,
-            confirmButtonText: "Selesai",
-        }).then((result) => {
-            // Handle the result of the confirmation dialog
-            if (result.isConfirmed) {
-                // Create a FormData object and append the 'id' parameter
-                var data = new FormData();
-                data.append('id', id);
+            // Show a confirmation dialog using Swal (SweetAlert)
+            Swal.fire({
+                title: "Menyelesaikan Keluhan dengan nomor " + nomor,
+                showCancelButton: true,
+                confirmButtonText: "Selesai",
+            }).then((result) => {
+                // Handle the result of the confirmation dialog
+                if (result.isConfirmed) {
+                    // Create a FormData object and append the 'id' parameter
+                    var data = new FormData();
+                    data.append('id', id);
 
-                // Make an AJAX request to the specified route with the FormData
-                $.ajax({
-                    type: "post",
-                    url: "{{ route('selesaikan.keluhan') }}",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function (result) {
-                        // Show a success message using Swal
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Data berhasil diaktifkan',
-                            icon: 'success',
-                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                            buttonsStyling: false,
-                            timer: 2500
-                        });
+                    // Make an AJAX request to the specified route with the FormData
+                    $.ajax({
+                        type: "post",
+                        url: "{{ route('selesaikan.keluhan') }}",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function(result) {
+                            // Show a success message using Swal
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Data berhasil diaktifkan',
+                                icon: 'success',
+                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                                buttonsStyling: false,
+                                timer: 2500
+                            });
 
-                        // Redirect to the specified route after successful completion
-                        window.location.href = "{{ route('helpdesk_list.index') }}";
-                    }
-                });
-            } else {
-                // Re-enable the button with id 'done_button' if the user cancels the action
-                $('#done_button').prop('disabled', false);
-            }
-        });
-    }
+                            // Redirect to the specified route after successful completion
+                            window.location.href = "{{ route('helpdesk_list.index') }}";
+                        }
+                    });
+                } else {
+                    // Re-enable the button with id 'done_button' if the user cancels the action
+                    $('#done_button').prop('disabled', false);
+                }
+            });
+        }
 
         function copy_balasan(isi) {
             $('#balasan').val(isi)
             $('.alert-aktif').remove();
         }
-</script>
+    </script>
 @endsection

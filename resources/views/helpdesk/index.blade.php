@@ -23,9 +23,11 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 p-3">
-                                        <input type="text" class="form-control flatpickr-input active"
-                                            data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true"
-                                            value="1 Nov, 2023 to 12 Jan, 2024" readonly="readonly">
+                                        <input type="text" class="form-control flatpickr-input" id="tanggal"
+                                            name="tanggal" data-provider="flatpickr" data-date-format="d M, Y"
+                                            data-range-date="true" readonly="readonly"
+                                            value="{{ old('tanggal', Request::get('tanggal') ?? Carbon\Carbon::now()->subMonths(3)->firstOfMonth()->format('d M, Y') . ' to ' . Carbon\Carbon::now()->format('d M, Y')) }}">
+
                                     </div>
                                 </div>
                             </div>
@@ -89,8 +91,8 @@
                     ajax: {
                         url: "{{ route('helpdesk_list.create') }}",
                         data: function(d) {
-                            d.username_id = $('#username_id').val()
-                            d.roles_id = $('#roles_id').val()
+                            d.cari = $('#cari').val()
+                            d.tanggal = $('#tanggal').val()
                         }
                     },
                     columns: [{
@@ -143,11 +145,11 @@
                     }]
                 });
 
-                $('#username_id').keyup(function() {
+                $('#cari').keyup(function() {
                     table.draw();
                 });
 
-                $('#roles_id').change(function() {
+                $('#tanggal').change(function() {
                     table.draw();
                 });
             });
