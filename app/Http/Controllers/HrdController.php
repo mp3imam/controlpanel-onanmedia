@@ -465,6 +465,7 @@ class HrdController extends Controller
         $save->jabatan_id     = $request->jabatan_pekerjaan;
         $save->status_kontrak = $request->status_kontrak;
         $save->tanggal_masuk  = $request->kontrak_masuk;
+        $save->periode_kontrak  = $request->periode_kontrak;
         $save->cost_center_id = 0;
         $save->kontrak_selesai = $request->kontrak_selesai;
         $save->potongan_terlambat = $request->potongan_terlambat;

@@ -308,7 +308,7 @@
                                             @if ($detail->personal->foto_kk !== null)
                                                 <div>
                                                     <img id="preview_ktp" class="img-fluid"
-                                                        onclick="openModal('{{ $detail->personal->foto_ktp }}')"
+                                                        onclick="openModal('{{ $detail->personal->foto_kk }}')"
                                                         src="{{ $detail->personal->foto_kk }}" alt="preview"
                                                         width="200px" height="200px" data-bs-toggle="modal"
                                                         data-bs-target="#exampleModalgrid" />
@@ -341,17 +341,29 @@
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Jabatan</label>
                                             <select class="form-control" id='jabatan_pekerjaan' name="jabatan_pekerjaan">
-                                                <option value="1">1. Manager</option>
-                                                <option value="2">2. Leader</option>
-                                                <option value="3" selected>3. Staf</option>
+                                                <option value="1"
+                                                    {{ $detail->pekerjaan->departement_id == 1 ? 'selected' : '' }}>1.
+                                                    Manager</option>
+                                                <option value="2"
+                                                    {{ $detail->pekerjaan->departement_id == 2 ? 'selected' : '' }}>2.
+                                                    Leader</option>
+                                                <option value="3"
+                                                    {{ $detail->pekerjaan->departement_id == 3 ? 'selected' : '' }}>3. Staf
+                                                </option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Status</label>
                                             <select class="form-control" id='status_kontrak' name="status_kontrak">
-                                                <option value="1" selected>Kontrak</option>
-                                                <option value="2">Permanen</option>
-                                                <option value="3">Lainnya</option>
+                                                <option value="1"
+                                                    {{ $detail->pekerjaan->status_kontrak == 1 ? 'selected' : '' }}>Kontrak
+                                                </option>
+                                                <option value="2"
+                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'selected' : '' }}>
+                                                    Permanen</option>
+                                                <option value="3"
+                                                    {{ $detail->pekerjaan->status_kontrak == 3 ? 'selected' : '' }}>Lainnya
+                                                </option>
                                             </select>
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
@@ -1403,7 +1415,9 @@
                     data: 'sertifikat',
                     name: 'Sertifikat',
                     render: function(data) {
-                        var img = data ? `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` : ``;
+                        var img = data ?
+                            `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` :
+                            ``;
                         return img;
                     }
                 }, {
@@ -1433,6 +1447,7 @@
                 text: "Islam",
                 selected: true
             };
+
             var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
             $('#agama_id_umum').append(newOptionRole).trigger('change');
             $('#agama_id_umum').select2();
