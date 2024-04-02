@@ -20,12 +20,16 @@ class DaftarTenderModel extends Model
 
     public function user()
     {
-        return $this->hasOne(UserPublicModel::class, 'id','userId');
+        return $this->hasOne(UserPublicModel::class, 'id', 'userId');
     }
 
     public function status()
     {
-        return $this->hasOne(StatusTenderModel::class, 'id','msStatusTenderId');
+        return $this->hasOne(StatusTenderModel::class, 'id', 'msStatusTenderId');
     }
 
+    public function level_tender()
+    {
+        return $this->hasOne(MsMerchantLevelModel::class, 'id', 'msMerchantLevelId');
+    }
 }

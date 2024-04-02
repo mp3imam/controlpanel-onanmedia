@@ -27,7 +27,8 @@ class DaftarTenderController extends Controller
         $this->middleware('permission:Daftar Tender');
     }
 
-    public function index(){
+    public function index()
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -39,22 +40,26 @@ class DaftarTenderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         return
-        DataTables::of(
-            $this->models($request)
-        )
-        ->addColumn('namaUser', function ($row){
-            return $row->user->name ?? '';
-        })
-        ->addColumn('statusTender', function ($row){
-            return $row->status->nama ?? '';
-        })
-        ->addColumn('tanggal_posting', function ($row){
-            return Carbon::parse($row->createdAt);
-        })
-        ->rawColumns(['tanggal_posting'])
-        ->make(true);
+            DataTables::of(
+                $this->models($request)
+            )
+            ->addColumn('namaUser', function ($row) {
+                return $row->user->name ?? '';
+            })
+            ->addColumn('statusTender', function ($row) {
+                return $row->status->nama ?? '';
+            })
+            ->addColumn('tanggal_posting', function ($row) {
+                return Carbon::parse($row->createdAt);
+            })
+            ->addColumn('level_kualifikasi', function ($row) {
+                return $row->level_tender->nama ?? '';
+            })
+            ->rawColumns(['tanggal_posting', 'level_kualifikasi'])
+            ->make(true);
     }
 
     /**
@@ -63,7 +68,8 @@ class DaftarTenderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validasi = [
             'username'     => 'required',
             'nama_lengkap' => 'required',
@@ -81,10 +87,10 @@ class DaftarTenderController extends Controller
 
         $user = 'Data Tidak Tersimpan';
         DB::beginTransaction();
-        try{
+        try {
             // Store your file into directory and db
-            $input = $request->only(['username','nama_lengkap']);
-            $input['id']               = User::select('id')->orderBy('id','desc')->first()->id +1;
+            $input = $request->only(['username', 'nama_lengkap']);
+            $input['id']               = User::select('id')->orderBy('id', 'desc')->first()->id + 1;
             $input['cl_perusahaan_id'] = 1;
             $input['cl_user_group_id'] = 1;
             $input['status']           = 1;
@@ -98,7 +104,7 @@ class DaftarTenderController extends Controller
 
             $user->assignRole($role);
             DB::commit();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
         }
 
@@ -114,7 +120,8 @@ class DaftarTenderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id){
+    public function show(Request $request, $id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -129,7 +136,8 @@ class DaftarTenderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id){
+    public function edit($id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -145,14 +153,15 @@ class DaftarTenderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $validasi = [
             'detail_id'         => 'required',
             'verifikasi_tender' => 'required',
         ];
 
         if ($request->verifikasi_tender == 3 || $request->verifikasi_tender == 4 || $request->verifikasi_tender == 5)
-        $validasi += ['keterangan' => 'required'];
+            $validasi += ['keterangan' => 'required'];
 
         $validator = Validator::make($request->all(), $validasi);
 
@@ -166,12 +175,12 @@ class DaftarTenderController extends Controller
         $user = 'Data Tidak Tersimpan';
         // DB::beginTransaction();
         // try{
-            // Store your file into directory and db
-            $update = ['msStatusTenderId'  => $request->verifikasi_tender];
-            if ($request->verifikasi_tender == 3 || $request->verifikasi_tender == 4 || $request->verifikasi_tender == 5)
+        // Store your file into directory and db
+        $update = ['msStatusTenderId'  => $request->verifikasi_tender];
+        if ($request->verifikasi_tender == 3 || $request->verifikasi_tender == 4 || $request->verifikasi_tender == 5)
             $update += ['keterangan' => $request->keterangan];
 
-            $user = DaftarTenderModel::whereId($id)->update($update);
+        $user = DaftarTenderModel::whereId($id)->update($update);
         //     DB::commit();
         // }catch(\Exception $e){
         //     DB::rollback();
@@ -189,40 +198,42 @@ class DaftarTenderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => UserPublicModel::findOrFail($id)->delete()
         ]);
     }
 
-    public function models($request){
-        return
-        // DaftarTenderModel::query()
-        // ->select('Tender.*', 'User.name as namaUser','MsStatusTender.nama as statusTender','User.image as profileUser')
-        // ->leftJoin('User','User.id','=','Tender.userId')
-        // ->leftJoin('MsStatusTender','MsStatusTender.id','=','Tender.msStatusTenderId')
-        // // ->where('userId',$request->id)
-        // ->get();
-
-        DaftarTenderModel::with('user','status')->get();
+    public function models($request)
+    {
+        return DaftarTenderModel::with('user', 'status', 'level_tender')
+            ->when($request->judulTender, function ($q) use ($request) {
+                $q->where('judulTender', 'ilike', '%' . $request->judulTender . '%');
+            })
+            ->get();
     }
 
-    public function daftar_pricing(Request $request){
+    public function daftar_pricing(Request $request)
+    {
         return DataTables::of(
             DaftarTenderModel::query()
-            ->select('Tender.*', 'Jasa.nama as UserPosting')
-            ->leftJoin('User','User.id','=','JasaPricing.userId')
-            ->where('userId',$request->id)->get()
-            )->make(true);
+                ->select('Tender.*', 'Jasa.nama as UserPosting')
+                ->leftJoin('User', 'User.id', '=', 'JasaPricing.userId')
+                ->where('userId', $request->id)->get()
+        )->make(true);
     }
 
-    public function pdf(Request $request){
+    public function pdf(Request $request)
+    {
         $datas = $this->models($request);
         $satker['name']     = "Kejati DKI Jakarta";
         $satker['address']  = "Jl. H. R. Rasuna Said No.2, RT.5/RW.4, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950";
 
-        $pdf = Pdf::loadview('users.pdf',[
+        $pdf = Pdf::loadview(
+            'users.pdf',
+            [
                 'name'  => 'Data Satker',
                 'satker' => $satker,
                 'datas' => $datas
