@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('pgsql')->table('data_karyawan_pekerjaan', function (Blueprint $table) {
-            $table->string('periode_kontrak');
+            $table->string('periode_kontrak')->nullable();
         });
     }
 
