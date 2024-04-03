@@ -25,21 +25,22 @@ class MasterCoaController extends Controller
         $this->middleware('permission:Rekening Bank');
     }
 
-    public function index(){
+    public function index()
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
         return view('master_coa.index', $title);
     }
 
-    function get_datatable(Request $request){
+    function get_datatable(Request $request)
+    {
         return DataTables::of($this->models($request))
-        ->addColumn('rekening', function ($row){
-            return $row->kdrek1.$row->kdrek2.$row->kdrek3.$row->kdrek;
-        })
-        ->rawColumns(['rekening'])
-        ->make(true);
-
+            ->addColumn('rekening', function ($row) {
+                return $row->kdrek1 . $row->kdrek2 . $row->kdrek3 . $row->kdrek;
+            })
+            ->rawColumns(['rekening'])
+            ->make(true);
     }
 
     /**
@@ -47,7 +48,8 @@ class MasterCoaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -60,11 +62,12 @@ class MasterCoaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         // dd($request->all());
         $validasi = [
             'pilih_data_id' => 'required',
-            'kode_coa'      => 'required',
+            'kode_coa'      => 'required|unique:cl_coa',
             'nama_akun'     => 'required',
             'rekening_bank' => 'required',
             'nama_bank'     => 'required',
@@ -80,8 +83,8 @@ class MasterCoaController extends Controller
         }
 
         // Store your file into directory and db
-        $input = $request->except(['_token','kode_coa','nama_akun','kdrek1_coa_id','kdrek2_coa_id','kdrek3_coa_id','pilih_data_id']);
-        $input['id']     = MasterCoaModel::getMaxIdRecord()->first()->id+1;
+        $input = $request->except(['_token', 'kode_coa', 'nama_akun', 'kdrek1_coa_id', 'kdrek2_coa_id', 'kdrek3_coa_id', 'pilih_data_id']);
+        $input['id']     = MasterCoaModel::getMaxIdRecord()->first()->id + 1;
         $input['kdrek1'] = 0;
         $input['kdrek2'] = 0;
         $input['kdrek3'] = 0;
@@ -95,13 +98,13 @@ class MasterCoaController extends Controller
         if ($request->pilih_data_id == 2) $pilih_data = "S";
         if ($request->pilih_data_id == 3) $pilih_data = "C";
 
-        if ($pilih_data == "D" && $request->kdrek1_coa_id == 1 && $request->kdrek2_coa_id == 1 && $request->kdrek3_coa_id == 1){
+        if ($pilih_data == "D" && $request->kdrek1_coa_id == 1 && $request->kdrek2_coa_id == 1 && $request->kdrek3_coa_id == 1) {
             // insert to Banks
             $BankModel = BankModel::create([
                 'nama'  => $request->nama_akun,
                 'kode'  => $request->rekening_bank,
                 'aktif' => 1,
-                'icon'  =>'-'
+                'icon'  => '-'
             ]);
 
             $input['akun_bank'] = $BankModel->id;
@@ -125,7 +128,8 @@ class MasterCoaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id){
+    public function show(Request $request, $id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -140,7 +144,8 @@ class MasterCoaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id){
+    public function edit($id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -165,13 +170,14 @@ class MasterCoaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'nama_akun' => 'required',
-            'kode_coa'  => 'required',
+            'kode_coa'  => 'required|unique:cl_coa',
         ]);
 
-        if ($request->pilih_data == "D" && $request->kdrek1_coa == 1 && $request->kdrek2_coa == 1 && $request->kdrek3_coa == 1){
+        if ($request->pilih_data == "D" && $request->kdrek1_coa == 1 && $request->kdrek2_coa == 1 && $request->kdrek3_coa == 1) {
             // insert to Banks
             BankModel::whereId($request->akun_bank)->update([
                 'nama'  => $request->nama_akun,
@@ -185,7 +191,9 @@ class MasterCoaController extends Controller
             'uraian'        => $request->nama_akun,
             'rekening_bank' => $request->rekening_bank,
             'nama_bank'     => $request->nama_bank,
+            'account_name'  => $request->nama_akun,
         ];
+
         MasterCoaModel::find($id)->update($update);
 
         return redirect('master_coa');
@@ -197,34 +205,39 @@ class MasterCoaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
             'message' => MasterCoaModel::findOrFail($id)->delete()
         ]);
     }
 
-    public function models($request){
+    public function models($request)
+    {
         return MasterCoaModel::query()
-        ->when($request->cari, function($q) use($request){
-            $q->where('uraian', 'ilike','%'.$request->cari."%")
-            ->orWhere('type', 'ilike','%'.$request->cari."%")
-            ->orWhere('metode_penyusutan', 'ilike','%'.$request->cari."%")
-            ->orWhere('rekening_bank', 'ilike','%'.$request->cari."%")
-            ->orWhere('alamat_bank', 'ilike','%'.$request->cari."%")
-            ->orWhere('nama_bank', 'ilike','%'.$request->cari."%")
-            ->orWhere('account_name', 'ilike','%'.$request->cari."%")
-            ->orWhere('swift_code', 'ilike','%'.$request->cari."%");
-        })
-        ->get();
+            ->when($request->cari, function ($q) use ($request) {
+                $q->where('uraian', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('type', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('metode_penyusutan', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('rekening_bank', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('alamat_bank', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('nama_bank', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('account_name', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('swift_code', 'ilike', '%' . $request->cari . "%");
+            })
+            ->get();
     }
 
-    public function pdf(Request $request){
+    public function pdf(Request $request)
+    {
         $datas = $this->models($request);
         $satker['name']     = "Kejati DKI Jakarta";
         $satker['address']  = "Jl. H. R. Rasuna Said No.2, RT.5/RW.4, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950";
 
-        $pdf = Pdf::loadview('users.pdf',[
+        $pdf = Pdf::loadview(
+            'users.pdf',
+            [
                 'name'  => 'Data Satker',
                 'satker' => $satker,
                 'datas' => $datas
