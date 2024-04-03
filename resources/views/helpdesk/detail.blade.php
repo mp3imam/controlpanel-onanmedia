@@ -43,17 +43,17 @@
                                 </div>
                                 <div class="col-md-3 text-end text-muted mt-2">
                                     <label
-                                        class="mt-2 fs-16">{{ Carbon\Carbon::parse($detail->createdAt)->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}</label>
+                                        class="mt-2 fs-16">{{ Carbon\Carbon::parse($detail->createdAt)->isoFormat('dddd, D MMMM - HH:mm:ss a') }}</label>
                                 </div>
                             </div>
                             <div class="row mt-4">
                                 <div class="col-md-12">
                                     <div class="fs-18"><strong>Keluhan</strong></div>
-                                    <div class="fs-18 mt-1">{{ $detail->keluhan }}</div>
+                                    <div class="fs-14 mt-1">{{ $detail->keluhan }}</div>
                                 </div>
                                 <div class="col-md-12 mt-4">
                                     <div class="fs-18"><strong>Pesan</strong></div>
-                                    <div class="fs-18 mt-1">{!! nl2br(e($detail->pesan)) !!}</div>
+                                    <div class="fs-14 mt-1">{!! nl2br(e($detail->pesan)) !!}</div>
                                 </div>
                                 <div class="col-md-12 my-4">
                                     @if ($detail->file->isNotEmpty())
@@ -98,13 +98,13 @@
                                         </div>
                                         <div class="col-md-3 text-end text-muted mt-2">
                                             <label
-                                                class="mt-2 fs-16">{{ Carbon\Carbon::parse($d->createdAt)->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}</label>
+                                                class="mt-2 fs-16">{{ Carbon\Carbon::parse($detail->createdAt)->isoFormat('dddd, D MMMM - HH:mm:ss a') }}</label>
                                         </div>
                                     </div>
                                     <div class="row mb-4">
                                         <div class="col-md-12 mt-4">
                                             <div class="fs-18"><strong>Pesan</strong></div>
-                                            <div class="fs-18 mt-1">{!! nl2br(e($d->pesan)) !!}</div>
+                                            <div class="fs-14 mt-1">{!! nl2br(e($d->pesan)) !!}</div>
                                         </div>
                                         <div class="col-md-12 my-4">
                                             @if ($d->file_details->isNotEmpty())
@@ -184,15 +184,15 @@
                                     @endif
                                     @if ($detail->isAktif == 1)
                                         <a type="button" target="_blank"
-                                            href="https://api.whatsapp.com/send/?phone={{ $detail->order->penjual->phone }}&text=Hallo Bpk/Ibu {{ $detail->order->penjual->name }}. Kami dari OnanMedia, ada keluhan tentang penjualan anda. Silahkan buka Onanmedia.com untuk informasi lebih lanjut atau bisa wa langsung disini. Terima kasih&type=phone_number&app_absent=0"
+                                            href="https://api.whatsapp.com/send/?phone={{ $detail->order->penjual->phone }}&text=Hallo Bpk/Ibu {{ $detail->order->penjual->name }}. Kami dari tim Onanmedia ingin memberitahukan bahwa kami telah menerima umpan balik atau keluhan terkait transaksi penjualan Anda. Untuk mendapatkan informasi lebih lanjut, kami mengundang Anda untuk mengunjungi situs resmi kami di onanmedia.com. Alternatifnya, Anda juga dapat menghubungi kami melalui layanan pelanggan WhatsApp di nomor yang tertera. Terima kasih atas perhatian dan kerjasamanya. Hormat kami,&type=phone_number&app_absent=0"
                                             class="btn btn-success btn-border rounded-5 me-3">
                                             <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Penjual
                                         </a>
-                                        <a type="button" target="_blank"
+                                        {{-- <a type="button" target="_blank"
                                             href="https://api.whatsapp.com/send/?phone={{ $detail->order->pembeli->phone }}&text=Hallo Bpk/Ibu {{ $detail->order->penjual->name }}. Kami dari OnanMedia, ada keluhan tentang penjualan anda. Silahkan buka Onanmedia.com untuk informasi lebih lanjut atau bisa wa langsung disini. Terima kasih&type=phone_number&app_absent=0"
                                             class="btn btn-warning btn-border rounded-5 me-3">
                                             <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Pembeli
-                                        </a>
+                                        </a> --}}
                                     @endif
                                     <button id="done_button"
                                         onclick="button_selesai(`{{ $detail->id }}`,`{{ $detail->order->nomor }}`)"
@@ -239,14 +239,14 @@
                             </div>
                             <div class="col-md-3 text-end text-muted mt-2">
                                 <label class="mt-2 fs-16">
-                                    {{ Carbon\Carbon::now()->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}
+                                    {{ Carbon\Carbon::now()->isoFormat('dddd, D MMMM - HH:mm:ss a') }}
                                 </label>
                             </div>
                         </div>
                         <div class="row mt-4">
                             <div class="col-md-12 mt-4">
                                 <div class="fs-18"><strong>Pesan</strong></div>
-                                <div class="fs-18 mt-1">${result.message.pesan}</div>
+                                <div class="fs-14 mt-1">${result.message.pesan}</div>
                             </div>
                             <div class="col-md-12 my-4 append_image">
                             </div>
@@ -327,14 +327,14 @@
                         </div>
                         <div class="col-md-3 text-end text-muted mt-2">
                             <label class="mt-2 fs-16">
-                                {{ Carbon\Carbon::now()->locale('id')->isoFormat('dddd, DD MMMM - HH:mm') }}
+                                {{ Carbon\Carbon::now()->isoFormat('dddd, D MMMM - HH:mm:ss a') }}
                             </label>
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-12 mt-4">
                             <div class="fs-18"><strong>Pesan</strong></div>
-                            <div class="fs-18 mt-1">${result.message.pesan}</div>
+                            <div class="fs-14 mt-1">${result.message.pesan}</div>
                         </div>
                         <div class="col-md-12 my-4 append_image">
                         </div>
