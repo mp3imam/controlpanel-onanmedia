@@ -410,20 +410,20 @@ class HrdController extends Controller
         if ($request->no_ktp) {
             $file = $request->file('no_ktp');
 
-            $path = public_path('karywan/keluarga/personal/ktp/');
+            $path = public_path('karyawan/keluarga/personal/ktp/');
             $rand = rand(1000, 9999);
             $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->foto_ktp         = asset('karywan/keluarga/personal/ktp/') . "/" . $imageName;
+            $save->foto_ktp         = asset('karyawan/keluarga/personal/ktp/') . "/" . $imageName;
         }
         if ($request->no_kartu_keluarga) {
             $file = $request->file('no_kartu_keluarga');
 
-            $path = public_path('karywan/keluarga/personal/kk/');
+            $path = public_path('karyawan/keluarga/personal/kk/');
             $rand = rand(1000, 9999);
             $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->foto_kk         = asset('karywan/keluarga/personal/kk/') . "/" . $imageName;
+            $save->foto_kk         = asset('karyawan/keluarga/personal/kk/') . "/" . $imageName;
         }
         $save->no_kesehatan     = $request->no_kesehatan_personal ?? '';
         $save->tunjangan_pajak  = $request->tunjangan_pajak_personal ?? '';
@@ -484,6 +484,9 @@ class HrdController extends Controller
         $validasi = [
             'nama'          => 'required',
             'tanggal_lahir' => 'required',
+            'no_hp'         => 'required',
+            'pekerjaan'     => 'required',
+            'alamat'        => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
@@ -550,11 +553,11 @@ class HrdController extends Controller
         if ($request->sertifikat) {
             $file = $request->file('sertifikat');
 
-            $path = public_path('karywan/keluarga/pendidikan/sertifikat/');
+            $path = public_path('karyawan/keluarga/pendidikan/sertifikat/');
             $rand = rand(1000, 9999);
             $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->sertifikat = asset('karywan/keluarga/pendidikan/sertifikat/') . "/" . $imageName;
+            $save->sertifikat = asset('karyawan/keluarga/pendidikan/sertifikat/') . "/" . $imageName;
         }
 
         $save->save();
@@ -591,11 +594,11 @@ class HrdController extends Controller
         if ($request->sertifikat) {
             $file = $request->file('sertifikat');
 
-            $path = public_path('karywan/keluarga/pelatihan/sertifikat/');
+            $path = public_path('karyawan/keluarga/pelatihan/sertifikat/');
             $rand = rand(1000, 9999);
             $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->sertifikat = asset('karywan/keluarga/pelatihan/sertifikat/') . "/" . $imageName;
+            $save->sertifikat = asset('karyawan/keluarga/pelatihan/sertifikat/') . "/" . $imageName;
         }
 
         $save->save();
@@ -642,11 +645,11 @@ class HrdController extends Controller
         if ($request->sertifikat) {
             $file = $request->file('sertifikat');
 
-            $path = public_path('karywan/keluarga/riwayat_kerja/sertifikat/');
+            $path = public_path('karyawan/keluarga/riwayat_kerja/sertifikat/');
             $rand = rand(1000, 9999);
             $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
             $file->move($path, $imageName);
-            $save->sertifikat = asset('karywan/keluarga/riwayat_kerja/sertifikat/') . "/" . $imageName;
+            $save->sertifikat = asset('karyawan/keluarga/riwayat_kerja/sertifikat/') . "/" . $imageName;
         }
 
         $save->save();

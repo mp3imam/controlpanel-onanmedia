@@ -54,15 +54,15 @@
                                     -
                                 </div>
                                 <div class="col-md-12 text-center my-4">
-                                    <button type="button"
+                                    <a type="_blank" href="#"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
-                                        style="background-color: #4E36E2"><i class="ri-phone-fill"></i></button>
-                                    <button type="button"
+                                        style="background-color: #4E36E2"><i class="ri-phone-fill"></i></a>
+                                    <a type="_blank" href="#"
                                         class="btn text-white btn-icon waves-effect waves-light mx-4 rounded-5"
-                                        style="background-color: #4E36E2"><i class="ri-mail-fill"></i></button>
-                                    <button type="button"
+                                        style="background-color: #4E36E2"><i class="ri-mail-fill"></i></a>
+                                    <a type="_blank" href="#"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
-                                        style="background-color: #4E36E2"><i class="ri-linkedin-box-fill"></i></button>
+                                        style="background-color: #4E36E2"><i class="ri-linkedin-box-fill"></i></a>
                                 </div>
                                 <div class="col-md-12">
                                     Status
@@ -604,11 +604,11 @@
                         <label for="agama" class="form-label">Agama</label>
                         <select id="modal_agama_id" class="form-control"></select>
                     </div>
-                    <div class="col-xxl-6" id="modal_handphone_append">
+                    <div class="col-xxl-6" id="modal_no_hp_append">
                         <label for="no_hp" class="form-label">Nomor Hanphone</label>
                         <input type="number" class="form-control" id="modal_no_hp" placeholder="Masukan Nomor Handphone" value="${nomor_handphone_modal}">
                     </div>
-                    <div class="col-xxl-6">
+                    <div class="col-xxl-6" id="modal_pekerjaan_append">
                         <label for="pekerjaan" class="form-label">Pekerjaan</label>
                         <input class="form-control" id="modal_pekerjaan" placeholder="Masukan Pekerjaan" value="${pekerjaan_modal}">
                     </div>
@@ -616,7 +616,7 @@
                         <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
                         <input type="date" class="form-control" id="modal_tanggal_lahir" placeholder="Masukan Tanggal Lahir" value="${tanggal_lahir_modal}">
                     </div>
-                    <div class="col-xxl-12">
+                    <div class="col-xxl-12" id="modal_alamat_append">
                         <label for="alamat" class="form-label">Alamat</label>
                         <textarea class="form-control" id="modal_alamat" placeholder="Masukan Alamat">${alamat_modal}</textarea>
                     </div>
@@ -722,6 +722,18 @@
                         `)
                             if (result.message.tanggal_lahir == "The tanggal lahir field is required.")
                                 $('#modal_tanggal_lahir_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (result.message.alamat == "The alamat field is required.")
+                                $('#modal_alamat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (result.message.no_hp == "The no hp field is required.")
+                                $('#modal_no_hp_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (result.message.pekerjaan == "The pekerjaan field is required.")
+                                $('#modal_pekerjaan_append').append(`
                             <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
                         `)
                         }

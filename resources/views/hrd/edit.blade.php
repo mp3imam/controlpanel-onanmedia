@@ -60,15 +60,16 @@
                                     {{ $detail->pekerjaan ? $detail->pekerjaan->departement->nama : '' }}
                                 </div>
                                 <div class="col-md-12 text-center my-4">
-                                    <button type="button"
+                                    <a target="_blank" href="https://wa.me/{{ $detail->no_handphone }}"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
-                                        style="background-color: #4E36E2"><i class="ri-phone-fill"></i></button>
-                                    <button type="button"
+                                        style="background-color: #4E36E2"><i class="ri-phone-fill"></i></a>
+                                    <a target="_blank"
+                                        href="https://mail.google.com/mail/u/0/?fs=1&to={{ $detail->email }}&su=HRD Onanmedia&body=BODY&cc=biantara@onanmedia.com;finance@onanmedia.com&tf=cm"
                                         class="btn text-white btn-icon waves-effect waves-light mx-4 rounded-5"
-                                        style="background-color: #4E36E2"><i class="ri-mail-fill"></i></button>
-                                    <button type="button"
+                                        style="background-color: #4E36E2"><i class="ri-mail-fill"></i></a>
+                                    <a target="_blank" href="https://www.linkedin.com/in/{{ $detail->linkedin }}"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
-                                        style="background-color: #4E36E2"><i class="ri-linkedin-box-fill"></i></button>
+                                        style="background-color: #4E36E2"><i class="ri-linkedin-box-fill"></i></a>
                                 </div>
                                 <div class="col-md-12">
                                     Status
@@ -186,7 +187,7 @@
                                         </div>
                                         <div id="alert_tempat_lahir_umum" class="col-lg-6 p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Tempat</label>
+                                            <label class="control-form text-muted">Tempat Lahir</label>
                                             <input class="form-control" id="tempat_lahir_umum" name="tempat"
                                                 value="{{ $detail->tempat_lahir }}">
                                         </div>
@@ -667,11 +668,11 @@
                         <label for="agama" class="form-label">Agama</label>
                         <select id="modal_agama_id" class="form-control"></select>
                     </div>
-                    <div class="col-xxl-6" id="modal_handphone_append">
+                    <div class="col-xxl-6" id="modal_no_hp_append">
                         <label for="no_hp" class="form-label">Nomor Hanphone</label>
                         <input type="number" class="form-control" id="modal_no_hp" placeholder="Masukan Nomor Handphone" value="${nomor_handphone_modal}">
                     </div>
-                    <div class="col-xxl-6">
+                    <div class="col-xxl-6" id="modal_pekerjaan_append">
                         <label for="pekerjaan" class="form-label">Pekerjaan</label>
                         <input class="form-control" id="modal_pekerjaan" placeholder="Masukan Pekerjaan" value="${pekerjaan_modal}">
                     </div>
@@ -679,7 +680,7 @@
                         <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
                         <input type="date" class="form-control" id="modal_tanggal_lahir" placeholder="Masukan Tanggal Lahir" value="${tanggal_lahir_modal}">
                     </div>
-                    <div class="col-xxl-12">
+                    <div class="col-xxl-12" id="modal_alamat_append">
                         <label for="alamat" class="form-label">Alamat</label>
                         <textarea class="form-control" id="modal_alamat" placeholder="Masukan Alamat">${alamat_modal}</textarea>
                     </div>
@@ -785,6 +786,18 @@
                         `)
                             if (result.message.tanggal_lahir == "The tanggal lahir field is required.")
                                 $('#modal_tanggal_lahir_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (result.message.alamat == "The alamat field is required.")
+                                $('#modal_alamat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (result.message.no_hp == "The no hp field is required.")
+                                $('#modal_no_hp_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (result.message.pekerjaan == "The pekerjaan field is required.")
+                                $('#modal_pekerjaan_append').append(`
                             <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
                         `)
                         }
@@ -1149,11 +1162,31 @@
                         } else {
                             $('.alert_hapus').remove()
                             if (response.message.nama == "The nama field is required.")
-                                $('#modal_nama_pelatihan_append').append(`
+                                $('#modal_nama_riwayat_append').append(`
                             <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
                         `)
-                            if (response.message.periode == "The periode field is required.")
-                                $('#modal_periode_pelatihan_append').append(`
+                            if (response.message.alamat == "The alamat field is required.")
+                                $('#modal_alamat_riwayat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (response.message.jabatan == "The jabatan field is required.")
+                                $('#modal_jabatan_riwayat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (response.message.masuk == "The masuk field is required.")
+                                $('#modal_periode_masuk_riwayat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (response.message.keluar == "The keluar field is required.")
+                                $('#modal_periode_keluar_riwayat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (response.message.deskripsi == "The deskripsi field is required.")
+                                $('#modal_deskripsi_riwayat_append').append(`
+                            <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                            if (response.message.alasan == "The alasan field is required.")
+                                $('#modal_alasan_riwayat_append').append(`
                             <span class="alert_hapus text-danger">Data Tidak Boleh Kosong</span>
                         `)
                         }
@@ -1365,6 +1398,20 @@
             });
         });
 
+        $('#foto_umum').change(function() {
+            var file = this.files[0];
+            if (file && file.type.match('image.*')) {
+                $('#foto_umum_data').attr('src', URL.createObjectURL(file));
+                $('a[href="#base-umum"]').tab('show');
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Pastikan simpan untuk merubah gambar",
+                    icon: "success",
+                    timer: 2500
+                });
+            }
+        });
+
         $(function() {
             // Datatable Pendidikan
             var table = $('#dataTablePendidikan').DataTable({
@@ -1508,6 +1555,12 @@
                 }, {
                     data: 'sertifikat',
                     name: 'Sertifikat',
+                    render: function(data) {
+                        var img = data ?
+                            `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` :
+                            ``;
+                        return img;
+                    }
                 }, {
                     data: 'id',
                     name: 'Action',
@@ -1583,6 +1636,12 @@
                 }, {
                     data: 'sertifikat',
                     name: 'Sertifikat',
+                    render: function(data) {
+                        var img = data ?
+                            `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` :
+                            ``;
+                        return img;
+                    }
                 }, {
                     data: 'id',
                     name: 'Action',
