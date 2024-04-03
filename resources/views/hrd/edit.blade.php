@@ -1296,8 +1296,7 @@
                 ajax: {
                     url: "{{ route('tabel.karyawan.keluarga') }}",
                     data: function(d) {
-                        d.username_id = $('#username_id').val(),
-                            d.roles_id = $('#roles_id').val(),
+                        d.cari = $('#cari_keluarga').val(),
                             d.karyawanId = $('#id_update').val()
                     }
                 },
@@ -1361,11 +1360,7 @@
                 }]
             });
 
-            $('#username_id').keyup(function() {
-                table.draw();
-            });
-
-            $('#roles_id').change(function() {
+            $('#cari_keluarga').keyup(function() {
                 table.draw();
             });
 
@@ -1421,8 +1416,7 @@
                 ajax: {
                     url: "{{ route('tabel.karyawan.pendidikan') }}",
                     data: function(d) {
-                        d.username_id = $('#username_id').val(),
-                            d.roles_id = $('#roles_id').val(),
+                        d.cari = $('#cari_pendidikan').val(),
                             d.karyawanId = $('#id_update').val()
                     }
                 },
@@ -1481,11 +1475,7 @@
                 }]
             });
 
-            $('#username_id').keyup(function() {
-                table.draw();
-            });
-
-            $('#roles_id').change(function() {
+            $('#cari_pendidikan').keyup(function() {
                 table.draw();
             });
 
@@ -1528,8 +1518,7 @@
                 ajax: {
                     url: "{{ route('tabel.karyawan.pelatihan') }}",
                     data: function(d) {
-                        d.username_id = $('#username_id').val(),
-                            d.roles_id = $('#roles_id').val(),
+                        d.cari = $('#cari_pelatihan').val(),
                             d.karyawanId = $('#id_update').val()
                     }
                 },
@@ -1574,14 +1563,9 @@
                 }]
             });
 
-            $('#username_id').keyup(function() {
+            $('#cari_pelatihan').keyup(function() {
                 table.draw();
             });
-
-            $('#roles_id').change(function() {
-                table.draw();
-            });
-
         });
 
         $(function() {
@@ -1593,8 +1577,7 @@
                 ajax: {
                     url: "{{ route('tabel.karyawan.riwayat') }}",
                     data: function(d) {
-                        d.username_id = $('#username_id').val(),
-                            d.roles_id = $('#roles_id').val(),
+                        d.cari = $('#cari_riwayat').val(),
                             d.karyawanId = $('#id_update').val()
                     }
                 },
@@ -1622,10 +1605,10 @@
                     data: 'jabatan',
                     name: "Jabatan",
                 }, {
-                    data: 'masuk',
+                    data: 'tanggal_masuk',
                     name: 'Tanggal Masuk',
                 }, {
-                    data: 'keluar',
+                    data: 'tanggal_keluar',
                     name: "Tanggal Keluar",
                 }, {
                     data: 'deskripsi',
@@ -1656,14 +1639,9 @@
                 }]
             });
 
-            $('#username_id').keyup(function() {
+            $('#cari_riwayat').keyup(function() {
                 table.draw();
             });
-
-            $('#roles_id').change(function() {
-                table.draw();
-            });
-
         });
 
         $.ajaxSetup({

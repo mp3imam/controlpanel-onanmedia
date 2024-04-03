@@ -1511,10 +1511,10 @@
                     data: 'jabatan',
                     name: "Jabatan",
                 }, {
-                    data: 'masuk',
+                    data: 'tanggal_masuk',
                     name: 'Tanggal Masuk',
                 }, {
-                    data: 'keluar',
+                    data: 'tanggal_keluar',
                     name: "Tanggal Keluar",
                 }, {
                     data: 'deskripsi',

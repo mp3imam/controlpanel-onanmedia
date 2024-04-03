@@ -66,7 +66,13 @@ class HrdController extends Controller
     function tabel_karyawan_keluarga(Request $request)
     {
         return DataTables::of(
-            KeluargaKaryawanModel::whereDataKaryawanId($request->karyawanId)->with(['agama_keluarga'])->get()
+            KeluargaKaryawanModel::whereDataKaryawanId($request->karyawanId)->with(['agama_keluarga'])
+                ->when($request->cari, function ($q) use ($request) {
+                    $q->where('nama', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('pekerjaan', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('no_hp', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('alamat', 'ilike', '%' . $request->cari . '%');
+                })->get()
         )
             ->addColumn('usia', function ($row) {
                 return Carbon::parse($row->tgl_lahir)->diffInYears(Carbon::now()) . " Tahun";
@@ -95,7 +101,15 @@ class HrdController extends Controller
     function tabel_karyawan_pendidikan(Request $request)
     {
         return DataTables::of(
-            PendidikanKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
+            PendidikanKaryawanModel::whereDataKaryawanId($request->karyawanId)
+                ->when($request->cari, function ($q) use ($request) {
+                    $q->where('nama', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('jurusan', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('IPK', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('alamat', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('tahun_masuk', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('tahun_keluar', 'ilike', '%' . $request->cari . '%');
+                })->get()
         )
             ->addColumn('usia', function ($row) {
                 return Carbon::parse($row->tanggal_lahir)->age;
@@ -118,7 +132,11 @@ class HrdController extends Controller
     function tabel_karyawan_pelatihan(Request $request)
     {
         return DataTables::of(
-            PelatihanKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
+            PelatihanKaryawanModel::whereDataKaryawanId($request->karyawanId)
+                ->when($request->cari, function ($q) use ($request) {
+                    $q->where('nama', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('periode', 'ilike', '%' . $request->cari . '%');
+                })->get()
         )
             ->make(true);
     }
@@ -126,8 +144,22 @@ class HrdController extends Controller
     function tabel_karyawan_riwayat(Request $request)
     {
         return DataTables::of(
-            RiwayatKaryawanModel::whereDataKaryawanId($request->karyawanId)->get()
+            RiwayatKaryawanModel::whereDataKaryawanId($request->karyawanId)
+                ->when($request->cari, function ($q) use ($request) {
+                    $q->where('nama', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('deskripsi', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('alamat', 'ilike', '%' . $request->cari . '%')
+                        ->orWhere('alasan', 'ilike', '%' . $request->cari . '%');
+                })
+                ->get()
         )
+            ->addColumn('tanggal_masuk', function ($row) {
+                return Carbon::parse($row->masuk)->format('d-m-Y');
+            })
+            ->addColumn('tanggal_keluar', function ($row) {
+                return Carbon::parse($row->keluar)->format('d-m-Y');
+            })
+            ->rawColumns(['tanggal_masuk', 'tanggal_keluar'])
             ->make(true);
     }
 
