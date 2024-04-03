@@ -194,7 +194,7 @@
                                         <div id="alert_no_handphone_umum" class="col-lg p-2 mb-3 mx-1 rounded-3"
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">No. Handphone</label>
-                                            <input class="form-control" id="no_hp_umum" name="no_hp">
+                                            <input class="form-control" id="no_hp_umum" name="no_hp" value="628">
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Email</label>

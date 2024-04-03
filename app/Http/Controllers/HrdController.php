@@ -69,7 +69,10 @@ class HrdController extends Controller
             KeluargaKaryawanModel::whereDataKaryawanId($request->karyawanId)->with(['agama_keluarga'])->get()
         )
             ->addColumn('usia', function ($row) {
-                return Carbon::parse($row->tanggal_lahir)->age;
+                return Carbon::parse($row->tgl_lahir)->diffInYears(Carbon::now()) . " Tahun";
+            })
+            ->addColumn('tanggal_lahir', function ($row) {
+                return Carbon::parse($row->tanggal_lahir)->format('d-m-Y');
             })
             ->addColumn('agama', function ($row) {
                 return $row->agama_keluarga->nama;

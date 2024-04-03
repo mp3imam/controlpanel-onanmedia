@@ -1344,7 +1344,7 @@
                     data: 'no_hp',
                     name: 'Handphone',
                 }, {
-                    data: 'tgl_lahir',
+                    data: 'tanggal_lahir',
                     name: 'Tanggal Lahir',
                 }, {
                     data: 'id',
