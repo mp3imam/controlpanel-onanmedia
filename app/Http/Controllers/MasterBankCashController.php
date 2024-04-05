@@ -239,11 +239,15 @@ class MasterBankCashController extends Controller
     {
         DB::beginTransaction();
         try {
-            $file = $request->file('file');
-            $path = public_path('kas_saldo/');
-            $rand = rand(1000, 9999);
-            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
-            $file->move($path, $imageName);
+            if ($request->selectTotal !== "4") {
+                $file = $request->file('file');
+                $path = public_path('kas_saldo/');
+                $rand = rand(1000, 9999);
+                $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+                $file->move($path, $imageName);
+            } else {
+                $imageName = asset('images/user-dummy-img.jpg');
+            }
 
             $status = 0;
             foreach ($request->belanja_id_detail as $kasBelanja => $belanja) {

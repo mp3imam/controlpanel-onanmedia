@@ -142,7 +142,7 @@
                         <div class="row">
                             <div class="col-md-auto mb-4">
                                 <a class="btn btn-warning float-end text-white rounded-5 me-3"
-                                    href="{{ route('master_return_bank_cash.index') }}">
+                                    href="{{ route('master_bank_cash.index') }}">
                                     <i class="ri-arrow-go-back-line"></i> Kembali
                                 </a>
                                 <button class="btn float-end btn-info text-white rounded-5 me-3">
