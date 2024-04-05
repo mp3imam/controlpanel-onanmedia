@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('getDataTableReturnBankCash', [MasterReturnBankCashController::class, 'get_datatable'])->name('getDataTableReturnBankCash');
     Route::post('softdelete_pengembalian_kas', [MasterReturnBankCashController::class, 'softdelete_pengembalian_kas'])->name('softdelete_pengembalian_kas');
     Route::post('hapus_foto_kas_kembalian', [MasterReturnBankCashController::class, 'hapus_foto'])->name('hapus_foto_kas_kembalian');
+    Route::post('return-kas-upload-image', [MasterReturnBankCashController::class, 'uploadImage'])->name('return.kas.upload.image');
 
     // Kas Belanja
     Route::resource('master_kas_belanja', MasterKasBelanjaController::class)->except('show');

@@ -5,9 +5,9 @@
 @endsection -->
 
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
-integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
-crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+        integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     @include('components.breadcrumb')
 
     <div class="row">
@@ -16,9 +16,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                 <div class="card-header">
                     <h4 class="card-title mb-0">Tambah Kembali ke Kas OnanMedia</h4>
                 </div><!-- end card header -->
-                <form action="{{ route('helpdesk.upload.image') }}" enctype="multipart/form-data"
-                    class="dropzone dz-clickable"
-                    id="image-upload" method="post" id="gambar-dropzone">
+                <form action="{{ route('return.kas.upload.image') }}" enctype="multipart/form-data"
+                    class="dropzone dz-clickable" id="image-upload" method="post" id="gambar-dropzone">
                     @csrf
                     <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
                     <div class="dz-default dz-message">
@@ -33,9 +32,10 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                            <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
-                            <label for="tanggal_transaksi" class="form-label text-uppercase">TANGGAL TRANSAKSI</label>
-                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required/>
+                                <input id="random_text" name="random_text" value="{{ $random_string }}" hidden />
+                                <label for="tanggal_transaksi" class="form-label text-uppercase">TANGGAL TRANSAKSI</label>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi"
+                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required />
                             </div>
 
                             <div class="col-md-6 mb-4">
@@ -47,13 +47,15 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                 <div>
                                     <p class="text-muted fw-medium text-uppercase">Jenis Transaksi</p>
                                     <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_1" value="1" checked>
+                                        <input class="form-check-input" type="radio" name="jenis_transaksi"
+                                            id="jenis_transaksi_1" value="1" checked>
                                         <label class="form-check-label" for="jenis_transaksi_1">
                                             Transfer
                                         </label>
                                     </div>
                                     <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi" id="jenis_transaksi_2" value="2">
+                                        <input class="form-check-input" type="radio" name="jenis_transaksi"
+                                            id="jenis_transaksi_2" value="2">
                                         <label class="form-check-label" for="jenis_transaksi_2">
                                             Cash
                                         </label>
@@ -78,10 +80,12 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                         </div>
                         <div class="row">
                             <div class="col-md-auto mb-4">
-                                <a class="btn btn-warning float-end text-white rounded-5 me-3" href="{{ route('master_return_bank_cash.index') }}" >
+                                <a class="btn btn-warning float-end text-white rounded-5 me-3"
+                                    href="{{ route('master_bank_cash.index') }}">
                                     <i class="ri-arrow-go-back-line"></i> Kembali
                                 </a>
-                                <button class="btn float-end btn-success text-white rounded-5 me-3" style="background-color: #4E36E2">
+                                <button class="btn float-end btn-success text-white rounded-5 me-3"
+                                    style="background-color: #4E36E2">
                                     <i class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Simpan
                                 </button>
                             </div>
@@ -96,52 +100,58 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!--end row-->
 @endsection
 @section('script')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js" integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script type="text/javascript">
-    $(function () {
-        $("#modal_tujuan_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_banks_coa') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data.data, function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name
-                            }
-                        })
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
+        integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#modal_tujuan_id").select2({
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.get_select2_banks_coa') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                }
+                            })
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        $(document).ready(function(){
-            $("#nominal").maskMoney({prefix: 'Rp. ', affixesStay: false, precision: 0});
-        });
+            $(document).ready(function() {
+                $("#nominal").maskMoney({
+                    prefix: 'Rp. ',
+                    affixesStay: false,
+                    precision: 0
+                });
+            });
 
-        $("#modal_bank_id").select2({
-            allowClear: true,
-            width: '100%',
-            ajax: {
-                url: "{{ route('api.get_select2_banks') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(item) {
+            $("#modal_bank_id").select2({
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.get_select2_banks') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
                         return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                };
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                }
+                            })
+                        };
+                    }
                 }
-            }
-        });
-    })
-</script>
+            });
+        })
+    </script>
 @endsection
