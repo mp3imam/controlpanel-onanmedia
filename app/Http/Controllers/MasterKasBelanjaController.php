@@ -166,7 +166,6 @@ class MasterKasBelanjaController extends Controller
                 ];
 
                 $file = $request->file('file' . $item);
-
                 if ($file != null) {
                     $path = public_path('kas_belanja/');
                     $rand = rand(1000, 9999);
@@ -288,7 +287,6 @@ class MasterKasBelanjaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $validasi = [
             'id_detail' => 'required',
         ];
@@ -297,177 +295,132 @@ class MasterKasBelanjaController extends Controller
 
         if ($validator->fails()) return redirect()->back()->withErrors($validator->messages());
 
-        // DB::beginTransaction();
-        // try {
-        // Store your file into directory and db
-        $request['nominal'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
-        $request['keterangan_kas'] = $request->deskripsi;
-        MasterKasBelanja::find($id)->update($request->except(['_token', '_method']));
+        DB::beginTransaction();
+        try {
+            // Store your file into directory and db
+            $request['nominal'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
+            $request['keterangan_kas'] = $request->deskripsi;
+            MasterKasBelanja::find($id)->update($request->except(['_token', '_method']));
 
-        MasterKasBelanjaDetail::whereKasId($id)->delete();
+            MasterKasBelanjaDetail::whereKasId($id)->delete();
 
-        // Create New Detail and File Kas Belanja
-        foreach ($request->nama_item as $item => $i) {
-            $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
-            $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
-            $nominal = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
+            // Create New Detail and File Kas Belanja
+            foreach ($request->nama_item as $item => $i) {
+                $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
+                $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
+                $nominal = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
 
 
-            $update = MasterKasBelanjaDetail::firstOrNew(
-                ['id' => isset($request->id_item[$item]) ? $request->id_item[$item] : MasterKasBelanjaDetail::orderBy('id', 'desc')->first()->id + 1],
-            );
+                $update = MasterKasBelanjaDetail::firstOrNew(
+                    ['id' => isset($request->id_item[$item]) ? $request->id_item[$item] : MasterKasBelanjaDetail::orderBy('id', 'desc')->first()->id + 1],
+                );
 
-            // Lakukan pembaruan jika record sudah ada
-            $update->kas_id     = $request->id_detail;
-            $update->keterangan = $request->keterangan[$item] ?? '';
-            $update->nominal    = $nominal;
-            $update->nama_item  = $request->nama_item[$item];
-            $update->qty        = $request->qty[$item];
-            $update->satuan_id  = $request->satuan[$item];
-            $update->harga      = $harga;
-            $update->jumlah     = $jumlah;
-            $update->status     = 1;
+                // Lakukan pembaruan jika record sudah ada
+                $update->kas_id     = $request->id_detail;
+                $update->keterangan = $request->keterangan[$item] ?? '';
+                $update->nominal    = $nominal;
+                $update->nama_item  = $request->nama_item[$item];
+                $update->qty        = $request->qty[$item];
+                $update->satuan_id  = $request->satuan[$item];
+                $update->harga      = $harga;
+                $update->jumlah     = $jumlah;
+                $update->status     = 1;
 
-            $file = $request->file('file' . $i);
-            if ($file) {
-                $path = public_path('kas_belanja/');
-                $rand = rand(1000, 9999);
-                $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->getClientOriginalExtension();
+                $file = $request->file('file' . $i);
+                if ($file) {
+                    $path = public_path('kas_belanja/');
+                    $rand = rand(1000, 9999);
+                    $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->getClientOriginalExtension();
 
-                $file->move($path, $imageName);
+                    $file->move($path, $imageName);
 
-                $update += ['file' => asset('kas_belanja/') . "/" . $imageName];
+                    $update += ['file' => asset('kas_belanja/') . "/" . $imageName];
+                }
+
+                $update->save();
             }
 
-            $update->save();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
         }
-
-        // $files = TemporaryFileUpload::query()
-        // ->whereStatus("0")
-        // ->get();
-
-        // foreach ($files as $file) {
-        //     $data = [
-        //         'kas_id'     => $id,
-        //         'filename'   => $file->filename,
-        //     ];
-        //     MasterKasBelanjaFile::create($data);
-
-        //     // update foto status menjadi 1
-        //     TemporaryFileUpload::findOrFail($file->id)->update([
-        //         'kas_id' => $id,
-        //         'status' => 1,
-        //     ]);
-        // }
-
-        // // Edit Jurnal Umum, hapus detail dan file Jurnal Umum
-        // $request['keterangan_jurnal_umum'] = $request->keterangan_kas;
-        // $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
-        // $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_nilai));
-        // $nomor = MasterJurnal::whereDokumen(MasterKasBelanja::whereId($id)->first()->nomor_transaksi)->first();
-        // $nomor->update($request->except(['_token','_method','account_id','keterangan_kas','akun_belanja','keterangan','nilai','total_nilai','attachment']));
-        // $nomor->fresh();
-        // JurnalUmumDetail::whereJurnalUmumId($nomor->id)->delete();
-        // MasterJurnalFile::whereJurnalUmumId($nomor->id)->delete();
-
-        // // Create Master Jurnal Detail
-        // foreach ($request->akun_belanja as $akun => $a) {
-        //     $nominal = str_replace(".","",str_replace("Rp. ","",$request->nilai[$akun]));
-
-        //     $data = [
-        //         'jurnal_umum_id' => $nomor->id,
-        //         'account_id'     => $a,
-        //         'keterangan'     => $request->keterangan[$akun] ?? '',
-        //         'debet'          => $nominal,
-        //     ];
-        //     JurnalUmumDetail::create($data);
-        // }
-
-        // JurnalUmumDetail::create([
-        //     'jurnal_umum_id' => $nomor->id,
-        //     'account_id'     => $request->account_id,
-        //     'keterangan'     => '',
-        //     'kredit'         => $request->nominal,
-        // ]);
-
-        // foreach (MasterKasBelanjaFile::whereKasId($id)->get() as $file) {
-        //     MasterJurnalFile::create([
-        //         'jurnal_umum_id' => $nomor->id,
-        //         'path'           => 'kas_belanja',
-        //         'filename'       => $file->filename,
-        //     ]);
-        // }
-
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     DB::rollBack();
-        // }
 
         return redirect('master_kas_belanja');
     }
 
     function checked_pending_finance(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
+        // DB::beginTransaction();
+        // try {
+        $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
+        dd($kasBelanja);
 
-            $tahun = Carbon::now()->format('Y');
-            $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
-            $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
-            $request['nomor_transaksi'] = $nomor . '/TRAN/BLJ/' . $tahun;
-            $request['nominal'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
-            $request['nominal_approve'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
-            $request['status'] = 2;
-            $request['checked'] = 1;
-            $request['keterangan_kas'] = $kasBelanja->keterangan_kas . " - " . $kasBelanja->nomor_transaksi;
-            $request['user_id'] = $kasBelanja->user_id;
+        $tahun = Carbon::now()->format('Y');
+        $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+        $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
+        $request['nomor_transaksi'] = $nomor . '/TRAN/BLJ/' . $tahun;
+        $request['nominal'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
+        $request['nominal_approve'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
+        $request['status'] = 2;
+        $request['checked'] = 1;
+        $request['keterangan_kas'] = $kasBelanja->keterangan_kas . " - " . $kasBelanja->nomor_transaksi;
+        $request['user_id'] = $kasBelanja->user_id;
 
-            // Store your file into directory and db
-            $kasBelanja = MasterKasBelanja::create($request->except('_token'));
+        // Store your file into directory and db
+        $kasBelanja = MasterKasBelanja::create($request->except('_token'));
 
-            foreach ($request->nama_item as $item => $i) {
-                if ($request->selectDetail[$item] == 1) {
-                    $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
-                    $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
+        foreach ($request->nama_item as $item => $i) {
+            if ($request->selectDetail[$item] !== 6) {
+                $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
+                $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
 
-                    $data = [
-                        'kas_id'     => $kasBelanja->id,
-                        'nama_item'  => $i,
-                        'qty'        => $request->qty[$item],
-                        'satuan_id'  => $request->satuan[$item],
-                        'harga'      => $harga,
-                        'jumlah'     => $jumlah,
-                        'keterangan' => $request->keterangan[$item] ?? '',
-                        'nominal'    => $request->nominal,
-                        'status'     => $request->selectDetail[$item],
-                        'account_id' => $request->akun[$item],
+                $data = [
+                    'kas_id'     => $kasBelanja->id,
+                    'nama_item'  => $i,
+                    'qty'        => $request->qty[$item],
+                    'satuan_id'  => $request->satuan[$item],
+                    'harga'      => $harga,
+                    'jumlah'     => $jumlah,
+                    'keterangan' => $request->keterangan[$item] ?? '',
+                    'nominal'    => $request->nominal,
+                    'status'     => $request->selectDetail[$item],
+                    'account_id' => $request->akun[$item],
+                ];
+
+                $file = $kasBelanja->file;
+
+                if ($file != null) {
+                    $path = public_path('kas_belanja/');
+                    $rand = rand(1000, 9999);
+                    $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+                    $file->move($path, $imageName);
+
+                    $data += [
+                        'file' => asset('kas_belanja/') . "/" . $imageName,
                     ];
-
-                    $file = $kasBelanja->file;
-
-                    if ($file != null) {
-                        $path = public_path('kas_belanja/');
-                        $rand = rand(1000, 9999);
-                        $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
-                        $file->move($path, $imageName);
-
-                        $data += [
-                            'file'        => asset('kas_belanja/') . "/" . $imageName,
-                        ];
-                    }
-
-                    MasterKasBelanjaDetail::create($data);
-                    MasterKasBelanjaDetail::find($request->id_item[$item])->delete();
                 }
-            }
 
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            //     //throw $th;
+                dd($data, $request->selectDetail[$item]);
+                if ($request->selectDetail[$item] == 1) {
+                    MasterKasBelanjaDetail::create($data);
+                }
+                MasterKasBelanjaDetail::whereId($request->id_item[$item])->delete();
+            } else {
+                $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
+                dd($kasBelanja->nominal_pending);
+
+                MasterKasBelanja::find($request->id_detail)->update([
+                    'nominal_pending' => $kasBelanja->nominal_pending - (int) str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]))
+                ]);
+            }
         }
+
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     //     //throw $th;
+        // }
 
         return redirect('master_kas_belanja');
     }

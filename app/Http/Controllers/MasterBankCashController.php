@@ -259,7 +259,8 @@ class MasterBankCashController extends Controller
                         'image'   => asset('kas_belanja/') . "/" . $imageName,
                         'bank_id' => $request->sumber_dana,
                         'tujuan_id' => 7,
-                        'nominal_approve' => $request->seluruh_total,
+                        // 'nominal_approve' => $request->seluruh_total,
+                        'nominal' => $request->seluruh_total,
                     ]);
 
                     $kasDetail = [
@@ -281,7 +282,6 @@ class MasterBankCashController extends Controller
                     if ($foto) $kasDetail += ['file' => $foto];
 
                     TransaksiKasDetail::create($kasDetail);
-
 
                     MasterKasBelanjaDetail::whereId($belanja)->update([
                         'status' => 2,

@@ -217,28 +217,27 @@
         var e = {!! json_encode($detail_belanja) !!}
         $(function() {
             $.each(e, function(ei, eitem) {
-                $('#selectAll' + eitem.id).click(function(e) {
+                $('#selectAll' + eitem.id).change(function(e) {
                     if (this.value == 1) {
+                        $('#selectAll' + eitem.id).css("background-color", "#00bd9d");
+                        $.each(eitem.belanja_barang, function(i, item) {
+                            $('#selectDetail' + item.id).css("background-color", "#00bd9d");
+                            $('#selectDetail' + item.id).val(1).change();
+                            $('#keterangan' + item.id).val("")
+                        });
+                    }
+                    if (this.value == 6) {
                         $('#selectAll' + eitem.id).css("background-color", "#25a0e2");
                         $.each(eitem.belanja_barang, function(i, item) {
                             $('#selectDetail' + item.id).css("background-color", "#25a0e2");
                             $('#selectDetail' + item.id).val(6).change();
                         });
                     }
-
-                    if (this.value == 6) {
+                    if (this.value == 4) {
                         $('#selectAll' + eitem.id).css("background-color", "#f06548");
                         $.each(eitem.belanja_barang, function(i, item) {
                             $('#selectDetail' + item.id).css("background-color", "#f06548");
                             $('#selectDetail' + item.id).val(4).change();
-                        });
-                    }
-                    if (this.value == 4) {
-                        $('#selectAll' + eitem.id).css("background-color", "#00bd9d");
-                        $.each(eitem.belanja_barang, function(i, item) {
-                            $('#selectDetail' + item.id).css("background-color", "#00bd9d");
-                            $('#selectDetail' + item.id).val(1).change();
-                            $('#keterangan' + item.id).val("")
                         });
                     }
                 });
@@ -262,7 +261,7 @@
                     $('#satuan' + item.id).append(newOption).trigger('change')
                     $('#satuan' + item.id).select2()
 
-                    $('#selectDetail' + item.id).click(function(e) {
+                    $('#selectDetail' + item.id).change(function(e) {
                         if (this.value == 1) {
                             $('#total_nilai' + eitem.id).val(parseInt($('#total_nilai' +
                                 eitem.id).val().replace("Rp. ", "").replaceAll(
@@ -287,6 +286,12 @@
                                 $('#keterangan' + item.id).prop('required', true);
                                 $('#keterangan' + item.id).val("Direktur")
                             } else {
+                                $('#total_nilai' + eitem.id).val(parseInt($('#total_nilai' +
+                                            eitem.id).val().replace("Rp. ", "")
+                                        .replaceAll(",", "").replaceAll(".", "")) -
+                                    parseInt($('#jumlah' + item.id).val().replace(
+                                        "Rp. ", "").replaceAll(",", "").replaceAll(
+                                        ".", "")))
                                 if ($('#total_nilai' + eitem.id).val() < 1) $(
                                     '#total_nilai' + eitem.id).val(0)
                                 $('#selectDetail' + item.id).css("background-color",
@@ -415,13 +420,10 @@
             if ($('#selectTotal').val() != 1) {
                 $('.seluruh_total').text(0);
                 $('.total_nilai').val(0);
-                $('#sumber_dana_data').attr("hidden", true);
-                $('#sumber_dana').attr("required", false);
-                $('#file').attr("required", false);
+                $('#sumber_dana_data').attr('hidden', true)
+                $('#sumber_dana').attr('hidden', false)
+                $('#file').attr('hidden', false)
             } else {
-                $('#sumber_dana_data').attr("hidden", false);
-                $('#sumber_dana').attr("required", true);
-                $('#file').attr("required", true);
                 location.reload()
             }
         }
