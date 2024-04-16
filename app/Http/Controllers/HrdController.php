@@ -263,11 +263,18 @@ class HrdController extends Controller
         $title['li_1'] = $this->li_1;
 
         $detail = DataKaryawanModel::with(['agama_personal', 'pendidikan_terakhir_banget', 'pekerjaan.departement', 'personal'])->whereId($id)->first();
-        $selisih = (new DateTime($detail->pekerjaan->kontrak_selesai))->diff(new DateTime);
+        $sisa_tahun = 0;
+        $sisa_bulan = 3;
+        $sisa_hari = 0;
 
-        $sisa_tahun = $selisih->y;
-        $sisa_bulan = $selisih->m;
-        $sisa_hari = $selisih->d;
+        if ($detail->pekerjaan){
+            $selisih = (new DateTime($detail->pekerjaan->kontrak_selesai))->diff(new DateTime);
+
+            $sisa_tahun = $selisih->y;
+            $sisa_bulan = $selisih->m;
+            $sisa_hari = $selisih->d;
+        }
+
         return view('hrd.edit', $title, compact(['detail', 'sisa_tahun', 'sisa_bulan', 'sisa_hari']));
     }
 

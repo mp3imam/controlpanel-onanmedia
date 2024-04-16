@@ -30,8 +30,8 @@
                                     <div class="card bg-transparent border-0">
                                         <label for="file-input" class="custom-file-upload cursor-pointer">
                                             <img class="card-img rounded-circle" id="foto_umum_data"
-                                                src="{{ asset('images/user-dummy-img.jpg') }}" width="100px" height="200px"
-                                                alt="Card image">
+                                                src="{{ asset('images/user-dummy-img.jpg') }}" width="100px"
+                                                height="200px" alt="Card image">
                                             <div class="card-img-overlay p-0 d-flex flex-column">
                                                 <div class="card-body bg-transparent"></div>
                                                 <div class="bg-transparent text-end m-4">
@@ -565,6 +565,20 @@
                 }
             });
         }
+
+        $('#foto_umum').change(function() {
+            var file = this.files[0];
+            if (file && file.type.match('image.*')) {
+                $('#foto_umum_data').attr('src', URL.createObjectURL(file));
+                $('a[href="#base-umum"]').tab('show');
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Pastikan simpan untuk merubah gambar",
+                    icon: "success",
+                    timer: 2500
+                });
+            }
+        });
 
         function modal_crud_keluarga(data, id, nama, hubungan_id, hubungan, agama_id, agama, pekerjaan, alamat,
             nomor_handphone, tanggal_lahir) {
