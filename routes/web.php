@@ -19,6 +19,7 @@ use App\Http\Controllers\MasterReturnBankCashController;
 use App\Http\Controllers\MenuPageController;
 use App\Http\Controllers\PekerjaanController;
 use App\Http\Controllers\PendidikanController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestPencarianDanaController;
 use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\TransactionsController;
@@ -147,4 +148,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('tambah_role', [UserRolePageController::class, 'tambah_role'])->name('tambah_role');
     Route::resource('menu_page', MenuPageController::class);
     Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
+
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile');
 });
