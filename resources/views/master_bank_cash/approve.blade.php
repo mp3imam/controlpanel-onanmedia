@@ -9,7 +9,6 @@
         integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @include('components.breadcrumb')
-
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -20,7 +19,6 @@
                         </div>
                     </div>
                 </div>
-
                 <form action="{{ route('approve_direktur', $detail->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
@@ -158,7 +156,6 @@
                                         </div>
                                     </div>
                                 @endforeach
-
                                 <div class="card">
                                     <div class="card-header" id="sumber_dana_data">
                                         <div class="row">
@@ -261,8 +258,10 @@
                     $('#satuan' + item.id).append(newOption).trigger('change')
                     $('#satuan' + item.id).select2()
 
+                    var selectDetail = 0
                     $('#selectDetail' + item.id).change(function(e) {
                         if (this.value == 1) {
+                            selectDetail = 0
                             $('#total_nilai' + eitem.id).val(parseInt($('#total_nilai' +
                                 eitem.id).val().replace("Rp. ", "").replaceAll(
                                 ",", "").replaceAll(".", "")) + parseInt($(
@@ -272,13 +271,15 @@
                             $('#keterangan' + item.id).prop('required', false);
                             $('#keterangan' + item.id).val("")
                         } else {
-                            if (this.value == 6) {
+                            if (selectDetail == 0)
                                 $('#total_nilai' + eitem.id).val(parseInt($('#total_nilai' +
                                             eitem.id).val().replace("Rp. ", "")
                                         .replaceAll(",", "").replaceAll(".", "")) -
                                     parseInt($('#jumlah' + item.id).val().replace(
                                         "Rp. ", "").replaceAll(",", "").replaceAll(
                                         ".", "")))
+
+                            if (this.value == 6) {
                                 if ($('#total_nilai' + eitem.id).val() < 1) $(
                                     '#total_nilai' + eitem.id).val(0)
                                 $('#selectDetail' + item.id).css("background-color",
@@ -286,20 +287,14 @@
                                 $('#keterangan' + item.id).prop('required', true);
                                 $('#keterangan' + item.id).val("Direktur")
                             } else {
-                                $('#total_nilai' + eitem.id).val(parseInt($('#total_nilai' +
-                                            eitem.id).val().replace("Rp. ", "")
-                                        .replaceAll(",", "").replaceAll(".", "")) -
-                                    parseInt($('#jumlah' + item.id).val().replace(
-                                        "Rp. ", "").replaceAll(",", "").replaceAll(
-                                        ".", "")))
                                 if ($('#total_nilai' + eitem.id).val() < 1) $(
                                     '#total_nilai' + eitem.id).val(0)
                                 $('#selectDetail' + item.id).css("background-color",
                                     "#f06548");
                                 $('#keterangan' + item.id).prop('required', true);
                                 $('#keterangan' + item.id).val("Direktur")
-
                             }
+                            selectDetail = 1
                         }
                         countSeluruhTotal()
                     });
@@ -372,7 +367,6 @@
                 }
             }
         });
-
 
         $(".akun").select2({
             allowClear: true,
