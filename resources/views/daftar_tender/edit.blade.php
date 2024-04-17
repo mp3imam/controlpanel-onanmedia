@@ -27,7 +27,7 @@
                                             <div class="col-md mt-2">
                                                 <div class="fs-14 fw-bold">{{ $detail->user->name }}</div>
                                                 <div class="fs-12" style="color: #55B9DB">
-                                                    {{ $detail->level_tender->nama }}</div>
+                                                    {{ $detail->level_tender_pembeli->nama }}</div>
                                             </div>
                                             <hr>
                                             <div class="row">
@@ -40,7 +40,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <span class="text-muted">Level Kualifikasi</span><br>
-                                                    <label class="fs-14" style="color: #8682B9">{{ $detail->kategori }}
+                                                    <label class="fs-14"
+                                                        style="color: #8682B9">{{ $detail->level_tender_penjual->nama }}
                                                     </label>
                                                 </div>
                                             </div>

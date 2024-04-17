@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MsMerchantLevelModel extends Model
+class MsMerchantLevelPembeliModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
-    protected $table = 'MsMerchantLevel';
+    protected $table = 'MsMerchantLevelPembeli';
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
