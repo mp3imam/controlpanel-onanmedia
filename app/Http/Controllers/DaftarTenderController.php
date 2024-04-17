@@ -208,7 +208,7 @@ class DaftarTenderController extends Controller
 
     public function models($request)
     {
-        return DaftarTenderModel::with('user', 'status', 'level_tender')
+        return DaftarTenderModel::with('user', 'status', 'level_tender_penjual', 'level_tender_pembeli')
             ->when($request->judulTender, function ($q) use ($request) {
                 $q->where('judulTender', 'ilike', '%' . $request->judulTender . '%');
             })
