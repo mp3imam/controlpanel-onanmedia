@@ -56,7 +56,7 @@ class DaftarTenderController extends Controller
                 return Carbon::parse($row->createdAt);
             })
             ->addColumn('level_kualifikasi', function ($row) {
-                return $row->level_tender->nama ?? '';
+                return $row->level_tender_pembeli->nama ?? '';
             })
             ->rawColumns(['tanggal_posting', 'level_kualifikasi'])
             ->make(true);
