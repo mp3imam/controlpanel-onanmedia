@@ -1,0 +1,52 @@
+image: ubuntu:latest
+
+stages:
+  - deploy
+
+onanpanel-dev:
+  stage: deploy
+  before_script:
+    # Check for ssh-agent + rsync and install if not present
+    - "command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    # Inject the remote's private key
+    - chmod 400 "$SSH_KEY_ONANAPPS_DEV"
+    - ssh-add "$SSH_KEY_ONANAPPS_DEV"
+    # Create the SSH directory and give it the right permissions
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    # Append keyscan output into known hosts
+    - ssh-keyscan $ONANAPPS_DEV >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$ONANAPPS_DEV "
+      cd /var/www/html/controlpanel-onanmedia/ &&
+      git pull origin dev &&
+      composer install &&
+      php artisan migrate --database=pgsql"
+  only:
+    - dev
+
+onanpanel-prod:
+  stage: deploy
+  before_script:
+    # Check for ssh-agent + rsync and install if not present
+    - "command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    # Inject the remote's private key
+    - chmod 400 "$SSH_KEY_ONANAPPS_PROD"
+    - ssh-add "$SSH_KEY_ONANAPPS_PROD"
+    # Create the SSH directory and give it the right permissions
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    # Append keyscan output into known hosts
+    - ssh-keyscan $ONANAPPS_PROD >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh -o StrictHostKeyChecking=no $SSH_USER@$ONANAPPS_PROD "
+      cd /var/www/html/controlpanel-onanmedia/ &&
+      git pull origin prod &&
+      composer install &&
+      php artisan migrate --database=pgsql"
+  only:
+    - prod
