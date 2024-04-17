@@ -247,7 +247,7 @@ class HelpdeskController extends Controller
                     $q->where('createdAt', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'));
                 });
                 $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
-                    $q->where('createdAt', '>=', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('createdAt', '<=', Carbon::createFromFormat('d M, Y', $tanggal[1])->format('Y-m-d'));
+                    $q->where('createdAt', '>=', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('createdAt', '<', Carbon::createFromFormat('d M, Y', $tanggal[1])->addDays(1)->format('Y-m-d'));
                 });
             })
             ->when($request->order, function ($q) use ($request) {
