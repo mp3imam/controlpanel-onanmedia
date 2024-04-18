@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // TmModuleSeeder::class,
             PermissionTableSeeder::class,
+            UserPanelSeeder::class,
             // HelpdeskStatusSeeder::class,
             // HelpdeskSeeder::class,
             // HelpdeskDetailSeeder::class,

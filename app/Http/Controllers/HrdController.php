@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\IdStringRandom;
 use App\Models\DataKaryawanModel;
 use App\Models\DataKaryawanPekerjaanModel;
 use App\Models\DataKaryawanPersonalModel;
@@ -9,6 +10,7 @@ use App\Models\KeluargaKaryawanModel;
 use App\Models\PelatihanKaryawanModel;
 use App\Models\PendidikanKaryawanModel;
 use App\Models\RiwayatKaryawanModel;
+use App\Models\User;
 use App\Models\UserPublicModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -16,6 +18,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -94,7 +97,6 @@ class HrdController extends Controller
                 return $hubungan[$row->hubungan] ?? '';
             })
             ->rawColumns(['usia', 'agama'])
-
             ->make(true);
     }
 
@@ -267,7 +269,7 @@ class HrdController extends Controller
         $sisa_bulan = 3;
         $sisa_hari = 0;
 
-        if ($detail->pekerjaan){
+        if ($detail->pekerjaan) {
             $selisih = (new DateTime($detail->pekerjaan->kontrak_selesai))->diff(new DateTime);
 
             $sisa_tahun = $selisih->y;
@@ -391,36 +393,78 @@ class HrdController extends Controller
             ]);
         }
 
-        $save = DataKaryawanModel::firstOrNew([
-            'nama_lengkap'    => $request->nama_lengkap_umum,
-            'tanggal_lahir'   => $request->tanggal_lahir_umum
-        ]);
+        $save = "Tidak Tersimpan";
+        DB::beginTransaction();
+        try {
+            // Jika ada file foto diunggah, proses file dan atur atribut foto
+            $imageName = null;
+            if ($request->hasFile('foto_umum')) {
+                $file = $request->file('foto_umum');
+                $imageName = Carbon::now()->format('H:i:s') . '_' . uniqid() . '.' . $file->extension();
+                $path = public_path('karyawan/foto/');
+                $file->move($path, $imageName);
+            }
 
-        $save->nama_panggilan  = $request->nama_panggilan_umum;
-        $save->nik_khusus      = $request->nik_khusus_umum ?? '';
-        $save->alamat_ktp      = $request->alamat_ktp_umum;
-        $save->alamat_domisili = $request->alamat_domisili_umum;
-        $save->agama_id        = $request->agama_id_umum;
-        $save->tempat_lahir    = $request->tempat_lahir_umum;
-        $save->jenis_kelamin   = $request->jenis_kelamin_umum;
-        $save->no_handphone    = $request->no_hp_umum;
-        $save->email           = $request->email_umum ?? '';
-        $save->pendidikan_terakhir   = $request->pendidikan_id_umum;
-        if ($request->foto_umum) {
-            $file = $request->file('foto_umum');
+            // Buat atau update pengguna berdasarkan ID yang diberikan
+            if ($request->id_update !== null) {
+                User::where(DataKaryawanModel::where('id', $request->id_update)->first()->userId)->update([
+                    'username' => $request->nama_lengkap_umum,
+                    'nama_lengkap' => $request->nama_lengkap_umum,
+                    'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
+                ]);
+            } else {
+                User::insert([
+                    'id'                => User::orderByRaw('id::int DESC')->first()->id + 1,
+                    'username'          => $request->nama_lengkap_umum,
+                    'password'          => Hash::make($request->tanggal_lahir_umum),
+                    'cl_user_group_id'  => 1,
+                    'nama_lengkap'      => $request->nama_lengkap_umum,
+                    'status'            => 1,
+                    'cl_perusahaan_id'  => 1,
+                    'update_date'       => Carbon::now()->format('Y-m-d'),
+                    'update_by'         => 'administrator',
+                    'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
+                ]);
+            }
 
-            $path = public_path('karyawan/foto/');
-            $rand = rand(1000, 9999);
-            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
-            $file->move($path, $imageName);
-            $save->foto = asset('karyawan/foto/') . "/" . $imageName;
+            // Role::create[];
+
+            // Simpan Data Karyawan
+            $save = DataKaryawanModel::updateOrCreate(
+                ['id' => $request->id_update !== null ? $request->id_update : DataKaryawanModel::orderby('id', 'desc')->first()->id + 1],
+                [
+                    'nama_lengkap' => $request->nama_lengkap_umum,
+                    'tanggal_lahir' => $request->tanggal_lahir_umum,
+                    'nama_panggilan' => $request->nama_panggilan_umum,
+                    'nik_khusus' => $request->nik_khusus_umum ?? '',
+                    'alamat_ktp' => $request->alamat_ktp_umum,
+                    'alamat_domisili' => $request->alamat_domisili_umum,
+                    'agama_id' => $request->agama_id_umum,
+                    'tempat_lahir' => $request->tempat_lahir_umum,
+                    'jenis_kelamin' => $request->jenis_kelamin_umum,
+                    'no_handphone' => $request->no_hp_umum,
+                    'email' => $request->email_umum ?? '',
+                    'userId' => $request->id_update !== null ? $request->id_update : User::orderByRaw('id::int DESC')->first()->id,
+                    'pendidikan_terakhir' => $request->pendidikan_id_umum,
+                    'foto' => $request->foto_umum !== null ? asset('karyawan/foto/') . "/" . $imageName : null
+                ]
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => Response::HTTP_OK,
+                'message' => $save
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $user = $e->getMessage();
+
+            return response()->json([
+                'status'  => Response::HTTP_TOO_MANY_REQUESTS,
+                'message' => $save
+            ]);
         }
-        $save->save();
-
-        return response()->json([
-            'status'  => Response::HTTP_OK,
-            'message' => $save
-        ]);
     }
 
     public function simpan_karyawan_personal(Request $request)

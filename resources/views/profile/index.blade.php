@@ -10,8 +10,8 @@
     <div class="row">
         <div class="container-fluid">
             <div class="card job-list-view-card overflow-hidden" id="job-overview">
-                <img src="assets/images/logo/profile_awal.png" alt="" id="cover-img"
-                    class="object-fit-cover" height="250px">
+                <img src="assets/images/logo/profile_awal.png" alt="" id="cover-img" class="object-fit-cover"
+                    height="300px">
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
@@ -21,8 +21,8 @@
                                         <img src="{{ Auth::user()->foto }}" alt="user-img" width="120px" height="120px"
                                             class="rounded-circle">
                                     @else
-                                        <img src="assets/images/users/avatar.png" alt="user-img" width="120px" height="120px"
-                                            class="rounded-circle">
+                                        <img src="assets/images/users/avatar.png" alt="user-img" width="120px"
+                                            height="120px" class="rounded-circle">
                                     @endif
                                 </div>
                             </div>
@@ -39,22 +39,123 @@
     <div class="row">
         <div class="col-md">
             <div class="nav flex-column nav-pills text-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <div class="row">
+                    <div class="col-md-3">
+                        <img class="my-3" src="assets/images/logo/information_active.png" height="25px" width="25px" />
+                    </div>
+                    <div class="col-md-9">
+                        <a class="nav-link my-2 active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home"
+                            role="tab" aria-controls="v-pills-home" aria-selected="true">
+                            Informasi Umum
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <img class="my-3" src="assets/images/logo/global_active.png" height="25px" width="25px" />
+                    </div>
+                    <div class="col-md-9">
+                        <a class="nav-link my-2" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile"
+                            role="tab" aria-controls="v-pills-profile" aria-selected="false" tabindex="-1">
+                            Media Sosial
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <img class="my-3" src="assets/images/logo/key_active.png" height="25px" width="25px" />
+                    </div>
+                    <div class="col-md-9">
+                        <a class="nav-link my-2" id="v-pills-messages-tab" data-bs-toggle="pill" href="#v-pills-messages"
+                            role="tab" aria-controls="v-pills-messages" aria-selected="false" tabindex="-1">
+                            Ganti Password
+                        </a>
+                    </div>
+                </div>
 
-                <a class="nav-link my-2 active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
-                    <img src="assets/images/logo/information_active.png" height="25px" width="25px" /> Informasi Umum
-                </a>
-                <a class="nav-link my-2" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false" tabindex="-1">
-                    <img src="assets/images/logo/global_active.png" height="25px" width="25px" /> Media Sosial
-                </a>
-                <a class="nav-link my-2" id="v-pills-messages-tab" data-bs-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false" tabindex="-1">
-                    <img src="assets/images/logo/key_active.png" height="25px" width="25px" /> Ganti Password
-                </a>
+
             </div>
         </div><!-- end col -->
         <div class="col-md-10">
             <div class="tab-content text-muted mt-4 mt-md-0" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                    div.card
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 class="card-title mb-2">Informasi Umum</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="nameInput" class="form-label">Nama Lengkap</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control bg-light" id="nameInput">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="email" class="form-label">Email</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="email" class="form-control bg-light" id="email">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="no_telp" class="form-label">Nomor Telephone</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="number" class="form-control bg-light" id="no_telp"
+                                        readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="nik_khusus" class="form-label">Nik Khusus</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="number" class="form-control bg-light" id="nik_khusus"
+                                        readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control bg-light flatpickr-input"
+                                        data-provider="flatpickr" id="tanggal_lahir" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="meassageInput" class="form-label">Agama</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <select class="form-select mb-3 bg-light" aria-label="Default select example">
+                                        <option value="1" selected>Islam</option>
+                                        <option value="2">Kristen Protestan</option>
+                                        <option value="3">Kristen Katolik</option>
+                                        <option value="4">Budha</option>
+                                        <option value="5">Hindu</option>
+                                        <option value="6">Konghucu</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="meassageInput" class="form-label">Jenis Kelamin</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <select class="form-select mb-3 bg-light" aria-label="Default select example">
+                                        <option selected="" value="0">Laki-laki</option>
+                                        <option value="1">Perempuan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn text-white fs-14 float-end rounded-4 fw-bold"
+                                style="background-color:#4E36E2" type="button">Simpan
+                                perubahan
+                            </button>
+
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                     <div class="d-flex mb-2">
@@ -62,11 +163,15 @@
                             <img src="assets/images/small/img-5.jpg" alt="" width="150" class="rounded">
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <p class="mb-0"> I also decreased the transparency in the text so that the mountains come through the text, bringing the quote truly to life. Make sure that the placement of your text is pleasing to look at, and you try to achieve symmetry for this effect.</p>
+                            <p class="mb-0"> I also decreased the transparency in the text so that the mountains come
+                                through the text, bringing the quote truly to life. Make sure that the placement of your
+                                text is pleasing to look at, and you try to achieve symmetry for this effect.</p>
                         </div>
                     </div>
                     <p class="mb-0">
-                        You've probably heard that opposites attract. The same is true for fonts. Don't be afraid to combine font styles that are different but complementary. You can always play around with the text that is overlaid on an image.
+                        You've probably heard that opposites attract. The same is true for fonts. Don't be afraid to combine
+                        font styles that are different but complementary. You can always play around with the text that is
+                        overlaid on an image.
                     </p>
                 </div>
                 <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
@@ -75,11 +180,15 @@
                             <img src="assets/images/small/img-6.jpg" alt="" width="150" class="rounded">
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <p class="mb-0">In this image, you can see that the line height has been reduced significantly, and the size was brought up exponentially. Experiment and play around with the fonts that you already have in the software you’re working with reputable font websites.</p>
+                            <p class="mb-0">In this image, you can see that the line height has been reduced
+                                significantly, and the size was brought up exponentially. Experiment and play around with
+                                the fonts that you already have in the software you’re working with reputable font websites.
+                            </p>
                         </div>
                     </div>
                     <p class="mb-0">
-                        They highly encourage that you use different fonts in one design, but do not over-exaggerate and go overboard This may be the most commonly encountered tip I received from the designers I spoke with.
+                        They highly encourage that you use different fonts in one design, but do not over-exaggerate and go
+                        overboard This may be the most commonly encountered tip I received from the designers I spoke with.
                     </p>
                 </div>
             </div>

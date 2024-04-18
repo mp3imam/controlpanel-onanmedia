@@ -30,8 +30,8 @@
                                     <div class="card bg-transparent border-0">
                                         <label for="file-input" class="custom-file-upload cursor-pointer">
                                             <img class="card-img rounded-circle" id="foto_umum_data"
-                                                src="{{ asset('images/user-dummy-img.jpg') }}" width="100px"
-                                                height="200px" alt="Card image">
+                                                src="{{ asset('images/user-dummy-img.jpg') }}" width="100px" height="200px"
+                                                alt="Card image">
                                             <div class="card-img-overlay p-0 d-flex flex-column">
                                                 <div class="card-body bg-transparent"></div>
                                                 <div class="bg-transparent text-end m-4">
@@ -1674,6 +1674,7 @@
 
         $('#save_umum').click(function() {
             var fd = new FormData()
+            fd.append('id_update', $('#id_update').val())
             fd.append('nama_lengkap_umum', $('#nama_lengkap_umum').val())
             fd.append('nama_panggilan_umum', $('#nama_panggilan_umum').val())
             fd.append('alamat_ktp_umum', $('#alamat_ktp_umum').val())

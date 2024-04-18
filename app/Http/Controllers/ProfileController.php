@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataKaryawanModel;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
@@ -13,6 +14,9 @@ class ProfileController extends Controller
     {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
+
+        $detail = DataKaryawanModel::whereId(auth()->user()->id)->first();
+        dd($detail);
 
         return view('profile.index', $title);
     }
