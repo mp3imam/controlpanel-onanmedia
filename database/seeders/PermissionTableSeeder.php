@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DataKaryawanModel;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class PermissionTableSeeder extends Seeder
     {
         DB::beginTransaction();
 
-        try{
+        try {
 
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
@@ -33,7 +34,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'OnanApps',
                     'alias'                 => 'OnanApps',
                     'module_icon'           => 'ri-dashboard-fill',
@@ -42,7 +43,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Role Users',
                     'alias'                 => 'Role Users',
                     'module_icon'           => 'ri-file-user-fill',
@@ -51,7 +52,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Users',
                     'alias'                 => 'Users',
                     'module_icon'           => 'ri-file-user-fill',
@@ -60,7 +61,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 3,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Transaksi',
                     'alias'                 => 'Transaksi',
                     'module_icon'           => 'ri-file-user-fill',
@@ -70,7 +71,7 @@ class PermissionTableSeeder extends Seeder
                     'module_description'    => '',
                     'module_status'         => 1
 
-                ],[
+                ], [
                     'name'                  => 'Daftar Tender',
                     'alias'                 => 'Daftar Tender',
                     'module_icon'           => 'ri-file-user-fill',
@@ -79,7 +80,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 5,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Daftar Product Jasa',
                     'alias'                 => 'Daftar Product Jasa',
                     'module_icon'           => 'ri-file-user-fill',
@@ -88,7 +89,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 6,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Request Pencarian Dana',
                     'alias'                 => 'Request Pencarian Dana',
                     'module_icon'           => 'ri-file-user-fill',
@@ -97,7 +98,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 7,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Finance',
                     'alias'                 => 'Finance',
                     'module_icon'           => 'ri-file-user-fill',
@@ -106,7 +107,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 3,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Rekening Bank',
                     'alias'                 => 'Rekening Bank',
                     'module_icon'           => 'ri-file-user-fill',
@@ -115,7 +116,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Transaksi Kas',
                     'alias'                 => 'Transaksi Kas',
                     'module_icon'           => 'ri-file-user-fill',
@@ -124,7 +125,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Transaksi Belanja',
                     'alias'                 => 'Transaksi Belanja',
                     'module_icon'           => 'ri-file-user-fill',
@@ -133,7 +134,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 3,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Jurnal Umum',
                     'alias'                 => 'Jurnal Umum',
                     'module_icon'           => 'ri-file-user-fill',
@@ -142,7 +143,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 4,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'HRD',
                     'alias'                 => 'HRD',
                     'module_icon'           => 'ri-file-user-fill',
@@ -151,7 +152,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 4,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Data Karyawan',
                     'alias'                 => 'Data Karyawan',
                     'module_icon'           => 'ri-file-user-fill',
@@ -160,7 +161,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Data Absensi',
                     'alias'                 => 'Data Absensi',
                     'module_icon'           => 'ri-file-user-fill',
@@ -169,7 +170,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Master Data',
                     'alias'                 => 'Master Data',
                     'module_icon'           => 'ri-file-user-fill',
@@ -178,7 +179,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 5,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Bahasa',
                     'alias'                 => 'Bahasa',
                     'module_icon'           => 'ri-file-user-fill',
@@ -187,7 +188,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Kategori',
                     'alias'                 => 'Kategori',
                     'module_icon'           => 'ri-file-user-fill',
@@ -196,7 +197,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'SubKategori',
                     'alias'                 => 'SubKategori',
                     'module_icon'           => 'ri-file-user-fill',
@@ -205,7 +206,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 3,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Pekerjaan',
                     'alias'                 => 'Pekerjaan',
                     'module_icon'           => 'ri-file-user-fill',
@@ -214,7 +215,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 4,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Pendidikan',
                     'alias'                 => 'Pendidikan',
                     'module_icon'           => 'ri-file-user-fill',
@@ -223,7 +224,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 5,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Pengaturan',
                     'alias'                 => 'Pengaturan',
                     'module_icon'           => 'ri-file-user-fill',
@@ -232,7 +233,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 6,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Role Page',
                     'alias'                 => 'Role Page',
                     'module_icon'           => 'ri-file-user-fill',
@@ -241,7 +242,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Help Desk',
                     'alias'                 => 'Help Desk',
                     'module_icon'           => 'ri-file-user-fill',
@@ -250,7 +251,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 7,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Dashboard Helpdesk',
                     'alias'                 => 'Dashboard Helpdesk',
                     'module_icon'           => 'ri-file-user-fill',
@@ -259,7 +260,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 1,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'List Helpdest',
                     'alias'                 => 'List Helpdest',
                     'module_icon'           => 'ri-file-user-fill',
@@ -268,7 +269,7 @@ class PermissionTableSeeder extends Seeder
                     'module_position'       => 2,
                     'module_description'    => '',
                     'module_status'         => 1
-                ],[
+                ], [
                     'name'                  => 'Menu Pages',
                     'alias'                 => 'Menu Pages',
                     'module_icon'           => 'ri-file-user-fill',
@@ -285,12 +286,17 @@ class PermissionTableSeeder extends Seeder
             }
 
             $role = [
-                ['name'=>'administrator'],
-                ['name'=>'finance'],
-                ['name'=>'hrd'],
-                ['name'=>'customer_service'],
-                ['name'=>'help_desk'],
-                ['name'=>'direktur'],
+                ['name' => 'administrator'],
+                ['name' => 'finance'],
+                ['name' => 'hrd'],
+                ['name' => 'customer_service'],
+                ['name' => 'help_desk'],
+                ['name' => 'direktur'],
+                ['name' => 'ui/ux'],
+                ['name' => 'creative'],
+                ['name' => 'network'],
+                ['name' => 'mobile'],
+                ['name' => 'web_developer'],
             ];
 
             $users = [
@@ -304,7 +310,7 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
-                ],[
+                ], [
                     'id' => 2,
                     'username' => 'amalina',
                     'password' => bcrypt('12345678'),
@@ -314,7 +320,7 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
-                ],[
+                ], [
                     'id' => 3,
                     'username' => 'Hrd',
                     'password' => bcrypt('12345678'),
@@ -324,7 +330,7 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
-                ],[
+                ], [
                     'id' => 4,
                     'username' => 'Customer Service',
                     'password' => bcrypt('12345678'),
@@ -334,7 +340,7 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
-                ],[
+                ], [
                     'id' => 5,
                     'username' => 'Adian',
                     'password' => bcrypt('12345678'),
@@ -344,12 +350,62 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
-                ],[
+                ], [
                     'id' => 6,
                     'username' => 'Direktur',
                     'password' => bcrypt('3333'),
                     'status' => 1,
                     'nama_lengkap' => 'Bapak Dolok Biantara Siregar',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 7,
+                    'username' => 'Lana',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Maulana Sobari',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 8,
+                    'username' => 'Fikri',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'AA Fikri',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 9,
+                    'username' => 'Ariq',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'AA Ariq',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 10,
+                    'username' => 'Fernosa',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Fernosa',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 11,
+                    'username' => 'Warih',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Warih',
                     'cl_perusahaan_id' => 1,
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
@@ -367,28 +423,28 @@ class PermissionTableSeeder extends Seeder
             // create user Finance & roles
             $financeRole = Role::create($role[1]);
             $financeUser = User::create($users[1]);
-            $financeRole->givePermissionTo(['Dashboard','Finance','Rekening Bank','Transaksi Kas','Transaksi Belanja','Jurnal Umum']);
+            $financeRole->givePermissionTo(['Dashboard', 'Finance', 'Rekening Bank', 'Transaksi Kas', 'Transaksi Belanja', 'Jurnal Umum']);
             $financeUser->assignRole($financeRole);
             // end
 
             // create user HRD & roles
             $hrdRole = Role::create($role[2]);
             $hrdUser = User::create($users[2]);
-            $hrdRole->givePermissionTo(['Dashboard','Finance','Transaksi Belanja','HRD','Data Karyawan','Data Absensi']);
+            $hrdRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja', 'HRD', 'Data Karyawan', 'Data Absensi']);
             $hrdUser->assignRole($hrdRole);
             // end
 
             // create user Costumer Service & roles
             $csRole = Role::create($role[3]);
             $csUser = User::create($users[3]);
-            $csRole->givePermissionTo(['Dashboard','Finance','Transaksi Belanja']);
+            $csRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
             $csUser->assignRole($csRole);
             // end
 
             // create user Helper
             $helperRole = Role::create($role[4]);
             $helperUser = User::create($users[4]);
-            $helperRole->givePermissionTo(['Dashboard','Finance','Transaksi Belanja','Help Desk','Dashboard Helpdesk','List Helpdest']);
+            $helperRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja', 'Help Desk', 'Dashboard Helpdesk', 'List Helpdest']);
             $helperUser->assignRole($helperRole);
             // end
 
@@ -399,8 +455,43 @@ class PermissionTableSeeder extends Seeder
             $direkturUser->assignRole($direkturRole);
             // end
 
+            // create user UI / UX
+            $uiUserRole = Role::create($role[6]);
+            $uiUserUser = User::create($users[6]);
+            $uiUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $uiUserUser->assignRole($uiUserRole);
+            // end
+
+            // create user Creative
+            $creativeUserRole = Role::create($role[7]);
+            $creativeUserUser = User::create($users[7]);
+            $creativeUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $creativeUserUser->assignRole($creativeUserRole);
+            // end
+
+            // create user Networking
+            $networkUserRole = Role::create($role[8]);
+            $networkUserUser = User::create($users[8]);
+            $networkUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $networkUserUser->assignRole($networkUserRole);
+            // end
+
+            // create user Mobile
+            $mobileUserRole = Role::create($role[9]);
+            $mobileUserUser = User::create($users[9]);
+            $mobileUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $mobileUserUser->assignRole($mobileUserRole);
+            // end
+
+            // create user Web Developer
+            $webDevUserRole = Role::create($role[10]);
+            $webDevUserUser = User::create($users[10]);
+            $webDevUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $webDevUserUser->assignRole($webDevUserRole);
+            // end
+
             DB::commit();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             echo $e;
             DB::rollback();
         }
