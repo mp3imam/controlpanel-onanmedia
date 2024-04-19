@@ -46,6 +46,7 @@ Route::get('/', [HomeController::class, 'root'])->name('root');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');
+    Route::get('absen', [DasboardController::class, 'create'])->name('absen.list');
     Route::post('upload-file', [DasboardController::class, 'upload_file'])->name('upload.file');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -151,5 +152,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('absen', [HomeController::class, 'absen'])->name('absen');
+    Route::post('absen', [DasboardController::class, 'absen'])->name('absen');
 });
