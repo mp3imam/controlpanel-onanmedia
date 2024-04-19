@@ -6,61 +6,93 @@
     <link href="{{ URL::asset('assets/libs/swiper/swiper.min.css') }}" rel="stylesheet">
 @endsection
 @section('content')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
     @include('sweetalert::alert', ['cdn' => 'https://cdn.jsdelivr.net/npm/sweetalert2@9'])
     <div class="row">
         <div class="col-xxl-12 order-xxl-0 order-first">
             <div class="d-flex flex-column h-100">
                 <div class="row h-100">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card card-animate">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 overflow-hidden">
-                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Monitor KiosK
-                                        </p>
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <form method="POST" action="{{ route('absen') }}">
+                                @csrf
+                                <div style="width:100%; height:300px;" id="my_camera"></div>
+                                <input type="hidden" name="image" class="image-tag">
+                                <button class="btn btn-success mt-3">Absen</button>
+                                <div id="results" hidden>Your captured image will appear here...</div>
+                            </form>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 m-2">
+                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                        class="avatar-md rounded-circle card-animate">
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
+                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="chart" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    data-colors="[&quot;--vz-primary&quot;, &quot;--vz-info&quot;, &quot;--vz-warning&quot;, &quot;--vz-success&quot;]"
-                                    class="apex-charts mt-2" dir="ltr" style="min-height: 202.7px;">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 m-2">
+                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                        class="avatar-md rounded-circle card-animate">
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
+                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div><!-- end card body -->
-                        </div><!-- end card -->
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 m-2">
+                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                        class="avatar-md rounded-circle card-animate">
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
+                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 m-2">
+                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                        class="avatar-md rounded-circle card-animate">
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
+                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card card-animate">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 overflow-hidden">
-                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Admin Layanan
-                                        </p>
-                                    </div>
-                                </div>
-                                <div id="admin_layanan" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    data-colors="[&quot;--vz-primary&quot;, &quot;--vz-info&quot;, &quot;--vz-warning&quot;, &quot;--vz-success&quot;]"
-                                    class="apex-charts mt-2" dir="ltr" style="min-height: 202.7px;">
-                                </div>
-                            </div><!-- end card body -->
-                        </div><!-- end card -->
-                    </div>
-                    {{-- <div class="col-lg-4 col-md-6">
-                        <div class="card card-animate">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 overflow-hidden">
-                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> Rating Satker
-                                            Terbaik
-                                        </p>
-                                    </div>
-                                </div>
-                                <div id="top_rating"
-                                    data-colors="[&quot;--vz-primary&quot;, &quot;--vz-info&quot;, &quot;--vz-warning&quot;, &quot;--vz-success&quot;]"
-                                    class="apex-charts mt-2" dir="ltr" style="min-height: 202.7px;">
-                                </div>
-                            </div><!-- end card body -->
-                        </div><!-- end card -->
-                    </div> --}}
-                </div><!-- end row -->
+
+                </div>
 
                 <div class="row">
                     <div class="col-xl-12">
@@ -91,7 +123,19 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 @section('script')
-    <script type="text/javascript">
+    <script language="JavaScript">
+        Webcam.set({
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
 
+        Webcam.attach('#my_camera');
+
+        function take_snapshot() {
+            Webcam.snap(function(data_uri) {
+                $(".image-tag").val(data_uri);
+                document.getElementById('results').innerHTML = '<img src="' + data_uri + '"/>';
+            });
+        }
     </script>
 @endsection

@@ -25,6 +25,7 @@ use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UserPublicController;
 use App\Http\Controllers\UserRolePageController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,4 +151,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('absen', [HomeController::class, 'absen'])->name('absen');
 });
