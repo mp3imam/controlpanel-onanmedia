@@ -30,7 +30,12 @@ class DasboardController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        return view('dasboard.index', $title);
+        $hadir = AbsenKaryawanOnanmediaModel::whereStatus('Hadir')->get();
+        // $belum_hadir = AbsenKaryawanOnanmediaModel::where()
+        $telat = AbsenKaryawanOnanmediaModel::whereStatus('Telat')->get();
+        $izin = AbsenKaryawanOnanmediaModel::whereStatus('Izin')->get();
+
+        return view('dasboard.index', $title, compact(['telat', 'izin', 'hadir']));
     }
 
     public function create(Request $request)
@@ -47,9 +52,6 @@ class DasboardController extends Controller
             })
             ->addColumn('waktu', function ($row) {
                 return Carbon::parse($row->created_at)->format('H:i:s');
-            })
-            ->addColumn('status', function ($row) {
-                return $row->created_at;
             })
             ->rawColumns(['namaUser', 'tanggal', 'waktu'])
             ->make(true);
@@ -72,16 +74,27 @@ class DasboardController extends Controller
         $file = $folderPath . $fileName;
         Storage::put($file, $image_base64);
         $jenis_absen = "Masuk";
+        $status = "Hadir";
+        if (Carbon::now()->format('H:i:s') > '08:15:00 am') $status = "Telat";
+
         if (AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->exists()) {
             $jenis_absen = "Pulang";
+            $status = "Telat";
+            if (Carbon::now()->format('H:i:s') > '17:00:00 pm') $status = "Hadir";
         }
+        if ($request->status) $status = $request->status;
 
         AbsenKaryawanOnanmediaModel::create([
             'user_id'       => auth()->user()->id,
             'jenis_absen'   => $jenis_absen,
+            'status'        => $status,
             'keterangan'    => $request->keterangan ?? null,
             'foto'          => asset('/storage' . '/' . $fileName)
         ]);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Data Berhasil']);
+        }
 
         return redirect('/');
     }

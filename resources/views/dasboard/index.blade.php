@@ -19,12 +19,13 @@
                                 <div style="width:100%; height:300px;" id="my_camera"></div>
                                 <input type="hidden" name="image" class="image-tag">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <button type="button" class="btn btn-primary mt-3 px-4"
-                                            onClick="take_snapshot()">Absen</button>
+                                    <div class="col">
+                                        <button id="btn_kirim" type="button" class="btn btn-primary mt-3 px-4"
+                                            onClick="absen()">Absen</button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <button class="btn btn-outline-dark mt-3 px-4">Izin</button>
+                                    <div class="col">
+                                        <button id="btn_batal" type="button" onclick=""
+                                            class="btn btn-outline-dark mt-3 px-4">Izin</button>
                                     </div>
                                 </div>
                                 <div id="results" hidden>Your captured image will appear here...</div>
@@ -41,7 +42,7 @@
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">{{ $hadir->count() }}</h5>
                                                     <p class="text-muted mb-0">Hadir hari ini</p>
                                                 </div>
                                             </div>
@@ -57,8 +58,8 @@
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
-                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">-</h5>
+                                                    <p class="text-muted mb-0">Belum Hadir</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -73,8 +74,8 @@
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
-                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">{{ $telat->count() }}</h5>
+                                                    <p class="text-muted mb-0">Telat Hari ini</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -89,8 +90,8 @@
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">12</h5>
-                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                    <h5 class="card-title mb-1 fs-20 fw-bold">{{ $izin->count() }}</h5>
+                                                    <p class="text-muted mb-0">Izin hari ini</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -123,7 +124,7 @@
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content" id="modal_content_layanan">
+                    <div class="modal-content" id="modal_content">
                     </div>
                 </div>
             </div>
@@ -199,12 +200,78 @@
 
         Webcam.attach('#my_camera');
 
-        function take_snapshot() {
+        function absen() {
             Webcam.snap(function(data_uri) {
                 $(".image-tag").val(data_uri);
                 document.getElementById('results').innerHTML = '<img src="' + data_uri + '" />';
                 document.getElementById('capture-form').submit();
             });
         }
+
+        $('#btn_batal').on('click', function() {
+            // Clear previous modal content
+            $('#modal_content').empty();
+
+            // Populate modal with new content
+            var modalBody = `
+                <div class="modal-body text-center mb-3">
+                    <h5 class="mb-3">Berikan Keterangan Izin</h5>
+                    <div id="div_izin" class="mb-3"></div>
+                    <textarea name="keterangan" id="keterangan" rows="4" class="form-control" placeholder="Tulis alasanmu disini..."></textarea>
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="button" class="btn btn-primary mt-2" id="btn_kirim">Kirim</button>
+                    </div>
+                </div>
+            `;
+            $('#modal_content').html(modalBody);
+
+            // Show the modal
+            $("#exampleModal").modal('show');
+
+            // Capture image with Webcam.js
+            Webcam.snap(function(data_uri) {
+                $(".image-tag").val(data_uri);
+                $('#div_izin').html('<img id="img_izin" src="' + data_uri +
+                    '" width="300px" height="300px" />');
+            });
+
+
+            // Setup CSRF headers for AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#btn_kirim').on('click', function() {
+                // Get image data URI and user-provided text
+                var imageDataURI = $('#img_izin').attr('src');
+                var keterangan = $('#keterangan').val();
+
+                // Create FormData object
+                var formData = new FormData();
+                formData.append('image', imageDataURI);
+                formData.append('status', 'Izin');
+                formData.append('keterangan', keterangan);
+
+                // Send AJAX request
+                $.ajax({
+                    type: 'post',
+                    url: "{{ route('absen') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#dataTable').DataTable().ajax.reload()
+                        $('#btn_kirim').props('hidden', true);
+                        $('#btn_batal').props('hidden', true);
+                    },
+                }).done(function() {
+                    // Hide the modal after successful submission
+                    $('#exampleModal').modal('hide');
+                });
+            });
+
+        });
     </script>
 @endsection
