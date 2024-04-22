@@ -14,22 +14,25 @@
                     height="300px">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col">
-                            <div class="avatar-md mt-n5 mb-5">
-                                <div class="avatar-title bg-light rounded-circle mx-5 my-3">
+                        <div class="col" onclick="document.getElementById('input-foto').click()" style="cursor: pointer">
+                            <div class="avatar-md mt-n5 mb-5 card-img-overlay mx-3">
+                                <div class="avatar-title bg-lightrounded-circle mx-5 my-3">
                                     @if (Auth::user()->foto)
-                                        <img src="{{ Auth::user()->foto }}" alt="user-img" width="120px" height="120px"
-                                            class="rounded-circle">
-                                    @else
-                                        <img src="assets/images/users/avatar.png" alt="user-img" width="120px"
+                                        <img id="foto_profile" src="{{ Auth::user()->foto }}" alt="user-img" width="120px"
                                             height="120px" class="rounded-circle">
+                                    @else
+                                        <img id="foto_profile" src="assets/images/users/avatar.png" alt="user-img"
+                                            width="120px" height="120px" class="p-0 rounded-circle mb-5 card-img-overlay">
                                     @endif
+                                    <button class="btn btn-success btn-sm rounded-5 mt-5"><i
+                                            class="ri-pencil-line"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="col-11">
-                            <div class="h4 mx-4">{{ Auth::user()->nama_lengkap }}</div>
-                            <div class="h6 mx-4">{{ Auth::user()->roles[0]->name }}</div>
+                            <input type="file" id="input-foto" accept="image/*" hidden>
+                            <div class="h4 mx-3">{{ Auth::user()->nama_lengkap }}</div>
+                            <div class="h6 mx-3">{{ Auth::user()->roles[0]->name }}</div>
                         </div>
                     </div>
                 </div>
@@ -84,25 +87,27 @@
                                 <div class="col-lg-3">
                                     <label for="nameInput" class="form-label">Nama Lengkap</label>
                                 </div>
-                                <div class="col-lg-9">
-                                    <input type="text" class="form-control bg-light" id="nameInput">
+                                <div class="col-lg-9 modal_nama_append">
+                                    <input type="text" class="form-control bg-light" id="nameInput"
+                                        value="{{ $detail->nama_lengkap }}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-lg-3">
                                     <label for="email" class="form-label">Email</label>
                                 </div>
-                                <div class="col-lg-9">
-                                    <input type="email" class="form-control bg-light" id="email">
+                                <div class="col-lg-9 modal_email_append">
+                                    <input type="email" class="form-control bg-light" id="email"
+                                        value="{{ $detail->email }}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-lg-3">
                                     <label for="no_telp" class="form-label">Nomor Telephone</label>
                                 </div>
-                                <div class="col-lg-9">
-                                    <input type="number" class="form-control bg-light" id="no_telp"
-                                        readonly="readonly">
+                                <div class="col-lg-9 modal_telp_append">
+                                    <input type="text" class="form-control bg-light" id="no_telp"
+                                        value="{{ $detail->no_handphone }}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -111,7 +116,7 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <input type="number" class="form-control bg-light" id="nik_khusus"
-                                        readonly="readonly">
+                                        value="{{ $detail->nik_khusus }}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -120,7 +125,8 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <input type="text" class="form-control bg-light flatpickr-input"
-                                        data-provider="flatpickr" id="tanggal_lahir" readonly="readonly">
+                                        value="{{ Carbon\Carbon::parse($detail->tanggal_lahir)->format('d-m-Y') }}"
+                                        required data-provider="flatpickr" data-date-format="d-m-Y" id="tanggal_lahir">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -128,13 +134,26 @@
                                     <label for="meassageInput" class="form-label">Agama</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <select class="form-select mb-3 bg-light" aria-label="Default select example">
-                                        <option value="1" selected>Islam</option>
-                                        <option value="2">Kristen Protestan</option>
-                                        <option value="3">Kristen Katolik</option>
-                                        <option value="4">Budha</option>
-                                        <option value="5">Hindu</option>
-                                        <option value="6">Konghucu</option>
+                                    <select id="agama_id" class="form-select mb-3 bg-light"
+                                        aria-label="Default select example">
+                                        <option value="1" {{ $detail->agama_id == 1 ? 'selected' : '' }}>
+                                            Islam
+                                        </option>
+                                        <option value="2" {{ $detail->agama_id == 2 ? 'selected' : '' }}>
+                                            Kristen Protestan
+                                        </option>
+                                        <option value="3" {{ $detail->agama_id == 3 ? 'selected' : '' }}>
+                                            Kristen Katolik
+                                        </option>
+                                        <option value="4" {{ $detail->agama_id == 4 ? 'selected' : '' }}>
+                                            Budha
+                                        </option>
+                                        <option value="5" {{ $detail->agama_id == 5 ? 'selected' : '' }}>
+                                            Hindu
+                                        </option>
+                                        <option value="6" {{ $detail->agama_id == 6 ? 'selected' : '' }}>
+                                            Konghucu
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -143,53 +162,139 @@
                                     <label for="meassageInput" class="form-label">Jenis Kelamin</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <select class="form-select mb-3 bg-light" aria-label="Default select example">
-                                        <option selected="" value="0">Laki-laki</option>
-                                        <option value="1">Perempuan</option>
+                                    <select id="jenis_kelamin" class="form-select mb-3 bg-light"
+                                        aria-label="Default select example">
+                                        <option
+                                            {{ $detail->jenis_kelamin == 'Laki-Laki' ? 'selected' : '' }}value="Laki-Laki">
+                                            Laki-Laki
+                                        </option>
+                                        <option value="Perempuan"
+                                            {{ $detail->jenis_kelamin == 'Perempuan' ? 'selected' : '' }}>Perempuan
+                                        </option>
                                     </select>
+                                </div>
+                            </div>
+                            <button id="btn_umum" class="btn text-white fs-14 float-end rounded-4 fw-bold"
+                                style="background-color:#4E36E2" type="button">Simpan
+                                perubahan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 class="card-title mb-2">Media Sosial</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="linkedin" class="form-label">LinkedIn</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control bg-light" id="linkedin"
+                                        value="{{ $detail->linkedin }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="facebook" class="form-label">Facebook</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input class="form-control bg-light" id="facebook" value="{{ $detail->facebook }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="twitter" class="form-label">Twitter</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="number" class="form-control bg-light" id="twitter"
+                                        value="{{ $detail->twitter }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="instagram" class="form-label">Instagram</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="number" class="form-control bg-light" id="instagram"
+                                        value="{{ $detail->instagram }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="web_fortofolio" class="form-label">Website Fortofolio</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="number" class="form-control bg-light" id="web_fortofolio"
+                                        value="{{ $detail->website }}">
+                                </div>
+                            </div>
+                            <button id="btn_medsos" class="btn text-white fs-14 float-end rounded-4 fw-bold"
+                                style="background-color:#4E36E2" type="button">Simpan
+                                perubahan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 class="card-title mb-2">Ganti Password</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="email" class="form-label">Email</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control bg-black text-light" id="email_password"
+                                        value="{{ $detail->email }}" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="pass_lama" class="form-label">Password Lama</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="form-icon right">
+                                        <input class="form-control bg-light toggle_pass" onclick="togglePassword()"
+                                            id="pass_lama" type="password" required>
+                                        <i class="ri-eye-off-line btn_pass"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="pass_baru" class="form-label">Password Baru</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="form-icon right">
+                                        <input type="password" onclick="togglePassword()"
+                                            class="form-control bg-light toggle_pass" id="pass_baru" required>
+                                        <i class="ri-eye-off-line btn_pass"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-3">
+                                    <label for="konfirmasi" class="form-label">Konfirmasi Password Baru</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="form-icon right">
+                                        <input type="password" onclick="togglePassword()"
+                                            class="form-control bg-light toggle_pass" id="konfirmasi" required>
+                                        <i class="ri-eye-off-line btn_pass"></i>
+                                    </div>
                                 </div>
                             </div>
                             <button class="btn text-white fs-14 float-end rounded-4 fw-bold"
                                 style="background-color:#4E36E2" type="button">Simpan
                                 perubahan
                             </button>
-
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                    <div class="d-flex mb-2">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/small/img-5.jpg" alt="" width="150" class="rounded">
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <p class="mb-0"> I also decreased the transparency in the text so that the mountains come
-                                through the text, bringing the quote truly to life. Make sure that the placement of your
-                                text is pleasing to look at, and you try to achieve symmetry for this effect.</p>
-                        </div>
-                    </div>
-                    <p class="mb-0">
-                        You've probably heard that opposites attract. The same is true for fonts. Don't be afraid to combine
-                        font styles that are different but complementary. You can always play around with the text that is
-                        overlaid on an image.
-                    </p>
-                </div>
-                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-                    <div class="d-flex mb-2">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/small/img-6.jpg" alt="" width="150" class="rounded">
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <p class="mb-0">In this image, you can see that the line height has been reduced
-                                significantly, and the size was brought up exponentially. Experiment and play around with
-                                the fonts that you already have in the software you’re working with reputable font websites.
-                            </p>
-                        </div>
-                    </div>
-                    <p class="mb-0">
-                        They highly encourage that you use different fonts in one design, but do not over-exaggerate and go
-                        overboard This may be the most commonly encountered tip I received from the designers I spoke with.
-                    </p>
                 </div>
             </div>
         </div><!--  end col -->
@@ -229,6 +334,94 @@
 
             $('#username_id').keyup(function() {
                 table.draw();
+            });
+        });
+
+        $('.btn_pass').click(function() {
+            var passwordField = $('.toggle_pass');
+            passwordField.attr('type', passwordField.attr('type') === 'password' ? 'text' : 'password');
+            $('#eyeIcon').toggleClass('ri-eye-off-line ri-eye-line');
+        });
+
+        $('#btn_umum').click(function() {
+            var data = new FormData()
+            data.append('id_update', "{{ auth()->user()->id }}")
+            data.append('nameInput', $('#nameInput').val())
+            data.append('email', $('#email').val())
+            data.append('no_telp', $('#no_telp').val())
+            data.append('nik_khusus', $('#nik_khusus').val())
+            data.append('tanggal_lahir', $('#tanggal_lahir').val())
+            data.append('agama_id', $('#agama_id').val())
+            data.append('jenis_kelamin', $('#jenis_kelamin').val())
+            data.append('foto', $('#foto_profile').val())
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('profile.simpan.umum') }}",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log(response);
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: 'Mengubah Data Profile!',
+                            text: 'Data berhasil di ubah.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 1500
+                        })
+                    } else {
+                        $('.remove_umum').remove()
+                        if (response.message.namaInput == 'The name input field is required.') {
+                            $('.modal_nama_append').append(`
+                                <span class="remove_umum text-danger">Data Tidak Boleh Kosong</span>
+                            `)
+                        }
+                        if (response.message.email == 'The email input field is required.') {
+                            $('.modal_email_append').append(`
+                            <span class="remove_umum text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        }
+                        if (response.message.no_telp == 'The no telp input field is required.') {
+                            $('.modal_telp_append').append(`
+                            <span class="remove_umum text-danger">Data Tidak Boleh Kosong</span>
+                        `)
+                        }
+                    }
+                }
+            });
+        });
+
+        $('#btn_medsos').click(function() {
+            var data = new FormData()
+            data.append('id_update', "{{ auth()->user()->id }}")
+            data.append('linkedin', $('#linkedin').val())
+            data.append('facebook', $('#facebook').val())
+            data.append('twitter', $('#twitter').val())
+            data.append('instagram', $('#instagram').val())
+            data.append('web_fortofolio', $('#web_fortofolio').val())
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('profile.simpan.medsos') }}",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log(response);
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: 'Mengubah Data Profile Medsos!',
+                            text: 'Data berhasil di ubah.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 1500
+                        })
+                    }
+                }
             });
         });
 

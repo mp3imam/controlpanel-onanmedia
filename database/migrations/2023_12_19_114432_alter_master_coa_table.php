@@ -26,8 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_data_karyawan', function (Blueprint $table) {
-            $table->dropColumn(['metode_penyusutan','rekening_bank','alamat_bank','nama_bank','account_name','swift_code']);
+        Schema::table('cl_coa', function (Blueprint $table) {
+            $table->dropColumn(['metode_penyusutan', 'rekening_bank', 'alamat_bank', 'nama_bank', 'account_name', 'swift_code']);
         });
     }
 };

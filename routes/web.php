@@ -152,5 +152,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('update_menu', [MenuPageController::class, 'update_menu'])->name('update_menu');
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('profile/simpan_umum', [ProfileController::class, 'simpan_umum'])->name('profile.simpan.umum');
+    Route::post('profile/simpan_medsos', [ProfileController::class, 'simpan_medsos'])->name('profile.simpan.medsos');
+    Route::post('profile/simpan_password', [ProfileController::class, 'simpan_password'])->name('profile.simpan.password');
     Route::post('absen', [DasboardController::class, 'absen'])->name('absen');
 });
