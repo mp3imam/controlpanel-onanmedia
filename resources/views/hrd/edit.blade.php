@@ -237,7 +237,8 @@
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Nomor Identitas (KTP)</label>
                                             <input type="number" class="form-control" id="no_identitas_personal"
-                                                name="no_identitas" value="{{ $detail->personal ? $detail->personal->no_ktp : '' }}">
+                                                name="no_identitas"
+                                                value="{{ $detail->personal ? $detail->personal->no_ktp : '' }}">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">NPWP</label>
@@ -254,10 +255,11 @@
                                             <select class="form-control" id='tunjangan_pajak_personal'
                                                 name="tunjangan_pajak_personal">
                                                 <option value="iya"
-                                                    {{ $detail->personal ? $detail->personal->tunjangan_pajak == 'iya' ? 'selected' : '' : '' }}>Yes
+                                                    {{ $detail->personal ? ($detail->personal->tunjangan_pajak == 'iya' ? 'selected' : '') : '' }}>
+                                                    Yes
                                                 </option>
                                                 <option value="tidak"
-                                                    {{ $detail->personal ? $detail->personal->tunjangan_pajak == 'tidak' ? 'selected' : '' : '' }}>
+                                                    {{ $detail->personal ? ($detail->personal->tunjangan_pajak == 'tidak' ? 'selected' : '') : '' }}>
                                                     Tidak</option>
                                             </select>
                                         </div>
@@ -347,50 +349,66 @@
                                             <label class="control-form text-muted">Jabatan</label>
                                             <select class="form-control" id='jabatan_pekerjaan' name="jabatan_pekerjaan">
                                                 <option value="1"
-                                                    {{ $detail->pekerjaan ? $detail->pekerjaan->departement_id == 1 ? 'selected' : '' : '' }}>1.
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->departement_id == 1 ? 'selected' : '') : '' }}>
+                                                    1.
                                                     Manager</option>
                                                 <option value="2"
-                                                    {{ $detail->pekerjaan ? $detail->pekerjaan->departement_id == 2 ? 'selected' : '' : '' }}>2.
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->departement_id == 2 ? 'selected' : '') : '' }}>
+                                                    2.
                                                     Leader</option>
                                                 <option value="3"
-                                                    {{ $detail->pekerjaan ? $detail->pekerjaan->departement_id == 3 ? 'selected' : '' : '' }}>3. Staf
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->departement_id == 3 ? 'selected' : '') : '' }}>
+                                                    3. Staf
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Status</label>
-                                            <select class="form-control" id='status_kontrak' name="status_kontrak">
-                                                <option value="1"
-                                                    {{ $detail->pekerjaan ? $detail->pekerjaan->status_kontrak == 1 ? 'selected' : '' : '' }}>Kontrak
-                                                </option>
-                                                <option value="2"
-                                                    {{ $detail->pekerjaan ? $detail->pekerjaan->status_kontrak == 2 ? 'selected' : '' : '' }}>
-                                                    Permanen</option>
-                                                <option value="3"
-                                                    {{ $detail->pekerjaan ? $detail->pekerjaan->status_kontrak == 3 ? 'selected' : '' : '' }}>Lainnya
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Periode Kontrak</label>
-                                            <select class="form-control" id='periode_kontrak' name="periode_kontrak">
-                                                <option value="1" selected>3 Bulan</option>
-                                                <option value="2">6 Bulan</option>
-                                                <option value="3">9 Bulan</option>
-                                                <option value="4">1 Tahun</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Tanggal Masuk</label>
-                                            <input type="date" class="form-control" id="kontrak_masuk"
-                                                name="kontrak_masuk" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Kontrak Selesai</label>
-                                            <input type="date" class="form-control" id="kontrak_selesai"
-                                                name="kontrak_selesai"
-                                                value="{{ Carbon\Carbon::now()->addMonth(3)->format('Y-m-d') }}" readonly>
+                                        <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <div class="row">
+                                                <div class="col mb-3" style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Status</label>
+                                                    <select class="form-control" id='status_kontrak'
+                                                        name="status_kontrak">
+                                                        <option value="1"
+                                                            {{ $detail->pekerjaan ? ($detail->pekerjaan->status_kontrak == 1 ? 'selected' : '') : '' }}>
+                                                            Kontrak
+                                                        </option>
+                                                        <option value="2"
+                                                            {{ $detail->pekerjaan ? ($detail->pekerjaan->status_kontrak == 2 ? 'selected' : '') : '' }}>
+                                                            Permanen</option>
+                                                        <option value="3"
+                                                            {{ $detail->pekerjaan ? ($detail->pekerjaan->status_kontrak == 3 ? 'selected' : '') : '' }}>
+                                                            Lainnya
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-3 hidden_kontrak"
+                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}
+                                                    style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Periode Kontrak</label>
+                                                    <select class="form-control" id='periode_kontrak'
+                                                        name="periode_kontrak">
+                                                        <option value="1" selected>3 Bulan</option>
+                                                        <option value="2">6 Bulan</option>
+                                                        <option value="3">9 Bulan</option>
+                                                        <option value="4">1 Tahun</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-3 hidden_kontrak"
+                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}
+                                                    style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Tanggal Masuk</label>
+                                                    <input type="date" class="form-control" id="kontrak_masuk"
+                                                        name="kontrak_masuk"
+                                                        value="{{ $detail->pekerjaan->kontrak_masuk }}">
+                                                </div>
+                                                <div class="col-lg mb-3 hidden_kontrak" style="background-color: #F9FAFB"
+                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}>
+                                                    <label class="control-form text-muted">Kontrak Selesai</label>
+                                                    <input type="date" class="form-control" id="kontrak_selesai"
+                                                        name="kontrak_selesai"
+                                                        value="{{ $detail->pekerjaan->kontrak_selesai }}">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-lg-6 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Potongan Terlambat</label>
@@ -607,6 +625,12 @@
             </div>
         `)
         }
+
+        $('#status_kontrak').change(function() {
+            $('.hidden_kontrak').prop('hidden', false)
+            if (this.value == 2) $('.hidden_kontrak').prop('hidden', true)
+
+        });
 
         function status_karyawan(params) {
             $.ajax({

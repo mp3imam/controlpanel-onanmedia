@@ -20,6 +20,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
 class HrdController extends Controller
@@ -386,6 +387,8 @@ class HrdController extends Controller
 
         $validator = Validator::make($request->all(), $validasi);
 
+        // dd($request->id_update !== null ? $request->id_update : DataKaryawanModel::orderby('id', 'desc')->first()->id + 1);
+
         if ($validator->fails()) {
             return response()->json([
                 'status'  => Response::HTTP_BAD_REQUEST,
@@ -407,11 +410,13 @@ class HrdController extends Controller
 
             // Buat atau update pengguna berdasarkan ID yang diberikan
             if ($request->id_update !== null) {
-                User::where(DataKaryawanModel::where('id', $request->id_update)->first()->userId)->update([
-                    'username' => $request->nama_lengkap_umum,
-                    'nama_lengkap' => $request->nama_lengkap_umum,
-                    'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
-                ]);
+                User::whereId(DataKaryawanModel::where('id', $request->id_update)->first()->userId)->update(
+                    [
+                        'username' => $request->nama_lengkap_umum,
+                        'nama_lengkap' => $request->nama_lengkap_umum,
+                        'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
+                    ]
+                );
             } else {
                 User::insert([
                     'id'                => User::orderByRaw('id::int DESC')->first()->id + 1,
@@ -425,9 +430,12 @@ class HrdController extends Controller
                     'update_by'         => 'administrator',
                     'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
                 ]);
-            }
 
-            // Role::create[];
+                $user = User::orderByRaw('id::int DESC')->first();
+
+                $userRole = Role::whereName('web_developer')->first();
+                $user->assignRole($userRole);
+            }
 
             // Simpan Data Karyawan
             $save = DataKaryawanModel::updateOrCreate(
@@ -451,11 +459,6 @@ class HrdController extends Controller
             );
 
             DB::commit();
-
-            return response()->json([
-                'status'  => Response::HTTP_OK,
-                'message' => $save
-            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             $user = $e->getMessage();
@@ -465,6 +468,10 @@ class HrdController extends Controller
                 'message' => $save
             ]);
         }
+        return response()->json([
+            'status'  => Response::HTTP_OK,
+            'message' => $save
+        ]);
     }
 
     public function simpan_karyawan_personal(Request $request)
@@ -550,10 +557,16 @@ class HrdController extends Controller
         $save->departement_id = $request->departement_pekerjaan;
         $save->jabatan_id     = $request->jabatan_pekerjaan;
         $save->status_kontrak = $request->status_kontrak;
-        $save->tanggal_masuk  = $request->kontrak_masuk;
-        $save->periode_kontrak  = $request->periode_kontrak;
+        if ($request->status_kontrak == 2) {
+            $save->tanggal_masuk  = Carbon::now()->format('Y-m-d');
+            $save->periode_kontrak  = '-';
+            $save->kontrak_selesai = Carbon::now()->addYears(10)->format('Y-m-d');
+        } else {
+            $save->tanggal_masuk  = $request->kontrak_masuk;
+            $save->periode_kontrak  = $request->periode_kontrak;
+            $save->kontrak_selesai = $request->kontrak_selesai;
+        }
         $save->cost_center_id = 0;
-        $save->kontrak_selesai = $request->kontrak_selesai;
         $save->potongan_terlambat = $request->potongan_terlambat;
         $save->toleransi_keterlambatan = $request->toleransi_keterlambatan;
         $save->absen_diluar_kantor = $request->absen_diluar_kantor;

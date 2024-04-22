@@ -54,13 +54,13 @@
                                     -
                                 </div>
                                 <div class="col-md-12 text-center my-4">
-                                    <a type="_blank" href="#"
+                                    <a type="_blank" href="#" id="id_wa"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
                                         style="background-color: #4E36E2"><i class="ri-phone-fill"></i></a>
-                                    <a type="_blank" href="#"
+                                    <a type="_blank" href="#" id="id_email"
                                         class="btn text-white btn-icon waves-effect waves-light mx-4 rounded-5"
                                         style="background-color: #4E36E2"><i class="ri-mail-fill"></i></a>
-                                    <a type="_blank" href="#"
+                                    <a type="_blank" href="#" id="id_linkedin"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
                                         style="background-color: #4E36E2"><i class="ri-linkedin-box-fill"></i></a>
                                 </div>
@@ -68,29 +68,52 @@
                                     Status
                                 </div>
                                 <div class="col-md-12 text-center my-4">
-                                    <button type="button"
-                                        class="btn btn-success waves-effect waves-light mx-2 karyawan_status_aktif"
-                                        onclick="status_karyawan(1)">Aktif</button>
-                                    <button type="button"
-                                        class="btn btn-light waves-effect waves-light mx-2 karyawan_status_tidak_aktif"
-                                        onclick="status_karyawan(0)">Tidak
-                                        Aktif</button>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type="button"
+                                                class="btn btn-success waves-effect waves-light karyawan_status_aktif"
+                                                onclick="status_karyawan(1)">Aktif</button>
+
+                                        </div>
+                                        <div class="col">
+                                            <button type="button"
+                                                class="btn btn-light waves-effect waves-light karyawan_status_tidak_aktif"
+                                                onclick="status_karyawan(0)">Tidak
+                                                Aktif</button>
+
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-12 mb-4">
                                     Sisa Kontrak
                                 </div>
                                 <div class="col-md-12 text-center">
-                                    <button type="button" class="btn text-white btn-icon waves-effect waves-light"
-                                        style="background-color: #4B5563" id="kontrak_tahun">00</button>
-                                    <button type="button" class="btn text-white btn-icon waves-effect waves-light mx-4"
-                                        style="background-color: #4B5563" id="kontrak_bulan">00</button>
-                                    <button type="button" class="btn text-white btn-icon waves-effect waves-light"
-                                        style="background-color: #4B5563" id="kontrak_hari">00</button>
-                                </div>
-                                <div class="col-md-12 text-center fs-10 text-muted">
-                                    <label class="mx-3">Tahun</label>
-                                    <label class="mx-3">Bulan</label>
-                                    <label class="mx-4">Hari</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="button">
+                                                <button type="button"
+                                                    class="btn text-white btn-icon waves-effect waves-light"
+                                                    style="background-color: #4B5563" id="kontrak_tahun">00</button>
+                                            </div>
+                                            <label>Tahun</label>
+                                        </div>
+                                        <div class="col">
+                                            <div class="button">
+                                                <button type="button"
+                                                    class="btn text-white btn-icon waves-effect waves-light"
+                                                    style="background-color: #4B5563" id="kontrak_bulan">00</button>
+                                            </div>
+                                            <label>Bulan</label>
+                                        </div>
+                                        <div class="col">
+                                            <div class="button">
+                                                <button type="button"
+                                                    class="btn text-white btn-icon waves-effect waves-light"
+                                                    style="background-color: #4B5563" id="kontrak_hari">00</button>
+                                            </div>
+                                            <label>Hari</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -289,13 +312,13 @@
                                                 <option value="1" selected>1. Kantor Pusat</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                        <div class="col p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Departement</label>
                                             <select class="form-control" id='departement_pekerjaan'
                                                 name="departement_pekerjaan">
                                             </select>
                                         </div>
-                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                        <div class="col p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Jabatan</label>
                                             <select class="form-control" id='jabatan_pekerjaan' name="jabatan_pekerjaan">
                                                 <option value="1">1. Manager</option>
@@ -303,34 +326,42 @@
                                                 <option value="3" selected>3. Staf</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Status</label>
-                                            <select class="form-control" id='status_kontrak' name="status_kontrak">
-                                                <option value="1" selected>Kontrak</option>
-                                                <option value="2">Permanen</option>
-                                                <option value="3">Lainnya</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Periode Kontrak</label>
-                                            <select class="form-control" id='periode_kontrak' name="periode_kontrak">
-                                                <option value="1" selected>3 Bulan</option>
-                                                <option value="2">6 Bulan</option>
-                                                <option value="3">9 Bulan</option>
-                                                <option value="4">1 Tahun</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Tanggal Masuk</label>
-                                            <input type="date" class="form-control" id="kontrak_masuk"
-                                                name="kontrak_masuk" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
-                                            <label class="control-form text-muted">Kontrak Selesai</label>
-                                            <input type="date" class="form-control" id="kontrak_selesai"
-                                                name="kontrak_selesai"
-                                                value="{{ Carbon\Carbon::now()->addMonth(3)->format('Y-m-d') }}" readonly>
+                                        <div class="col-lg-12 p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
+                                            <div class="row">
+                                                <div class="col mb-3" style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Status</label>
+                                                    <select class="form-control" id='status_kontrak'
+                                                        name="status_kontrak">
+                                                        <option value="1" selected>Kontrak</option>
+                                                        <option value="2">Permanen</option>
+                                                        <option value="3">Lainnya</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-3 hidden_kontrak"
+                                                    style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Periode Kontrak</label>
+                                                    <select class="form-control" id='periode_kontrak'
+                                                        name="periode_kontrak">
+                                                        <option value="1" selected>3 Bulan</option>
+                                                        <option value="2">6 Bulan</option>
+                                                        <option value="3">9 Bulan</option>
+                                                        <option value="4">1 Tahun</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-3 hidden_kontrak"
+                                                    style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Tanggal Masuk</label>
+                                                    <input type="date" class="form-control" id="kontrak_masuk"
+                                                        name="kontrak_masuk"
+                                                        value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                </div>
+                                                <div class="col-lg mb-3 hidden_kontrak" style="background-color: #F9FAFB">
+                                                    <label class="control-form text-muted">Kontrak Selesai</label>
+                                                    <input type="date" class="form-control" id="kontrak_selesai"
+                                                        name="kontrak_selesai"
+                                                        value="{{ Carbon\Carbon::now()->addMonth(3)->format('Y-m-d') }}">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-lg-6 p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Potongan Terlambat</label>
@@ -565,6 +596,12 @@
                 }
             });
         }
+
+        $('#status_kontrak').change(function() {
+            $('.hidden_kontrak').prop('hidden', false)
+            if (this.value == 2) $('.hidden_kontrak').prop('hidden', true)
+
+        });
 
         $('#foto_umum').change(function() {
             var file = this.files[0];
@@ -1031,12 +1068,12 @@
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-md-6" id="modal_nama_riwayat_append">
-                        <label for="nama" class="form-label">Nama</label>
+                        <label for="nama" class="form-label">Nama Perusahaan</label>
                         <input class="form-control" id="modal_id" value="${id}" hidden>
                         <input class="form-control" id="modal_nama_riwayat" placeholder="Masukan Nama" value="${nama_modal}">
                     </div>
                     <div class="col-md-6" id="modal_alamat_riwayat_append">
-                        <label for="alamat" class="form-label">Alamat</label>
+                        <label for="alamat" class="form-label">Alamat Perusahaan</label>
                         <input class="form-control" id="modal_alamat_riwayat" placeholder="Alamat" value="${alamat_modal}">
                     </div>
                     <div class="col-md-6" id="modal_jabatan_riwayat_append">
@@ -1716,6 +1753,12 @@
                             icon: "success",
                             timer: 1000
                         });
+                        $('#id_wa').prop('href', 'https://wa.me/' + response.message.no_handphone)
+                        $('#id_email').prop('href', 'https://mail.google.com/mail/u/0/?fs=1&to=' +
+                            response.message.email +
+                            '&su=HRD Onanmedia&body=BODY&cc=biantara@onanmedia.com;finance@onanmedia.com&tf=cm'
+                        )
+                        $('#id_linkedin').prop('href', 'https://wa.me/' + response.message.nama_lengkap)
                         $('#save_personal').prop('disabled', false)
                         $('#save_pekerjaan').prop('disabled', false)
                         $('#tambah_keluarga').prop('disabled', false)
