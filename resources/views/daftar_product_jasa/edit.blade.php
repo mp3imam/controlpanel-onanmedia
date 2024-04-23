@@ -82,7 +82,7 @@
                                             <div class="col-md-6 mb-3">
                                                 <div class="col-md-4 text-muted">Harga Termahal</div>
                                                 <div class="col-md-8 fs-14 fw-bold">
-                                                    {{ 'Rp ' . (int) number_format($detail->hargaTermahal, 0, ',', '.') }}
+                                                    {{ 'Rp ' . number_format($detail->hargaTermahal, 0, ',', '.') }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
@@ -92,7 +92,7 @@
                                             <div class="col-md-6 mb-3">
                                                 <div class="col-md-4 text-muted">Harga Termurah</div>
                                                 <div class="col-md-8 fs-14 fw-bold">
-                                                    {{ 'Rp ' . (int) number_format($detail->hargaTermurah, 0, ',', '.') }}
+                                                    {{ 'Rp ' . number_format($detail->hargaTermurah, 0, ',', '.') }}
                                                 </div>
                                             </div>
                                         </div>
@@ -127,9 +127,9 @@
                                                     <tr>
                                                         <th scope="row">{{ $productPricing->nama }}</th>
                                                         <td width="30%">{!! $productPricing->deskripsi !!}</td>
-                                                        <td>{{ $productPricing->jumlahPeriode }}</td>
-                                                        <td>{{ $productPricing->periode }}</td>
-                                                        <td>{{ 'Rp ' . (int) number_format($productPricing->harga, 0, ',', '.') }}
+                                                        <td>{{ $productPricing->jumlahPeriode }} /
+                                                            {{ $productPricing->periode }}</td>
+                                                        <td>{{ 'Rp ' . number_format(str_replace(',', '', $productPricing->harga), 0, '.', ',') }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
