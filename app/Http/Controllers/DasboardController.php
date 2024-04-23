@@ -30,10 +30,10 @@ class DasboardController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $hadir = AbsenKaryawanOnanmediaModel::whereStatus('Hadir')->get();
+        $hadir = AbsenKaryawanOnanmediaModel::whereStatus('Hadir')->whereDate('created_at', date('Y-m-d'))->get();
         // $belum_hadir = AbsenKaryawanOnanmediaModel::where()
-        $telat = AbsenKaryawanOnanmediaModel::whereStatus('Telat')->get();
-        $izin = AbsenKaryawanOnanmediaModel::whereStatus('Izin')->get();
+        $telat = AbsenKaryawanOnanmediaModel::whereStatus('Telat')->whereDate('created_at', date('Y-m-d'))->get();
+        $izin = AbsenKaryawanOnanmediaModel::whereStatus('Izin')->whereDate('created_at', date('Y-m-d'))->get();
 
         return view('dasboard.index', $title, compact(['telat', 'izin', 'hadir']));
     }
@@ -77,7 +77,7 @@ class DasboardController extends Controller
         $status = "Hadir";
         if (Carbon::now()->format('H:i:s') > '08:15:00 am') $status = "Telat";
 
-        if (AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->exists()) {
+        if (AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->whereDate('created_at', date('Y-m-d'))->exists()) {
             $jenis_absen = "Pulang";
             $status = "Telat";
             if (Carbon::now()->format('H:i:s') > '17:00:00 pm') $status = "Hadir";

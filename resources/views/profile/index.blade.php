@@ -16,10 +16,10 @@
                     <div class="row">
                         <div class="col" onclick="document.getElementById('input-foto').click()" style="cursor: pointer">
                             <div class="avatar-md mt-n5 mb-5 card-img-overlay mx-3">
-                                <div class="avatar-title bg-lightrounded-circle mx-5 my-3">
+                                <div class="avatar-title bg-light rounded-circle mx-5 my-3">
                                     @if (Auth::user()->foto)
                                         <img id="foto_profile" src="{{ Auth::user()->foto }}" alt="user-img" width="120px"
-                                            height="120px" class="rounded-circle">
+                                            height="120px" class="p-0 rounded-circle mb-5 card-img-overlay">
                                     @else
                                         <img id="foto_profile" src="assets/images/users/avatar.png" alt="user-img"
                                             width="120px" height="120px" class="p-0 rounded-circle mb-5 card-img-overlay">
@@ -258,21 +258,21 @@
                                     <label for="pass_lama" class="form-label">Password Lama</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <div class="form-icon right">
-                                        <input class="form-control bg-light toggle_pass" onclick="togglePassword()"
-                                            id="pass_lama" type="password" required>
+                                    <div id="id_pass_lama" class="form-icon right">
+                                        <input class="form-control bg-light toggle_pass" id="pass_lama" type="password"
+                                            required>
                                         <i class="ri-eye-off-line btn_pass"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-lg-3">
-                                    <label for="pass_baru" class="form-label">Password Baru</label>
+                                    <label for="password" class="form-label">Password Baru</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <div class="form-icon right">
-                                        <input type="password" onclick="togglePassword()"
-                                            class="form-control bg-light toggle_pass" id="pass_baru" required>
+                                    <div id="id_pass_baru" class="form-icon right">
+                                        <input type="password" class="form-control bg-light toggle_pass" id="password"
+                                            required>
                                         <i class="ri-eye-off-line btn_pass"></i>
                                     </div>
                                 </div>
@@ -282,14 +282,14 @@
                                     <label for="konfirmasi" class="form-label">Konfirmasi Password Baru</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <div class="form-icon right">
-                                        <input type="password" onclick="togglePassword()"
-                                            class="form-control bg-light toggle_pass" id="konfirmasi" required>
+                                    <div id="id_pass_konfirmasi" class="form-icon right">
+                                        <input type="password" class="form-control bg-light toggle_pass"
+                                            id="password_confirmation" required>
                                         <i class="ri-eye-off-line btn_pass"></i>
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn text-white fs-14 float-end rounded-4 fw-bold"
+                            <button id="btn_pass" class="btn text-white fs-14 float-end rounded-4 fw-bold"
                                 style="background-color:#4E36E2" type="button">Simpan
                                 perubahan
                             </button>
@@ -337,15 +337,30 @@
             });
         });
 
+        $('#input-foto').change(function() {
+            var file = this.files[0];
+            if (file && file.type.match('image.*')) {
+                $('#foto_profile').attr('src', URL.createObjectURL(file));
+                $('.header-profile-user').attr('src', URL.createObjectURL(file));
+
+                $('a[href="#v-pills-home"]').tab('show');
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Pastikan simpan untuk merubah gambar",
+                    icon: "success",
+                    timer: 2500
+                });
+            }
+        });
+
         $('.btn_pass').click(function() {
             var passwordField = $('.toggle_pass');
             passwordField.attr('type', passwordField.attr('type') === 'password' ? 'text' : 'password');
-            $('#eyeIcon').toggleClass('ri-eye-off-line ri-eye-line');
+            $('.btn_pass').toggleClass('ri-eye-off-line ri-eye-line');
         });
 
         $('#btn_umum').click(function() {
             var data = new FormData()
-            data.append('id_update', "{{ auth()->user()->id }}")
             data.append('nameInput', $('#nameInput').val())
             data.append('email', $('#email').val())
             data.append('no_telp', $('#no_telp').val())
@@ -353,16 +368,20 @@
             data.append('tanggal_lahir', $('#tanggal_lahir').val())
             data.append('agama_id', $('#agama_id').val())
             data.append('jenis_kelamin', $('#jenis_kelamin').val())
-            data.append('foto', $('#foto_profile').val())
+            var foto = $('#input-foto')[0].files;
+            if (foto.length > 0) {
+                data.append('foto', foto[0])
+            }
 
             $.ajax({
                 type: "post",
                 url: "{{ route('profile.simpan.umum') }}",
-                data: data,
-                processData: false,
+                contentType: 'multipart/form-data',
+                cache: false,
                 contentType: false,
+                processData: false,
+                data: data,
                 success: function(response) {
-                    console.log(response);
                     if (response.status == 200) {
                         Swal.fire({
                             title: 'Mengubah Data Profile!',
@@ -396,7 +415,6 @@
 
         $('#btn_medsos').click(function() {
             var data = new FormData()
-            data.append('id_update', "{{ auth()->user()->id }}")
             data.append('linkedin', $('#linkedin').val())
             data.append('facebook', $('#facebook').val())
             data.append('twitter', $('#twitter').val())
@@ -425,234 +443,63 @@
             });
         });
 
-        function modal_crud(data, id, nama) {
-            var nama_modal = nama ?? ''
-            button_hapus = id ?
-                `<a href="#" type="button" onclick="alert_delete('${id}','${nama}')" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger">Hapus</a>` :
-                ''
+        $('#btn_pass').click(function() {
+            var data = new FormData()
+            data.append('pass_lama', $('#pass_lama').val())
+            data.append('password', $('#password').val())
+            data.append('password_confirmation', $('#password_confirmation').val())
 
-            $('#modal_content').html(`
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalgridLabel">${data} Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-xxl-12" id="modal_Pekerjaan_append">
-                        <label for="Pekerjaan" class="form-label">Nama Pekerjaan</label>
-                        <input class="form-control" id="modal_pekerjaan" placeholder="Enter Pekerjaan" value="${nama_modal}">
-                    </div>
-                    <div class="col-lg-12 d-flex justify-content-between">
-                        <div class="d-flex">
-                            ${button_hapus}
-                        </div>
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>&nbsp;
-                            <button type="submit" class="btn btn-primary add" id="row` + id + `">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `)
-
-            if (id !== undefined) {
-                $('#row' + id).removeClass('add')
-                $('#row' + id).removeClass('btn-primary')
-                $('#row' + id).addClass('edit')
-                $('#row' + id).addClass('btn-warning')
-            } else {
-                $('#rowundefined').removeClass('edit')
-                $('#rowundefined').addClass('add')
-                $('#rowundefined').removeClass('btn-warning')
-                $('#rowundefined').addClass('btn-primary')
-            }
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('.add').on('click', function() {
-                var data = new FormData()
-                data.append('pekerjaan', $('#modal_pekerjaan').val())
-                $.ajax({
-                    type: "post",
-                    url: "{{ url('pekerjaan') }}",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function(result) {
-                        if (result.status == 200) {
-                            Swal.fire({
-                                title: 'Add!',
-                                text: 'Your file has been add.',
-                                icon: 'success',
-                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                                buttonsStyling: false
-                            }).then(function() {
-                                $('#dataTable').DataTable().ajax.reload()
-                                $('#exampleModalgrid').modal('hide')
-                            });
-                        } else {
-                            $('.remove_username').remove()
-                            $('.remove_nama_lengkap').remove()
-                            $('.remove_role').remove()
-                            // if (result.)
-                            $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                        }
-
-                    }
-                });
-
-            })
-
-            $('.edit').on('click', function() {
-                var data = new FormData()
-                data.append('_method', 'PUT')
-                data.append('id', id)
-                data.append('pekerjaan', $('#modal_pekerjaan').val())
-                $.ajax({
-                    url: "{{ url('pekerjaan') }}/" + id,
-                    type: "POST",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function(result) {
-                        if (result.status == 200) {
-                            Swal.fire({
-                                title: 'Edit!',
-                                text: 'Your file has been edit.',
-                                icon: 'success',
-                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                                buttonsStyling: false
-                            }).then(function() {
-                                $('#dataTable').DataTable().ajax.reload()
-                                $('#exampleModalgrid').modal('hide')
-                            });
-                        } else {
-                            $('.remove_username').remove()
-                            $('.remove_nama_lengkap').remove()
-                            $('.remove_role').remove()
-                            // if (result.)
-                            $('.modal_username_append').append(`
-                            <span class="remove_username text-danger">Data Tidak Boleh Kosong</span>
-                        `)
-
-                        }
-
-                    }
-                });
-
-            })
-        }
-
-        function alert_delete(id, nama) {
-            Swal.fire({
-                title: `Hapus Data`,
-                text: "Apakah anda yakin untuk menghapus data '" + nama + "'",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Iya',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "delete",
-                        url: "{{ url('pekerjaan') }}" + '/' + id,
-                        data: {
-                            "_method": 'delete',
-                            "_token": "{{ csrf_token() }}"
-                        },
-                        success: function(result) {
-                            Swal.fire({
-                                title: 'Deleted!',
-                                text: 'Your file has been deleted.',
-                                icon: 'success',
-                                confirmButtonClass: 'btn btn-primary w-xs mt-2',
-                                buttonsStyling: false
-                            }).then(function() {
-                                $('#dataTable').DataTable().ajax.reload()
-                            });
-                        }
-                    });
-                }
-
-            });
-        }
-
-        $('.btn-pdf').on('click', function() {
-            $('#modal_content').html(`
-            <div class="modal-body text-center p-5">
-                <lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:120px;height:120px"></lord-icon>
-
-                <div class="mt-4">
-                    <h4 class="mb-3">Sedang Mendownload PDF</h4>
-                    <p class="text-muted mb-4"> Mohon Tunggu Sebentar. </p>
-                </div>
-            </div>
-        `)
-            $("#exampleModal").modal('show');
-
-            var fd = new FormData()
-            fd.append('username_id', $('#username_id').val())
-            fd.append('nama_lengkap_id', $('#nama_lengkap_id').val())
             $.ajax({
-                type: 'post',
-                url: "{{ route('users.pdf') }}",
-                data: fd,
+                type: "post",
+                url: "{{ route('profile.simpan.password') }}",
+                data: data,
                 processData: false,
                 contentType: false,
-                xhrFields: {
-                    responseType: 'blob' // to avoid binary data being mangled on charset conversion
-                },
-                success: function(blob, status, xhr) {
-                    // check for a filename
-                    var filename = "";
-                    var disposition = xhr.getResponseHeader('Content-Disposition');
-                    if (disposition && disposition.indexOf('attachment') !== -1) {
-                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                        var matches = filenameRegex.exec(disposition);
-                        if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-                    }
-
-                    if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                        // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-                        window.navigator.msSaveBlob(blob, filename);
-                    } else {
-                        var URL = window.URL || window.webkitURL;
-                        var downloadUrl = URL.createObjectURL(blob);
-
-                        if (filename) {
-                            // use HTML5 a[download] attribute to specify filename
-                            var a = document.createElement("a");
-                            // safari doesn't support this yet
-                            if (typeof a.download === 'undefined') {
-                                window.location.href = downloadUrl;
-                            } else {
-                                a.href = downloadUrl;
-                                a.download = filename;
-                                document.body.appendChild(a);
-                                a.click();
-                            }
-                        } else {
-                            window.location.href = downloadUrl;
+                success: function(response) {
+                    console.log(response);
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: 'Mengubah Data Profile Password!',
+                            text: 'Data berhasil di ubah.',
+                            icon: 'success',
+                            confirmButtonClass: 'btn btn-primary w-xs mt-2',
+                            buttonsStyling: false,
+                            timer: 1500
+                        })
+                    } else if (response.status == 400) {
+                        $('.remove_pass').remove()
+                        if (response.message.pass_lama == 'The pass lama field is required.') {
+                            $('#id_pass_lama').append(
+                                `<span class="remove_pass text-danger">${response.message.pass_lama}</span>`
+                            )
                         }
-
-                        setTimeout(function() {
-                            URL.revokeObjectURL(downloadUrl);
-                        }, 100); // cleanup
+                        if (response.message.password ==
+                            'The password field and password must be different.' ||
+                            response.message.password ==
+                            'The password field must be at least 6 characters.' ||
+                            response.message.password ==
+                            'The password field must be at max 50 characters.') {
+                            $('#id_pass_baru').append(
+                                `<span class="remove_pass text-danger">${response.message.password}</span>`
+                            )
+                        }
+                        if (response.message.password_confirmation ==
+                            'The password field and password must be different.' ||
+                            'The password field must be at least 6 characters.' ||
+                            'The password field must be at max 50 characters.') {
+                            $('#id_pass_konfirmasi').append(
+                                `<span class="remove_pass text-danger">${response.message.password_confirmation}</span>`
+                            )
+                        }
+                    } else if (response.status == 409) {
+                        $('.remove_pass').remove()
+                        $('#id_pass_lama').append(
+                            `<span class="remove_pass text-danger">${response.message}</span>`
+                        )
                     }
                 }
-            }).done(function() { //use this
-                $('#exampleModal').modal('hide')
             });
-        })
+        });
 
         $.ajaxSetup({
             headers: {
