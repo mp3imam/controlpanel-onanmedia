@@ -247,7 +247,8 @@
             $("#exampleModal").modal('show');
 
             var fd = new FormData()
-            fd.append('periode', $('#cari_tanggal').val())
+            fd.append('cari_tanggal', $('#cari_tanggal').val())
+            fd.append('cari_user', $('#cari_user').val())
             $.ajax({
                 type: 'post',
                 url: "{{ route('data.absensi.pdf') }}",

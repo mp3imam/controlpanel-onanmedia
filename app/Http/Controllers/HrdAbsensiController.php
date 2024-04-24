@@ -113,7 +113,7 @@ class HrdAbsensiController extends Controller
             'absensi_karyawan.pdf',
             [
                 'name'  => 'Data Absensi Karyawan',
-                'periode' => $request->periode,
+                'periode' => $request->cari_tanggal,
                 'datas' => $datas
             ]
         )->setPaper('F4');

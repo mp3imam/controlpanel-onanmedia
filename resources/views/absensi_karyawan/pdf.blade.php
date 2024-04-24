@@ -20,13 +20,13 @@
                 class="pagenum"></span></div>
     </footer>
 
-    <div class="mb-2 center text-center" style="margin-top: 50px">
+    <div class="mb-2" style="margin-top: 50px">
         <table width="100%">
             <tr>
-                <td width="80%" class="text-center">
+                <td width="70%">
                     <h4>Absensi Karyawan</h4>
                 </td>
-                <td width="20%" class="text-right font-weight-bold text-end">
+                <td width="30%" class="text-right font-weight-bold text-end">
                     Periode : {{ $periode }}
                 </td>
             </tr>
