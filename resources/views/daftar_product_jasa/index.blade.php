@@ -63,6 +63,7 @@
             var table = $('#dataTable').DataTable({
                 dom: 'lrtip',
                 processing: true,
+                stateSave: true,
                 serverSide: true,
                 ajax: {
                     url: "{{ route('daftar_product_jasa.create') }}",

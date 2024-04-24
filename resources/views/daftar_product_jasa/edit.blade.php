@@ -188,7 +188,7 @@
                             <div class="card-footer">
                                 <a href="javascript:void(0);" class="btn btn-success" onclick="simpan()">Simpan</a>
                                 <a class="btn btn-warning float-end text-white rounded-5 me-3"
-                                    href="{{ route('daftar_product_jasa.index') }}">
+                                    href="javascript:history.back()">
                                     <i class="ri-arrow-go-back-line"></i> Kembali
                                 </a>
                             </div>
