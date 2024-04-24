@@ -86,7 +86,7 @@
                     data: 'level_kualifikasi',
                     name: 'LEVEL KUALIFIKASI'
                 }, {
-                    data: 'budget',
+                    data: 'budgeting',
                     name: 'Budget',
                     render: function(data, type, row, meta) {
                         return `Rp. ${data} / Sprint`;

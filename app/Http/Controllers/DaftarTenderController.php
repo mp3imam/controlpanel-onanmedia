@@ -58,7 +58,10 @@ class DaftarTenderController extends Controller
             ->addColumn('level_kualifikasi', function ($row) {
                 return $row->level_tender_pembeli->nama ?? '';
             })
-            ->rawColumns(['tanggal_posting', 'level_kualifikasi'])
+            ->addColumn('budgeting', function ($row) {
+                return number_format($row->budget, 0, '.', '.');
+            })
+            ->rawColumns(['tanggal_posting', 'level_kualifikasi', 'budgeting'])
             ->make(true);
     }
 
