@@ -77,17 +77,15 @@
                             <div class="card-body">
                                 <h5 class="text-control text-muted fs-12">Status Verifikasi Tender</h5>
                                 <select class="form-control mb-3" id="verifikasi_tender">
-                                    <option value="0" {{ $detail->status->id == 0 ? 'selected' : '' }}>Draft</option>
-                                    <option value="1" {{ $detail->status->id == 1 ? 'selected' : '' }}>Aktif</option>
-                                    <option value="2" {{ $detail->status->id == 2 ? 'selected' : '' }}>Sedang
+                                    <option value="1" {{ $detail->status->id == 1 ? 'selected' : '' }}>Sedang
                                         Verifikasi</option>
-                                    <option value="3" {{ $detail->status->id == 3 ? 'selected' : '' }}>Diminta
-                                        Perubahan</option>
-                                    <option value="4" {{ $detail->status->id == 4 ? 'selected' : '' }}>Ditolak
+                                    <option value="2" {{ $detail->status->id == 2 ? 'selected' : '' }}>Draft</option>
+                                    <option value="3" {{ $detail->status->id == 3 ? 'selected' : '' }}>Batal</option>
+                                    <option value="4" {{ $detail->status->id == 4 ? 'selected' : '' }}>Aktif</option>
+                                    <option value="5" {{ $detail->status->id == 5 ? 'selected' : '' }}>Diminta
+                                        Perubahan
                                     </option>
-                                    <option value="5" {{ $detail->status->id == 5 ? 'selected' : '' }}>Ditahan
-                                    </option>
-                                    <option value="6" {{ $detail->status->id == 6 ? 'selected' : '' }}>Non Aktif
+                                    <option value="6" {{ $detail->status->id == 6 ? 'selected' : '' }}>Selesai
                                     </option>
                                 </select>
                                 <h5 class="text-control text-muted fs-12 keterangan" hidden>Keterangan</h5>
