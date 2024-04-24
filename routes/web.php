@@ -9,6 +9,7 @@ use App\Http\Controllers\DaftarProductJasaController;
 use App\Http\Controllers\DaftarTenderController;
 use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\HelpdeskController;
+use App\Http\Controllers\HrdAbsensiController;
 use App\Http\Controllers\HrdController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MasterBankCashController;
@@ -124,6 +125,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('simpan-karyawan-riwayat', [HrdController::class, 'simpan_karyawan_riwayat'])->name('simpan.karyawan.riwayat');
     Route::post('simpan-karyawan-status', [HrdController::class, 'simpan_karyawan_status'])->name('simpan.karyawan.status');
     Route::post('hapus-data-data-karyawan', [HrdController::class, 'hapus_data_data_karyawan'])->name('hapus.data.data.karyawan');
+    Route::resource('data_absensi', HrdAbsensiController::class);
+    Route::post('data_absensi_pdf', [HrdAbsensiController::class, 'pdf'])->name('data.absensi.pdf');
 
 
     Route::get('getDataTableKaryawan', [HrdController::class, 'get_datatable'])->name('getDataTableKaryawan');
