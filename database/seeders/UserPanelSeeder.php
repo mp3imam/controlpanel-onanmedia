@@ -27,7 +27,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -44,7 +44,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+68',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -61,7 +61,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+628',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -78,7 +78,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -95,7 +95,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -112,7 +112,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -129,7 +129,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -146,7 +146,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -163,7 +163,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -180,7 +180,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
@@ -197,7 +197,7 @@ class UserPanelSeeder extends Seeder
                 'no_handphone' => '+62811131400',
                 'alamat_ktp' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
                 'alamat_domisili' => 'Jl. Mampang Prapatan IV No.29, Mampang Prpt., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790',
-                'pendidikan_terakhir' => 'S1',
+                'pendidikan_terakhir' => '7',
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ]
         ];

@@ -382,7 +382,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-6 mb-3 hidden_kontrak"
-                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}
+                                                    {{ $detail->pekerjaan && $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}
                                                     style="background-color: #F9FAFB">
                                                     <label class="control-form text-muted">Periode Kontrak</label>
                                                     <select class="form-control" id='periode_kontrak'
@@ -394,19 +394,19 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-6 mb-3 hidden_kontrak"
-                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}
+                                                    {{ $detail->pekerjaan && $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}
                                                     style="background-color: #F9FAFB">
                                                     <label class="control-form text-muted">Tanggal Masuk</label>
                                                     <input type="date" class="form-control" id="kontrak_masuk"
                                                         name="kontrak_masuk"
-                                                        value="{{ $detail->pekerjaan->kontrak_masuk }}">
+                                                        value="{{ $detail->pekerjaan ? $detail->pekerjaan->kontrak_masuk : '' }}">
                                                 </div>
                                                 <div class="col-lg mb-3 hidden_kontrak" style="background-color: #F9FAFB"
-                                                    {{ $detail->pekerjaan->status_kontrak == 2 ? 'hidden' : '' }}>
+                                                    {{ optional($detail->pekerjaan)->status_kontrak == 2 ? 'hidden' : '' }}>
                                                     <label class="control-form text-muted">Kontrak Selesai</label>
                                                     <input type="date" class="form-control" id="kontrak_selesai"
                                                         name="kontrak_selesai"
-                                                        value="{{ $detail->pekerjaan->kontrak_selesai }}">
+                                                        value="{{ $detail->pekerjaan ? $detail->pekerjaan->kontrak_selesai : '' }}">
                                                 </div>
                                             </div>
                                         </div>
