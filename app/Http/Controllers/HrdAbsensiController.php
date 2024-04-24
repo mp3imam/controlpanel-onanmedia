@@ -109,11 +109,6 @@ class HrdAbsensiController extends Controller
     public function pdf(Request $request)
     {
         $datas = $this->models($request);
-
-        $options = new Options();
-        $options->set('isRemoteEnabled', true);
-        $pdf = new Dompdf($options);
-
         $pdf = Pdf::loadview(
             'absensi_karyawan.pdf',
             [
@@ -122,7 +117,6 @@ class HrdAbsensiController extends Controller
                 'datas' => $datas
             ]
         )->setPaper('F4');
-        $pdf->render();
 
         return $pdf->download('Laporan-absensi-karyawan-PDF');
     }

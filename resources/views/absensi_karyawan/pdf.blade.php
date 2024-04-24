@@ -42,7 +42,6 @@
                     <th>Status</th>
                     <th>Jenis</th>
                     <th>keterangan</th>
-                    <th>Foto</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,12 +53,6 @@
                         <td width="10%">{{ $d->status }}</td>
                         <td width="10%">{{ $d->jenis_absen }}</td>
                         <td width="10%">{{ $d->keterangan ?? '-' }}</td>
-                        <td width="40%">
-                            <?php $foto = base64_encode(file_get_contents($d->foto)); ?>
-                            <img src="data:image/png;base64,'{{ $foto }}'" alt="" width="75px"
-                                height="75px">
-                            @dd($d->foto)
-                        </td>
                     </tr>
                 @endforeach
             </tbody>
