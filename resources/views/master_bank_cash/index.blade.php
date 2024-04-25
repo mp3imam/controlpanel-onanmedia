@@ -66,8 +66,8 @@
                                     <th>No</th>
                                     <th>No. Transaksi</th>
                                     <th>Tanggal Transaksi</th>
-                                    <th>Sumber</th>
-                                    <th>Tujuan</th>
+                                    <th class="kosong">Sumber</th>
+                                    <th class="kosong">Tujuan</th>
                                     <th>Jenis Transaksi</th>
                                     <th>Nominal</th>
                                     <th>Keterangan</th>
@@ -175,10 +175,14 @@
                     name: 'TANGGAL TRANSAKSI'
                 }, {
                     data: 'banks',
-                    name: 'sumber'
+                    name: 'sumber',
+                    class: 'sumber_kosong',
+                    visible: false
                 }, {
                     data: 'tujuan',
-                    name: 'Tujuan'
+                    name: 'Tujuan',
+                    class: 'tujuan_kosong',
+                    visible: false
                 }, {
                     data: 'jenis',
                     name: 'JENIS TRANSAKSI'
@@ -212,6 +216,9 @@
             $('#permintaan_filter').click(function() {
                 $('#q').val({{ App\Models\MasterKasBelanja::STATUS_CREATE }})
                 resetWarna()
+                table.column('.sumber_kosong').visible(false);
+                table.column('.tujuan_kosong').visible(false);
+                $('.kosong').attr('hidden', true)
                 $('#permintaan_filter').css({
                     'color': '#f7f6fb',
                     'border-color': '#4E36E2',
@@ -223,29 +230,10 @@
             $('#disetujui_filter').click(function() {
                 $('#q').val({{ App\Models\MasterKasBelanja::STATUS_ON_PROGRESS }})
                 resetWarna()
+                table.column('.sumber_kosong').visible(true);
+                table.column('.tujuan_kosong').visible(true);
+                $('.kosong').attr('hidden', false)
                 $('#disetujui_filter').css({
-                    'color': '#f7f6fb',
-                    'border-color': '#4E36E2',
-                    'background-color': '#4E36E2'
-                })
-                table.draw();
-            });
-
-            $('#pending_filter').click(function() {
-                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_PENDING }})
-                resetWarna()
-                $('#pending_filter').css({
-                    'color': '#f7f6fb',
-                    'border-color': '#4E36E2',
-                    'background-color': '#4E36E2'
-                })
-                table.draw();
-            });
-
-            $('#cancell_filter').click(function() {
-                $('#q').val({{ App\Models\MasterKasBelanja::STATUS_TOLAK }})
-                resetWarna()
-                $('#cancell_filter').css({
                     'color': '#f7f6fb',
                     'border-color': '#4E36E2',
                     'background-color': '#4E36E2'
@@ -256,6 +244,9 @@
             $('#all_filter').click(function() {
                 $('#q').val("ALL")
                 resetWarna()
+                table.column('.sumber_kosong').visible(true);
+                table.column('.tujuan_kosong').visible(true);
+                $('.kosong').attr('hidden', false)
                 $('#all_filter').css({
                     'color': '#f7f6fb',
                     'border-color': '#4E36E2',
