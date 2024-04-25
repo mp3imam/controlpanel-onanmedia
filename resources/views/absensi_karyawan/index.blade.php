@@ -245,7 +245,9 @@
 
             var fd = new FormData()
             fd.append('cari_tanggal', $('#cari_tanggal').val())
-            fd.append('cari_user', $('#cari_user').val())
+            if ($('#cari_status').val() !== null) fd.append('cari_status', $('#cari_status').val())
+            if ($('#cari_user').val() !== null) fd.append('cari_user', $('#cari_user').val())
+
             $.ajax({
                 type: 'post',
                 url: "{{ route('data.absensi.pdf') }}",
@@ -292,6 +294,7 @@
                             URL.revokeObjectURL(downloadUrl);
                         }, 100); // cleanup
                     }
+                    $('#exampleModal').modal('hide')
                 }
             }).done(function() { //use this
                 $('#exampleModal').modal('hide')
