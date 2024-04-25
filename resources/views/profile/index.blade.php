@@ -209,8 +209,7 @@
                                     <label for="twitter" class="form-label">Twitter</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <input type="number" class="form-control bg-light" id="twitter"
-                                        value="{{ $detail->twitter }}">
+                                    <input class="form-control bg-light" id="twitter" value="{{ $detail->twitter }}">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -218,7 +217,7 @@
                                     <label for="instagram" class="form-label">Instagram</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <input type="number" class="form-control bg-light" id="instagram"
+                                    <input class="form-control bg-light" id="instagram"
                                         value="{{ $detail->instagram }}">
                                 </div>
                             </div>
@@ -227,7 +226,7 @@
                                     <label for="web_fortofolio" class="form-label">Website Fortofolio</label>
                                 </div>
                                 <div class="col-lg-9">
-                                    <input type="number" class="form-control bg-light" id="web_fortofolio"
+                                    <input class="form-control bg-light" id="web_fortofolio"
                                         value="{{ $detail->website }}">
                                 </div>
                             </div>
