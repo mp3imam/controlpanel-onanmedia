@@ -119,7 +119,6 @@
                                     <th>Tanggal Transaksi</th>
                                     <th>Sumber</th>
                                     <th>Tujuan</th>
-                                    <th>Jenis Transaksi</th>
                                     <th>Nominal</th>
                                     <th>Keterangan</th>
                                     <th hidden>Belanjas Id</th>
@@ -326,9 +325,6 @@
                     data: 'tujuan',
                     name: 'Tujuan'
                 }, {
-                    data: 'jenis',
-                    name: 'JENIS TRANSAKSI'
-                }, {
                     data: 'nominal_number',
                     name: 'Nilai'
                 }, {
@@ -347,6 +343,14 @@
 
         });
 
+        $(function() {
+            var activeTab = localStorage.getItem("activeTab");
+            if (activeTab) $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+
+            $('.nav-tabs a').on('shown.bs.tab', function(event) {
+                localStorage.setItem('activeTab', $(event.target).attr('href'));
+            });
+        });
 
         $('.btn-pdf').on('click', function() {
             $('#modal_content').html(`

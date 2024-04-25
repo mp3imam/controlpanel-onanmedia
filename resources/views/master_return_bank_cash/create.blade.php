@@ -37,45 +37,21 @@
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi"
                                     value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required />
                             </div>
-
+                            <div class="col-md-6 mb-4">
+                                <label for="keterangan" class="form-label">KETERANGAN</label>
+                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1"></textarea>
+                            </div>
                             <div class="col-md-6 mb-4">
                                 <label for="bank_id" class="form-label">SUMBER</label>
                                 <select id="modal_bank_id" name="bank_id" class="form-control" required></select>
                             </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div>
-                                    <p class="text-muted fw-medium text-uppercase">Jenis Transaksi</p>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi"
-                                            id="jenis_transaksi_1" value="1" checked>
-                                        <label class="form-check-label" for="jenis_transaksi_1">
-                                            Transfer
-                                        </label>
-                                    </div>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi"
-                                            id="jenis_transaksi_2" value="2">
-                                        <label class="form-check-label" for="jenis_transaksi_2">
-                                            Cash
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-6 mb-4">
                                 <label for="tujuan_id" class="form-label text-uppercase">Tujuan</label>
                                 <select id="modal_tujuan_id" name="tujuan_id" class="form-control" required></select>
                             </div>
-
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-12 mb-4">
                                 <label for="nominal" class="form-label text-uppercase">Nominal</label>
                                 <input type="text" class="form-control" id="nominal" name="nominal" required />
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="keterangan" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row">

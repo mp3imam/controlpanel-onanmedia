@@ -95,54 +95,28 @@
                                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi"
                                     value="{{ $detail->tanggal_transaksi }}" />
                             </div>
-
+                            <div class="col-md-6 mb-4">
+                                <label for="keterangan" class="form-label">KETERANGAN</label>
+                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1">{{ $detail->keterangan }}</textarea>
+                            </div>
                             <div class="col-md-6 mb-4">
                                 <label for="bank_id" class="form-label">SUMBER</label>
                                 <select id="modal_bank_id" name="bank_id" class="form-control"></select>
                             </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div>
-                                    <p class="text-muted fw-medium text-uppercase">Jenis Transaksi</p>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi"
-                                            id="jenis_transaksi_1" value="1"
-                                            {{ $detail->jenis_transaksi == '1' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="jenis_transaksi_1">
-                                            Transfer
-                                        </label>
-                                    </div>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input" type="radio" name="jenis_transaksi"
-                                            id="jenis_transaksi_2" value="2"
-                                            {{ $detail->jenis_transaksi == 2 ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="jenis_transaksi_2">
-                                            Cash
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-6 mb-4">
                                 <label for="tujuan_id" class="form-label text-uppercase">Tujuan</label>
                                 <select id="modal_tujuan_id" name="tujuan_id" class="form-control" required></select>
                             </div>
-
-                            <div class="col-md-6 mb-4">
+                            <div class="col-md-12 mb-4">
                                 <label for="nominal" class="form-label text-uppercase">Nominal</label>
                                 <input class="form-control" id="nominal" name="nominal"
                                     value="{{ $detail->nominal }}" />
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="keterangan" class="form-label">KETERANGAN</label>
-                                <textarea class="form-control" id="keterangan" name="keterangan" rows="1">{{ $detail->keterangan }}</textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-auto mb-4">
                                 <a class="btn btn-warning float-end text-white rounded-5 me-3"
-                                    href="{{ route('master_bank_cash.index') }}">
+                                    href="javascript:history.back()">
                                     <i class="ri-arrow-go-back-line"></i> Kembali
                                 </a>
                                 <button class="btn float-end btn-info text-white rounded-5 me-3">

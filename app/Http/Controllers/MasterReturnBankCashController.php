@@ -89,7 +89,6 @@ class MasterReturnBankCashController extends Controller
         $validasi = [
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
-            'jenis_transaksi'   => 'required',
             'tujuan_id'         => 'required',
             'nominal'           => 'required',
         ];
@@ -220,7 +219,6 @@ class MasterReturnBankCashController extends Controller
         $request->validate([
             'tanggal_transaksi' => 'required',
             'bank_id'           => 'required',
-            'jenis_transaksi'   => 'required',
             'tujuan_id'         => 'required',
             'nominal'           => 'required',
         ]);
