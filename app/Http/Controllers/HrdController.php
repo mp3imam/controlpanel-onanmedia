@@ -349,7 +349,12 @@ class HrdController extends Controller
     {
         return DataKaryawanModel::with('pekerjaan.departement')
             ->when($request->cari, function ($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->cari . '%');
+                $q->where('nama_lengkap', 'like', '%' . $request->cari . '%')
+                    ->orWhere('email', 'like', '%' . $request->cari . '%')
+                    ->orWhere('no_handphone', 'like', '%' . $request->cari . '%');
+                    // ->orWhere('pekerjaan.departement', function ($q) use ($request) {
+                    //     $q->where('nama', 'like', '%' . $request->cari . '%');
+                    // });
             })
             ->get();
     }
@@ -428,7 +433,7 @@ class HrdController extends Controller
                     'cl_perusahaan_id'  => 1,
                     'update_date'       => Carbon::now()->format('Y-m-d'),
                     'update_by'         => 'administrator',
-                    'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
+                    'foto'              => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
                 ]);
 
                 $user = User::orderByRaw('id::int DESC')->first();
@@ -532,6 +537,7 @@ class HrdController extends Controller
 
     public function simpan_karyawan_pekerjaan(Request $request)
     {
+        // dd($request->all());
         $validasi = [
             'cabang_pekerjaan'      => 'required',
             'departement_pekerjaan' => 'required',
@@ -560,11 +566,11 @@ class HrdController extends Controller
         if ($request->status_kontrak == 2) {
             $save->tanggal_masuk  = Carbon::now()->format('Y-m-d');
             $save->periode_kontrak  = '-';
-            $save->kontrak_selesai = Carbon::now()->addYears(10)->format('Y-m-d');
+            $save->kontrak_selesai = Carbon::now()->addYears(30)->format('Y-m-d');
         } else {
-            $save->tanggal_masuk  = $request->kontrak_masuk;
+            $save->tanggal_masuk  = Carbon::parse($request->kontrak_masuk)->format('Y-m-d');
             $save->periode_kontrak  = $request->periode_kontrak;
-            $save->kontrak_selesai = $request->kontrak_selesai;
+            $save->kontrak_selesai = Carbon::parse($request->kontrak_selesai)->format('Y-m-d');
         }
         $save->cost_center_id = 0;
         $save->potongan_terlambat = $request->potongan_terlambat;

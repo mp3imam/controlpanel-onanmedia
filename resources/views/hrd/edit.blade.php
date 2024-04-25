@@ -86,21 +86,36 @@
                                 <div class="col-md-12 mb-4">
                                     Sisa Kontrak
                                 </div>
-                                @php
-
-                                @endphp
                                 <div class="col-md-12 text-center">
-                                    <button type="button" class="btn text-white btn-icon waves-effect waves-light"
-                                        style="background-color: #4B5563" id="kontrak_tahun">0{{ $sisa_tahun }}</button>
-                                    <button type="button" class="btn text-white btn-icon waves-effect waves-light mx-4"
-                                        style="background-color: #4B5563" id="kontrak_bulan">{{ $sisa_bulan }}</button>
-                                    <button type="button" class="btn text-white btn-icon waves-effect waves-light"
-                                        style="background-color: #4B5563" id="kontrak_hari">{{ $sisa_hari }}</button>
-                                </div>
-                                <div class="col-md-12 text-center fs-10 text-muted">
-                                    <label class="mx-3">Tahun</label>
-                                    <label class="mx-3">Bulan</label>
-                                    <label class="mx-4">Hari</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="button">
+                                                <button type="button"
+                                                    class="btn text-white btn-icon waves-effect waves-light"
+                                                    style="background-color: #4B5563"
+                                                    id="kontrak_tahun">0{{ $sisa_tahun }}</button>
+                                            </div>
+                                            <label>Tahun</label>
+                                        </div>
+                                        <div class="col">
+                                            <div class="button">
+                                                <button type="button"
+                                                    class="btn text-white btn-icon waves-effect waves-light mx-4"
+                                                    style="background-color: #4B5563"
+                                                    id="kontrak_bulan">{{ $sisa_bulan }}</button>
+                                            </div>
+                                            <label>Bulan</label>
+                                        </div>
+                                        <div class="col">
+                                            <div class="button">
+                                                <button type="button"
+                                                    class="btn text-white btn-icon waves-effect waves-light"
+                                                    style="background-color: #4B5563"
+                                                    id="kontrak_hari">{{ $sisa_hari }}</button>
+                                            </div>
+                                            <label>Hari</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -347,17 +362,18 @@
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Jabatan</label>
+                                            {{-- @dd($detail->pekerjaan->departement_id) --}}
                                             <select class="form-control" id='jabatan_pekerjaan' name="jabatan_pekerjaan">
                                                 <option value="1"
-                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->departement_id == 1 ? 'selected' : '') : '' }}>
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->jabatan_id == 1 ? 'selected' : '') : '' }}>
                                                     1.
                                                     Manager</option>
                                                 <option value="2"
-                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->departement_id == 2 ? 'selected' : '') : '' }}>
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->jabatan_id == 2 ? 'selected' : '') : '' }}>
                                                     2.
                                                     Leader</option>
                                                 <option value="3"
-                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->departement_id == 3 ? 'selected' : '') : '' }}>
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->jabatan_id == 3 ? 'selected' : '') : '' }}>
                                                     3. Staf
                                                 </option>
                                             </select>
@@ -399,7 +415,7 @@
                                                     <label class="control-form text-muted">Tanggal Masuk</label>
                                                     <input type="date" class="form-control" id="kontrak_masuk"
                                                         name="kontrak_masuk"
-                                                        value="{{ $detail->pekerjaan ? $detail->pekerjaan->kontrak_masuk : '' }}">
+                                                        value="{{ $detail->pekerjaan ? $detail->pekerjaan->tanggal_masuk : Carbon\Carbon::now()->format('Y-m-d') }}">
                                                 </div>
                                                 <div class="col-lg mb-3 hidden_kontrak" style="background-color: #F9FAFB"
                                                     {{ optional($detail->pekerjaan)->status_kontrak == 2 ? 'hidden' : '' }}>
@@ -414,21 +430,30 @@
                                             <label class="control-form text-muted">Potongan Terlambat</label>
                                             <select class="form-control" id='potongan_terlambat'
                                                 name="potongan_terlambat">
-                                                <option value="0" selected>Tidak</option>
-                                                <option value="1">Iya</option>
+                                                <option value="0"
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->potongan_terlambat == 0 ? 'selected' : '') : 'selected' }}>
+                                                    Tidak</option>
+                                                <option value="1"
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->potongan_terlambat == 1 ? 'selected' : '') : '' }}>
+                                                    Iya</option>
                                             </select>
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Toleransi Keterlambatan (menit)</label>
                                             <input type="number" min="1" max="30" class="form-control"
-                                                id="toleransi_keterlambatan" name="toleransi_keterlambatan">
+                                                id="toleransi_keterlambatan" name="toleransi_keterlambatan"
+                                                value="{{ $detail->pekerjaan ? $detail->pekerjaan->toleransi_keterlambatan : '' }}">
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Absen diluar kantor</label>
                                             <select class="form-control" id='absen_diluar_kantor'
                                                 name="absen_diluar_kantor">
-                                                <option value="0" selected>Tidak</option>
-                                                <option value="1">Iya</option>
+                                                <option value="0"
+                                                    {{ $detail->pekerjaan ? ($detail->pekerjaan->absen_diluar_kantor == 0 ? 'selected' : '') : 'selected' }}>
+                                                    Tidak</option>
+                                                <option
+                                                    value="1"{{ $detail->pekerjaan ? ($detail->pekerjaan->absen_diluar_kantor == 1 ? 'selected' : '') : '' }}>
+                                                    Iya</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-12 p-2 mb-3 mx-1">
@@ -629,7 +654,6 @@
         $('#status_kontrak').change(function() {
             $('.hidden_kontrak').prop('hidden', false)
             if (this.value == 2) $('.hidden_kontrak').prop('hidden', true)
-
         });
 
         function status_karyawan(params) {
@@ -657,6 +681,8 @@
                 }
             });
         }
+
+
 
         function modal_crud_keluarga(data, id, nama, hubungan_id, hubungan, agama_id, agama, pekerjaan, alamat,
             nomor_handphone, tanggal_lahir) {
@@ -1762,6 +1788,17 @@
             }
         });
 
+        var departement = {!! $detail->pekerjaan->departement !!}
+        var dataRole = {
+            id: departement ? departement.id : 7,
+            text: departement ? departement.nama : "IT",
+            selected: true
+        };
+
+        var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+        $('#departement_pekerjaan').append(newOptionRole).trigger('change');
+        $('#departement_pekerjaan').select2();
+
         $('#departement_pekerjaan').select2({
             ajax: {
                 url: "{{ route('api.divisi') }}",
@@ -1783,6 +1820,7 @@
 
         $('#save_umum').click(function() {
             var fd = new FormData()
+            fd.append('id_update', $('#id_update').val())
             fd.append('nama_lengkap_umum', $('#nama_lengkap_umum').val())
             fd.append('nama_panggilan_umum', $('#nama_panggilan_umum').val())
             fd.append('alamat_ktp_umum', $('#alamat_ktp_umum').val())
@@ -1810,7 +1848,8 @@
                         var activeTab = $('.tab-pane.active');
                         activeTab.removeClass('show active');
                         activeTab.next('.tab-pane').addClass('show active');
-                        $('.nav-link.active').removeClass('active').parent().next().find('.nav-link')
+                        $('.nav-link.active').removeClass('active').parent().next().find(
+                                '.nav-link')
                             .addClass('active');
                         $('#save_umum').text('Update')
 
@@ -1882,7 +1921,8 @@
             fd.append('NPWP_personal', $('#NPWP_personal').val())
             fd.append('tipe_pajak_personal', $('#tipe_pajak_personal').val())
             fd.append('tunjangan_pajak_personal', $('#tunjangan_pajak_personal').val())
-            fd.append('tunjangan_pajak_dalam_persen_personal', $('#tunjangan_pajak_dalam_persen_personal').val())
+            fd.append('tunjangan_pajak_dalam_persen_personal', $('#tunjangan_pajak_dalam_persen_personal')
+                .val())
             fd.append('nama_bank_personal', $('#nama_bank_personal').val())
             fd.append('no_akun_bank_personal', $('#no_akun_bank_personal').val())
             fd.append('no_ketenagakerjaan_personal', $('#no_ketenagakerjaan_personal').val())
@@ -1902,7 +1942,8 @@
                         var activeTab = $('.tab-pane.active');
                         activeTab.removeClass('show active');
                         activeTab.next('.tab-pane').addClass('show active');
-                        $('.nav-link.active').removeClass('active').parent().next().find('.nav-link')
+                        $('.nav-link.active').removeClass('active').parent().next().find(
+                                '.nav-link')
                             .addClass('active');
                         Swal.fire({
                             title: "Berhasil!",
@@ -1980,7 +2021,8 @@
                         var activeTab = $('.tab-pane.active');
                         activeTab.removeClass('show active');
                         activeTab.next('.tab-pane').addClass('show active');
-                        $('.nav-link.active').removeClass('active').parent().next().find('.nav-link')
+                        $('.nav-link.active').removeClass('active').parent().next().find(
+                                '.nav-link')
                             .addClass('active');
                         $('#save_pekerjaan').prop('disabled', false)
                         $('.divisi_lengkap').text($('#departement_pekerjaan option:selected').text()

@@ -29,4 +29,9 @@ class DataKaryawanModel extends Model
     {
         return $this->hasOne(DataKaryawanPekerjaanModel::class, 'data_karyawan_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId', 'id');
+    }
 }

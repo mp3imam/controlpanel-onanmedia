@@ -32,4 +32,8 @@ class User extends Authenticatable
         'password'
     ];
 
+    public function karyawan()
+    {
+        return $this->hasOne(DataKaryawanModel::class, 'userId', 'id');
+    }
 }

@@ -15,7 +15,8 @@
                         <div class="row g-4">
                             <div class="row mt-4">
                                 <div class="col-md-4 col-md-6 p-3">
-                                    <input id='cari' name="cari" class="form-control rounded-3" />
+                                    <input id='cari' name="cari" class="form-control rounded-3"
+                                        placeholder="Cari berdasarkan Nama, email dan no telepon" />
                                 </div>
                                 <div class="col p-3">
                                     <a href="{{ route('data_karyawan.create') }}" class="btn btn-white float-end fs-16"
@@ -77,8 +78,7 @@
                 ajax: {
                     url: "{{ route('getDataTableKaryawan') }}",
                     data: function(d) {
-                        d.username_id = $('#username_id').val()
-                        d.roles_id = $('#roles_id').val()
+                        d.cari = $('#cari').val()
                     }
                 },
                 columns: [{
@@ -118,11 +118,7 @@
                 }]
             });
 
-            $('#username_id').keyup(function() {
-                table.draw();
-            });
-
-            $('#roles_id').change(function() {
+            $('#cari').keyup(function() {
                 table.draw();
             });
         });
