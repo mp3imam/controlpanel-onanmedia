@@ -109,10 +109,7 @@
                     }
                 }, {
                     data: 'namaUser',
-                    name: 'User',
-                    render: function(data, type, row, meta) {
-                        return `<a href="/daftar_tender/${row.id}/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">${data}</a>`;
-                    }
+                    name: 'User'
                 }, {
                     data: 'tanggal',
                     name: 'Tanggal'
