@@ -352,9 +352,9 @@ class HrdController extends Controller
                 $q->where('nama_lengkap', 'like', '%' . $request->cari . '%')
                     ->orWhere('email', 'like', '%' . $request->cari . '%')
                     ->orWhere('no_handphone', 'like', '%' . $request->cari . '%');
-                    // ->orWhere('pekerjaan.departement', function ($q) use ($request) {
-                    //     $q->where('nama', 'like', '%' . $request->cari . '%');
-                    // });
+                // ->orWhere('pekerjaan.departement', function ($q) use ($request) {
+                //     $q->where('nama', 'like', '%' . $request->cari . '%');
+                // });
             })
             ->get();
     }
@@ -380,19 +380,18 @@ class HrdController extends Controller
     public function simpan_karyawan_umum(Request $request)
     {
         $validasi = [
-            'nama_lengkap_umum'         => 'required',
-            'nama_panggilan_umum'       => 'required',
-            'alamat_ktp_umum'           => 'required',
-            'alamat_domisili_umum'      => 'required',
-            'tempat_lahir_umum'         => 'required',
-            'tanggal_lahir_umum'        => 'required',
-            'no_hp_umum'                => 'required',
-            'pendidikan_id_umum'        => 'required',
+            'username_umum'         => 'required',
+            'nama_lengkap_umum'     => 'required',
+            'nama_panggilan_umum'   => 'required',
+            'alamat_ktp_umum'       => 'required',
+            'alamat_domisili_umum'  => 'required',
+            'tempat_lahir_umum'     => 'required',
+            'tanggal_lahir_umum'    => 'required',
+            'no_hp_umum'            => 'required',
+            'pendidikan_id_umum'    => 'required',
         ];
 
         $validator = Validator::make($request->all(), $validasi);
-
-        // dd($request->id_update !== null ? $request->id_update : DataKaryawanModel::orderby('id', 'desc')->first()->id + 1);
 
         if ($validator->fails()) {
             return response()->json([
@@ -417,7 +416,7 @@ class HrdController extends Controller
             if ($request->id_update !== null) {
                 User::whereId(DataKaryawanModel::where('id', $request->id_update)->first()->userId)->update(
                     [
-                        'username' => $request->nama_lengkap_umum,
+                        'username' => $request->username,
                         'nama_lengkap' => $request->nama_lengkap_umum,
                         'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
                     ]

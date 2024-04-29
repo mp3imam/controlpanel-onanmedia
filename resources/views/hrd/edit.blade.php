@@ -168,6 +168,12 @@
                             <div class="tab-content mt-4">
                                 <div class="tab-pane active" id="base-umum" role="tabpanel">
                                     <div class="row">
+                                        <div id="alert_username_umum" class="col-lg p-2 mx-1 mb-3 rounded-3"
+                                            style="background-color: #F9FAFB">
+                                            <label class="control-form text-muted">Username</label>
+                                            <input class="form-control" id="username_umum" name="username_umum"
+                                                value="{{ $detail->username }}">
+                                        </div>
                                         <div id="alert_nama_lengkap_umum" class="col-lg-6 p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Nama Lengkap</label>
@@ -1821,6 +1827,7 @@
         $('#save_umum').click(function() {
             var fd = new FormData()
             fd.append('id_update', $('#id_update').val())
+            fd.append('username_umum', $('#username_umum').val())
             fd.append('nama_lengkap_umum', $('#nama_lengkap_umum').val())
             fd.append('nama_panggilan_umum', $('#nama_panggilan_umum').val())
             fd.append('alamat_ktp_umum', $('#alamat_ktp_umum').val())
@@ -1870,6 +1877,10 @@
                         $('#tambah_riwayat').prop('disabled', false)
                     } else {
                         $('.alert_hapus').remove()
+                        if (response.message.username_umum)
+                            $('#alert_username_umum').append(
+                                `<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`
+                            )
                         if (response.message.nama_lengkap_umum)
                             $('#alert_nama_lengkap_umum').append(
                                 `<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`

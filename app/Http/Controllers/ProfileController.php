@@ -47,8 +47,7 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $data = [
-                'nama_lengkap' => $request->nameInput,
-                'username' => $request->nameInput,
+                'nama_lengkap' => $request->nameInput
             ];
 
             if ($file = $request->file('foto')) {
