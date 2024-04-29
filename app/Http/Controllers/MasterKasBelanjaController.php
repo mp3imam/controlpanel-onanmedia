@@ -268,7 +268,9 @@ class MasterKasBelanjaController extends Controller
 
         $detail = MasterKasBelanjaString::with(['belanja_barang.coa_belanja', 'belanja_barang' => function ($q) use ($request) {
             $q->with('satuan_barang')->when($request->filled('q'), function ($q) use ($request) {
-                $q->where('status', $request->q);
+                $q->when($request->q !== 'ALL', function ($q) use ($request) {
+                    $q->where('status', $request->q);
+                });
             })
                 ->when($request->q == null, function ($q) use ($request) {
                     $q->where('status', 1);
@@ -354,7 +356,6 @@ class MasterKasBelanjaController extends Controller
         // DB::beginTransaction();
         // try {
         $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
-        dd($kasBelanja);
 
         $tahun = Carbon::now()->format('Y');
         $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();

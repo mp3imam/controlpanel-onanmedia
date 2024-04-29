@@ -151,9 +151,11 @@
                         </div>
                     </div>
                     <div class="float-end">
-                        <button class="btn bg-animation btn-success mr-5 rounded-5"><i
-                                class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Approve</button>
-                        &nbsp;&nbsp;&nbsp;
+                        @hasrole('finance')
+                            <button class="btn bg-animation btn-success mr-5 rounded-5"><i
+                                    class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Approve</button>
+                            &nbsp;&nbsp;&nbsp;
+                        @endhasrole
                         <a href="{{ route('master_kas_belanja.index') }}"
                             class="btn bg-animation rounded-5 btn-outline-primary waves-effect waves-light float-end"
                             style="color: #4E36E2">Kembali</a>
