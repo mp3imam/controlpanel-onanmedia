@@ -201,9 +201,10 @@ class MasterBankCashController extends Controller
 
         $nomor_transaksi = $details->details->groupBy('nomor_transaksi')->map(function ($group) {
             $total_jumlah = $group->sum(function ($item) {
-                return (int) str_replace('Rp.', '', $item->jumlah);
+                return (int) str_replace('.', '', str_replace('Rp. ', '', $item->jumlah));
             });
             $transaction = $group->first();
+
             return [
                 'nomor' => $transaction->nomor_transaksi,
                 'detail' => $group,
