@@ -294,10 +294,9 @@
                             URL.revokeObjectURL(downloadUrl);
                         }, 100); // cleanup
                     }
-                    $('#exampleModal').modal('hide')
                 }
             }).done(function() { //use this
-                $('#exampleModal').modal('hide')
+                $('#exampleModalgrid').modal('hide')
             });
         })
 
