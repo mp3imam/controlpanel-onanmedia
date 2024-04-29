@@ -27,7 +27,8 @@
                                             <div class="col-md mt-2">
                                                 <div class="fs-14 fw-bold">{{ $detail->user->name }}</div>
                                                 <div class="fs-12" style="color: #55B9DB">
-                                                    {{ $detail->level_tender_pembeli->nama }}</div>
+                                                    {{ $detail->level_tender_pembeli ? $detail->level_tender_pembeli->nama : 'Cek Relasi Database' }}
+                                                </div>
                                             </div>
                                             <hr>
                                             <div class="row">
@@ -41,7 +42,7 @@
                                                 <div class="col-md-8">
                                                     <span class="text-muted">Level Kualifikasi</span><br>
                                                     <label class="fs-14"
-                                                        style="color: #8682B9">{{ $detail->level_tender_penjual->nama }}
+                                                        style="color: #8682B9">{{ $detail->level_tender_penjual ? $detail->level_tender_penjual->nama : '-' }}</label>
                                                     </label>
                                                 </div>
                                             </div>
@@ -56,6 +57,9 @@
 
                                 <h6 class="fw-bold mt-5">Deskripsi</h6>
                                 <p>{!! $detail->deskripsiPekerjaan !!}</p>
+
+                                <h6 class="fw-bold mt-5">Kategori</h6>
+                                <p>{!! $detail->kategori ? $detail->kategori->nama : '-' !!}</p>
 
                                 <h6 class="fw-bold mt-5">Lingkup Pekerjaan</h6>
                                 <p>{{ $detail->LingkupPekerjaan }}</p>
@@ -112,7 +116,7 @@
     <script type="text/javascript">
         $('#verifikasi_tender').change(function() {
             $('.keterangan').attr('hidden', true)
-            if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 5)
+            if ($(this).val() == 5)
                 $('.keterangan').attr('hidden', false)
         });
 

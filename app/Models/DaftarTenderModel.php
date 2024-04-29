@@ -28,6 +28,11 @@ class DaftarTenderModel extends Model
         return $this->hasOne(StatusTenderModel::class, 'id', 'msStatusTenderId');
     }
 
+    public function kategori()
+    {
+        return $this->hasOne(KategoriModel::class, 'id', 'msKategoriId');
+    }
+
     public function level_tender_penjual()
     {
         return $this->hasOne(MsMerchantLevelPenjualModel::class, 'id', 'msMerchantLevelPenjualId');

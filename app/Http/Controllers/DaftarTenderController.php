@@ -144,7 +144,7 @@ class DaftarTenderController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = DaftarTenderModel::with(['level_tender_penjual', 'level_tender_pembeli'])->whereId($id)->first();
+        $detail = DaftarTenderModel::with(['kategori', 'level_tender_penjual', 'level_tender_pembeli'])->whereId($id)->first();
 
         return view('daftar_tender.edit', $title, compact(['detail']));
     }
