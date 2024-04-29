@@ -1794,10 +1794,13 @@
             }
         });
 
-        var departement = {!! $detail->pekerjaan->departement !!}
+        var departement = {!! isset($detail->pekerjaan->departement)
+            ? $detail->pekerjaan->departement
+            : json_encode(['id' => '7', 'nama' => 'IT']) !!}
+
         var dataRole = {
-            id: departement ? departement.id : 7,
-            text: departement ? departement.nama : "IT",
+            id: departement.id,
+            text: departement.nama,
             selected: true
         };
 
