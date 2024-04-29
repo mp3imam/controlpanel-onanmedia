@@ -397,6 +397,11 @@
                                 <span class="remove_umum text-danger">Data Tidak Boleh Kosong</span>
                             `)
                         }
+                        if (response.message.email == 'The email has already been taken.') {
+                            $('.modal_email_append').append(`
+                            <span class="remove_umum text-danger">Email sudah terdaftar</span>
+                        `)
+                        }
                         if (response.message.email == 'The email input field is required.') {
                             $('.modal_email_append').append(`
                             <span class="remove_umum text-danger">Data Tidak Boleh Kosong</span>
