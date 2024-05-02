@@ -265,7 +265,7 @@ class HrdController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = DataKaryawanModel::with(['agama_personal', 'pendidikan_terakhir_banget', 'pekerjaan.departement', 'personal'])->whereId($id)->first();
+        $detail = DataKaryawanModel::with(['agama_personal', 'pendidikan_terakhir_banget', 'pekerjaan.departement', 'personal', 'user'])->whereId($id)->first();
         $sisa_tahun = 0;
         $sisa_bulan = 3;
         $sisa_hari = 0;
@@ -416,7 +416,7 @@ class HrdController extends Controller
             if ($request->id_update !== null) {
                 User::whereId(DataKaryawanModel::where('id', $request->id_update)->first()->userId)->update(
                     [
-                        'username' => $request->username,
+                        'username' => $request->username_umum,
                         'nama_lengkap' => $request->nama_lengkap_umum,
                         'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
                     ]
@@ -424,7 +424,7 @@ class HrdController extends Controller
             } else {
                 User::insert([
                     'id'                => User::orderByRaw('id::int DESC')->first()->id + 1,
-                    'username'          => $request->nama_lengkap_umum,
+                    'username'          => $request->username_umum,
                     'password'          => Hash::make($request->tanggal_lahir_umum),
                     'cl_user_group_id'  => 1,
                     'nama_lengkap'      => $request->nama_lengkap_umum,

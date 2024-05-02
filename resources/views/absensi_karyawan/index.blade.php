@@ -241,7 +241,7 @@
                 </div>
             </div>
         `)
-            $("#exampleModal").modal('show');
+            $("#exampleModalgrid").modal('show');
 
             var fd = new FormData()
             fd.append('cari_tanggal', $('#cari_tanggal').val())

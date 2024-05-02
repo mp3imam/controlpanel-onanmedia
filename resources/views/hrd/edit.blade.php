@@ -172,7 +172,7 @@
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Username</label>
                                             <input class="form-control" id="username_umum" name="username_umum"
-                                                value="{{ $detail->username }}">
+                                                value="{{ $detail->user->username }}">
                                         </div>
                                         <div id="alert_nama_lengkap_umum" class="col-lg-6 p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
