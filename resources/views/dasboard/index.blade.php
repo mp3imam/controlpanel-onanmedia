@@ -219,7 +219,7 @@
                     <div id="div_izin" class="mb-3"></div>
                     <textarea name="keterangan" id="keterangan" rows="4" class="form-control" placeholder="Tulis alasanmu disini..."></textarea>
                     <div class="d-grid gap-2 mt-3">
-                        <button type="button" class="btn btn-primary mt-2" id="btn_kirim">Kirim</button>
+                        <button type="button" class="btn btn-primary mt-2" id="btn_izin">Kirim</button>
                     </div>
                 </div>
             `;
@@ -243,7 +243,8 @@
                 }
             });
 
-            $('#btn_kirim').on('click', function() {
+            $('#btn_izin').on('click', function() {
+                console.log("imam");
                 // Get image data URI and user-provided text
                 var imageDataURI = $('#img_izin').attr('src');
                 var keterangan = $('#keterangan').val();
@@ -263,8 +264,6 @@
                     contentType: false,
                     success: function(response) {
                         $('#dataTable').DataTable().ajax.reload()
-                        $('#btn_kirim').props('hidden', true);
-                        $('#btn_batal').props('hidden', true);
                     },
                 }).done(function() {
                     // Hide the modal after successful submission

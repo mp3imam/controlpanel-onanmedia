@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\UploadFileHelper;
 use App\Models\AbsenKaryawanOnanmediaModel;
-use App\Models\AntrianModel;
-use App\Models\LogActivitiesModel;
-use App\Models\logUserModel;
-use App\Models\SatkerModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class DasboardController extends Controller
 {
