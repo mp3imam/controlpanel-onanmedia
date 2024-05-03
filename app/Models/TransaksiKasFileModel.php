@@ -17,5 +17,4 @@ class TransaksiKasFileModel extends Model
     {
         return $this->belongsTo(MasterBankCashModel::class, 'id');
     }
-
 }

@@ -326,6 +326,14 @@ class MasterBankCashController extends Controller
                 $request['debet'] = 0;
                 $request['kredit'] = $request->seluruh_total;
                 JurnalUmumDetail::create($request->except('_token'));
+
+                $kasFotoDetail = [
+                    'jurnal_umum_id' => $masterJurnal->id,
+                    'path'           => asset('kas_saldo/') . "/",
+                    'filename'       => $imageName,
+                ];
+
+                MasterJurnalFile::create($kasFotoDetail);
             } else {
                 MasterBankCashModel::find($request->id)->delete();
             }
