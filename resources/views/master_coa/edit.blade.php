@@ -57,8 +57,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-4">
-                                    <label for="kode_coa" class="form-label">Kode Coa</label>
-                                    <input class="form-control" id="kode_coa" name="kode_coa"
+                                    <label for="kdrek" class="form-label">Kode Coa</label>
+                                    <input class="form-control" id="kdrek" name="kdrek"
                                         value="{{ $details->kdrek }}" />
                                 </div>
                                 <div class="col-md-6 mb-4">
@@ -184,7 +184,7 @@
             }).on('select2:select', function(e) {
                 $("#kdrek2_coa_id").val('').trigger('change')
                 $("#kdrek3_coa_id").val('').trigger('change')
-                $("#kode_coa").val("");
+                $("#kdrek").val("");
 
                 if ($('#pilih_data_id').val() != "2") {
                     $("#kdrek2_coa_id").select2({
@@ -211,7 +211,7 @@
                         }
                     }).on('select2:select', function(e) {
                         $("#kdrek3_coa_id").val('').trigger('change')
-                        $("#kode_coa").val("");
+                        $("#kdrek").val("");
 
                         if ($('#pilih_data_id').val() != "3") {
                             $("#kdrek3_coa_id").select2({
@@ -238,7 +238,7 @@
                                                 })
                                             };
                                         } else {
-                                            $("#kode_coa").val(data.data);
+                                            $("#kdrek").val(data.data);
                                         }
                                     }
                                 }
@@ -250,10 +250,10 @@
                                             'kdrek3'],
                                     type: "get",
                                     success: function(response) {
-                                        $("#kode_coa").val(response.data);
+                                        $("#kdrek").val(response.data);
                                     },
                                     error: function() {
-                                        $("#kode_coa").val("")
+                                        $("#kdrek").val("")
                                     },
                                 });
                             })
@@ -264,7 +264,7 @@
                                         'kdrek1'] + "&kdrek2=" + details['kdrek2'] +
                                     "&kdrek3=" + details['kdrek3'],
                                 success: function(response) {
-                                    $("#kode_coa").val(response.data);
+                                    $("#kdrek").val(response.data);
                                 }
                             });
                         }
@@ -275,7 +275,7 @@
                         url: "{{ route('api.count_kdrek2_coa', ['kdrek1' => '']) }}" + e.params
                             .data.kdrek1,
                         success: function(response) {
-                            $("#kode_coa").val(response.data);
+                            $("#kdrek").val(response.data);
                         }
                     });
                 }
@@ -304,7 +304,7 @@
                 }
             }).on('select2:select', function(e) {
                 $("#kdrek3_coa_id").val('').trigger('change')
-                $("#kode_coa").val("");
+                $("#kdrek").val("");
 
                 if ($('#pilih_data_id').val() != "3") {
                     $("#kdrek3_coa_id").select2({
@@ -330,7 +330,7 @@
                                         })
                                     };
                                 } else {
-                                    $("#kode_coa").val(data.data);
+                                    $("#kdrek").val(data.data);
                                 }
                             }
                         }
@@ -341,10 +341,10 @@
                                 "&kdrek3=" + details['kdrek3'],
                             type: "get",
                             success: function(response) {
-                                $("#kode_coa").val(response.data);
+                                $("#kdrek").val(response.data);
                             },
                             error: function() {
-                                $("#kode_coa").val("")
+                                $("#kdrek").val("")
                             },
                         });
                     })
@@ -354,7 +354,7 @@
                         url: "{{ url('api/count_kdrek3_coa') }}?kdrek1=" + details['kdrek1'] +
                             "&kdrek2=" + details['kdrek2'] + "&kdrek3=" + details['kdrek3'],
                         success: function(response) {
-                            $("#kode_coa").val(response.data);
+                            $("#kdrek").val(response.data);
                         }
                     });
                 }
@@ -382,7 +382,7 @@
                                 })
                             };
                         } else {
-                            $("#kode_coa").val(data.data);
+                            $("#kdrek").val(data.data);
                         }
                     }
                 }
@@ -392,10 +392,10 @@
                         "&kdrek2=" + details['kdrek2'] + "&kdrek3=" + details['kdrek3'],
                     type: "get",
                     success: function(response) {
-                        $("#kode_coa").val(response.data);
+                        $("#kdrek").val(response.data);
                     },
                     error: function() {
-                        $("#kode_coa").val("")
+                        $("#kdrek").val("")
                     },
                 });
             })
@@ -462,7 +462,7 @@
         // $("#kdrek3_coa_id").val('').trigger('change')
 
         $('#pilih_data_id').on('change', function(e) {
-            $("#kode_coa").val("");
+            $("#kdrek").val("");
             $("#kdrek1_coa_id").val('').trigger('change')
             $("#kdrek2_coa_id").val('').trigger('change')
             $("#kdrek3_coa_id").val('').trigger('change')
@@ -474,7 +474,7 @@
                         type: "get",
                         url: "{{ route('api.count_kdrek1_coa') }}",
                         success: function(response) {
-                            $("#kode_coa").val(response.data);
+                            $("#kdrek").val(response.data);
                         }
                     });
                     break;

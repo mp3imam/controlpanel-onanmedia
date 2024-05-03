@@ -67,7 +67,7 @@ class MasterCoaController extends Controller
         // dd($request->all());
         $validasi = [
             'pilih_data_id' => 'required',
-            'kode_coa'      => 'required|unique:cl_coa',
+            'kdrek'         => 'required|unique:cl_coa',
             'nama_akun'     => 'required',
             'rekening_bank' => 'required',
             'nama_bank'     => 'required',
@@ -83,7 +83,7 @@ class MasterCoaController extends Controller
         }
 
         // Store your file into directory and db
-        $input = $request->except(['_token', 'kode_coa', 'nama_akun', 'kdrek1_coa_id', 'kdrek2_coa_id', 'kdrek3_coa_id', 'pilih_data_id']);
+        $input = $request->except(['_token', 'kdrek', 'nama_akun', 'kdrek1_coa_id', 'kdrek2_coa_id', 'kdrek3_coa_id', 'pilih_data_id']);
         $input['id']     = MasterCoaModel::getMaxIdRecord()->first()->id + 1;
         $input['kdrek1'] = 0;
         $input['kdrek2'] = 0;
@@ -110,7 +110,7 @@ class MasterCoaController extends Controller
             $input['akun_bank'] = $BankModel->id;
         }
 
-        $input['kdrek']     = $request->kode_coa;
+        $input['kdrek']     = $request->kdrek;
         $input['type']      = $pilih_data;
         $input['uraian']    = $request->nama_akun;
         $input['nama_bank'] = $request->nama_bank;
@@ -174,7 +174,7 @@ class MasterCoaController extends Controller
     {
         $request->validate([
             'nama_akun' => 'required',
-            'kode_coa'  => 'required|unique:cl_coa',
+            'kdrek'  => 'required|unique:cl_coa',
         ]);
 
         if ($request->pilih_data == "D" && $request->kdrek1_coa == 1 && $request->kdrek2_coa == 1 && $request->kdrek3_coa == 1) {
@@ -187,7 +187,7 @@ class MasterCoaController extends Controller
 
         // Store your file into directory and db
         $update = [
-            'kdrek'         => $request->kode_coa,
+            'kdrek'         => $request->kdrek,
             'uraian'        => $request->nama_akun,
             'rekening_bank' => $request->rekening_bank,
             'nama_bank'     => $request->nama_bank,
