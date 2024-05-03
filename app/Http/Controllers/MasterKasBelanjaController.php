@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JurnalUmumDetail;
 use App\Models\MasterBankCashModel;
 use App\Models\MasterJurnal;
+use App\Models\MasterJurnalFile;
 use App\Models\MasterKasBelanja;
 use App\Models\MasterKasBelanjaDetail;
 use App\Models\MasterKasBelanjaFile;
@@ -517,7 +518,6 @@ class MasterKasBelanjaController extends Controller
 
     function upload_bukti_transfer_divisi_finance(Request $request)
     {
-        // dd($request->all());
         DB::beginTransaction();
         try {
             // All Approve
@@ -563,6 +563,14 @@ class MasterKasBelanjaController extends Controller
             $request['debet'] = 0;
             $request['kredit'] = $masterKasBelanja->nominal_approve;
             JurnalUmumDetail::create($request->except('_token'));
+
+            $kasFotoDetail = [
+                'jurnal_umum_id' => $masterJurnal->id,
+                'path'           => asset('upload_bukti/') . "/",
+                'filename'       => $imageName,
+            ];
+
+            MasterJurnalFile::create($kasFotoDetail);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -639,6 +647,14 @@ class MasterKasBelanjaController extends Controller
             $request['debet'] = 0;
             $request['kredit'] = $masterKasBelanja->nominal_approve;
             JurnalUmumDetail::create($request->except('_token'));
+
+            $kasFotoDetail = [
+                'jurnal_umum_id' => $masterJurnal->id,
+                'path'           => asset('upload_bukti/') . "/",
+                'filename'       => str_replace(asset('upload_bukti/') . "/", '', $masterKasBelanja->bukti_transfer_divisi_to_finance),
+            ];
+
+            MasterJurnalFile::create($kasFotoDetail);
 
             DB::commit();
         } catch (\Throwable $th) {

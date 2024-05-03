@@ -114,6 +114,7 @@ class HelpdeskController extends Controller
             $helpdeskDetail->pesan      = $request->balasan ?? '';
             $helpdeskDetail->role       = "ADMIN";
             $helpdeskDetail->helpdeskStatusId = 2;
+            $helpdeskDetail->createdAt = Carbon::now();
             $helpdeskDetail->save();
 
             if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())

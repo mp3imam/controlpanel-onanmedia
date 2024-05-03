@@ -98,7 +98,7 @@
                                         </div>
                                         <div class="col-md-3 text-end text-muted mt-2">
                                             <label
-                                                class="mt-2 fs-16">{{ Carbon\Carbon::parse($detail->createdAt)->isoFormat('dddd, D MMMM - HH:mm:ss a') }}</label>
+                                                class="mt-2 fs-16">{{ Carbon\Carbon::parse($d->createdAt)->isoFormat('dddd, D MMMM - HH:mm:ss a') }}</label>
                                         </div>
                                     </div>
                                     <div class="row mb-4">
