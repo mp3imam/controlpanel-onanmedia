@@ -269,8 +269,8 @@ class UserPanelSeeder extends Seeder
                 'foto' => 'https://controlpanel-onanmedia.test/karyawan/foto/11:25:16_2913.png'
             ],
             [
-                'id' => 11,
-                'userId' => 11,
+                'id' => 16,
+                'userId' => 16,
                 'nama_lengkap' => 'Elfira',
                 'nama_panggilan' => 'Elfira',
                 'nik_khusus' => '',
