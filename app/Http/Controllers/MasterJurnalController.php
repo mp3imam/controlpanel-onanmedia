@@ -27,32 +27,35 @@ class MasterJurnalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct(){
+    function __construct()
+    {
         // dd(MasterJurnal::with(['details','jurnal_banks','jurnal_file'])->get());
         $this->middleware('permission:Jurnal Umum');
     }
 
-    public function index(){
+    public function index()
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
         return view('master_jurnal.index', $title);
     }
 
-    function get_datatable(Request $request){
+    function get_datatable(Request $request)
+    {
         return
-        DataTables::of($this->models($request))
-        ->addColumn('debets', function ($row){
-            return "Rp. ".number_format($row->debet, 0);
-        })
-        ->addColumn('kredits', function ($row){
-            return "Rp. ".number_format($row->kredit, 0);
-        })
-        ->addColumn('tanggal', function ($row){
-            return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
-        })
-        ->rawColumns(['banks','kredit','debet'])
-        ->make(true);
+            DataTables::of($this->models($request))
+            ->addColumn('debets', function ($row) {
+                return "Rp. " . number_format($row->debet, 0);
+            })
+            ->addColumn('kredits', function ($row) {
+                return "Rp. " . number_format($row->kredit, 0);
+            })
+            ->addColumn('tanggal', function ($row) {
+                return Carbon::parse($row->tanggal_transaksi)->format('d-m-Y');
+            })
+            ->rawColumns(['banks', 'kredit', 'debet'])
+            ->make(true);
     }
 
     /**
@@ -60,7 +63,8 @@ class MasterJurnalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(){
+    public function create()
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
         $random_string = Str::random(25);
@@ -74,7 +78,8 @@ class MasterJurnalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validasi = [
             'tanggal_transaksi' => 'required',
             'account_id'        => 'nullable',
@@ -93,31 +98,31 @@ class MasterJurnalController extends Controller
             // Store your file into directory and db
             $tahun = Carbon::now()->format('Y');
             $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
-            $nomor = sprintf("%05s", $model !== null ? $model->id+1 : 1);
+            $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
             $request['dokumen'] = $request->nomor_transaksi;
-            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_debet ?? 0));
-            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_kredit ?? 0));
+            $request['debet'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_debet ?? 0));
+            $request['kredit'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_kredit ?? 0));
             $request['jenis'] = 0;
             $jurnaUmum = MasterJurnal::create($request->except('_token'));
 
             $request['jurnal_umum_id'] = $jurnaUmum->id;
             foreach ($request->akun_belanja as $akun => $a) {
-                $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->debet_detail[$akun]));
-                $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->kredit_detail[$akun]));
+                $request['debet'] = str_replace(".", "", str_replace("Rp. ", "", $request->debet_detail[$akun]));
+                $request['kredit'] = str_replace(".", "", str_replace("Rp. ", "", $request->kredit_detail[$akun]));
                 $request['keterangan'] = $request->keterangan[$akun] ?? '';
                 $request['account_id'] = $a;
 
                 JurnalUmumDetail::create($request->except('_token'));
             }
 
-            if ($request->attachment){
+            if ($request->attachment) {
                 $files = TemporaryFileUploadJurnal::query()
-                ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
-                ->whereStatus("0")
-                ->whereCreatedBy(Auth::user()->id)
-                ->whereToken($request->_token)
-                ->get();
+                    ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
+                    ->whereStatus("0")
+                    ->whereCreatedBy(Auth::user()->id)
+                    ->whereToken($request->_token)
+                    ->get();
 
                 foreach ($files as $file) {
                     $data = [
@@ -144,14 +149,16 @@ class MasterJurnalController extends Controller
         return redirect('master_jurnal');
     }
 
-    public function hapus_foto(Request $request){
+    public function hapus_foto(Request $request)
+    {
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => MasterJurnalFile::findOrFail($request->id)->delete()
         ]);
     }
 
-    public function softdelete_jurnal_umum(Request $request){
+    public function softdelete_jurnal_umum(Request $request)
+    {
         DB::beginTransaction();
         try {
             MasterJurnal::findOrFail($request->id)->update([
@@ -171,17 +178,18 @@ class MasterJurnalController extends Controller
         ]);
     }
 
-    public function upload_file(Request $request){
+    public function upload_file(Request $request)
+    {
         $image = $request->file('file');
-        $imageName = Carbon::now()->format('H:i:s.u').'.'.$image->extension();
-        $imageName = !file_exists($imageName) ?? Carbon::now()->format('H:i:s.u').'.'.$image->extension();
-        $path = public_path("Finance/$request->folder/".date('Y')."/".date('m')."/".date('d'));
+        $imageName = Carbon::now()->format('H:i:s.u') . '.' . $image->extension();
+        $imageName = !file_exists($imageName) ?? Carbon::now()->format('H:i:s.u') . '.' . $image->extension();
+        $path = public_path("Finance/$request->folder/" . date('Y') . "/" . date('m') . "/" . date('d'));
         !is_dir($path) && mkdir($path, 0777, true);
         $image->move($path, $imageName);
 
         TemporaryFileUploadHelpdesk::create([
             'folder' => $request->folder,
-            'url' => asset("Finance/$request->folder/$imageName".date('Y')."/".date('m')."/".date('d')),
+            'url' => asset("Finance/$request->folder/$imageName" . date('Y') . "/" . date('m') . "/" . date('d')),
             'filename' => $imageName,
             'token' => $request->random_text
         ]);
@@ -194,7 +202,8 @@ class MasterJurnalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id){
+    public function show(Request $request, $id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
@@ -209,14 +218,16 @@ class MasterJurnalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id){
+    public function edit($id)
+    {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::with(['coa_jurnal_umum','details.coa_jurnal','details.jurnal_banks','jurnal_file'])->findOrFail($id);
+        $detail = MasterJurnal::with(['coa_jurnal_umum', 'details.coa_jurnal', 'details.jurnal_banks', 'jurnal_file'])->findOrFail($id);
+        // dd($detail);
         $random_string = Str::random(25);
 
-        return view('master_jurnal.edit', $title, compact(['detail','random_string']));
+        return view('master_jurnal.edit', $title, compact(['detail', 'random_string']));
     }
 
     /**
@@ -226,7 +237,8 @@ class MasterJurnalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'tanggal_transaksi' => 'required',
             'akun_belanja'      => 'required',
@@ -235,17 +247,17 @@ class MasterJurnalController extends Controller
         DB::beginTransaction();
         try {
             // Store your file into directory and db
-            $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->total_debet));
-            $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->total_kredit));
-            MasterJurnal::find($id)->update($request->except(['_token','_method']));
+            $request['debet'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_debet));
+            $request['kredit'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_kredit));
+            MasterJurnal::find($id)->update($request->except(['_token', '_method']));
             $masterJurnal = MasterJurnal::whereId($id)->first();
 
             // Hapus Jurnal Detail
             JurnalUmumDetail::whereJurnalUmumId($masterJurnal->id)->delete();
             $request['jurnal_umum_id'] = $masterJurnal->id;
             foreach ($request->akun_belanja as $akun => $a) {
-                $request['debet'] = str_replace(".","",str_replace("Rp. ","",$request->debet_detail[$akun]));
-                $request['kredit'] = str_replace(".","",str_replace("Rp. ","",$request->kredit_detail[$akun]));
+                $request['debet'] = str_replace(".", "", str_replace("Rp. ", "", $request->debet_detail[$akun]));
+                $request['kredit'] = str_replace(".", "", str_replace("Rp. ", "", $request->kredit_detail[$akun]));
                 $request['keterangan'] = $request->keterangan[$akun] ?? '';
                 $request['account_id'] = $a;
 
@@ -253,13 +265,13 @@ class MasterJurnalController extends Controller
             }
 
             // Hapus Jurnal Detail
-            if ($request->attachment){
+            if ($request->attachment) {
                 $files = TemporaryFileUploadJurnal::query()
-                ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
-                ->whereStatus("0")
-                ->whereCreatedBy(Auth::user()->id)
-                ->whereToken($request->_token)
-                ->get();
+                    ->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'))
+                    ->whereStatus("0")
+                    ->whereCreatedBy(Auth::user()->id)
+                    ->whereToken($request->_token)
+                    ->get();
 
                 foreach ($files as $file) {
                     $data = [
@@ -291,56 +303,61 @@ class MasterJurnalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         return response()->json([
             'status'  => Response::HTTP_BAD_REQUEST,
             'message' => MasterJurnal::findOrFail($id)->delete()
         ]);
     }
 
-    public function models($request){
-        return MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
-        ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'ilike', '%'.$request->cari.'%')
-            ->orWhere('debet', 'ilike', '%'.$request->cari.'%')
-            ->orWhere('kredit', 'ilike', '%'.$request->cari.'%')
-            ->orWhere('keterangan_jurnal_umum', 'ilike', '%'.$request->cari.'%');
-        })
-        ->when($request->tanggal, function($q) use($request){
-            $tanggal = explode(" to ",$request->tanggal);
-            $q->when(count($tanggal) == 1, function ($q) use($tanggal) {
-                $q->where('tanggal_transaksi', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'));
-            });
-            $q->when(count($tanggal) == 2, function ($q) use($tanggal) {
-                $q->where('tanggal_transaksi', '>=',Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=',Carbon::createFromFormat('d M, Y', $tanggal[1])->format('Y-m-d'));
-            });
-        })
-        ->orderBy('id','desc')
-        ->get();
+    public function models($request)
+    {
+        return MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'coa_jurnal_umum', 'jurnal_file'])
+            ->when($request->cari, function ($q) use ($request) {
+                $q->where('nomor_transaksi', 'ilike', '%' . $request->cari . '%')
+                    ->orWhere('debet', 'ilike', '%' . $request->cari . '%')
+                    ->orWhere('kredit', 'ilike', '%' . $request->cari . '%')
+                    ->orWhere('keterangan_jurnal_umum', 'ilike', '%' . $request->cari . '%');
+            })
+            ->when($request->tanggal, function ($q) use ($request) {
+                $tanggal = explode(" to ", $request->tanggal);
+                $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
+                    $q->where('tanggal_transaksi', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'));
+                });
+                $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
+                    $q->where('tanggal_transaksi', '>=', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::createFromFormat('d M, Y', $tanggal[1])->format('Y-m-d'));
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
-    public function get_pdf(Request $request){
-        $datas = MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
-        ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'ilike','%'.$request->cari."%")
-            ->orWhere('keterangan_jurnal_umum', 'ilike',"%".$request->cari."%");
-        })
-        ->oldest()
-        ->get();
+    public function get_pdf(Request $request)
+    {
+        $datas = MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'coa_jurnal_umum', 'jurnal_file'])
+            ->when($request->cari, function ($q) use ($request) {
+                $q->where('nomor_transaksi', 'ilike', '%' . $request->cari . "%")
+                    ->orWhere('keterangan_jurnal_umum', 'ilike', "%" . $request->cari . "%");
+            })
+            ->oldest()
+            ->get();
 
-        $total = MasterJurnal::with(['details.jurnal_banks','details.coa_jurnal','coa_jurnal_umum','jurnal_file'])
-        ->when($request->cari, function($q) use($request){
-            $q->where('nomor_transaksi', 'like','%'.$request->cari."%")
-            ->orWhere('keterangan_jurnal_umum', 'like',"%".$request->cari."%");
-        })->total()->get();
+        $total = MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'coa_jurnal_umum', 'jurnal_file'])
+            ->when($request->cari, function ($q) use ($request) {
+                $q->where('nomor_transaksi', 'like', '%' . $request->cari . "%")
+                    ->orWhere('keterangan_jurnal_umum', 'like', "%" . $request->cari . "%");
+            })->total()->get();
 
-        $pdf = Pdf::loadview('master_jurnal.pdf',[
+        $pdf = Pdf::loadview(
+            'master_jurnal.pdf',
+            [
                 'name'  => 'Jurnal Umum',
                 'datas' => $datas,
                 'total' => $total
             ]
         )->setPaper('F4');
 
-        return $pdf->download('Laporan-Jurnal-Umum'.Carbon::now()->format('Y-m-d_His').'.pdf');
+        return $pdf->download('Laporan-Jurnal-Umum' . Carbon::now()->format('Y-m-d_His') . '.pdf');
     }
 }
