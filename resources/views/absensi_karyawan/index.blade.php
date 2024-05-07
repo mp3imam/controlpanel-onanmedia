@@ -23,15 +23,19 @@
                                 <label>Tanggal</label>
                                 <input type="text" class="form-control flatpickr-input active" id="cari_tanggal"
                                     name="tanggal" data-provider="flatpickr" data-date-format="d-m-Y" data-range-date="true"
-                                    readonly="readonly" value="{{ Carbon\Carbon::now()->format('d-m-Y') }}">
+                                    readonly="readonly"
+                                    value="{{ Carbon\Carbon::now()->startOfWeek()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
                             </h4>
                         </div>
-                        <div class="col-md-4">
-                            <h4 class="card-title mb-4">
-                                <label>User</label>
-                                <select id="cari_user" class="form-control"></select>
-                            </h4>
-                        </div>
+                        @role('administrator|hrd|direktur')
+                            <div class="col-md-4">
+                                <h4 class="card-title mb-4">
+                                    <label>User</label>
+                                    <select id="cari_user" class="form-control"></select>
+                                </h4>
+                            </div>
+                        @endrole
+
                         <div class="col-md-4">
                             <h4 class="card-title mb-4">
                                 <label>Status</label>

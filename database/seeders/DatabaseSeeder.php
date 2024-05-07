@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             JenisPembayaranClCoaSeeder::class,
             TransaksiKasBelanjaStatusSeeder::class,
             SatuanSeeder::class,
+            UserPanelKurangSeeder::class,
             // AdminBalasanTemplateSeeder::class,
             // PermissionMenuPembayaranJasaSeeder::class
         ]);

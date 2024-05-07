@@ -19,7 +19,6 @@ class PermissionTableSeeder extends Seeder
     public function run(): void
     {
         DB::beginTransaction();
-
         try {
 
             app()[PermissionRegistrar::class]->forgetCachedPermissions();
@@ -410,6 +409,56 @@ class PermissionTableSeeder extends Seeder
                     'cl_user_group_id' => 1,
                     'update_date' => '2023-11-14',
                     'update_by' => 'administrator'
+                ], [
+                    'id' => 12,
+                    'username' => 'Dandy',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Dandy',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 13,
+                    'username' => 'Imam',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Imam',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 14,
+                    'username' => 'Wahyu',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Wahyu',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 15,
+                    'username' => 'Anjani',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Anjani',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
+                ], [
+                    'id' => 16,
+                    'username' => 'Elfira',
+                    'password' => bcrypt('12345678'),
+                    'status' => 1,
+                    'nama_lengkap' => 'Elfira',
+                    'cl_perusahaan_id' => 1,
+                    'cl_user_group_id' => 1,
+                    'update_date' => '2023-11-14',
+                    'update_by' => 'administrator'
                 ]
             ];
 
@@ -423,7 +472,7 @@ class PermissionTableSeeder extends Seeder
             // create user Finance & roles
             $financeRole = Role::create($role[1]);
             $financeUser = User::create($users[1]);
-            $financeRole->givePermissionTo(['Dashboard', 'Finance', 'Rekening Bank', 'Transaksi Kas', 'Transaksi Belanja', 'Jurnal Umum']);
+            $financeRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Rekening Bank', 'Transaksi Kas', 'Transaksi Belanja', 'Jurnal Umum']);
             $financeUser->assignRole($financeRole);
             // end
 
@@ -437,14 +486,14 @@ class PermissionTableSeeder extends Seeder
             // create user Costumer Service & roles
             $csRole = Role::create($role[3]);
             $csUser = User::create($users[3]);
-            $csRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $csRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja']);
             $csUser->assignRole($csRole);
             // end
 
             // create user Helper
             $helperRole = Role::create($role[4]);
             $helperUser = User::create($users[4]);
-            $helperRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja', 'Help Desk', 'Dashboard Helpdesk', 'List Helpdest']);
+            $helperRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja', 'Help Desk', 'Dashboard Helpdesk', 'List Helpdest']);
             $helperUser->assignRole($helperRole);
             // end
 
@@ -458,36 +507,61 @@ class PermissionTableSeeder extends Seeder
             // create user UI / UX
             $uiUserRole = Role::create($role[6]);
             $uiUserUser = User::create($users[6]);
-            $uiUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $uiUserRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja']);
             $uiUserUser->assignRole($uiUserRole);
             // end
 
             // create user Creative
             $creativeUserRole = Role::create($role[7]);
             $creativeUserUser = User::create($users[7]);
-            $creativeUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $creativeUserRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja']);
             $creativeUserUser->assignRole($creativeUserRole);
             // end
 
             // create user Networking
             $networkUserRole = Role::create($role[8]);
             $networkUserUser = User::create($users[8]);
-            $networkUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $networkUserRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja']);
             $networkUserUser->assignRole($networkUserRole);
             // end
 
             // create user Mobile
             $mobileUserRole = Role::create($role[9]);
             $mobileUserUser = User::create($users[9]);
-            $mobileUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $mobileUserRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja']);
             $mobileUserUser->assignRole($mobileUserRole);
             // end
 
             // create user Web Developer
             $webDevUserRole = Role::create($role[10]);
             $webDevUserUser = User::create($users[10]);
-            $webDevUserRole->givePermissionTo(['Dashboard', 'Finance', 'Transaksi Belanja']);
+            $webDevUserRole->givePermissionTo(['Dashboard', 'Finance', 'HRD', 'Data Absensi', 'Transaksi Belanja']);
             $webDevUserUser->assignRole($webDevUserRole);
+            // end
+
+            // create user Web Developer
+            $webDevUserUser = User::create($users[11]);
+            $webDevUserUser->assignRole($webDevUserRole);
+            // end
+
+            // create user Web Developer
+            $webDevUserUser = User::create($users[12]);
+            $webDevUserUser->assignRole($webDevUserRole);
+            // end
+
+            // create user Web Developer
+            $webDevUserUser = User::create($users[13]);
+            $webDevUserUser->assignRole($webDevUserRole);
+            // end
+
+            // create user Web Developer
+            $creativeUserUser = User::create($users[14]);
+            $creativeUserUser->assignRole($creativeUserRole);
+            // end
+
+            // create user Web Developer
+            $uiUserUser = User::create($users[15]);
+            $uiUserUser->assignRole($uiUserRole);
             // end
 
             DB::commit();

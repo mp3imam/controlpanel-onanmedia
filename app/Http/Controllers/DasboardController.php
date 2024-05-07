@@ -57,6 +57,14 @@ class DasboardController extends Controller
 
     public function absen(Request $request)
     {
+        // Jika absen masuk sudah ada
+        if (
+            AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->whereJenisAbsen('Masuk')->whereDate('created_at', date('Y-m-d'))->exists()
+            && Carbon::now()->format('H:i:s') < '01:00:00 pm'
+            // || AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->whereStatus('Izin')->whereDate('created_at', date('Y-m-d'))->exists()
+        )
+            return redirect('/');
+
         $img = $request->image;
         $folderPath = "public/";
 
@@ -68,7 +76,7 @@ class DasboardController extends Controller
         Storage::put($file, $image_base64);
         $jenis_absen = "Masuk";
         $status = "Hadir";
-        if (Carbon::now()->format('H:i:s') > '08:15:00 am') $status = "Telat";
+        if (Carbon::now()->format('H:i:s') > '08:16:00 am') $status = "Telat";
 
         if (AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->whereDate('created_at', date('Y-m-d'))->exists()) {
             $jenis_absen = "Pulang";
@@ -77,13 +85,24 @@ class DasboardController extends Controller
         }
         if ($request->status) $status = $request->status;
 
-        AbsenKaryawanOnanmediaModel::create([
-            'user_id'       => auth()->user()->id,
-            'jenis_absen'   => $jenis_absen,
-            'status'        => $status,
-            'keterangan'    => $request->keterangan ?? null,
-            'foto'          => asset('/storage' . '/' . $fileName)
-        ]);
+        // jika absen pulang sudah ada akan replace data absen pulang
+        if (AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->whereJenisAbsen('Pulang')->whereDate('created_at', date('Y-m-d'))->exists()) {
+            AbsenKaryawanOnanmediaModel::where('user_id', auth()->user()->id)->whereJenisAbsen('Pulang')->whereDate('created_at', date('Y-m-d'))->update([
+                'jenis_absen'   => $jenis_absen,
+                'status'        => $status,
+                'foto'          => asset('/storage' . '/' . $fileName),
+                'keterangan'    => $request->keterangan ?? null,
+
+            ]);
+        } else {
+            AbsenKaryawanOnanmediaModel::create([
+                'user_id'       => auth()->user()->id,
+                'jenis_absen'   => $jenis_absen,
+                'status'        => $status,
+                'keterangan'    => $request->keterangan ?? null,
+                'foto'          => asset('/storage' . '/' . $fileName)
+            ]);
+        }
 
         if ($request->ajax()) {
             return response()->json(['success' => 'Data Berhasil']);

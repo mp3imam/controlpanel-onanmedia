@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\AbsenKaryawanOnanmediaModel;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class HrdAbsensiController extends Controller
@@ -30,6 +30,10 @@ class HrdAbsensiController extends Controller
     {
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
+
+        if ($user = User::whereId(auth()->user()->id)->first()) {
+            return view('absensi_karyawan.index', $title, compact('user'));
+        }
 
         return view('absensi_karyawan.index', $title);
     }
@@ -59,6 +63,9 @@ class HrdAbsensiController extends Controller
     public function models($request)
     {
         return AbsenKaryawanOnanmediaModel::with(['user'])
+            ->when(auth()->user()->roles[0]->name == 'administrator' || auth()->user()->roles[0]->name !== 'hrd' || auth()->user()->roles[0]->name !== 'direktur', function ($q) {
+                $q->whereUserId(auth()->user()->id);
+            })
             ->when($request->cari_user, function ($q) use ($request) {
                 $q->where('user_id', $request->cari_user);
             })
@@ -109,12 +116,26 @@ class HrdAbsensiController extends Controller
     public function pdf(Request $request)
     {
         $datas = $this->models($request);
+        $telat =
+            AbsenKaryawanOnanmediaModel::when($request->cari_tanggal, function ($q) use ($request) {
+                $tanggal = explode(" to ", $request->cari_tanggal);
+                $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
+                    $q->whereDate('created_at', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'));
+                });
+                $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
+                    $q->whereDate('created_at', '>=', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::createFromFormat('d-m-Y', $tanggal[1])->addDays(1)->format('Y-m-d'));
+                });
+            })
+            ->groupBy('user_id')
+            ->get(['user_id', DB::raw('count(user_id) as telat')]);
+
         $pdf = Pdf::loadview(
             'absensi_karyawan.pdf',
             [
                 'name'  => 'Data Absensi Karyawan',
                 'periode' => $request->cari_tanggal,
-                'datas' => $datas
+                'datas' => $datas,
+                'telat' => $telat
             ]
         )->setPaper('F4');
 
