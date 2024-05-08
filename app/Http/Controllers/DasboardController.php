@@ -92,7 +92,7 @@ class DasboardController extends Controller
                 'status'        => $status,
                 'foto'          => asset('/storage' . '/' . $fileName),
                 'keterangan'    => $request->keterangan ?? null,
-
+                'created_at'    => Carbon::now()
             ]);
         } else {
             AbsenKaryawanOnanmediaModel::create([
