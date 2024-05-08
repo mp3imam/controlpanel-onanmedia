@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AbsenKaryawanOnanmediaModel;
+use App\Models\DataKaryawanModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
@@ -23,12 +24,17 @@ class DasboardController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $hadir = AbsenKaryawanOnanmediaModel::whereStatus('Hadir')->whereDate('created_at', date('Y-m-d'))->get();
-        // $belum_hadir = AbsenKaryawanOnanmediaModel::where()
+        $kehadiran = AbsenKaryawanOnanmediaModel::where('jenis_absen', 'Masuk')->whereDate('created_at', date('Y-m-d'))->where(function ($q) {
+            $q->whereStatus('Hadir')
+                ->orWhere('status', 'Telat');
+        })->get()->pluck('user_id');
+        $hadir = AbsenKaryawanOnanmediaModel::where('jenis_absen', 'Masuk')->whereStatus('Hadir')->whereDate('created_at', date('Y-m-d'))->get()->pluck('user_id');
+        $data_karyawan = DataKaryawanModel::whereStatus(1)->whereNotIn('id', [1, 6])->get()->pluck('id');
+        $belum = $data_karyawan->diff($kehadiran);
         $telat = AbsenKaryawanOnanmediaModel::whereStatus('Telat')->whereDate('created_at', date('Y-m-d'))->get();
         $izin = AbsenKaryawanOnanmediaModel::whereStatus('Izin')->whereDate('created_at', date('Y-m-d'))->get();
 
-        return view('dasboard.index', $title, compact(['telat', 'izin', 'hadir']));
+        return view('dasboard.index', $title, compact(['telat', 'izin', 'hadir', 'belum', 'data_karyawan', 'kehadiran']));
     }
 
     public function create(Request $request)
@@ -50,9 +56,39 @@ class DasboardController extends Controller
             ->make(true);
     }
 
+    public function belum(Request $request)
+    {
+        $kehadiran = AbsenKaryawanOnanmediaModel::where('jenis_absen', 'Masuk')->whereDate('created_at', date('Y-m-d'))->where(function ($q) {
+            $q->whereStatus('Hadir')
+                ->orWhere('status', 'Telat');
+        })->get()->pluck('user_id');
+        $data_karyawan = DataKaryawanModel::whereStatus(1)->whereNotIn('id', [1, 6])->get();
+
+        return
+            DataTables::of(
+                $data_karyawan->diff($kehadiran)
+            )
+            ->addColumn('namaUser', function ($row) {
+                return $row->user->nama_lengkap;
+            })
+            ->addColumn('tanggal', function ($row) {
+                return Carbon::parse($row->created_at)->format('d-m-Y');
+            })
+            ->addColumn('waktu', function ($row) {
+                return Carbon::parse($row->created_at)->format('H:i:s');
+            })
+            ->rawColumns(['namaUser', 'tanggal', 'waktu'])
+            ->make(true);
+    }
+
+
     public function models($request)
     {
-        return AbsenKaryawanOnanmediaModel::with('user')->whereDate('created_at', date('Y-m-d'))->get();
+        return AbsenKaryawanOnanmediaModel::with('user')
+            ->whereDate('created_at', date('Y-m-d'))
+            ->when($request->hari_ini && $request->hari_ini != 'belum', function ($q) use ($request) {
+                return $q->whereStatus($request->hari_ini);
+            })->get();
     }
 
     public function absen(Request $request)

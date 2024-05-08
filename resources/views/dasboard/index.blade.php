@@ -34,7 +34,7 @@
                         <div class="col-md-8">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3 card-animate">
+                                    <div class="card py-3 card-animate" onclick="modal_hari_ini('Hadir')">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
@@ -50,7 +50,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3 card-animate">
+                                    <div class="card py-3 card-animate" onclick="modal_hari_ini('Belum')">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
@@ -58,7 +58,7 @@
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title fs-36 fw-bold">-</h5>
+                                                    <h5 class="card-title fs-36 fw-bold">{{ $belum->count() }}</h5>
                                                     <p class="text-muted mb-0 fs-20">Belum Hadir</p>
                                                 </div>
                                             </div>
@@ -66,7 +66,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3 card-animate">
+                                    <div class="card py-3 card-animate" onclick="modal_hari_ini('Telat')">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3 card-animate">
+                                    <div class="card py-3 card-animate" onclick="modal_hari_ini('Izin')">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
@@ -103,6 +103,12 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-xl-12">
+                        <span class="fw-bold fs-20">
+                            Data Absensi Hari ini
+                        </span>
+                        <span class="fw-bold fs-20 float-end">
+                            Total Kehadiran : {{ $kehadiran->count() }} / {{ $data_karyawan->count() }} Karyawan
+                        </span>
                         <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0"
                             width="100%">
                             <thead>
@@ -123,8 +129,9 @@
                     </div><!-- end col -->
                 </div><!-- end row -->
             </div>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+            <div class="modal modal-xl fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog ">
                     <div class="modal-content" id="modal_content">
                     </div>
                 </div>
@@ -138,7 +145,7 @@
     <script language="JavaScript">
         $(function() {
             var table = $('#dataTable').DataTable({
-                dom: 'lrtip',
+                dom: 'rtip',
                 scrollY: "400px",
                 scrollX: true,
                 processing: true,
@@ -273,5 +280,80 @@
             });
 
         });
+
+        function modal_hari_ini(hari_ini) {
+            // Clear previous modal content
+            $('#modal_content').empty();
+
+            // Populate modal with new content
+            var modalBody = `
+                <div class="modal-body">
+                    <h2 class="mb-3 fw-bold">${hari_ini} Hari Ini</h2>
+                    <table id="dataTableHadir" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama </th>
+                                <th>Tanggal</th>
+                                <th>Waktu</th>
+                                <th>Status</th>
+                                <th>Jenis</th>
+                                <th>Keterangan</th>
+                                <th>Bukti Kehadiran</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            $('#modal_content').html(modalBody);
+
+            // Show the modal
+            $("#exampleModal").modal('show');
+
+            var table = $('#dataTableHadir').DataTable({
+                dom: 'rtip',
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('absen.list') }}",
+                    data: function(d) {
+                        d.hari_ini = hari_ini
+                    }
+                },
+                columns: [{
+                    data: "id",
+                    sortable: false,
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                }, {
+                    data: 'namaUser',
+                    name: 'User'
+                }, {
+                    data: 'tanggal',
+                    name: 'Tanggal'
+                }, {
+                    data: 'waktu',
+                    name: 'Waktu'
+                }, {
+                    data: 'status',
+                    name: 'Status'
+                }, {
+                    data: 'jenis_absen',
+                    name: 'Jenis'
+                }, {
+                    data: 'keterangan',
+                    name: 'Keterangan'
+                }, {
+                    data: 'foto',
+                    name: 'Bukti Kehadiran',
+                    render: function(data, type, row, meta) {
+                        return `<img src="${data}" width="300" height="200" />`;
+                    }
+                }]
+            });
+        }
     </script>
 @endsection
