@@ -34,64 +34,64 @@
                         <div class="col-md-8">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3">
+                                    <div class="card py-3 card-animate">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
-                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                    <img src="assets/images/logo/absen-hadir.png" alt=""
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">{{ $hadir->count() }}</h5>
-                                                    <p class="text-muted mb-0">Hadir hari ini</p>
+                                                    <h5 class="card-title fs-36 fw-bold">{{ $hadir->count() }}</h5>
+                                                    <p class="text-muted mb-0 fs-20">Hadir hari ini</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3">
+                                    <div class="card py-3 card-animate">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
-                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                    <img src="assets/images/logo/absen-tidak-hadir.png" alt=""
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">-</h5>
-                                                    <p class="text-muted mb-0">Belum Hadir</p>
+                                                    <h5 class="card-title fs-36 fw-bold">-</h5>
+                                                    <p class="text-muted mb-0 fs-20">Belum Hadir</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3">
+                                    <div class="card py-3 card-animate">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
-                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                    <img src="assets/images/logo/absen-telat.png" alt=""
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">{{ $telat->count() }}</h5>
-                                                    <p class="text-muted mb-0">Telat Hari ini</p>
+                                                    <h5 class="card-title fs-36 fw-bold">{{ $telat->count() }}</h5>
+                                                    <p class="text-muted mb-0 fs-20">Telat Hari ini</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3">
+                                    <div class="card py-3 card-animate">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
-                                                    <img src="assets/images/users/avatar-1.jpg" alt=""
+                                                    <img src="assets/images/logo/absen-izin.png" alt=""
                                                         class="avatar-md rounded-circle card-animate">
                                                 </div>
                                                 <div class="flex-grow-1 ms-2">
-                                                    <h5 class="card-title mb-1 fs-20 fw-bold">{{ $izin->count() }}</h5>
-                                                    <p class="text-muted mb-0">Izin hari ini</p>
+                                                    <h5 class="card-title fs-36 fw-bold">{{ $izin->count() }}</h5>
+                                                    <p class="text-muted mb-0 fs-20">Izin hari ini</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -113,6 +113,7 @@
                                     <th>Waktu</th>
                                     <th>Status</th>
                                     <th>Jenis</th>
+                                    <th>Keterangan</th>
                                     <th>Bukti Kehadiran</th>
                                 </tr>
                             </thead>
@@ -175,6 +176,9 @@
                 }, {
                     data: 'jenis_absen',
                     name: 'Jenis'
+                }, {
+                    data: 'keterangan',
+                    name: 'Keterangan'
                 }, {
                     data: 'foto',
                     name: 'Bukti Kehadiran',

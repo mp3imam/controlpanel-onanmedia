@@ -60,6 +60,7 @@
                                         <th>Waktu</th>
                                         <th>Status</th>
                                         <th>Jenis</th>
+                                        <th>Keterangan</th>
                                         <th>Bukti Kehadiran</th>
                                     </tr>
                                 </thead>
@@ -126,6 +127,9 @@
                 }, {
                     data: 'jenis_absen',
                     name: 'Jenis'
+                }, {
+                    data: 'keterangan',
+                    name: 'Keterangan'
                 }, {
                     data: 'foto',
                     name: 'Bukti Kehadiran',

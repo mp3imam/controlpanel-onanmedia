@@ -33,26 +33,58 @@
         </table>
     </div>
     @if (!$datas->isEmpty())
-        <table class='table' border="0" width="100%" style="margin-bottom: 50px;">
+        <table class='table mb-3' border="0" width="100%" style="margin-bottom: 50px;">
             <thead>
                 <tr>
+                    <th>No</th>
                     <th>Nama</th>
                     <th>Tanggal</th>
                     <th>Waktu</th>
                     <th>Status</th>
                     <th>Jenis</th>
-                    <th>keterangan</th>
+                    <th>Foto</th>
+                    <th>Keterangan</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($datas as $data => $d)
                     <tr>
-                        <td width="20%">{{ $d->user->nama_lengkap }}</td>
+                        <td width="5%">{{ $loop->iteration }}</td>
+                        <td width="10%">{{ $d->user->nama_lengkap }}</td>
                         <td width="15%">{{ Carbon\Carbon::parse($d->created_at)->format('d-m-Y') }}</td>
                         <td width="15%">{{ Carbon\Carbon::parse($d->created_at)->format('H:i:s') }}</td>
                         <td width="10%">{{ $d->status }}</td>
                         <td width="10%">{{ $d->jenis_absen }}</td>
+                        <td width="10%">
+                            <img src="{{ public_path('storage/' . str_replace(asset('storage/'), '', $d->foto)) }}"
+                                width="50px" height="50px" alt="Gambar">
+                        </td>
                         <td width="10%">{{ $d->keterangan ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <div center><label class="align-center h3">Data Kosong</label></div>
+    @endif
+    <hr>
+    <h6>Karyawan Telat</h6>
+
+    @if (!$telat->isEmpty())
+        <table class='table' border="0" width="100%" style="margin-bottom: 50px;">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($telat as $tlt => $t)
+                    <tr>
+                        <td width="20%">{{ $loop->iteration }}</td>
+                        <td width="20%">{{ $t->user->nama_lengkap }}</td>
+                        <td width="10%">{{ $t->telat }}</td>
                     </tr>
                 @endforeach
             </tbody>
