@@ -14,7 +14,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class DaftarProductJasaController extends Controller
 {
-    private $title = 'Data Users';
+    private $title = 'Daftar Product Jasa';
     private $li_1 = 'Index';
 
     /**
@@ -194,7 +194,16 @@ class DaftarProductJasaController extends Controller
     {
         return JasaModel::with('productDoc', 'user', 'status')
             ->when($request->cari, function ($q) use ($request) {
-                $q->where('Jasa.nama', 'ilike', '%' . $request->cari . '%');
+                $q->where('Jasa.nama', 'ilike', '%' . $request->cari . '%')
+                    ->orWhereHas('user', function ($q) use ($request) {
+                        $q->where('name', 'ilike', '%' . $request->cari . '%');
+                    })
+                    ->orWhereHas('status', function ($q) use ($request) {
+                        $q->where('nama', 'ilike', '%' . $request->cari . '%');
+                    });
+            })
+            ->when($request->status != '-', function ($q) use ($request) {
+                $q->where('Jasa.msStatusJasaId', $request->status);
             })
             ->get();
 
