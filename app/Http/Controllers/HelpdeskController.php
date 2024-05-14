@@ -114,7 +114,7 @@ class HelpdeskController extends Controller
             $helpdeskDetail->pesan      = $request->balasan ?? '';
             $helpdeskDetail->role       = "ADMIN";
             $helpdeskDetail->helpdeskStatusId = 2;
-            $helpdeskDetail->createdAt = Carbon::now();
+            // $helpdeskDetail->createdAt = Carbon::now();
             $helpdeskDetail->save();
 
             if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
@@ -293,7 +293,7 @@ class HelpdeskController extends Controller
 
         TemporaryFileUploadHelpdesk::create([
             'folder' => 'jurnal_umum',
-            'url' => asset("Helpdesk/$imageName" . date('Y') . "/" . date('m') . "/" . date('d')),
+            'url' => asset("Helpdesk/" . date('Y') . "/" . date('m') . "/" . date('d')) . "/" . $imageName,
             'filename' => $imageName,
             'token' => $request->random_text
         ]);
