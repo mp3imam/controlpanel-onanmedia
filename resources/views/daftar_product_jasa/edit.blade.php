@@ -196,13 +196,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel"
                 aria-modal="true" role="dialog" style="display: none;">
                 <div class="modal-dialog modal-xl" id="modal_content">
                 </div>
             </div>
-
             <!-- end col -->
         </div>
         <!-- end col -->

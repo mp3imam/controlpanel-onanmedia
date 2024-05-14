@@ -9,7 +9,7 @@ class HelpdeskFileModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
-    protected $table = 'HelpDeskChatFileContent';
+    protected $table = 'HelpDeskChatFile';
     protected $guarded = ['id'];
     public $incrementing = false;
     protected $keyType = 'string';
@@ -18,5 +18,4 @@ class HelpdeskFileModel extends Model
     {
         return $this->belongsTo(HelpdeskModel::class, 'id');
     }
-
 }
