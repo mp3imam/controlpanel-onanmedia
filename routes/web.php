@@ -47,6 +47,7 @@ Route::get('/', [HomeController::class, 'root'])->name('root');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');
+    Route::get('hari_ini', [DasboardController::class, 'hari_ini'])->name('hari_ini');
     Route::get('absen', [DasboardController::class, 'create'])->name('absen.list');
     Route::post('upload-file', [DasboardController::class, 'upload_file'])->name('upload.file');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
@@ -128,7 +129,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('data_absensi', HrdAbsensiController::class);
     Route::post('data_absensi_pdf', [HrdAbsensiController::class, 'pdf'])->name('data.absensi.pdf');
 
-
     Route::get('getDataTableKaryawan', [HrdController::class, 'get_datatable'])->name('getDataTableKaryawan');
 
     // Master Data
@@ -144,6 +144,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('helpdesk-upload-image', [HelpdeskController::class, 'uploadImage'])->name('helpdesk.upload.image');
     Route::post('aktifkan-seller-chat', [HelpdeskController::class, 'aktifkan_seller_chat'])->name('aktifkan.seller.chat');
     Route::post('selesaikan-keluhan', [HelpdeskController::class, 'selesaikan_keluhan'])->name('selesaikan.keluhan');
+    Route::get('template_balasan_helpdesk', [HelpdeskController::class, 'template_balasan'])->name('template.balasan.helpdesk');
 
     // Pengaturan
     Route::resource('users', UserController::class);

@@ -124,19 +124,11 @@
                     </div><!-- end card -->
                     @if ($detail->helpdeskStatusId !== 4)
                         <div class="card-fotter">
-                            @foreach ($adminBalasan as $balasan => $b)
-                                <div onclick="copy_balasan(`{{ $b->isi }}`)"
-                                    class="alert alert-dismissible show alert-aktif rounded-5"
-                                    style="color:#4E36E2; border-color:#4E36E2" role="alert">
-                                    {{ $b->isi }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endforeach
+                            <div id="template"></div>
                             <div class="row mt-2">
                                 <div class="col-md-8 my-2">
                                     <strong class="fs-18">Berikan balasan <span class="cursor-pointer text-success"
-                                            onclick="window.location.reload();">template</span></strong>
+                                            onclick="template_balasan()">template</span></strong>
                                 </div>
                                 <div class="col-md-4">
                                     <strong class="fs-18">Lampirkan file</strong>
@@ -152,7 +144,7 @@
                                             <form action="{{ route('helpdesk.upload.image') }}"
                                                 enctype="multipart/form-data" class="dropzone dz-clickable"
                                                 style="width: 100%; height: 100px; min-height: 0px !important;"
-                                                id="image-upload" method="post" id="gambar-dropzone">
+                                                id="image-upload" method="post">
                                                 @csrf
                                                 <input id="random_text" name="random_text" value="{{ Str::random(25) }}"
                                                     hidden />
@@ -164,6 +156,9 @@
                                             </form>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <div id="preview-container" class="dz-preview dz-file-preview"></div>
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     <button id="simpan" class="btn btn-success text-white rounded-5 me-3"
@@ -188,17 +183,11 @@
                                             class="btn btn-success btn-border rounded-5 me-3">
                                             <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Penjual
                                         </a>
-                                        {{-- <a type="button" target="_blank"
-                                            href="https://api.whatsapp.com/send/?phone={{ $detail->order->pembeli->phone }}&text=Hallo Bpk/Ibu {{ $detail->order->penjual->name }}. Kami dari OnanMedia, ada keluhan tentang penjualan anda. Silahkan buka Onanmedia.com untuk informasi lebih lanjut atau bisa wa langsung disini. Terima kasih&type=phone_number&app_absent=0"
-                                            class="btn btn-warning btn-border rounded-5 me-3">
-                                            <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Pembeli
-                                        </a> --}}
                                     @endif
                                     <button id="done_button"
                                         onclick="button_selesai(`{{ $detail->id }}`,`{{ $detail->order->nomor }}`)"
                                         class="btn btn-danger text-white rounded-5 me-3">
-                                        <i class="ri-pushpin-fill label-icon align-middle fs-16 me-2"></i>
-                                        Selesai
+                                        <i class="ri-pushpin-fill label-icon align-middle fs-16 me-2"></i> Selesai
                                     </button>
                                 </div>
                             </div>
@@ -208,6 +197,19 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .dz-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .dz-image img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
 @endsection
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -215,6 +217,43 @@
         integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+        Dropzone.options.imageUpload = {
+            paramName: 'file',
+            previewsContainer: '#preview-container',
+            previewTemplate: `
+                <div class="dz-preview dz-file-preview">
+                    <div class="dz-image">
+                        <img data-dz-thumbnail />
+                        <div class="dz-details">
+                            <div class="dz-filename"><span data-dz-name></span></div>
+                            <div class="dz-size" data-dz-size></div>
+                            <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                            <div class="dz-remove"><a href="javascript:undefined;" data-dz-remove>Remove</a></div>
+                        </div>
+                        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                    </div>
+                </div>
+            `
+        };
+
+        function template_balasan() {
+            $.ajax({
+                type: "get",
+                url: "{{ route('template.balasan.helpdesk') }}",
+                success: function(response) {
+                    $('.template_balasan').remove()
+                    response.data.forEach(element => {
+                        $('#template').append(`
+                        <div onclick = "copy_balasan('${element.isi}')" class = "alert alert-dismissible show alert-aktif rounded-5 template_balasan" style = "color:#4E36E2; border-color:#4E36E2" role = "alert" >
+                    ${element.isi}
+                            <button type = "button" class = "btn-close" data - bs - dismiss = "alert" aria - label = "Close"></button>
+                        </div>
+                        `);
+                    });
+                }
+            });
+        }
+
         $(document).ready(function() {
             $('#simpan').click(function() {
                 var data = new FormData();

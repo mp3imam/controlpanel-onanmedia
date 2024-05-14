@@ -168,10 +168,17 @@ class HelpdeskController extends Controller
 
         $detail = HelpdeskModel::with(['user_public', 'detail.file_details', 'detail.userPublic', 'file', 'jasas', 'order.orderJasa', 'order.penjual', 'order.pembeli'])
             ->findOrFail($id);
-        $adminBalasan = AdminBalasanTemplateModel::where('isAktif', 1)->get();
-
-        return view('helpdesk.detail', $title, compact(['detail', 'adminBalasan']));
+        return view('helpdesk.detail', $title, compact(['detail']));
     }
+
+    public function template_balasan()
+    {
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => AdminBalasanTemplateModel::where('isAktif', 1)->get()->all()
+        ]);
+    }
+
 
     /**
      * Update the specified resource in storage.
