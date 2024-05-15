@@ -206,13 +206,6 @@ class DaftarProductJasaController extends Controller
                 $q->where('Jasa.msStatusJasaId', $request->status);
             })
             ->get();
-
-        // ->select('Jasa.*', 'User.name as UserPosting', 'MsKategori.nama as kategori', 'MsSubkategori.nama as subkategori', 'MsStatusJasa.nama as statusjasa', DB::raw('to_char("Jasa"."createdAt", \'DD-MM-YYYY\') AS tanggal_posting'))
-        // ->leftJoin('User', 'User.id', '=', 'Jasa.userId')
-        // ->leftJoin('MsKategori', 'MsKategori.id', '=', 'Jasa.msKategoriId')
-        // ->leftJoin('MsSubkategori', 'MsSubkategori.id', '=', 'Jasa.msSubkategoriId')
-        // ->leftJoin('MsStatusJasa', 'MsStatusJasa.id', '=', 'Jasa.msStatusJasaId')
-
     }
 
     function verifikasi_jasa(Request $request)

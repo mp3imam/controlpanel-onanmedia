@@ -6,6 +6,7 @@ use App\Helpers\IdStringRandom;
 use App\Mail\KeluhanMail;
 use App\Models\AdminBalasanTemplateModel;
 use App\Models\HelpdeskDetailModel;
+use App\Models\HelpdeskFileDetailModel;
 use App\Models\HelpdeskFileModel;
 use App\Models\HelpdeskModel;
 use App\Models\TemporaryFileUploadHelpdesk;
@@ -114,12 +115,11 @@ class HelpdeskController extends Controller
             $helpdeskDetail->pesan      = $request->balasan ?? '';
             $helpdeskDetail->role       = "ADMIN";
             $helpdeskDetail->helpdeskStatusId = 2;
-            // $helpdeskDetail->createdAt = Carbon::now();
             $helpdeskDetail->save();
 
             if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
                 foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
-                    HelpdeskFileModel::insert([
+                    HelpdeskFileDetailModel::insert([
                         'id'             => IdStringRandom::stringRandom(),
                         'helpDeskId'     => $request->helpdesk_id,
                         'helpdeskChatId' => $helpdeskDetail->id,
