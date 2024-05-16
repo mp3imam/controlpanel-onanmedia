@@ -119,7 +119,6 @@ class HelpdeskController extends Controller
 
             if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->whereStatus(0)->exists())
                 foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->whereStatus(0)->get() as $gambar) {
-                    // dd(TemporaryFileUploadHelpdesk::whereToken($request->random_text)->whereStatus(0)->get());
                     HelpdeskFileDetailModel::insert([
                         'id'             => IdStringRandom::stringRandom(),
                         'helpDeskId'     => $request->helpdesk_id,

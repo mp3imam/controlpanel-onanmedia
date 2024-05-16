@@ -277,9 +277,7 @@
                                 <span class="badge rounded-pill px-4 py-1" style="background-color: #4E36E2">ADMIN</span>
                             </div>
                             <div class="col-md-3 text-end text-muted mt-2">
-                                <label class="mt-2 fs-16">
-                                    {{ Carbon\Carbon::now()->isoFormat('dddd, D MMMM - HH:mm:ss a') }}
-                                </label>
+                                <label class="mt-2 fs-16">${new Date().toLocaleString()}</label>
                             </div>
                         </div>
                         <div class="row mt-4">
