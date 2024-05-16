@@ -6,8 +6,8 @@ use App\Models\AbsenKaryawanOnanmediaModel;
 use App\Models\DataKaryawanModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use DataTables;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\DataTables;
 
 class DasboardController extends Controller
 {
@@ -56,28 +56,16 @@ class DasboardController extends Controller
             ->make(true);
     }
 
-    public function belum(Request $request)
+    public function belum_ini(Request $request)
     {
-        $kehadiran = AbsenKaryawanOnanmediaModel::where('jenis_absen', 'Masuk')->whereDate('created_at', date('Y-m-d'))->where(function ($q) {
-            $q->whereStatus('Hadir')
-                ->orWhere('status', 'Telat');
-        })->get()->pluck('user_id');
-        $data_karyawan = DataKaryawanModel::whereStatus(1)->whereNotIn('id', [1, 6])->get();
-
         return
             DataTables::of(
-                $data_karyawan->diff($kehadiran)
+                DataKaryawanModel::whereStatus(1)->whereIn('id', explode(',', $request['data']))->whereNotIn('id', [1, 6])->get()
             )
             ->addColumn('namaUser', function ($row) {
                 return $row->user->nama_lengkap;
             })
-            ->addColumn('tanggal', function ($row) {
-                return Carbon::parse($row->created_at)->format('d-m-Y');
-            })
-            ->addColumn('waktu', function ($row) {
-                return Carbon::parse($row->created_at)->format('H:i:s');
-            })
-            ->rawColumns(['namaUser', 'tanggal', 'waktu'])
+            ->rawColumns(['namaUser'])
             ->make(true);
     }
 

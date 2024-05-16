@@ -50,7 +50,8 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <div class="card py-3 card-animate" onclick="modal_hari_ini('Belum')">
+                                    <div class="card py-3 card-animate"
+                                        onclick="belum('{{ implode(',', $belum->toArray()) }}')">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 m-2">
@@ -352,6 +353,54 @@
                     render: function(data, type, row, meta) {
                         return `<img src="${data}" width="300" height="200" />`;
                     }
+                }]
+            });
+        }
+
+        function belum(hari_ini) {
+            // Clear previous modal content
+            $('#modal_content').empty();
+
+            // Populate modal with new content
+            var modalBody = `
+                <div class="modal-body">
+                    <h2 class="mb-3 fw-bold">Belum Hadir Hari Ini</h2>
+                    <table id="dataTableHadir" class="table table-striped table-bordered table-sm no-wrap" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            $('#modal_content').html(modalBody);
+
+            // Show the modal
+            $("#exampleModal").modal('show');
+
+            var table = $('#dataTableHadir').DataTable({
+                dom: 'rtip',
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('belum_ini') }}",
+                    data: function(d) {
+                        d.data = hari_ini
+                    }
+                },
+                columns: [{
+                    data: "id",
+                    sortable: false,
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                }, {
+                    data: 'namaUser',
+                    name: 'User'
                 }]
             });
         }

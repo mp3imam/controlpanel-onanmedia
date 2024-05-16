@@ -47,7 +47,7 @@ Route::get('/', [HomeController::class, 'root'])->name('root');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('dashboard', [DasboardController::class, 'index'])->name('dashboard');
-    Route::get('hari_ini', [DasboardController::class, 'hari_ini'])->name('hari_ini');
+    Route::get('belum_ini', [DasboardController::class, 'belum_ini'])->name('belum_ini');
     Route::get('absen', [DasboardController::class, 'create'])->name('absen.list');
     Route::post('upload-file', [DasboardController::class, 'upload_file'])->name('upload.file');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
