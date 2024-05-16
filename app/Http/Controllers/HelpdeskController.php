@@ -117,8 +117,9 @@ class HelpdeskController extends Controller
             $helpdeskDetail->helpdeskStatusId = 2;
             $helpdeskDetail->save();
 
-            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->exists())
-                foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->get() as $gambar) {
+            if (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->whereStatus(0)->exists())
+                foreach (TemporaryFileUploadHelpdesk::whereToken($request->random_text)->whereStatus(0)->get() as $gambar) {
+                    // dd(TemporaryFileUploadHelpdesk::whereToken($request->random_text)->whereStatus(0)->get());
                     HelpdeskFileDetailModel::insert([
                         'id'             => IdStringRandom::stringRandom(),
                         'helpDeskId'     => $request->helpdesk_id,
@@ -127,6 +128,7 @@ class HelpdeskController extends Controller
                         'url'            => $gambar->url,
                     ]);
                 }
+            TemporaryFileUploadHelpdesk::whereStatus(0)->update(['status' => 1]);
 
             DB::commit();
         } catch (\Exception $e) {

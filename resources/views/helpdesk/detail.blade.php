@@ -146,8 +146,7 @@
                                                 style="width: 100%; height: 100px; min-height: 0px !important;"
                                                 id="image-upload" method="post">
                                                 @csrf
-                                                <input id="random_text" name="random_text" value="{{ Str::random(25) }}"
-                                                    hidden />
+                                                <input id="random_text" name="random_text" value="{{ Str::random(25) }}" />
                                                 <div class="dz-default dz-message"
                                                     style="margin:0px !important; font-size: 20px">
                                                     <div>Drag & drop a photo or</div>
@@ -287,13 +286,13 @@
                                 <div class="fs-18"><strong>Pesan</strong></div>
                                 <div class="fs-14 mt-1">${result.message.pesan}</div>
                             </div>
-                            <div class="col-md-12 my-4 append_image">
+                            <div class="col-md-12 my-4 append_image${result.message.id}">
                             </div>
                         </div>
                     `)
 
                         result.message.file_details.forEach(element => {
-                            $('.append_image').append(
+                            $('.append_image' + result.message.id).append(
                                 `<a class="mx-2" href="${element.url}" target="_blank">${element.fileName}</a>`
                             )
                         });
@@ -305,8 +304,9 @@
                     $("html, body").animate({
                         scrollTop: $(document).height() - $(window).height()
                     });
-                    $('.dz-default').remove();
-                    $('.dz-preview').remove();
+                    $('#preview-container').html('');
+                    $('#random_text').val(Array(26).join().replace(/./g, () => (Math.random() * 36 |
+                        0).toString(36)));
                 })
             })
 
