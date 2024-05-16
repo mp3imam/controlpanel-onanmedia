@@ -146,7 +146,8 @@
                                                 style="width: 100%; height: 100px; min-height: 0px !important;"
                                                 id="image-upload" method="post">
                                                 @csrf
-                                                <input id="random_text" name="random_text" value="{{ Str::random(25) }}" />
+                                                <input id="random_text" name="random_text" value="{{ Str::random(25) }}"
+                                                    hidden />
                                                 <div class="dz-default dz-message"
                                                     style="margin:0px !important; font-size: 20px">
                                                     <div>Drag & drop a photo or</div>
