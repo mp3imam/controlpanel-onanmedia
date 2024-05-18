@@ -40,7 +40,7 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
         $user = Auth::user();
-        $finance = $user->hasRole('finance');
+        $finance = $user->hasRole(['finance', 'administrator', 'direktur']);
 
         $all = count(MasterKasBelanja::when(!$finance, function ($q) use ($user) {
             $q->whereUserId($user->id);
@@ -153,6 +153,7 @@ class MasterKasBelanjaController extends Controller
             foreach ($request->nama_item as $item => $i) {
                 $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
                 $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
+                $pengiriman = str_replace(".", "", str_replace("Rp. ", "", $request->pengiriman[$item]));
 
                 $data = [
                     'kas_id'     => $kasBelanja->id,
@@ -162,6 +163,7 @@ class MasterKasBelanjaController extends Controller
                     'harga'      => $harga,
                     'jumlah'     => $jumlah,
                     'keterangan' => $request->keterangan[$item] ?? '',
+                    'biaya_pengiriman' => $pengiriman,
                     'nominal'    => $request->nominal,
                     'status'     => 1,
                 ];
@@ -354,131 +356,127 @@ class MasterKasBelanjaController extends Controller
 
     function checked_pending_finance(Request $request)
     {
-        // DB::beginTransaction();
-        // try {
-        $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
+        DB::beginTransaction();
+        try {
+            $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
 
-        $tahun = Carbon::now()->format('Y');
-        $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
-        $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
-        $request['nomor_transaksi'] = $nomor . '/TRAN/BLJ/' . $tahun;
-        $request['nominal'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
-        $request['nominal_approve'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
-        $request['status'] = 2;
-        $request['checked'] = 1;
-        $request['keterangan_kas'] = $kasBelanja->keterangan_kas . " - " . $kasBelanja->nomor_transaksi;
-        $request['user_id'] = $kasBelanja->user_id;
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterKasBelanja::withTrashed()->latest()->whereYear('created_at', '=', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
+            $request['nomor_transaksi'] = $nomor . '/TRAN/BLJ/' . $tahun;
+            $request['nominal'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
+            $request['nominal_approve'] = str_replace(".", "", str_replace("Rp. ", "", $request->total_nilai));
+            $request['status'] = 2;
+            $request['checked'] = 1;
+            $request['keterangan_kas'] = $kasBelanja->keterangan_kas . " - " . $kasBelanja->nomor_transaksi;
+            $request['user_id'] = $kasBelanja->user_id;
 
-        // Store your file into directory and db
-        $kasBelanja = MasterKasBelanja::create($request->except('_token'));
+            // Store your file into directory and db
+            $kasBelanja = MasterKasBelanja::create($request->except('_token'));
 
-        foreach ($request->nama_item as $item => $i) {
-            if ($request->selectDetail[$item] !== 6) {
-                $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
-                $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
+            foreach ($request->nama_item as $item => $i) {
+                if ($request->selectDetail[$item] !== 6) {
+                    $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
+                    $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
 
-                $data = [
-                    'kas_id'     => $kasBelanja->id,
-                    'nama_item'  => $i,
-                    'qty'        => $request->qty[$item],
-                    'satuan_id'  => $request->satuan[$item],
-                    'harga'      => $harga,
-                    'jumlah'     => $jumlah,
-                    'keterangan' => $request->keterangan[$item] ?? '',
-                    'nominal'    => $request->nominal,
-                    'status'     => $request->selectDetail[$item],
-                    'account_id' => $request->akun[$item],
-                ];
-
-                $file = $kasBelanja->file;
-
-                if ($file != null) {
-                    $path = public_path('kas_belanja/');
-                    $rand = rand(1000, 9999);
-                    $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
-                    $file->move($path, $imageName);
-
-                    $data += [
-                        'file' => asset('kas_belanja/') . "/" . $imageName,
+                    $data = [
+                        'kas_id'     => $kasBelanja->id,
+                        'nama_item'  => $i,
+                        'qty'        => $request->qty[$item],
+                        'satuan_id'  => $request->satuan[$item],
+                        'harga'      => $harga,
+                        'jumlah'     => $jumlah,
+                        'keterangan' => $request->keterangan[$item] ?? '',
+                        'nominal'    => $request->nominal,
+                        'status'     => $request->selectDetail[$item],
+                        'account_id' => $request->akun[$item],
                     ];
-                }
 
-                dd($data, $request->selectDetail[$item]);
-                if ($request->selectDetail[$item] == 1) {
-                    MasterKasBelanjaDetail::create($data);
-                }
-                MasterKasBelanjaDetail::whereId($request->id_item[$item])->delete();
-            } else {
-                $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
-                dd($kasBelanja->nominal_pending);
+                    $file = $kasBelanja->file;
 
-                MasterKasBelanja::find($request->id_detail)->update([
-                    'nominal_pending' => $kasBelanja->nominal_pending - (int) str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]))
-                ]);
+                    if ($file != null) {
+                        $path = public_path('kas_belanja/');
+                        $rand = rand(1000, 9999);
+                        $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+                        $file->move($path, $imageName);
+
+                        $data += [
+                            'file' => asset('kas_belanja/') . "/" . $imageName,
+                        ];
+                    }
+
+                    dd($data, $request->selectDetail[$item]);
+                    if ($request->selectDetail[$item] == 1) {
+                        MasterKasBelanjaDetail::create($data);
+                    }
+                    MasterKasBelanjaDetail::whereId($request->id_item[$item])->delete();
+                } else {
+                    $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
+                    dd($kasBelanja->nominal_pending);
+
+                    MasterKasBelanja::find($request->id_detail)->update([
+                        'nominal_pending' => $kasBelanja->nominal_pending - (int) str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]))
+                    ]);
+                }
             }
-        }
 
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     //     //throw $th;
-        // }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
 
         return redirect('master_kas_belanja');
     }
 
     function checked_finance(Request $request)
     {
-        // dd($request->all());
-        // DB::beginTransaction();
-        // try {
-        $nominal_approve = collect();
-        $nominal_pending = collect();
-        $nominal_tolak = collect();
-        foreach ($request->id_item as $id => $i) {
-            // dd($request->akun[$id]);
-            MasterKasBelanjaDetail::find($i)->update([
-                'account_id' => $request->akun[$id],
-                'status'     => $request->selectDetail[$id],
-                'keterangan' => $request->keterangan[$id] ?? '-'
-            ]);
-            if ($request->selectDetail[$id] == 1)
-                $nominal_approve->push((int)str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$id])));
-            if ($request->selectDetail[$id] == 6)
-                $nominal_pending->push((int)str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$id])));
-            if ($request->selectDetail[$id] == 4)
-                $nominal_tolak->push((int)str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$id])));
-        }
+        DB::beginTransaction();
+        try {
+            $nominal_approve = collect();
+            $nominal_pending = collect();
+            $nominal_tolak = collect();
+            foreach ($request->id_item as $id => $i) {
+                MasterKasBelanjaDetail::find($i)->update([
+                    'account_id' => $request->akun[$id],
+                    'status'     => $request->selectDetail[$id],
+                    'keterangan' => $request->keterangan[$id] ?? '-'
+                ]);
+                if ($request->selectDetail[$id] == 1)
+                    $nominal_approve->push((int)str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$id])));
+                if ($request->selectDetail[$id] == 6)
+                    $nominal_pending->push((int)str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$id])));
+                if ($request->selectDetail[$id] == 4)
+                    $nominal_tolak->push((int)str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$id])));
+            }
 
-        // All Approve
-        $status = 1;
-        $checked = 0;
-
-        // Checked
-        if (in_array(1, $request->selectDetail)) {
-            $status = 2;
-            $checked = 1;
-        } else {
+            // All Approve
             $status = 1;
             $checked = 0;
+
+            // Checked
+            if (in_array(1, $request->selectDetail)) {
+                $status = 2;
+                $checked = 1;
+            } else {
+                $status = 1;
+                $checked = 0;
+            }
+
+            // Pending
+            // if(in_array(4, $request->selectDetail)) $status = 4;
+
+            MasterKasBelanja::find($request->id_detail)->update([
+                'status'  => $status,
+                'checked' => $checked,
+                'nominal_approve' => $nominal_approve->sum(),
+                'nominal_pending' => $nominal_pending->sum(),
+                'nominal_tolak' => $nominal_tolak->sum()
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
         }
-
-        // Pending
-        // if(in_array(4, $request->selectDetail)) $status = 4;
-
-        MasterKasBelanja::find($request->id_detail)->update([
-            'status'  => $status,
-            'checked' => $checked,
-            'nominal_approve' => $nominal_approve->sum(),
-            'nominal_pending' => $nominal_pending->sum(),
-            'nominal_tolak' => $nominal_tolak->sum()
-        ]);
-
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     //throw $th;
-        // }
 
         return redirect('master_kas_belanja');
     }
@@ -728,7 +726,7 @@ class MasterKasBelanjaController extends Controller
             ->when($request->q == MasterKasBelanja::STATUS_TOLAK, function ($q) {
                 $q->BelanjaTolak();
             })
-            ->when($user->roles[0]->name !== 'finance', function ($q) use ($user) {
+            ->when(!$user->hasRole(['finance', 'administrator', 'direktur']), function ($q) use ($user) {
                 $q->whereUserId($user->id);
             })
             ->when($request->sumber, function ($q) use ($request) {

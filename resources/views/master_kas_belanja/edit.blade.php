@@ -193,6 +193,7 @@
                                         <div class="col-md">Satuan</div>
                                         <div class="col-md-2">Harga</div>
                                         <div class="col-md">Ket</div>
+                                        <div class="col-md">Ongkir</div>
                                         <div class="col-md-2">Jumlah</div>
                                         <div class="col-md">
                                             @hasrole('finance')
@@ -284,6 +285,12 @@
                                                     class="form-control keterangan" value="{{ $b->keterangan }}"
                                                     style="background-color:{{ $color }}"
                                                     @if ($detail->status > 1) disabled @endif />
+                                            </div>
+                                            <div class="col-md">
+                                                <input id="pengiriman{{ $b->id }}" name="pengiriman[]"
+                                                    class="form-control pengiriman"
+                                                    value="{{ $b->biaya_pengiriman }}"
+                                                    @if ($detail->status > 1) readonly @endif readonly />
                                             </div>
                                             <div class="col-md-2">
                                                 <input id="jumlah{{ $b->id }}" name="jumlah[]"

@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <div id="customerList">
                         <div class="col-sm-auto mb-3">
-                            @hasrole('finance')
+                            @hasrole(['finance', 'administrator', 'direktur'])
                                 <button id="approve_filter" type="button"
                                     class="btn px-4 mx-1 bg-animation waves-effect waves-light rounded-5">
                                     Approve ({{ $create }})
@@ -470,7 +470,6 @@
                         } else {
                             window.location.href = downloadUrl;
                         }
-
                         setTimeout(function() {
                             URL.revokeObjectURL(downloadUrl);
                         }, 100); // cleanup
@@ -479,7 +478,6 @@
             }).done(function() { //use this
                 $('#exampleModal').modal('hide')
             });
-
         })
         $("#checked_sum").priceFormat({
             prefix: 'Rp. ',

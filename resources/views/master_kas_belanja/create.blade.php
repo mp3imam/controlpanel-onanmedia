@@ -57,6 +57,7 @@
                                         <div class="col-md-1">Satuan</div>
                                         <div class="col-md">Harga</div>
                                         <div class="col-md">Keterangan</div>
+                                        <div class="col-md">Ongkir</div>
                                         <div class="col-md">Jumlah</div>
                                         <div class="col-md">Upload Foto</div>
                                         <div class="col-md text-center">Action</div>
@@ -81,6 +82,10 @@
                                         </div>
                                         <div class="col-md">
                                             <input id="keterangan" name="keterangan[]" class="form-control" />
+                                        </div>
+                                        <div class="col-md">
+                                            <input id="pengiriman0" name="pengiriman[]" class="form-control pengiriman"
+                                                value="0" onkeyup="updateTotal(0)" />
                                         </div>
                                         <div class="col-md">
                                             <input id="jumlah0" name="jumlah[]" class="form-control jumlah"
@@ -198,6 +203,11 @@
                     <input id="keterangan` + count + `" name="keterangan[]" class="form-control" />
                 </div>
                 <div class="col-md">
+                    <input id="pengiriman` + count +
+            `" name="pengiriman[]" class="form-control pengiriman" value="0" onkeyup="updateTotal(` +
+            count + `)"  />
+                </div>
+                <div class="col-md">
                     <input id="jumlah` + count + `" name="jumlah[]" class="form-control jumlah" value="1" readonly />
                 </div>
                 <div class="col-md">
@@ -241,6 +251,12 @@
             thousandsSeparator: '.',
             centsLimit: 0
         });
+        $(".pengiriman").priceFormat({
+            prefix: 'Rp. ',
+            centsSeparator: ',',
+            thousandsSeparator: '.',
+            centsLimit: 0
+        });
         $(".jumlah").priceFormat({
             prefix: 'Rp. ',
             centsSeparator: ',',
@@ -263,7 +279,9 @@
     function updateTotal(data) {
         var qty = $('#qty' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
         var harga = $('#harga' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
-        var total = qty * harga;
+        var pengiriman = $('#pengiriman' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
+        var total = parseInt(qty) * parseInt(harga) + parseInt(pengiriman);
+        console.log(total);
 
         $('#jumlah' + data).val(total);
         $(".jumlah").priceFormat({
@@ -303,6 +321,12 @@
     }
 
     $(".harga").priceFormat({
+        prefix: 'Rp. ',
+        centsSeparator: ',',
+        thousandsSeparator: '.',
+        centsLimit: 0
+    });
+    $(".pengiriman").priceFormat({
         prefix: 'Rp. ',
         centsSeparator: ',',
         thousandsSeparator: '.',
