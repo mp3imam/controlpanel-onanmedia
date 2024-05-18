@@ -112,10 +112,22 @@
                                     <div class="col-md">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <label for="account_id" class="form-label">Upload Bukti Belanja</label>
+                                                <label for="bukti_belanja" class="form-label">Upload Bukti Belanja</label>
                                             </div>
                                             <div class="col-md-12">
                                                 <input type="file" name="upload_bukti_belanja" accept="image/*"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
+                                    <div class="col-md">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="bukti_barang" class="form-label">Upload Bukti Barang</label>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <input type="file" name="upload_bukti_barang" accept="image/*"
                                                     required />
                                             </div>
                                         </div>
@@ -145,6 +157,20 @@
                                         <div class="col-md-12 text-center"
                                             onclick="zoomOutImage(`{{ $detail->bukti_transfer_divisi_to_finance }}`)">
                                             <img src="{{ $detail->bukti_transfer_divisi_to_finance }}" alt=""
+                                                width="100px" height="100px">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($detail->upload_bukti_barang_selesai != null)
+                                <div class="col-md">
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <label for="account_id" class="form-label">Foto Bukti Belanja</label>
+                                        </div>
+                                        <div class="col-md-12 text-center"
+                                            onclick="zoomOutImage(`{{ $detail->upload_bukti_barang_selesai }}`)">
+                                            <img src="{{ $detail->upload_bukti_barang_selesai }}" alt=""
                                                 width="100px" height="100px">
                                         </div>
                                     </div>
@@ -261,7 +287,7 @@
                                             <div class="col-md">
                                                 <input id="qty{{ $b->id }}" name="qty[]"
                                                     class="form-control" type="number"
-                                                    onkeyup="updateTotal({{ $b->id }})" min="1"
+                                                    onchange="updateTotal({{ $b->id }})" min="1"
                                                     value="{{ $b->qty }}"
                                                     @hasrole('finance') readonly @endhasrole
                                                     @if ($detail->status > 1) disabled @endif required />
@@ -290,7 +316,9 @@
                                                 <input id="pengiriman{{ $b->id }}" name="pengiriman[]"
                                                     class="form-control pengiriman"
                                                     value="{{ $b->biaya_pengiriman }}"
-                                                    @if ($detail->status > 1) readonly @endif readonly />
+                                                    onkeyup="updateTotal({{ $b->id }})"
+                                                    @hasrole('finance') readonly @endhasrole
+                                                    @if ($detail->status > 1) disabled @endif required />
                                             </div>
                                             <div class="col-md-2">
                                                 <input id="jumlah{{ $b->id }}" name="jumlah[]"
@@ -591,7 +619,7 @@
                     <input id="nama_item` + count + `" name="nama_item[]" class="form-control" required />
                 </div>
                 <div class="col-md">
-                    <input id="qty` + count + `" name="qty[]" class="form-control" onkeyup="updateTotal(` + count + `)" type="number" min="1" value="1" required />
+                    <input id="qty` + count + `" name="qty[]" class="form-control" onchange="updateTotal(` + count + `)" type="number" min="1" value="1" required />
                 </div>
                 <div class="col-md">
                     <select id="satuan` + count + `" name="satuan[]" class="form-control satuan" required ></select>
@@ -602,6 +630,9 @@
                 </div>
                 <div class="col-md">
                     <input id="keterangan` + count + `" name="keterangan[]" class="form-control" />
+                </div>
+                <div class="col-md">
+                    <input id="pengiriman` + count + `" name="pengiriman[]" class="form-control pengiriman" value="0" readonly />
                 </div>
                 <div class="col-md-2">
                     <input id="jumlah` + count + `" name="jumlah[]" class="form-control jumlah" value="1" readonly />
@@ -683,7 +714,8 @@
     function updateTotal(data) {
         var qty = $('#qty' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
         var harga = $('#harga' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
-        var total = qty * harga;
+        var pengiriman = $('#pengiriman' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
+        var total = parseInt(qty) * parseInt(harga) + parseInt(pengiriman);
 
         $('#jumlah' + data).val(total);
         $(".jumlah").priceFormat({
@@ -714,6 +746,12 @@
             thousandsSeparator: '.',
             centsLimit: 0
         });
+        $(".pengiriman").priceFormat({
+            prefix: 'Rp. ',
+            centsSeparator: ',',
+            thousandsSeparator: '.',
+            centsLimit: 0
+        });
         $(".harga").priceFormat({
             prefix: 'Rp. ',
             centsSeparator: ',',
@@ -729,6 +767,12 @@
         centsLimit: 0
     });
     $(".jumlah").priceFormat({
+        prefix: 'Rp. ',
+        centsSeparator: ',',
+        thousandsSeparator: '.',
+        centsLimit: 0
+    });
+    $(".pengiriman").priceFormat({
         prefix: 'Rp. ',
         centsSeparator: ',',
         thousandsSeparator: '.',

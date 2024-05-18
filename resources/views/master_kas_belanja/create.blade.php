@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="col-md-1">
                                             <input id="qty0" name="qty[]" class="form-control" type="number"
-                                                onkeyup="updateTotal(0)" min="1" value="1" required />
+                                                onchange="updateTotal(0)" min="1" value="1" required />
                                         </div>
                                         <div class="col-md-1">
                                             <select id="satuan0" name="satuan[]" class="form-control satuan"
@@ -190,7 +190,7 @@
                     <input id="nama_item` + count + `" name="nama_item[]" class="form-control" required />
                 </div>
                 <div class="col-md-1">
-                    <input id="qty` + count + `" name="qty[]" class="form-control" onkeyup="updateTotal(` + count + `)" type="number" min="1" value="1" required />
+                    <input id="qty` + count + `" name="qty[]" class="form-control" onchange="updateTotal(` + count + `)" type="number" min="1" value="1" required />
                 </div>
                 <div class="col-md-1">
                     <select id="satuan` + count + `" name="satuan[]" class="form-control satuan" required ></select>
@@ -281,7 +281,6 @@
         var harga = $('#harga' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
         var pengiriman = $('#pengiriman' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
         var total = parseInt(qty) * parseInt(harga) + parseInt(pengiriman);
-        console.log(total);
 
         $('#jumlah' + data).val(total);
         $(".jumlah").priceFormat({

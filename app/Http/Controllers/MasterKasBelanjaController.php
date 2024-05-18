@@ -313,8 +313,8 @@ class MasterKasBelanjaController extends Controller
             foreach ($request->nama_item as $item => $i) {
                 $harga = str_replace(".", "", str_replace("Rp. ", "", $request->harga[$item]));
                 $jumlah = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
+                $ongkir = str_replace(".", "", str_replace("Rp. ", "", $request->pengiriman[$item]));
                 $nominal = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
-
 
                 $update = MasterKasBelanjaDetail::firstOrNew(
                     ['id' => isset($request->id_item[$item]) ? $request->id_item[$item] : MasterKasBelanjaDetail::orderBy('id', 'desc')->first()->id + 1],
@@ -328,6 +328,7 @@ class MasterKasBelanjaController extends Controller
                 $update->qty        = $request->qty[$item];
                 $update->satuan_id  = $request->satuan[$item];
                 $update->harga      = $harga;
+                $update->biaya_pengiriman = $ongkir;
                 $update->jumlah     = $jumlah;
                 $update->status     = 1;
 
@@ -536,44 +537,43 @@ class MasterKasBelanjaController extends Controller
                 ]);
             }
 
-            $tahun = Carbon::now()->format('Y');
-            $masterKasBelanja = MasterKasBelanja::with('users')->whereId($request->id_detail)->first();
+            // $tahun = Carbon::now()->format('Y');
+            // $masterKasBelanja = MasterKasBelanja::with('users')->whereId($request->id_detail)->first();
 
-            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
-            $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
-            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
-            $request['dokumen'] = $masterKasBelanja->nomor_transaksi;
-            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            // $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            // $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
+            // $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            // $request['dokumen'] = $masterKasBelanja->nomor_transaksi;
+            // $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            // $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
-            $request['debet'] = $masterKasBelanja->nominal_approve;
-            $request['kredit'] = $masterKasBelanja->nominal_approve;
-            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_BELANJA;
-            $masterJurnal = MasterJurnal::create($request->except('_token'));
-            $request['jurnal_umum_id'] = $masterJurnal->id;
-            $request['account_id'] = $request->account_id;
-            $request['debet'] = $masterKasBelanja->nominal_approve;
-            $request['kredit'] = 0;
-            $request['keterangan'] = $masterKasBelanja->users->nama_lengkap;
-            JurnalUmumDetail::create($request->except('_token'));
-            $request['keterangan'] = "";
-            $request['account_id'] = 7;
-            $request['debet'] = 0;
-            $request['kredit'] = $masterKasBelanja->nominal_approve;
-            JurnalUmumDetail::create($request->except('_token'));
+            // $request['debet'] = $masterKasBelanja->nominal_approve;
+            // $request['kredit'] = $masterKasBelanja->nominal_approve;
+            // $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_BELANJA;
+            // $masterJurnal = MasterJurnal::create($request->except('_token'));
+            // $request['jurnal_umum_id'] = $masterJurnal->id;
+            // $request['account_id'] = $request->account_id;
+            // $request['debet'] = $masterKasBelanja->nominal_approve;
+            // $request['kredit'] = 0;
+            // $request['keterangan'] = $masterKasBelanja->users->nama_lengkap;
+            // JurnalUmumDetail::create($request->except('_token'));
+            // $request['keterangan'] = "";
+            // $request['account_id'] = 7;
+            // $request['debet'] = 0;
+            // $request['kredit'] = $masterKasBelanja->nominal_approve;
+            // JurnalUmumDetail::create($request->except('_token'));
 
-            $kasFotoDetail = [
-                'jurnal_umum_id' => $masterJurnal->id,
-                'path'           => asset('upload_bukti/') . "/",
-                'filename'       => $imageName,
-            ];
+            // $kasFotoDetail = [
+            //     'jurnal_umum_id' => $masterJurnal->id,
+            //     'path'           => asset('upload_bukti/') . "/",
+            //     'filename'       => $imageName,
+            // ];
 
-            MasterJurnalFile::create($kasFotoDetail);
+            // MasterJurnalFile::create($kasFotoDetail);
 
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            //throw $th;
         }
 
         return redirect('master_kas_belanja');
@@ -597,7 +597,6 @@ class MasterKasBelanjaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            //     //throw $th;
         }
 
         return redirect('master_kas_belanja');
@@ -607,7 +606,14 @@ class MasterKasBelanjaController extends Controller
     {
         DB::beginTransaction();
         try {
+            $file = $request->file('upload_bukti_barang');
+            $path = public_path('upload_bukti_barang/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+            $file->move($path, $imageName);
+
             MasterKasBelanja::find($request->id_detail)->update([
+                'upload_bukti_barang_selesai'   => asset('upload_bukti_barang/') . "/" . $imageName,
                 'status' => 5,
             ]);
 
