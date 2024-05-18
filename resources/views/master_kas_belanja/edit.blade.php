@@ -106,6 +106,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                @elseif ($detail->upload_bukti_barang_selesai == null && $detail->status == 5)
+                                    <div class="col-md">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="bukti_barang" class="form-label">Upload Bukti Barang</label>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <input type="file" name="upload_bukti_barang" accept="image/*"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endif
                             @else
                                 @if ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null)
@@ -116,18 +128,6 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <input type="file" name="upload_bukti_belanja" accept="image/*"
-                                                    required />
-                                            </div>
-                                        </div>
-                                    </div>
-                                @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
-                                    <div class="col-md">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label for="bukti_barang" class="form-label">Upload Bukti Barang</label>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <input type="file" name="upload_bukti_barang" accept="image/*"
                                                     required />
                                             </div>
                                         </div>
