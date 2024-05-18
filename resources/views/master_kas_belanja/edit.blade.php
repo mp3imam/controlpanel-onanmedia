@@ -387,7 +387,7 @@
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>
                             @endif
                         @else
-                            @if ($detail->status == 1)
+                            @if ($detail->status == 1 && Auth::user()->id == $detail->user_id)
                                 <button class="btn bg-animation btn-warning mr-5 rounded-5"
                                     style="background-color: #4E36E2"><i
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Update</button>
