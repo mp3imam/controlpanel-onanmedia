@@ -106,7 +106,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                @elseif ($detail->upload_bukti_barang_selesai == null && $detail->status == 5)
+                                @elseif (
+                                    $detail->status == 3 &&
+                                        $detail->bukti_transfer_divisi_to_finance !== null &&
+                                        $detail->upload_bukti_barang_selesai == null)
                                     <div class="col-md">
                                         <div class="row">
                                             <div class="col-md-12">
