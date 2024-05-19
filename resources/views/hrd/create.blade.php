@@ -246,8 +246,8 @@
                                         <div id="alert_no_identitas_personal" class="col-lg-6 p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Nomor Identitas (KTP)</label>
-                                            <input type="number" class="form-control" id="no_identitas_personal"
-                                                name="no_identitas">
+                                            <input type="number" class="form-control" placeholder="xxxx xxxx xxxx xxxx"
+                                                id="no_identitas_personal" name="no_identitas">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">NPWP</label>
@@ -380,7 +380,8 @@
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Toleransi Keterlambatan (menit)</label>
                                             <input type="number" min="1" max="30" class="form-control"
-                                                id="toleransi_keterlambatan" name="toleransi_keterlambatan">
+                                                value="15" id="toleransi_keterlambatan"
+                                                name="toleransi_keterlambatan">
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Absen diluar kantor</label>

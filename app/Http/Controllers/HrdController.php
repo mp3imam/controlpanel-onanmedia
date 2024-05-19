@@ -356,6 +356,7 @@ class HrdController extends Controller
                 //     $q->where('nama', 'like', '%' . $request->cari . '%');
                 // });
             })
+            ->whereNotIn('id', [1, 6])
             ->get();
     }
 
@@ -422,6 +423,7 @@ class HrdController extends Controller
                     ]
                 );
             } else {
+                // dd(User::orderByRaw('id::int DESC')->first()->id + 1);
                 User::insert([
                     'id'                => User::orderByRaw('id::int DESC')->first()->id + 1,
                     'username'          => $request->username_umum,
@@ -536,7 +538,6 @@ class HrdController extends Controller
 
     public function simpan_karyawan_pekerjaan(Request $request)
     {
-        // dd($request->all());
         $validasi = [
             'cabang_pekerjaan'      => 'required',
             'departement_pekerjaan' => 'required',
@@ -576,6 +577,10 @@ class HrdController extends Controller
         $save->toleransi_keterlambatan = $request->toleransi_keterlambatan;
         $save->absen_diluar_kantor = $request->absen_diluar_kantor;
         $save->save();
+
+        DB::table('model_has_roles')
+            ->where('model_id', $save->data_karyawan_id)
+            ->update(['role_id' =>  $save->departement_id]);
 
         return response()->json([
             'status'  => Response::HTTP_OK,

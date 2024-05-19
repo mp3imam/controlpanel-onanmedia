@@ -60,14 +60,15 @@
                                     {{ $detail->pekerjaan ? $detail->pekerjaan->departement->nama : '' }}
                                 </div>
                                 <div class="col-md-12 text-center my-4">
-                                    <a target="_blank" href="https://wa.me/{{ $detail->no_handphone }}"
+                                    <a target="_blank" id="id_wa" href="https://wa.me/{{ $detail->no_handphone }}"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
                                         style="background-color: #4E36E2"><i class="ri-phone-fill"></i></a>
-                                    <a target="_blank"
+                                    <a target="_blank" id="id_email"
                                         href="https://mail.google.com/mail/u/0/?fs=1&to={{ $detail->email }}&su=HRD Onanmedia&body=BODY&cc=biantara@onanmedia.com;finance@onanmedia.com&tf=cm"
                                         class="btn text-white btn-icon waves-effect waves-light mx-4 rounded-5"
                                         style="background-color: #4E36E2"><i class="ri-mail-fill"></i></a>
-                                    <a target="_blank" href="https://www.linkedin.com/in/{{ $detail->linkedin }}"
+                                    <a target="_blank" id="id_linkedin"
+                                        href="https://www.linkedin.com/in/{{ $detail->linkedin }}"
                                         class="btn text-white btn-icon waves-effect waves-light rounded-5"
                                         style="background-color: #4E36E2"><i class="ri-linkedin-box-fill"></i></a>
                                 </div>
@@ -257,8 +258,8 @@
                                         <div id="alert_no_identitas_personal" class="col-lg-6 p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Nomor Identitas (KTP)</label>
-                                            <input type="number" class="form-control" id="no_identitas_personal"
-                                                name="no_identitas"
+                                            <input type="text" maxlength="16" class="form-control"
+                                                id="no_identitas_personal" name="no_identitas"
                                                 value="{{ $detail->personal ? $detail->personal->no_ktp : '' }}">
                                         </div>
                                         <div class="col-lg p-2 mx-1 mb-3 rounded-3" style="background-color: #F9FAFB">
@@ -448,7 +449,7 @@
                                             <label class="control-form text-muted">Toleransi Keterlambatan (menit)</label>
                                             <input type="number" min="1" max="30" class="form-control"
                                                 id="toleransi_keterlambatan" name="toleransi_keterlambatan"
-                                                value="{{ $detail->pekerjaan ? $detail->pekerjaan->toleransi_keterlambatan : '' }}">
+                                                value="{{ $detail->pekerjaan ? $detail->pekerjaan->toleransi_keterlambatan : '15' }}">
                                         </div>
                                         <div class="col-lg p-2 mb-3 mx-1 rounded-3" style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">Absen diluar kantor</label>
@@ -1862,6 +1863,11 @@
                                 '.nav-link')
                             .addClass('active');
                         $('#save_umum').text('Update')
+                        $('#id_wa').prop('href', 'https://wa.me/' + response.message.no_handphone)
+                        $('#id_email').prop('href', 'https://mail.google.com/mail/u/0/?fs=1&to=' +
+                            response.message.email +
+                            '&su=HRD Onanmedia&body=BODY&cc=biantara@onanmedia.com;finance@onanmedia.com&tf=cm'
+                        )
 
                         $('.nama_lengkap').text(response.message.nama_lengkap)
                         if (response.message.foto != null)

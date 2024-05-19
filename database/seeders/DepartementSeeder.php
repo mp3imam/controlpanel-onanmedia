@@ -13,14 +13,15 @@ class DepartementSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['nama'=>'Finance', 'kode' => 'Finance'],
-            ['nama'=>'Direktur', 'kode' => 'Direktur'],
-            ['nama'=>'Costumer Services', 'kode' => 'Costumer Services'],
-            ['nama'=>'Helpdesk', 'kode' => 'Helpdesk'],
-            ['nama'=>'UI/UX', 'kode' => 'UI/UX'],
-            ['nama'=>'Marketing', 'kode' => 'Marketing'],
-            ['nama'=>'IT', 'kode' => 'IT'],
-            ['nama'=>'Kreatif', 'kode' => 'Kreatif'],
+            ['nama' => 'Finance', 'kode' => '2'],
+            ['nama' => 'Hrd', 'kode' => '3'],
+            ['nama' => 'Costumer Services', 'kode' => '4'],
+            ['nama' => 'Helpdesk', 'kode' => '5'],
+            ['nama' => 'UI/UX', 'kode' => '7'],
+            ['nama' => 'Kreatif', 'kode' => '8'],
+            ['nama' => 'IT Network', 'kode' => '9'],
+            ['nama' => 'IT Mobile', 'kode' => '10'],
+            ['nama' => 'IT Web Dev', 'kode' => '11'],
         ];
         foreach ($data as $d) {
             DepartementModel::create($d);

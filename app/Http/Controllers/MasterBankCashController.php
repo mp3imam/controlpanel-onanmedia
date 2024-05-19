@@ -303,40 +303,40 @@ class MasterBankCashController extends Controller
                 }
             }
 
-            if ($status == 2) {
-                $tahun = Carbon::now()->format('Y');
-                $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
-                $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
-                $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
-                $request['dokumen'] = MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi;
-                $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-                $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            // if ($status == 2) {
+            //     $tahun = Carbon::now()->format('Y');
+            //     $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            //     $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
+            //     $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            //     $request['dokumen'] = MasterBankCashModel::whereId($request->id)->first()->nomor_transaksi;
+            //     $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            //     $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
 
-                $request['debet'] = $request->seluruh_total;
-                $request['kredit'] = $request->seluruh_total;
-                $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
-                $masterJurnal = MasterJurnal::create($request->except('_token'));
-                $request['jurnal_umum_id'] = $masterJurnal->id;
-                $request['account_id'] = 7;
-                $request['debet'] = $request->seluruh_total;
-                $request['kredit'] = 0;
-                $request['keterangan'] = "";
-                JurnalUmumDetail::create($request->except('_token'));
-                $request['account_id'] = $request->sumber_dana;
-                $request['debet'] = 0;
-                $request['kredit'] = $request->seluruh_total;
-                JurnalUmumDetail::create($request->except('_token'));
+            //     $request['debet'] = $request->seluruh_total;
+            //     $request['kredit'] = $request->seluruh_total;
+            //     $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_SALDO;
+            //     $masterJurnal = MasterJurnal::create($request->except('_token'));
+            //     $request['jurnal_umum_id'] = $masterJurnal->id;
+            //     $request['account_id'] = 7;
+            //     $request['debet'] = $request->seluruh_total;
+            //     $request['kredit'] = 0;
+            //     $request['keterangan'] = "";
+            //     JurnalUmumDetail::create($request->except('_token'));
+            //     $request['account_id'] = $request->sumber_dana;
+            //     $request['debet'] = 0;
+            //     $request['kredit'] = $request->seluruh_total;
+            //     JurnalUmumDetail::create($request->except('_token'));
 
-                $kasFotoDetail = [
-                    'jurnal_umum_id' => $masterJurnal->id,
-                    'path'           => asset('kas_saldo/') . "/",
-                    'filename'       => $imageName,
-                ];
+            //     $kasFotoDetail = [
+            //         'jurnal_umum_id' => $masterJurnal->id,
+            //         'path'           => asset('kas_saldo/') . "/",
+            //         'filename'       => $imageName,
+            //     ];
 
-                MasterJurnalFile::create($kasFotoDetail);
-            } else {
-                MasterBankCashModel::find($request->id)->delete();
-            }
+            //     MasterJurnalFile::create($kasFotoDetail);
+            // } else {
+            //     MasterBankCashModel::find($request->id)->delete();
+            // }
 
             DB::commit();
         } catch (\Throwable $th) {
