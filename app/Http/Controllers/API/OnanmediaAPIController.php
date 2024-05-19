@@ -102,9 +102,9 @@ class OnanmediaAPIController extends Controller
 
     public function select2_api_divisi(Request $request)
     {
-        $datas = DepartementModel::select('id', 'nama as name')
+        $datas = DepartementModel::select('kode as id', 'nama as name')
             ->when($request->id, function ($q) use ($request) {
-                return $q->whereIn('id', $request->id);
+                return $q->whereIn('kode', $request->id);
             })
             ->when($request->q, function ($q) use ($request) {
                 return $q->where('name', 'ilike', '%' . $request->q . '%');
