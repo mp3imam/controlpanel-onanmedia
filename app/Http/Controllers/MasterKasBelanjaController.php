@@ -185,7 +185,6 @@ class MasterKasBelanjaController extends Controller
 
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
             DB::rollBack();
         }
 
@@ -228,7 +227,6 @@ class MasterKasBelanjaController extends Controller
 
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
             DB::rollBack();
         }
 
@@ -269,7 +267,7 @@ class MasterKasBelanjaController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterKasBelanjaString::with(['belanja_barang.coa_belanja', 'belanja_barang' => function ($q) use ($request) {
+        $detail = MasterKasBelanjaString::with(['approve_finance', 'transfer_finance', 'accepted_finance', 'belanja_barang.coa_belanja', 'belanja_barang' => function ($q) use ($request) {
             $q->with('satuan_barang')->when($request->filled('q'), function ($q) use ($request) {
                 $q->when($request->q !== 'ALL', function ($q) use ($request) {
                     $q->where('status', $request->q);
@@ -349,7 +347,6 @@ class MasterKasBelanjaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            //throw $th;
         }
 
         return redirect('master_kas_belanja');
@@ -406,14 +403,12 @@ class MasterKasBelanjaController extends Controller
                         ];
                     }
 
-                    dd($data, $request->selectDetail[$item]);
                     if ($request->selectDetail[$item] == 1) {
                         MasterKasBelanjaDetail::create($data);
                     }
                     MasterKasBelanjaDetail::whereId($request->id_item[$item])->delete();
                 } else {
                     $kasBelanja = MasterKasBelanja::whereId($request->id_detail)->first();
-                    dd($kasBelanja->nominal_pending);
 
                     MasterKasBelanja::find($request->id_detail)->update([
                         'nominal_pending' => $kasBelanja->nominal_pending - (int) str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]))
@@ -502,6 +497,7 @@ class MasterKasBelanjaController extends Controller
 
             foreach ($belanja_id as $id) {
                 MasterKasBelanja::find($id)->update([
+                    'approve_finance_id'  => auth()->user()->id,
                     'checked' => $checked,
                 ]);
             }
@@ -509,7 +505,6 @@ class MasterKasBelanjaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            //throw $th;
         }
 
         return redirect('master_kas_belanja');
@@ -528,6 +523,7 @@ class MasterKasBelanjaController extends Controller
 
             MasterKasBelanja::find($request->id_detail)->update([
                 'status' => 3,
+                'transfer_finance_id'  => auth()->user()->id,
                 'bukti_transfer_finance_to_divisi'   => asset('upload_bukti/') . "/" . $imageName,
             ]);
 
@@ -613,6 +609,7 @@ class MasterKasBelanjaController extends Controller
             $file->move($path, $imageName);
 
             MasterKasBelanja::find($request->id_detail)->update([
+                'accept_finance_id' => auth()->user()->id,
                 'upload_bukti_barang_selesai'   => asset('upload_bukti_barang/') . "/" . $imageName,
                 'status' => 5,
             ]);
@@ -630,6 +627,10 @@ class MasterKasBelanjaController extends Controller
             $request['debet'] = $masterKasBelanja->nominal_approve;
             $request['kredit'] = $masterKasBelanja->nominal_approve;
             $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_PEMBELIAN;
+            $request['user_onan'] = $masterKasBelanja->users->username;
+            $request['approve_finance'] = $masterKasBelanja->approve_finance->username;
+            $request['transfer_finance'] = $masterKasBelanja->transfer_finance->username;
+            $request['accept_finance'] = $masterKasBelanja->accepted_finance->username;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
             $request['jurnal_umum_id'] = $masterJurnal->id;
 
@@ -663,7 +664,6 @@ class MasterKasBelanjaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            //throw $th;
         }
 
         return redirect('master_kas_belanja');
@@ -684,7 +684,6 @@ class MasterKasBelanjaController extends Controller
             DB::commit();
             $status = 'Success';
         } catch (\Throwable $th) {
-            //throw $th;
             DB::rollBack();
             $status = "Error $th";
         }

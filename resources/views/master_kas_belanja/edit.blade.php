@@ -56,6 +56,10 @@
                                     hidden />
                                 <textarea class="form-control" rows="4" cols="50" placeholder="Tulis deskripsi pembelanjaan di sini...."
                                     name="deskripsi" required @hasrole('finance') readonly @endhasrole>{{ $detail->keterangan_kas }}</textarea>
+                                @if ($detail->approve_finance)
+                                    <label for="account_id" class="form-label">Disetujui oleh :
+                                        {{ $detail->approve_finance->username }}</label>
+                                @endif
                             </div>
                             @hasrole('finance')
                                 @if ($detail->status == 2 && Request::get('q') == 2)
@@ -148,6 +152,10 @@
                                             <img src="{{ $detail->bukti_transfer_finance_to_divisi }}" alt=""
                                                 width="100px" height="100px">
                                         </div>
+                                        <div class="col-md-12 text-center">
+                                            <label for="account_id" class="form-label">Transfer oleh :
+                                                {{ $detail->transfer_finance->username }}</label>
+                                        </div>
                                     </div>
                                 </div>
                             @endif
@@ -169,12 +177,17 @@
                                 <div class="col-md">
                                     <div class="row">
                                         <div class="col-md-12 text-center">
-                                            <label for="account_id" class="form-label">Foto Bukti Belanja</label>
+                                            <label for="account_id" class="form-label">Foto Bukti Penerimaan
+                                                Barang</label>
                                         </div>
                                         <div class="col-md-12 text-center"
                                             onclick="zoomOutImage(`{{ $detail->upload_bukti_barang_selesai }}`)">
                                             <img src="{{ $detail->upload_bukti_barang_selesai }}" alt=""
                                                 width="100px" height="100px">
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            <label for="account_id" class="form-label">Penerima Barang :
+                                                {{ $detail->accepted_finance->username }}</label>
                                         </div>
                                     </div>
                                 </div>

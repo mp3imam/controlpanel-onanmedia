@@ -22,72 +22,101 @@ class MasterKasBelanjaString extends Model
     const STATUS_HISTORY = "5";
     const STATUS_PENDING = "6";
 
-    public function banks_belanja(){
+    public function banks_belanja()
+    {
         return $this->hasOne(BankModel::class, 'id', 'account_id');
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function coa_belanja(){
+    public function coa_belanja()
+    {
         return $this->hasOne(MasterCoaModel::class, 'id');
     }
 
-    public function kas_file(){
+    public function kas_file()
+    {
         return $this->hasMany(MasterKasBelanjaFile::class, 'kas_id');
     }
 
-    public function scopeBelanjaDetail($query, $status){
-        return $query->whereHas('belanja_barang', function ($q) use($status){
+    public function scopeBelanjaDetail($query, $status)
+    {
+        return $query->whereHas('belanja_barang', function ($q) use ($status) {
             $q->whereIn('status', $status);
         });
     }
 
-    public function belanja_barang(){
+    public function belanja_barang()
+    {
         return $this->hasMany(MasterKasBelanjaDetail::class, 'kas_id');
     }
 
-    public function scopeBelanjaCreate($query){
+    public function scopeBelanjaCreate($query)
+    {
         return $query->whereHas('belanja_barang', function ($q) {
             $q->whereStatus(1);
         });
     }
 
-    public function scopeBelanjaOnProgress($query){
+    public function scopeBelanjaOnProgress($query)
+    {
         return $query->whereHas('belanja_barang', function ($q) {
             $q->whereStatus(2);
         });
     }
-    public function scopeBelanjaProses($query){
+    public function scopeBelanjaProses($query)
+    {
         return $query->whereHas('belanja_barang', function ($q) {
             $q->whereStatus(3);
         });
     }
-    public function scopeBelanjaTolak($query){
+    public function scopeBelanjaTolak($query)
+    {
         return $query->whereHas('belanja_barang', function ($q) {
             $q->whereStatus(4);
         });
     }
-    public function scopeBelanjaHistory($query){
+    public function scopeBelanjaHistory($query)
+    {
         return $query->whereHas('belanja_barang', function ($q) {
             $q->whereStatus(5);
         });
     }
-    public function scopeBelanjaPending($query){
+    public function scopeBelanjaPending($query)
+    {
         return $query->whereHas('belanja_barang', function ($q) {
             $q->whereStatus(6);
         });
     }
 
-    public function statuses(){
+    public function statuses()
+    {
         return $this->belongsTo(TransaksiKasBelanjaStatusModel::class, 'status');
     }
 
-    public function scopeTotal($q){
-        return $q->with(['belanja_detail' => function($q) {
+    public function scopeTotal($q)
+    {
+        return $q->with(['belanja_detail' => function ($q) {
             $q->selectRaw('kas_id, sum("nominal") jumlah_nominal')
-            ->groupBy('kas_id');
+                ->groupBy('kas_id');
         }]);
+    }
+
+    public function approve_finance()
+    {
+        return $this->hasOne(User::class, 'id', 'approve_finance_id');
+    }
+
+    public function transfer_finance()
+    {
+        return $this->hasOne(User::class, 'id', 'transfer_finance_id');
+    }
+
+    public function accepted_finance()
+    {
+        return $this->hasOne(User::class, 'id', 'accept_finance_id');
     }
 }
