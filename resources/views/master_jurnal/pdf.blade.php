@@ -33,14 +33,14 @@
         </table>
     </div>
     @if (!$datas->isEmpty())
-        <table class='table' border="0" width="100%" style="margin-bottom: 50px;">
+        <table class="table fs-8" border="0" width="100%" style="margin-bottom: 50px;">
             <thead>
                 <tr>
                     <th style="text-align: center">Tanggal</th>
-                    <th style="text-align: center">Nomor Transaksi</th>
+                    <th style="text-align: center">Transaksi</th>
                     <th style="text-align: center">Nama Akun</th>
-                    <th style="text-align: center" colspan="2">Debit</th>
-                    <th style="text-align: center" colspan="2">Kredit</th>
+                    <th style="text-align: center">Debit</th>
+                    <th style="text-align: center">Kredit</th>
                     <th style="text-align: center">Keterangan</th>
                     <th style="text-align: center">Operasional</th>
                     <th style="text-align: center">PIC</th>
@@ -62,13 +62,46 @@
                                     {{ $d->coa_jurnal->uraian }}
                                 @endif
                             </td>
-                            <td>Rp.</td>
                             <td style="text-align: right">{{ number_format($d->debet, 0) }}</td>
-                            <td>Rp.</td>
                             <td style="text-align: right">{{ number_format($d->kredit, 0) }}</td>
                             <td>{{ $data->keterangan_jurnal_umum }}</td>
                             <td>{{ $data->user_onan }}</td>
-                            <td>{{ $data->keterangan_jurnal_umum }}</td>
+                            @php
+                                $approve_finance = $data->approve_finance;
+                                $transfer_finance = $data->transfer_finance;
+                                $accept_finance = $data->accept_finance;
+                                $usernames = [];
+
+                                if ($approve_finance == $transfer_finance && $transfer_finance == $accept_finance) {
+                                    // Semua data sama, tampilkan 1 username
+                                    $usernames[] = $approve_finance; // Misalkan approve_finance adalah username
+                                } elseif (
+                                    $approve_finance == $transfer_finance ||
+                                    $transfer_finance == $accept_finance ||
+                                    $approve_finance == $accept_finance
+                                ) {
+                                    // Dua data sama, tampilkan 2 username
+                                    if ($approve_finance == $transfer_finance) {
+                                        $usernames[] = $approve_finance;
+                                        $usernames[] = $accept_finance;
+                                    } elseif ($transfer_finance == $accept_finance) {
+                                        $usernames[] = $transfer_finance;
+                                        $usernames[] = $approve_finance;
+                                    } else {
+                                        $usernames[] = $approve_finance;
+                                        $usernames[] = $transfer_finance;
+                                    }
+                                } else {
+                                    // Semua data berbeda, tampilkan semua username
+                                    $usernames = [$approve_finance, $transfer_finance, $accept_finance];
+                                }
+                            @endphp
+                            <td>
+                                @foreach ($usernames as $username)
+                                    {{ $username }}
+                                    <br>
+                                @endforeach
+                            </td>
                         </tr>
                     @endforeach
                 @endforeach

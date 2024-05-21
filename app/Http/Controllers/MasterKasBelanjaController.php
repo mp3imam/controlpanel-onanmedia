@@ -635,16 +635,27 @@ class MasterKasBelanjaController extends Controller
             $request['jurnal_umum_id'] = $masterJurnal->id;
 
             foreach ($request->id_item as $item => $i) {
+                // Update Jurnal Umum Detail menjadi selesai
                 MasterKasBelanjaDetail::find($i)->update([
                     'status' => 5,
                 ]);
                 $nominal = str_replace(".", "", str_replace("Rp. ", "", $request->jumlah[$item]));
 
+                // Masukin gambar ke Jurnal Umum Detail
                 $request['account_id'] = $request->akun[$item];
                 $request['debet'] = $nominal;
                 $request['kredit'] = 0;
                 $request['keterangan'] = $request->nama_item[$item];
                 JurnalUmumDetail::create($request->except('_token'));
+
+                // Masukin gambar ke Jurnal Umum Detail
+                $detail = MasterKasBelanjaDetail::whereId($i)->first();
+                if ($detail)
+                    MasterJurnalFile::create([
+                        'jurnal_umum_id' => $masterJurnal->id,
+                        'path'           => asset('kas_belanja/'),
+                        'filename'       => str_replace(asset('kas_belanja/') . "/", '', $detail->file),
+                    ]);
             }
 
             $request['keterangan'] = "";
@@ -653,13 +664,20 @@ class MasterKasBelanjaController extends Controller
             $request['kredit'] = $masterKasBelanja->nominal_approve;
             JurnalUmumDetail::create($request->except('_token'));
 
-            $kasFotoDetail = [
-                'jurnal_umum_id' => $masterJurnal->id,
-                'path'           => asset('upload_bukti/') . "/",
-                'filename'       => str_replace(asset('upload_bukti/') . "/", '', $masterKasBelanja->bukti_transfer_divisi_to_finance),
+            $files = [
+                $masterKasBelanja->bukti_transfer_finance_to_divisi,
+                $masterKasBelanja->bukti_transfer_divisi_to_finance,
+                $masterKasBelanja->upload_bukti_barang_selesai,
             ];
 
-            MasterJurnalFile::create($kasFotoDetail);
+            foreach ($files as $index => $file) {
+                $folder = ($index === count($files) - 1) ? asset('upload_bukti_barang/') . "/" : asset('upload_bukti/') . "/";
+                MasterJurnalFile::create([
+                    'jurnal_umum_id' => $masterJurnal->id,
+                    'path'           => $folder,
+                    'filename'       => str_replace($folder, '', $file),
+                ]);
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
