@@ -77,10 +77,10 @@
                                 </div>
                                 <div class="col-md-12 text-center my-4">
                                     <button type="button"
-                                        class="btn btn-success waves-effect waves-light mx-2 karyawan_status_aktif"
+                                        class="btn btn-{{ $detail->status == 1 ? 'success' : 'light' }} waves-effect waves-light mx-2 karyawan_status_aktif"
                                         onclick="status_karyawan(1)">Aktif</button>
                                     <button type="button"
-                                        class="btn btn-light waves-effect waves-light mx-2 karyawan_status_tidak_aktif"
+                                        class="btn btn-{{ $detail->status == 0 ? 'danger' : 'light' }} waves-effect waves-light mx-2 karyawan_status_tidak_aktif"
                                         onclick="status_karyawan(0)">Tidak
                                         Aktif</button>
                                 </div>

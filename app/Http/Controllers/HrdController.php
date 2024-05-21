@@ -778,6 +778,10 @@ class HrdController extends Controller
         $save->status = $request->status;
         $save->save();
 
+        User::whereId($request->id)->update([
+            'status' => $request->status
+        ]);
+
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => $save
