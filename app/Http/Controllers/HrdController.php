@@ -20,6 +20,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -381,7 +382,11 @@ class HrdController extends Controller
     public function simpan_karyawan_umum(Request $request)
     {
         $validasi = [
-            'username_umum'         => 'required',
+            'username'              =>
+            [
+                'required',
+                Rule::unique('tbl_user')->ignore($request->id_update),
+            ],
             'nama_lengkap_umum'     => 'required',
             'nama_panggilan_umum'   => 'required',
             'alamat_ktp_umum'       => 'required',
@@ -417,7 +422,7 @@ class HrdController extends Controller
             if ($request->id_update !== null) {
                 User::whereId(DataKaryawanModel::where('id', $request->id_update)->first()->userId)->update(
                     [
-                        'username' => $request->username_umum,
+                        'username' => $request->username,
                         'nama_lengkap' => $request->nama_lengkap_umum,
                         'foto' => $imageName !== null ? asset('karyawan/foto/') . '/' . $imageName : null
                     ]
@@ -426,7 +431,7 @@ class HrdController extends Controller
                 // dd(User::orderByRaw('id::int DESC')->first()->id + 1);
                 User::insert([
                     'id'                => User::orderByRaw('id::int DESC')->first()->id + 1,
-                    'username'          => $request->username_umum,
+                    'username'          => $request->username,
                     'password'          => Hash::make($request->tanggal_lahir_umum),
                     'cl_user_group_id'  => 1,
                     'nama_lengkap'      => $request->nama_lengkap_umum,
@@ -484,7 +489,13 @@ class HrdController extends Controller
     {
         $validasi = [
             'id_update'             => 'required',
-            'no_identitas_personal' => 'required',
+            'no_identitas_personal' =>
+            [
+                'required',
+                'min:16',
+                'max:16',
+                Rule::unique('data_karyawan_personal', 'no_ktp')->ignore($request->id_update),
+            ],
             'nama_bank_personal'    => 'required',
         ];
 

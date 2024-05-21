@@ -166,11 +166,11 @@
                             <div class="tab-content mt-4">
                                 <div class="tab-pane active" id="base-umum" role="tabpanel">
                                     <div class="row">
-                                        <div id="alert_username_umum" class="col-lg p-2 mx-1 mb-3 rounded-3"
+                                        <div id="alert_username" class="col-lg p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
                                             <label class="control-form text-muted">username</label>
                                             <input id="id_update" hidden>
-                                            <input class="form-control" id="username_umum" name="username_umum">
+                                            <input class="form-control" id="username" name="username">
                                         </div>
                                         <div id="alert_nama_lengkap_umum" class="col-lg-6 p-2 mx-1 mb-3 rounded-3"
                                             style="background-color: #F9FAFB">
@@ -1262,6 +1262,15 @@
         }
 
         $(function() {
+            formChanged = true;
+            $(window).on('beforeunload', function(event) {
+                if (formChanged) {
+                    event.preventDefault();
+                    return event.returnValue =
+                        'Perubahan Anda belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?';
+                }
+            });
+
             // Datatable Keluarga
             var table = $('#dataTableKeluarga').DataTable({
                 dom: 'lrtip',
@@ -1421,6 +1430,12 @@
                 }, {
                     data: 'sertifikat',
                     name: 'Sertifikat',
+                    render: function(data) {
+                        var img = data ?
+                            `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` :
+                            ``;
+                        return img;
+                    }
                 }, {
                     data: 'id',
                     name: 'Action',
@@ -1508,6 +1523,12 @@
                 }, {
                     data: 'sertifikat',
                     name: 'Sertifikat',
+                    render: function(data) {
+                        var img = data ?
+                            `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` :
+                            ``;
+                        return img;
+                    }
                 }, {
                     data: 'id',
                     name: 'Action',
@@ -1583,6 +1604,12 @@
                 }, {
                     data: 'sertifikat',
                     name: 'Sertifikat',
+                    render: function(data) {
+                        var img = data ?
+                            `<img src="${data}" onclick="openModal('${data}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid" style="width: 100px; height: 100px;">` :
+                            ``;
+                        return img;
+                    }
                 }, {
                     data: 'id',
                     name: 'Action',
@@ -1719,7 +1746,7 @@
         $('#save_umum').click(function() {
             var fd = new FormData()
             fd.append('id_update', $('#id_update').val())
-            fd.append('username_umum', $('#username_umum').val())
+            fd.append('username', $('#username').val())
             fd.append('nama_lengkap_umum', $('#nama_lengkap_umum').val())
             fd.append('nama_panggilan_umum', $('#nama_panggilan_umum').val())
             fd.append('alamat_ktp_umum', $('#alamat_ktp_umum').val())
@@ -1775,8 +1802,8 @@
                         $('#tambah_riwayat').prop('disabled', false)
                     } else {
                         $('.alert_hapus').remove()
-                        if (response.message.username_umum)
-                            $('#alert_username_umum').append(
+                        if (response.message.username)
+                            $('#alert_username').append(
                                 `<span class="fs-10 text-danger alert_hapus">Silahkan Lengkapi data</span>`
                             )
                         if (response.message.nama_lengkap_umum)
