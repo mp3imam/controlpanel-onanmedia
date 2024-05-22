@@ -401,7 +401,7 @@
                                     $detail->users->roles[0]->name == 'finance')
                                 <button class="btn bg-animation btn-info mr-5 rounded-5"><i
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti
-                                    Transfer</button>
+                                    Belanja</button>
                             @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
                                 <button class="btn bg-animation btn-info mr-5 rounded-5"><i
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>
