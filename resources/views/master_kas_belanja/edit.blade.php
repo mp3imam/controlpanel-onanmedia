@@ -735,6 +735,7 @@
         var qty = $('#qty' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
         var harga = $('#harga' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
         var pengiriman = $('#pengiriman' + data).val().replace("Rp. ", "").replaceAll(",", "").replaceAll(".", "");
+        if (pengiriman == "") pengiriman = 0;
         var total = parseInt(qty) * parseInt(harga) + parseInt(pengiriman);
 
         $('#jumlah' + data).val(total);
