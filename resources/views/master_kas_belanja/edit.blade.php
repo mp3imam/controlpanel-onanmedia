@@ -152,10 +152,12 @@
                                             <img src="{{ $detail->bukti_transfer_finance_to_divisi }}" alt=""
                                                 width="100px" height="100px">
                                         </div>
-                                        <div class="col-md-12 text-center">
-                                            <label for="account_id" class="form-label">Transfer oleh :
-                                                {{ $detail->transfer_finance->username }}</label>
-                                        </div>
+                                        @if ($detail->transfer_finance)
+                                            <div class="col-md-12 text-center">
+                                                <label for="account_id" class="form-label">Transfer oleh :
+                                                    {{ $detail->transfer_finance->username }}</label>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             @endif
@@ -185,10 +187,12 @@
                                             <img src="{{ $detail->upload_bukti_barang_selesai }}" alt=""
                                                 width="100px" height="100px">
                                         </div>
-                                        <div class="col-md-12 text-center">
-                                            <label for="account_id" class="form-label">Penerima Barang :
-                                                {{ $detail->accepted_finance->username }}</label>
-                                        </div>
+                                        @if ($detail->accepted_finance)
+                                            <div class="col-md-12 text-center">
+                                                <label for="account_id" class="form-label">Penerima Barang :
+                                                    {{ $detail->accepted_finance->username }}</label>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             @endif
