@@ -102,7 +102,7 @@
                                     <div class="col-md">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <label for="account_id" class="form-label">Upload Bukti Belanja</label>
+                                                <label for="account_id" class="form-label">Upload Bukti Pembayaran</label>
                                             </div>
                                             <div class="col-md-12">
                                                 <input type="file" name="upload_bukti_belanja" accept="image/*"
@@ -401,7 +401,7 @@
                                     $detail->users->roles[0]->name == 'finance')
                                 <button class="btn bg-animation btn-info mr-5 rounded-5"><i
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti
-                                    Belanja</button>
+                                    Pembayaran</button>
                             @elseif ($detail->bukti_transfer_divisi_to_finance != null && $detail->status !== 5)
                                 <button class="btn bg-animation btn-info mr-5 rounded-5"><i
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Selesai</button>
