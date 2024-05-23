@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('transaksi_kas_belanja_file', function (Blueprint $table) {
-            $table->string('url');
-            $table->softDeletes();
-        });
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_belanja_file', 'url'))
+            Schema::connection('pgsql')->table('transaksi_kas_belanja_file', function (Blueprint $table) {
+                $table->string('url');
+                $table->softDeletes();
+            });
     }
 
     /**

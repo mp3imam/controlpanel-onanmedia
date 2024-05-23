@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_belanjas', 'approve_finance_id'))
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
             $table->string('approve_finance_id')->nullable();
             $table->string('transfer_finance_id')->nullable();

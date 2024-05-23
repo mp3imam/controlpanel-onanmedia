@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('pgsql')->hasColumn('data_karyawan_personal', 'foto_ktp'))
         Schema::connection('pgsql')->table('data_karyawan_personal', function (Blueprint $table) {
             $table->text('foto_ktp')->nullable();
             $table->text('foto_kk')->nullable();

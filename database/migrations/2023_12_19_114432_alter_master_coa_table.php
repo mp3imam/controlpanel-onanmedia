@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
-            $table->string('metode_penyusutan')->nullable()->after('type');
-            $table->string('rekening_bank')->nullable()->after('type');
-            $table->text('alamat_bank')->nullable()->after('type');
-            $table->string('nama_bank')->nullable()->after('type');
-            $table->string('account_name')->nullable()->after('type');
-            $table->string('swift_code')->nullable()->after('type');
-        });
+        if (!Schema::connection('pgsql')->hasColumn("cl_coa", "cl_coa"))
+            Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
+                $table->string('metode_penyusutan')->nullable()->after('type');
+                $table->string('rekening_bank')->nullable()->after('type');
+                $table->text('alamat_bank')->nullable()->after('type');
+                $table->string('nama_bank')->nullable()->after('type');
+                $table->string('account_name')->nullable()->after('type');
+                $table->string('swift_code')->nullable()->after('type');
+            });
     }
 
     /**

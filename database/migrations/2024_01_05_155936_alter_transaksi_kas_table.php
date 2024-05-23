@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas', 'alasan'))
         Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
             $table->string('alasan')->nullable();
             $table->softDeletes();

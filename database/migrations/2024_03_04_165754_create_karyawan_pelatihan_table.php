@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('karyawan_pelatihan', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama');
-            $table->string('periode');
-            $table->string('sertifikat')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::connection('pgsql')->hasTable('karyawan_pelatihan'))
+            Schema::create('karyawan_pelatihan', function (Blueprint $table) {
+                $table->id();
+                $table->string('nama');
+                $table->string('periode');
+                $table->string('sertifikat')->nullable();
+                $table->timestamps();
+            });
     }
 
     /**

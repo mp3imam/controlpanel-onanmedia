@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
-            $table->integer('bank_id')->nullable()->change();
-            $table->string('belanjas_id')->nullable();
-            $table->string('image')->nullable();
-            $table->string('status')->nullable();
-        });
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas', 'bank_id'))
+            Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
+                $table->integer('bank_id')->nullable()->change();
+                $table->string('belanjas_id')->nullable();
+                $table->string('image')->nullable();
+                $table->string('status')->nullable();
+            });
     }
 
     /**

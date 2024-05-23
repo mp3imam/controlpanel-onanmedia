@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
-            $table->integer('status')->default(1);
-            $table->integer('user_id')->autoIncrement(false)->default(2);
-        });
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_belanjas', 'status'))
+            Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
+                $table->integer('status')->default(1);
+                $table->integer('user_id')->autoIncrement(false)->default(2);
+            });
     }
 
     /**
@@ -23,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
-            $table->dropColumn('user_id','status');
+            $table->dropColumn('user_id', 'status');
         });
     }
 };

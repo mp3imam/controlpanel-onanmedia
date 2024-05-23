@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absen_karyawan_onanmedia', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id')->autoIncrement(false);
-            $table->string('foto');
-            $table->enum('jenis_absen', ['Masuk', 'Pulang']);
-            $table->enum('status', ['Hadir', 'Telat', 'Izin']);
-            $table->string('keterangan')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::connection('pgsql')->hasTable('absen_karyawan_onanmedia'))
+            Schema::create('absen_karyawan_onanmedia', function (Blueprint $table) {
+                $table->id();
+                $table->integer('user_id')->autoIncrement(false);
+                $table->string('foto');
+                $table->enum('jenis_absen', ['Masuk', 'Pulang']);
+                $table->enum('status', ['Hadir', 'Telat', 'Izin']);
+                $table->string('keterangan')->nullable();
+                $table->timestamps();
+            });
     }
 
     /**

@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('pgsql')->hasColumn('keluarga_karyawan', 'hubungan'))
         Schema::connection('pgsql')->table('keluarga_karyawan', function (Blueprint $table) {
             $table->string('hubungan');
             $table->string('agama_id');

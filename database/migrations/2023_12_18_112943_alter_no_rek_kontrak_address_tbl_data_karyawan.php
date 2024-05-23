@@ -12,11 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_data_karyawan', function (Blueprint $table) {
-            $table->string('no_rek')->default('-')->after('text');
-            $table->date('kontrak')->default(Carbon::now()->addMonth(3))->after('text');
-            $table->text('alamat')->default('-')->after('text');
-        });
+        if (!Schema::connection('pgsql')->hasTable("tbl_data_karyawan"))
+            Schema::table('tbl_data_karyawan', function (Blueprint $table) {
+                $table->string('no_rek')->default('-')->after('text');
+                $table->date('kontrak')->default(Carbon::now()->addMonth(3))->after('text');
+                $table->text('alamat')->default('-')->after('text');
+            });
     }
 
     /**
@@ -25,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tbl_data_karyawan', function (Blueprint $table) {
-            $table->dropColumn(['no_rek','kontrak','alamat']);
+            $table->dropColumn(['no_rek', 'kontrak', 'alamat']);
         });
     }
 };

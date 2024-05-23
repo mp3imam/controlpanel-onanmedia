@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_return_kas', 'tujuan_id'))
         Schema::connection('pgsql')->table('transaksi_return_kas', function (Blueprint $table) {
             $table->unsignedBigInteger('tujuan_id');
             $table->string('alasan')->nullable();

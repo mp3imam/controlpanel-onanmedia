@@ -19,6 +19,7 @@ use App\Http\Controllers\MasterKasBelanjaController;
 use App\Http\Controllers\MasterReturnBankCashController;
 use App\Http\Controllers\MenuPageController;
 use App\Http\Controllers\PekerjaanController;
+use App\Http\Controllers\PembayaranJasaController;
 use App\Http\Controllers\PendidikanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestPencarianDanaController;
@@ -52,6 +53,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('upload-file', [DasboardController::class, 'upload_file'])->name('upload.file');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+    // OnanApps
     Route::resource('users_public', UserPublicController::class);
     Route::get('user_product_datatable', [UserPublicController::class, 'user_product'])->name('user_product_datatable');
     Route::get('user_keahlian_datatable', [UserPublicController::class, 'user_keahlian'])->name('user_keahlian_datatable');
@@ -70,6 +72,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('daftar_pricing_datatable', [DaftarProductJasaController::class, 'daftar_pricing'])->name('daftar_pricing_datatable');
 
     Route::resource('request_pencarian_dana', RequestPencarianDanaController::class);
+    Route::resource('data_transaksi', PembayaranJasaController::class);
+    // OnanApps
 
     // Finance
     Route::resource('master_coa', MasterCoaController::class);

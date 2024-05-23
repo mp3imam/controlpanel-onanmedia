@@ -11,21 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksi_kas_detail', function (Blueprint $table) {
-            $table->id();
-            $table->integer('kas_id')->autoIncrement(false);
-            $table->integer('account_id')->autoIncrement(false);
-            $table->string('keterangan');
-            $table->string('nominal');
-            $table->string('nama_item');
-            $table->string('qty');
-            $table->integer('satuan_id')->autoIncrement(false);
-            $table->string('harga');
-            $table->string('jumlah');
-            $table->string('file');
-            $table->string('status');
-            $table->timestamps();
-        });
+        if (!Schema::connection('pgsql')->hasTable('transaksi_kas_belanjas'))
+            Schema::create('transaksi_kas_detail', function (Blueprint $table) {
+                $table->id();
+                $table->integer('kas_id')->autoIncrement(false);
+                $table->integer('account_id')->autoIncrement(false);
+                $table->string('keterangan');
+                $table->string('nominal');
+                $table->string('nama_item');
+                $table->string('qty');
+                $table->integer('satuan_id')->autoIncrement(false);
+                $table->string('harga');
+                $table->string('jumlah');
+                $table->string('file');
+                $table->string('status');
+                $table->timestamps();
+            });
     }
 
     /**

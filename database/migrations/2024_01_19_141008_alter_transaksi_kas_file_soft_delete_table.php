@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('transaksi_kas_file', function (Blueprint $table) {
-            $table->softDeletes();
-        });
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_file', 'created_at'))
+            Schema::connection('pgsql')->table('transaksi_kas_file', function (Blueprint $table) {
+                $table->softDeletes();
+            });
     }
 
     /**

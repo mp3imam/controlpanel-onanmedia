@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
-            $table->string('jenis')->default(1);
-            $table->string('nominal')->nullable();
-            $table->string('alasan')->nullable();
-            $table->softDeletes();
-        });
+        if (!Schema::connection('pgsql')->hasTable('transaksi_kas_belanjas'))
+            Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
+                $table->string('jenis')->default(1);
+                $table->string('nominal')->nullable();
+                $table->string('alasan')->nullable();
+                $table->softDeletes();
+            });
     }
 
     /**
@@ -25,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
-            $table->dropColumn(['jenis','alasan','nominal']);
+            $table->dropColumn(['jenis', 'alasan', 'nominal']);
             $table->dropSoftDeletes();
         });
     }

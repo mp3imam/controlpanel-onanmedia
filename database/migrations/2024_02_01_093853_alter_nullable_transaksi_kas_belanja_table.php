@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
-            $table->string('checked')->default(0);
-            $table->string('nominal_approve')->default(0);
-            $table->string('nominal_pending')->default(0);
-            $table->string('nominal_tolak')->default(0);
-            $table->string('bukti_transfer_finance_to_divisi')->nullable();
-            $table->string('bukti_transfer_divisi_to_finance')->nullable();
-            $table->integer('account_id')->nullable()->change();
-        });
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_belanjas', 'checked'))
+            Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
+                $table->string('checked')->default(0);
+                $table->string('nominal_approve')->default(0);
+                $table->string('nominal_pending')->default(0);
+                $table->string('nominal_tolak')->default(0);
+                $table->string('bukti_transfer_finance_to_divisi')->nullable();
+                $table->string('bukti_transfer_divisi_to_finance')->nullable();
+                $table->integer('account_id')->nullable()->change();
+            });
     }
 
     /**
@@ -28,7 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas_belanjas', function (Blueprint $table) {
-            $table->dropColumn(['checked','nominal_approve','nominal_pending','nominal_tolak']);
+            $table->dropColumn(['checked', 'nominal_approve', 'nominal_pending', 'nominal_tolak']);
         });
     }
 };

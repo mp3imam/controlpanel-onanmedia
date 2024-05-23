@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('pgsql')->hasTable('temporary_file_upload'))
-            Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
-                $table->string('jenis')->default(0);
+        if (!Schema::connection('pgsql2')->hasColumn("OrderJasa", "OrderJasa"))
+            Schema::connection('pgsql2')->table('OrderJasa', function (Blueprint $table) {
+                $table->string('approve_legal_id')->nullable();
+                $table->string('file')->nullable();
             });
     }
 
@@ -22,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
-            $table->dropColumn('jenis');
-        });
+        Schema::dropColumns(['approve_legal_id', 'file']);
     }
 };

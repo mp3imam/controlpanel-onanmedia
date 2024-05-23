@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('pgsql')->table('temporary_file_upload', function (Blueprint $table) {
-            $table->string('kas_id')->nullable();
-        });
+        if (!Schema::connection('pgsql')->hasColumn("temporary_file_upload", "kas_id"))
+            Schema::connection('pgsql')->table('temporary_file_upload', function (Blueprint $table) {
+                $table->string('kas_id')->nullable();
+            });
     }
 
     /**
