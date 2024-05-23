@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
             UserPanelKurangSeeder::class,
             // AdminBalasanTemplateSeeder::class,
             // PermissionMenuPembayaranJasaSeeder::class
+            PermissionMenuPembayaranJasaSeeder::class
         ]);
     }
 }

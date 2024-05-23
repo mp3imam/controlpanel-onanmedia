@@ -18,4 +18,13 @@ class OrderJasaModel extends Model
         return $this->hasOne(HelpdeskModel::class, 'orderId');
     }
 
+    public function order()
+    {
+        return $this->hasOne(OrderModel::class, 'id', 'orderId');
+    }
+
+    public function jasa()
+    {
+        return $this->hasOne(JasaModel::class, 'jasaId');
+    }
 }

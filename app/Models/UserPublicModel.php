@@ -22,35 +22,41 @@ class UserPublicModel extends Model
 
     public function keluhan_user()
     {
-        return $this->hasOne(HelpdeskModel::class, 'userId','id');
+        return $this->hasOne(HelpdeskModel::class, 'userId', 'id');
     }
 
     public function adminOnan()
     {
-        return $this->hasOne(HelpdeskModel::class, 'adminId','id');
+        return $this->hasOne(HelpdeskModel::class, 'adminId', 'id');
     }
 
-    public function users_bank_cash(){
+    public function users_bank_cash()
+    {
         return $this->belongsTo(MasterBankCashModel::class, 'id');
     }
 
-    public function users_chat(){
-        return $this->hasOne(HelpdeskDetailModel::class, 'id','userId');
+    public function users_chat()
+    {
+        return $this->hasOne(HelpdeskDetailModel::class, 'id', 'userId');
     }
 
     public function user_public()
     {
-        return $this->hasOne(HelpdeskModel::class, 'userId','id');
+        return $this->hasOne(HelpdeskModel::class, 'userId', 'id');
     }
 
     public function jasa()
     {
-        return $this->belongsTo(JasaModel::class, 'userId','id');
+        return $this->belongsTo(JasaModel::class, 'userId', 'id');
     }
 
     public function tender()
     {
-        return $this->belongsTo(DaftarTenderModel::class, 'userId','id');
+        return $this->belongsTo(DaftarTenderModel::class, 'userId', 'id');
     }
 
+    public function rekening()
+    {
+        return $this->hasOne(UserPublicModel::class, 'userId');
+    }
 }

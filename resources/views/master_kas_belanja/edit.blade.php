@@ -105,7 +105,7 @@
                                                 <label for="account_id" class="form-label">Upload Bukti Pembayaran</label>
                                             </div>
                                             <div class="col-md-12">
-                                                <input type="file" name="upload_bukti_belanja" accept="image/*"
+                                                <input type="file" name="upload_bukti_pembayaran" accept="image/*"
                                                     required />
                                             </div>
                                         </div>

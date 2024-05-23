@@ -13,23 +13,33 @@ class OrderModel extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function penjual(){
+    public function penjual()
+    {
         return $this->belongsTo(UserPublicModel::class, 'userIdPenjual', 'id');
     }
 
-    public function pembeli(){
+    public function pembeli()
+    {
         return $this->belongsTo(UserPublicModel::class, 'userIdPembeli', 'id');
     }
 
-    public function HelpDesk(){
+    public function HelpDesk()
+    {
         return $this->hasOne(HelpdeskModel::class, 'orderId', 'id');
     }
 
-    public function orderJasa(){
+    public function orderJasa()
+    {
         return $this->hasOne(OrderJasaModel::class, 'orderId', 'id');
+    }
+
+    public function aktifitas()
+    {
+        return $this->hasOne(AktifitasJasaModel::class, 'id', 'msAktifitasId');
     }
 }
