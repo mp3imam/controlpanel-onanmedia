@@ -111,6 +111,8 @@
                         render: function(data, type, row, meta) {
                             return userRole == 'finance' ?
                                 `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                                userRole == 'helpdesk' ?
+                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_helpdesk('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
                                 data;
                         }
                     }, {
