@@ -73,7 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('request_pencarian_dana', RequestPencarianDanaController::class);
     Route::resource('data_transaksi', PembayaranJasaController::class);
-    Route::get('data_transaksi_table', [PembayaranJasaController::class,'get_datatable'])->name('data_transaksi_table');
+    Route::get('data_transaksi_table', [PembayaranJasaController::class, 'get_datatable'])->name('data_transaksi_table');
     // OnanApps
 
     // Finance

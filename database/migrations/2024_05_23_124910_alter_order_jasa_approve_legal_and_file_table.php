@@ -13,7 +13,8 @@ return new class extends Migration
     {
         if (!Schema::connection('pgsql2')->hasColumn("OrderJasa", "OrderJasa"))
             Schema::connection('pgsql2')->table('OrderJasa', function (Blueprint $table) {
-                $table->string('approve_legal_id')->nullable();
+                $table->string('approve_name')->nullable();
+                $table->string('finance_name')->nullable();
                 $table->string('file')->nullable();
             });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumns(['approve_legal_id', 'file']);
+        Schema::dropColumns(['approve_name', 'finance_name', 'file']);
     }
 };

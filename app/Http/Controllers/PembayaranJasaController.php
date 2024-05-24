@@ -6,6 +6,7 @@ use App\Models\BankModel;
 use App\Models\MasterCoaModel;
 use App\Models\OrderJasaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +24,6 @@ class PembayaranJasaController extends Controller
      */
     function __construct()
     {
-        dd(OrderJasaModel::with(['order.penjual.rekening', 'order.pembeli', 'order.aktifitas'])->first());
         $this->middleware('permission:Pembayaran Jasa');
     }
 
@@ -38,22 +38,28 @@ class PembayaranJasaController extends Controller
     function get_datatable(Request $request)
     {
         return DataTables::of($this->models($request))
+            ->addColumn('tanggal', function ($row) {
+                return Carbon::parse($row->order->createdAt)->format('d-m-Y');
+            })
             ->addColumn('nomor_order', function ($row) {
                 return $row->order->nomor;
             })
             ->addColumn('penjual', function ($row) {
-                return $row->order->penjual->name . "|" . $row->order->penjual->rekening->rekening;
+                return $row->order->penjual->name . "<br>" . $row->order->penjual->phone;
+            })
+            ->addColumn('rekening_penjual', function ($row) {
+                return $row->order->penjual->rekening ? $row->order->penjual->rekening[0]->rekening : "-";
             })
             ->addColumn('pembeli', function ($row) {
-                return $row->order->pembeli->name;
+                return $row->order->pembeli->name . "<br>" . $row->order->pembeli->phone;
             })
             ->addColumn('status', function ($row) {
                 return $row->order->aktifitas->nama;
             })
             ->addColumn('harga', function ($row) {
-                return $row->order->totalPenawaran;
+                return "Rp. " . number_format($row->order->totalPenawaran, 0, ',', '.');
             })
-            ->rawColumns(['nomor_order', 'penjual', 'pembeli', 'status', 'harga'])
+            ->rawColumns(['nomor_order', 'penjual', 'rekening_penjual', 'pembeli', 'status', 'harga'])
             ->make(true);
     }
 
@@ -78,7 +84,6 @@ class PembayaranJasaController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validasi = [
             'pilih_data_id' => 'required',
             'kode_coa'      => 'required',
@@ -227,16 +232,22 @@ class PembayaranJasaController extends Controller
 
     public function models($request)
     {
-        return OrderJasaModel::with(['order.penjual', 'order.pembeli', 'order.aktifitas'])
+        return OrderJasaModel::with(['order.penjual.rekening', 'order.pembeli', 'order.aktifitas'])
+            ->whereHas('order.aktifitas', fn ($q) => $q->where('id', 1007))
+            ->when(auth()->user()->roles[0]->name == 'finance', fn ($q) => $q->where('approve_legal_id', 1))
+            ->when($request->cari_tanggal, function ($q) use ($request) {
+                $tanggal = explode(" to ", $request->cari_tanggal);
+                $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
+                    $q->whereDate('createdAt', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'));
+                });
+                $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
+                    $q->whereDate('createdAt', '>=', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'))->whereDate('createdAt', '<=', Carbon::createFromFormat('d-m-Y', $tanggal[1])->addDays(1)->format('Y-m-d'));
+                });
+            })
             ->when($request->cari, function ($q) use ($request) {
-                $q->where('uraian', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('type', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('metode_penyusutan', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('rekening_bank', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('alamat_bank', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('nama_bank', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('account_name', 'ilike', '%' . $request->cari . "%")
-                    ->orWhere('swift_code', 'ilike', '%' . $request->cari . "%");
+                $q->whereHas('order', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")->orWhere('nomor', 'ilike', '%' . $request->cari . "%")->orWhere('totalPenawaran', 'ilike', '%' . $request->cari . "%")->orWhereHas('aktifitas', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")))
+                    ->orWhereHas('order.pembeli', fn ($q) => $q->where('name', 'ilike', '%' . $request->cari . "%"))
+                    ->orWhereHas('order.penjual', fn ($q) => $q->where('name', 'ilike', '%' . $request->cari . "%")->orWhereHas('rekening', fn ($q) => $q->where('isMain', 1)->where('rekening', 'ilike', '%' . $request->cari . "%")));
             })
             ->get();
     }

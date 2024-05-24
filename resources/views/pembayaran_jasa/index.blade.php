@@ -12,27 +12,18 @@
             <div class="card">
                 <div class="card-body">
                     <div id="customerList">
-                        <div class="col-sm-auto mb-3">
-                            <a href="{{ route('master_coa.create') }}" type="button" class="btn btn-success">
-                                Tambah
-                            </a>
-                            {{-- <a type="button" class="btn btn-primary btn-label btn-pdf">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="bx bxs-file-pdf label-icon align-middle fs-16 me-2"></i>
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-loading" hidden>
-                                    Loading...
-                                </div>
-                                <div class="flex-grow-1 btn-pdf-no-loading">
-                                    PDF
-                                </div>
-                            </div>
-                        </a> --}}
-                        </div>
                         <div class="row g-4">
                             <div class="row mt-4">
-                                <div class="col-xxl-12 col-md-6 p-3">
+                                <div class="col-xxl-4 col-md-6 p-3">
+                                    <label>Filter</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control flatpickr-input active" id="cari_tanggal"
+                                            name="cari_tanggal" data-provider="flatpickr" data-date-format="d-m-Y"
+                                            data-range-date="true" readonly="readonly"
+                                            value="{{ Carbon\Carbon::now()->startOfWeek()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
+                                    </div>
+                                </div>
+                                <div class="col-xxl-8 col-md-6 p-3">
                                     <label>Filter</label>
                                     <div class="input-group">
                                         <input type="text" id="cari" name="cari" class="form-control"
@@ -55,9 +46,9 @@
                                             <th class="text-uppercase">Nomor Order</th>
                                             <th class="text-uppercase">Pembeli</th>
                                             <th class="text-uppercase">Penjual</th>
+                                            <th class="text-uppercase">No Rek Penjual</th>
                                             <th class="text-uppercase">Status</th>
                                             <th class="text-uppercase">Harga</th>
-                                            <th class="text-uppercase">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -67,7 +58,7 @@
                     </div>
                     <div class="modal fade" id="exampleModalgrid" tabindex="-1" aria-labelledby="exampleModalgridLabel"
                         data-bs-backdrop="static" aria-modal="true" role="dialog" style="display: none;">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content" id="modal_content"></div>
                         </div>
                     </div>
@@ -87,6 +78,7 @@
     <script src="https://cdn.datatables.net/fixedcolumns/4.2.2/js/dataTables.fixedColumns.min.js"></script>
     <script type="text/javascript">
         $(function() {
+            var userRole = "{{ auth()->user()->roles[0]->name }}";
             var table = $('#dataTable').DataTable({
                 dom: 'lrtip',
                 processing: true,
@@ -94,51 +86,143 @@
                 ajax: {
                     url: "{{ route('data_transaksi_table') }}",
                     data: function(d) {
-                        d.cari = $('#cari').val()
+                        d.cari = $('#cari').val(),
+                            d.cari_tanggal = $('#cari_tanggal').val()
                     }
                 },
                 columns: [{
-                    data: "id",
-                    sortable: false,
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
+                        data: "id",
+                        sortable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, {
+                        data: 'tanggal',
+                        name: 'Tanggal Pemesanan'
+                    }, {
+                        data: 'nama',
+                        name: 'Product',
+                        render: function(data, type, row) {
+                            return data.length > 20 ? data.substr(0, 20) + '...' : data;
+                        }
+                    }, {
+                        data: 'nomor_order',
+                        name: 'Nomor Order',
+                        render: function(data, type, row, meta) {
+                            return userRole == 'finance' ?
+                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                                data;
+                        }
+                    }, {
+                        data: 'pembeli',
+                        name: 'Pembeli',
+                        render: function(data, type, row, meta) {
+                            return userRole == 'helpdesk' ?
+                                `<a type="button" target="_blank"
+                                            href="https://api.whatsapp.com/send/?phone=${row.pembeli.phone}&text=Hallo Bpk/Ibu ${row.pembeli.name}. Kami dari tim Onanmedia ingin memberitahukan bahwa kami telah menerima umpan balik atau keluhan terkait transaksi penjualan Anda. Untuk mendapatkan informasi lebih lanjut, kami mengundang Anda untuk mengunjungi situs resmi kami di onanmedia.com. Alternatifnya, Anda juga dapat menghubungi kami melalui layanan pelanggan WhatsApp di nomor yang tertera. Terima kasih atas perhatian dan kerjasamanya. Hormat kami,&type=phone_number&app_absent=0"
+                                            class="btn btn-success btn-border rounded-5 me-3">
+                                            <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Pembeli
+                                        </a>` :
+                                data;
+                        }
+
+                    },
+                    {
+                        data: 'penjual',
+                        name: 'Penjual',
+                    },
+                    {
+                        data: 'rekening_penjual',
+                        name: 'No Rek Penjual',
+                    },
+                    {
+                        data: 'status',
+                        name: 'Status',
+                    },
+                    {
+                        data: 'harga',
+                        name: 'Harga',
                     }
-                }, {
-                    data: 'createdAt',
-                    name: 'Tanggal Pemesanan'
-                }, {
-                    data: 'nama',
-                    name: 'Product'
-                }, {
-                    data: 'nomor_order',
-                    name: 'Nomor Order'
-                }, {
-                    data: 'pembeli',
-                    name: 'Pembeli'
-                }, {
-                    data: 'penjual',
-                    name: 'Penjual',
-                }, {
-                    data: 'status',
-                    name: 'Status',
-                }, {
-                    data: 'harga',
-                    name: 'Harga',
-                }, {
-                    data: 'id',
-                    name: 'Action',
-                    render: function(data, type, row, meta) {
-                        return `<a href="{{ url('master_coa') }}/` + row.id +
-                            `/edit" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm">` +
-                            data + `</a>`;
-                    }
-                }]
+                ]
             });
 
             $('#cari').on('keyup', function() {
                 table.draw();
             });
+            $('#cari_tanggal').on('change', function() {
+                table.draw();
+            });
         });
+
+        function modal_crud(id, tanggal, product, nomor_order, pembeli, penjual, rekening_penjual, status, harga) {
+            $('#modal_content').html(`
+            <div class="modal-body p-5">
+                <h1 class="mb-4">Upload Bukti Transfer</h1>
+                <div class="row">
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Tanggal Pemesanan</label>
+                        <input class="form-control" type="text" value="${tanggal}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Product</label>
+                        <input class="form-control" type="text" value="${product}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Tanggal Pemesanan</label>
+                        <input class="form-control" type="text" value="${nomor_order}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Nama Pembeli</label>
+                        <input class="form-control" type="text" value="${pembeli}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Nama Penjual</label>
+                        <input class="form-control" type="text" value="${penjual}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Rek Penjual</label>
+                        <input class="form-control" type="text" value="${rekening_penjual}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Status</label>
+                        <input class="form-control" type="text" value="${status}" readonly>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Harga</label>
+                        <input class="form-control" type="text" value="${harga}" readonly>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <label for="formFile" class="form-label">Upload Bukti Pembayaran</label>
+                        <input class="form-control" type="file" id="formFile">
+                    </div>
+                    <button class="btn btn-primary form-control mt-4" id="buttonUploadBukti">Submit</button>
+                </div>
+            </div>
+            `)
+            $("#exampleModal").modal('show');
+
+            function buttonUploadBukti() {
+                var fd = new FormData()
+                fd.append('id', id)
+                fd.append('foto_bukti_transfer_manual', $('#formFile').val())
+                $.ajax({
+                    type: 'post',
+                    url: "{{ route('data_transaksi.store') }}",
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        res == 200 ? $('#dataTable').DataTable().ajax.reload() : sweatAlert('Error',
+                            'Something Wrong', 'error')
+                    }
+                }).done(function() { //use this
+                    $('#exampleModal').modal('hide')
+                });
+
+
+            }
+        }
+
 
         $('.btn-pdf').on('click', function() {
             $('#modal_content').html(`

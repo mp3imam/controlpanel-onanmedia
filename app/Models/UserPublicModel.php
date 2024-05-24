@@ -57,6 +57,16 @@ class UserPublicModel extends Model
 
     public function rekening()
     {
-        return $this->hasOne(UserPublicModel::class, 'userId');
+        return $this->hasMany(UserRekeningModel::class, 'userId');
+    }
+
+    public function scopePenjualRekening($q)
+    {
+        return $q->whereHas('rekening', function ($q) {
+            $q->where(function ($q) {
+                $q->where('isMain', 1)
+                    ->orWhere('isMain', 0);
+            });
+        });
     }
 }
