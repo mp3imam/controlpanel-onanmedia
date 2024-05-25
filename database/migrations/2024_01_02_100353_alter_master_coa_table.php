@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('pgsql')->hasTable('temporary_file_upload'))
+        if (!Schema::connection('pgsql')->hasColumn('cl_coa', 'jenis'))
             Schema::connection('pgsql')->table('cl_coa', function (Blueprint $table) {
                 $table->string('jenis')->default(0);
             });

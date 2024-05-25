@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('pgsql')->hasTable('transaksi_kas_belanjas'))
+        if (!Schema::connection('pgsql')->hasTable('transaksi_kas_detail'))
             Schema::create('transaksi_kas_detail', function (Blueprint $table) {
                 $table->id();
                 $table->integer('kas_id')->autoIncrement(false);
