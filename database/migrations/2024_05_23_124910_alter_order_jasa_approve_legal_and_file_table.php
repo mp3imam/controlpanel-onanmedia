@@ -15,7 +15,7 @@ return new class extends Migration
             Schema::connection('pgsql2')->table('OrderJasa', function (Blueprint $table) {
                 $table->string('approve_name')->nullable();
                 $table->string('finance_name')->nullable();
-                $table->string('file')->nullable();
+                $table->string('file_upload')->nullable();
             });
     }
 

@@ -14,7 +14,7 @@
                     <div id="customerList">
                         <div class="row g-4">
                             <div class="row mt-4">
-                                <div class="col-xxl-4 col-md-6 p-3">
+                                <div class="col-xxl-3 col-md-3 p-3">
                                     <label>Filter</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control flatpickr-input active" id="cari_tanggal"
@@ -23,7 +23,7 @@
                                             value="{{ Carbon\Carbon::now()->startOfWeek()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
                                     </div>
                                 </div>
-                                <div class="col-xxl-8 col-md-6 p-3">
+                                <div class="col-xxl-6 col-md-6 p-3">
                                     <label>Filter</label>
                                     <div class="input-group">
                                         <input type="text" id="cari" name="cari" class="form-control"
@@ -31,8 +31,28 @@
                                         <button class="input-group-text"><i class="ri-search-line"></i>&nbsp;Cari</button>
                                     </div>
                                 </div>
+                                <div class="col-xxl-3 col-md-3 p-3">
+                                    <label>Filter</label>
+                                    <div class="input-group">
+                                        <select name="cari_status" id="cari_status" class="form-control">
+                                            <option value="">Semua</option>
+                                            @hasrole('finance')
+                                                <option value="1" selected>Approve</option>
+                                                <option value="2">Belum Approve</option>
+                                                <option value="3">Selesai</option>
+                                            @else
+                                                <option value="1">Approve</option>
+                                                <option value="2" selected>Belum Approve</option>
+                                                <option value="3">Selesai</option>
+                                            @endhasrole
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div id="userRole" data-role="{{ auth()->user()->roles[0]->name }}"></div>
+                        <input id="userName" type="hidden" value="{{ auth()->user()->nama_lengkap }}">
+
                         <div class="card">
                             <div class="card-body">
                                 <table id="dataTable" class="table table-striped table-bordered table-sm no-wrap"
@@ -41,7 +61,9 @@
                                         <tr>
                                             <th style="z-index: 999; background-color:white">No</th>
                                             <th class="text-uppercase" width="10%"
-                                                style="z-index: 999; background-color:white">Tanggal Pemesanan</th>
+                                                style="z-index: 999; background-color:white">Tanggal</th>
+                                            <th class="text-uppercase" hidden>phone_penjual</th>
+                                            <th class="text-uppercase" hidden>phone_pembeli</th>
                                             <th class="text-uppercase">Product</th>
                                             <th class="text-uppercase">Nomor Order</th>
                                             <th class="text-uppercase">Pembeli</th>
@@ -88,6 +110,7 @@
                     data: function(d) {
                         d.cari = $('#cari').val(),
                             d.cari_tanggal = $('#cari_tanggal').val()
+                        d.cari_status = $('#cari_status').val()
                     }
                 },
                 columns: [{
@@ -98,40 +121,55 @@
                         }
                     }, {
                         data: 'tanggal',
-                        name: 'Tanggal Pemesanan'
+                        name: 'Tanggal'
+                    }, {
+                        data: 'phone_penjual',
+                        visible: false
+                    }, {
+                        data: 'phone_pembeli',
+                        visible: false
                     }, {
                         data: 'nama',
                         name: 'Product',
                         render: function(data, type, row) {
-                            return data.length > 20 ? data.substr(0, 20) + '...' : data;
+                            var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
+                            var link = data.toLowerCase().replace(/ /g, '-');
+                            return `<a target="_blank" href="http://www.onanmedia.com/jasa/${row.penjual}/${link}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${data}</a>`
                         }
                     }, {
                         data: 'nomor_order',
                         name: 'Nomor Order',
                         render: function(data, type, row, meta) {
                             return userRole == 'finance' ?
-                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
-                                userRole == 'helpdesk' ?
-                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_helpdesk('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','finance','Upload Foto Bukti Pembayaran Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                                userRole == 'help_desk' ?
+                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','helpdesk','Pengecekan Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
                                 data;
                         }
                     }, {
                         data: 'pembeli',
                         name: 'Pembeli',
                         render: function(data, type, row, meta) {
-                            return userRole == 'helpdesk' ?
+                            return userRole == 'help_desk' ?
                                 `<a type="button" target="_blank"
-                                            href="https://api.whatsapp.com/send/?phone=${row.pembeli.phone}&text=Hallo Bpk/Ibu ${row.pembeli.name}. Kami dari tim Onanmedia ingin memberitahukan bahwa kami telah menerima umpan balik atau keluhan terkait transaksi penjualan Anda. Untuk mendapatkan informasi lebih lanjut, kami mengundang Anda untuk mengunjungi situs resmi kami di onanmedia.com. Alternatifnya, Anda juga dapat menghubungi kami melalui layanan pelanggan WhatsApp di nomor yang tertera. Terima kasih atas perhatian dan kerjasamanya. Hormat kami,&type=phone_number&app_absent=0"
-                                            class="btn btn-success btn-border rounded-5 me-3">
-                                            <i class="ri-whatsapp-fill ri-1x"></i> WhatsApp Pembeli
-                                        </a>` :
+                                    href="https://api.whatsapp.com/send/?phone=${row.phone_pembeli}&text=Hallo Bpk/Ibu ${data}. Kami dari tim Onanmedia ingin bertanya terkait pekerjaan ${row.nama} dari Bpk /Ibu ${row.penjual} nomor order ${row.nomor_order} sejumlah ${row.harga}. Apakah benar sudah selesai? mohon di koreksi kembali terkait pekerjaan yang telah anda berikan, apabila sudah lebih dari 2 hari tidak ada balasan ke nomor ini, maka akan kami anggap sudah selesai. Terima kasih sudah menggunakan Onanmedia dan Semoga berkah selalu.&type=phone_number&app_absent=0"
+                                    class="btn btn-outline-primary btn-border rounded-3">
+                                    <i class="ri-whatsapp-fill"></i> ${data.split(" ")[0]}
+                                </a>` :
                                 data;
                         }
-
                     },
                     {
                         data: 'penjual',
                         name: 'Penjual',
+                        render: function(data, type, row, meta) {
+                            return userRole == 'help_desk' ?
+                                `<a type="button" target="_blank"
+                                    href="https://api.whatsapp.com/send/?phone=${row.phone_penjual}&text=Hallo Bpk/Ibu ${data}. Kami dari tim Onanmedia ingin memberitahukan bahwa pekerjaan ${row.nama} dari Bpk /Ibu ${row.pembeli} dengan nomor order ${row.nomor_order} sudah selesai. Apakah nomor rekening penjual ${row.rekening_penjual} sudah benar? Mohon agar dibalas kembali, agar segera kita transfer ke rekening sejumlah ${row.harga}. Terima kasih sudah menggunakan Onanmedia dan Semoga berkah selalu.&type=phone_number&app_absent=0" class="btn btn-outline-success btn-border rounded-3">
+                                    <i class="ri-whatsapp-fill"></i> ${data.split(" ")[0]}
+                                </a>` :
+                                data;
+                        }
                     },
                     {
                         data: 'rekening_penjual',
@@ -151,18 +189,26 @@
             $('#cari').on('keyup', function() {
                 table.draw();
             });
+
             $('#cari_tanggal').on('change', function() {
+                table.draw();
+            });
+
+            $('#cari_status').on('change', function() {
                 table.draw();
             });
         });
 
-        function modal_crud(id, tanggal, product, nomor_order, pembeli, penjual, rekening_penjual, status, harga) {
+        function modal_crud(id, tanggal, product, nomor_order, pembeli, penjual, rekening_penjual, status, harga, role,
+            judul) {
             $('#modal_content').html(`
             <div class="modal-body p-5">
-                <h1 class="mb-4">Upload Bukti Transfer</h1>
+                <h1 class="mb-4">${judul}</h1>
                 <div class="row">
+                    <div id="userRole" data-role="{{ auth()->user()->roles[0]->name }}"></div>
                     <div class="col-lg-4 mb-3">
                         <label for="formFile" class="form-label">Tanggal Pemesanan</label>
+                        <input id="id" hidden value="${id}">
                         <input class="form-control" type="text" value="${tanggal}" readonly>
                     </div>
                     <div class="col-lg-4 mb-3">
@@ -170,7 +216,7 @@
                         <input class="form-control" type="text" value="${product}" readonly>
                     </div>
                     <div class="col-lg-4 mb-3">
-                        <label for="formFile" class="form-label">Tanggal Pemesanan</label>
+                        <label for="formFile" class="form-label">Nomor Order</label>
                         <input class="form-control" type="text" value="${nomor_order}" readonly>
                     </div>
                     <div class="col-lg-4 mb-3">
@@ -193,20 +239,31 @@
                         <label for="formFile" class="form-label">Harga</label>
                         <input class="form-control" type="text" value="${harga}" readonly>
                     </div>
-                    <div class="col-lg-12 mb-3">
-                        <label for="formFile" class="form-label">Upload Bukti Pembayaran</label>
-                        <input class="form-control" type="file" id="formFile">
-                    </div>
-                    <button class="btn btn-primary form-control mt-4" id="buttonUploadBukti">Submit</button>
+                    @if (auth()->user()->roles[0]->name == 'finance')
+                        <div class="col-lg-12 mb-3">
+                            <label for="formFile" class="form-label">Upload Bukti Pembayaran</label>
+                            <input class="form-control" id="formFile" type="file" required>
+                        </div>
+                        <button class="btn btn-primary form-control mt-4 btn-pembayaran-jasa">Upload Bukti Pembayaran</button>
+                    @else
+                        <button class="btn btn-primary form-control mt-4 btn-pembayaran-jasa">Approve</button>
+                    @endif
                 </div>
             </div>
             `)
-            $("#exampleModal").modal('show');
+            $("#exampleModalgrid").modal('show');
+            $('.btn-pembayaran-jasa').on('click', function() {
+                if (!confirm('Anda yakin ingin approve?')) return false
 
-            function buttonUploadBukti() {
+                if (userRole === 'finance')
+                    if (!$('#formFile').val()) return false
+
+                var userRole = $('#userRole').data('role');
+                var userName = $('#userName').val();
                 var fd = new FormData()
                 fd.append('id', id)
-                fd.append('foto_bukti_transfer_manual', $('#formFile').val())
+                fd.append('userName', userName)
+                if (userRole === 'finance') fd.append('foto_bukti_transfer_manual', $('#formFile').val())
                 $.ajax({
                     type: 'post',
                     url: "{{ route('data_transaksi.store') }}",
@@ -214,17 +271,35 @@
                     processData: false,
                     contentType: false,
                     success: function(res) {
-                        res == 200 ? $('#dataTable').DataTable().ajax.reload() : sweatAlert('Error',
-                            'Something Wrong', 'error')
+                        if (res.status == 200) {
+                            $('#dataTable').DataTable().ajax.reload()
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Data Berhasil di approve',
+                                icon: 'success',
+                                timer: 1500
+                            })
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Data Error',
+                                icon: 'danger',
+                                timer: 1500
+                            })
+                        }
                     }
                 }).done(function() { //use this
-                    $('#exampleModal').modal('hide')
+                    $('#exampleModalgrid').modal('hide')
                 });
+            })
 
-
-            }
         }
 
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $('.btn-pdf').on('click', function() {
             $('#modal_content').html(`

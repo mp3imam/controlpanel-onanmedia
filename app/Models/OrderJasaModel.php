@@ -12,6 +12,7 @@ class OrderJasaModel extends Model
     protected $table = 'OrderJasa';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     public function helpDesk()
     {

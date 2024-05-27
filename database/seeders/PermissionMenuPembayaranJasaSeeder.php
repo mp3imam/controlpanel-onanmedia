@@ -14,8 +14,8 @@ class PermissionMenuPembayaranJasaSeeder extends Seeder
     public function run(): void
     {
         Permission::create([
-            'name' => 'Imam',
-            'alias' => 'Imam',
+            'name' => 'Pembayaran Jasa',
+            'alias' => 'Pembayaran Jasa',
             'module_icon' => 'ri-dashboard-fill',
             'module_url' => 'data_transaksi',
             'module_parent' => 9,
