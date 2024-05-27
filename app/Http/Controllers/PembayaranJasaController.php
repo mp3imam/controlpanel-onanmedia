@@ -60,7 +60,9 @@ class PembayaranJasaController extends Controller
                 return $row->order->pembeli->name;
             })
             ->addColumn('status', function ($row) {
-                return $row->order->aktifitas->nama;
+                return $row->approve_name == null && $row->finance_name == null ? 'Validasi'
+                    : ($row->approve_name != null && $row->finance_name != null ? 'Selesai'
+                        : 'Pembayaran');
             })
             ->addColumn('harga', function ($row) {
                 return "Rp. " . number_format($row->order->totalPenawaran, 0, ',', '.');
@@ -115,7 +117,7 @@ class PembayaranJasaController extends Controller
         if ($request->userRole == 'finance')
             $update = [
                 'finance_name' => $request->userName,
-                'upload_file' => $request->foto_bukti_transfer_manual,
+                'file_upload' => $request->foto_bukti_transfer_manual,
             ];
 
         $message = OrderJasaModel::whereId($request->id)->update($update);
@@ -225,7 +227,7 @@ class PembayaranJasaController extends Controller
     {
         return OrderJasaModel::with(['order.penjual.rekening', 'order.pembeli', 'order.aktifitas'])->when($request->cari_status, function ($q) use ($request) {
             $status = $request->cari_status;
-            $q->when($status == 1, fn ($query) => $query->whereNotNull('approve_name'))
+            $q->when($status == 1, fn ($query) => $query->whereNotNull('approve_name')->whereNull('finance_name'))
                 ->when($status == 2, fn ($query) => $query->whereNull('approve_name'))
                 ->when($status == 3, fn ($query) => $query->whereNotNull('finance_name'));
         })

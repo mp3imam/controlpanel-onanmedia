@@ -134,15 +134,15 @@
                         render: function(data, type, row) {
                             var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
                             var link = data.toLowerCase().replace(/ /g, '-');
-                            return `<a target="_blank" href="http://www.onanmedia.com/jasa/${row.penjual}/${link}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${data}</a>`
+                            return `<a target="_blank" href="http://www.onanmedia.com/jasa/${row.penjual}/${link}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
                         }
                     }, {
                         data: 'nomor_order',
                         name: 'Nomor Order',
                         render: function(data, type, row, meta) {
-                            return userRole == 'finance' ?
+                            return userRole == 'finance' && row.status == 'Pembayaran' ?
                                 `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','finance','Upload Foto Bukti Pembayaran Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
-                                userRole == 'help_desk' ?
+                                userRole == 'help_desk' && row.status == 'Validasi' ?
                                 `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','helpdesk','Pengecekan Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
                                 data;
                         }
@@ -150,7 +150,7 @@
                         data: 'pembeli',
                         name: 'Pembeli',
                         render: function(data, type, row, meta) {
-                            return userRole == 'help_desk' ?
+                            return userRole == 'help_desk' && row.status == 'Validasi' ?
                                 `<a type="button" target="_blank"
                                     href="https://api.whatsapp.com/send/?phone=${row.phone_pembeli}&text=Hallo Bpk/Ibu ${data}. Kami dari tim Onanmedia ingin bertanya terkait pekerjaan ${row.nama} dari Bpk /Ibu ${row.penjual} nomor order ${row.nomor_order} sejumlah ${row.harga}. Apakah benar sudah selesai? mohon di koreksi kembali terkait pekerjaan yang telah anda berikan, apabila sudah lebih dari 2 hari tidak ada balasan ke nomor ini, maka akan kami anggap sudah selesai. Terima kasih sudah menggunakan Onanmedia dan Semoga berkah selalu.&type=phone_number&app_absent=0"
                                     class="btn btn-outline-primary btn-border rounded-3">
@@ -163,7 +163,7 @@
                         data: 'penjual',
                         name: 'Penjual',
                         render: function(data, type, row, meta) {
-                            return userRole == 'help_desk' ?
+                            return userRole == 'help_desk' && row.status == 'Validasi' ?
                                 `<a type="button" target="_blank"
                                     href="https://api.whatsapp.com/send/?phone=${row.phone_penjual}&text=Hallo Bpk/Ibu ${data}. Kami dari tim Onanmedia ingin memberitahukan bahwa pekerjaan ${row.nama} dari Bpk /Ibu ${row.pembeli} dengan nomor order ${row.nomor_order} sudah selesai. Apakah nomor rekening penjual ${row.rekening_penjual} sudah benar? Mohon agar dibalas kembali, agar segera kita transfer ke rekening sejumlah ${row.harga}. Terima kasih sudah menggunakan Onanmedia dan Semoga berkah selalu.&type=phone_number&app_absent=0" class="btn btn-outline-success btn-border rounded-3">
                                     <i class="ri-whatsapp-fill"></i> ${data.split(" ")[0]}
@@ -263,6 +263,7 @@
                 var fd = new FormData()
                 fd.append('id', id)
                 fd.append('userName', userName)
+                fd.append('userRole', userRole)
                 if (userRole === 'finance') fd.append('foto_bukti_transfer_manual', $('#formFile').val())
                 $.ajax({
                     type: 'post',
