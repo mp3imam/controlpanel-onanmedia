@@ -23,10 +23,10 @@ onanpanel-dev:
       cd /var/www/html/controlpanel-onanmedia/ &&
       git pull origin dev &&
       composer install &&
-      php artisan migrate --database=pgsql"
+      php artisan migrate --database=pgsql &&
+      php artisan migrate --database=pgsql2"
   only:
     - dev
-
 # onanpanel-prod:
 #   stage: deploy
 #   before_script:
