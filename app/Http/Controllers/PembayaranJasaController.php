@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\BankModel;
+use App\Models\JurnalUmumDetail;
+use App\Models\MasterBankCashModel;
 use App\Models\MasterCoaModel;
+use App\Models\MasterJurnal;
+use App\Models\MasterJurnalFile;
 use App\Models\OrderJasaModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -93,24 +98,77 @@ class PembayaranJasaController extends Controller
     public function store(Request $request)
     {
         $message = '';
-        try {
+        // DB::beginTransaction();
+        // try {
+        $update = [
+            'approve_name' => $request->userName,
+        ];
+        if ($request->userRole == 'finance') {
             $update = [
-                'approve_name' => $request->userName,
+                'finance_name' => $request->userName,
+                'file_upload' => $request->foto_bukti_transfer_manual,
             ];
-            if ($request->userRole == 'finance')
-                $update = [
-                    'finance_name' => $request->userName,
-                    'file_upload' => $request->foto_bukti_transfer_manual,
-                ];
 
-            $message = OrderJasaModel::whereId($request->id)->update($update);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'status'  => Response::HTTP_BAD_REQUEST,
-                'message' => $th
-            ]);
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
+            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            $request['dokumen'] = $request->nomor_transaksi;
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            $total_nominal = intval(str_replace(',', '', str_replace(".", "", str_replace("Rp. ", "", $request->total_nominal))));
+
+            $request['debet'] = $total_nominal;
+            $request['kredit'] = $total_nominal;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_BELANJA;
+            $request['user_onan'] = $request->username;
+            $request['approve_finance'] = 'System';
+            $request['transfer_finance'] = 'System';
+            $request['accept_finance'] = 'System';
+            $masterJurnal = MasterJurnal::create($request->except('_token'));
+            $request['jurnal_umum_id'] = $masterJurnal->id;
+
+            // Masukin gambar ke Jurnal Umum Detail
+            $request['account_id'] = $request->akun;
+            $request['debet'] = $total_nominal;
+            $request['kredit'] = 0;
+            $request['keterangan'] = $request->nama_item;
+            JurnalUmumDetail::create($request->except('_token'));
+
+            // Masukin gambar ke Jurnal Umum Detail
+            if ($request->foto_detail) {
+                $file = $request->file('foto_detail');
+                $path = public_path('transaksi_onan/');
+                $rand = rand(1000, 9999);
+                $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+                $file->move($path, $imageName);
+
+                MasterJurnalFile::create([
+                    'jurnal_umum_id' => $masterJurnal->id,
+                    'path'           => asset('transaksi_onan/'),
+                    'filename'       => $imageName,
+                ]);
+            }
+
+            $request['keterangan'] = "";
+            $request['account_id'] = 7;
+            $request['debet'] = 0;
+            $request['kredit'] = $total_nominal;
+            JurnalUmumDetail::create($request->except('_token'));
         }
+
+        $message = OrderJasaModel::whereId($request->id)->update($update);
+
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+
+        //     return response()->json([
+        //         'status'  => Response::HTTP_BAD_REQUEST,
+        //         'message' => $th
+        //     ]);
+        // }
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => $message
