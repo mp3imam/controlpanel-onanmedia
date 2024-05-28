@@ -71,6 +71,8 @@
                                             <th class="text-uppercase">No Rek Penjual</th>
                                             <th class="text-uppercase">Status</th>
                                             <th class="text-uppercase">Harga</th>
+                                            <th class="text-uppercase" hidden>Bank_User_Id</th>
+                                            <th class="text-uppercase" hidden>Bank_User_Nama</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -114,76 +116,77 @@
                     }
                 },
                 columns: [{
-                        data: "id",
-                        sortable: false,
-                        render: function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    }, {
-                        data: 'tanggal',
-                        name: 'Tanggal'
-                    }, {
-                        data: 'phone_penjual',
-                        visible: false
-                    }, {
-                        data: 'phone_pembeli',
-                        visible: false
-                    }, {
-                        data: 'nama',
-                        name: 'Product',
-                        render: function(data, type, row) {
-                            var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
-                            var link = data.toLowerCase().replace(/ /g, '-');
-                            return `<a target="_blank" href="http://www.onanmedia.com/jasa/${row.penjual}/${link}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
-                        }
-                    }, {
-                        data: 'nomor_order',
-                        name: 'Nomor Order',
-                        render: function(data, type, row, meta) {
-                            return userRole == 'finance' && row.status == 'Pembayaran' ?
-                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','finance','Upload Foto Bukti Pembayaran Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
-                                userRole == 'help_desk' && row.status == 'Validasi' ?
-                                `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','helpdesk','Pengecekan Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
-                                data;
-                        }
-                    }, {
-                        data: 'pembeli',
-                        name: 'Pembeli',
-                        render: function(data, type, row, meta) {
-                            return userRole == 'help_desk' && row.status == 'Validasi' ?
-                                `<a type="button" target="_blank"
+                    data: "id",
+                    sortable: false,
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                }, {
+                    data: 'tanggal',
+                    name: 'Tanggal'
+                }, {
+                    data: 'phone_penjual',
+                    visible: false
+                }, {
+                    data: 'phone_pembeli',
+                    visible: false
+                }, {
+                    data: 'nama',
+                    name: 'Product',
+                    render: function(data, type, row) {
+                        var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
+                        var link = data.toLowerCase().replace(/ /g, '-');
+                        return `<a target="_blank" href="http://www.onanmedia.com/jasa/${row.penjual}/${link}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
+                    }
+                }, {
+                    data: 'nomor_order',
+                    name: 'Nomor Order',
+                    render: function(data, type, row, meta) {
+                        return userRole == 'finance' && row.status == 'Pembayaran' ?
+                            `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','${row.bank_user_id}','${row.bank_user_nama}','finance','Upload Foto Bukti Pembayaran Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                            userRole == 'help_desk' && row.status == 'Validasi' ?
+                            `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','${row.bank_user_id}','${row.bank_user_nama}','helpdesk','Pengecekan Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                            data;
+                    }
+                }, {
+                    data: 'pembeli',
+                    name: 'Pembeli',
+                    render: function(data, type, row, meta) {
+                        return userRole == 'help_desk' && row.status == 'Validasi' ?
+                            `<a type="button" target="_blank"
                                     href="https://api.whatsapp.com/send/?phone=${row.phone_pembeli}&text=Hallo Bpk/Ibu ${data}. Kami dari tim Onanmedia ingin bertanya terkait pekerjaan ${row.nama} dari Bpk /Ibu ${row.penjual} nomor order ${row.nomor_order} sejumlah ${row.harga}. Apakah benar sudah selesai? mohon di koreksi kembali terkait pekerjaan yang telah anda berikan, apabila sudah lebih dari 2 hari tidak ada balasan ke nomor ini, maka akan kami anggap sudah selesai. Terima kasih sudah menggunakan Onanmedia dan Semoga berkah selalu.&type=phone_number&app_absent=0"
                                     class="btn btn-outline-primary btn-border rounded-3">
                                     <i class="ri-whatsapp-fill"></i> ${data.split(" ")[0]}
                                 </a>` :
-                                data;
-                        }
-                    },
-                    {
-                        data: 'penjual',
-                        name: 'Penjual',
-                        render: function(data, type, row, meta) {
-                            return userRole == 'help_desk' && row.status == 'Validasi' ?
-                                `<a type="button" target="_blank"
+                            data;
+                    }
+                }, {
+                    data: 'penjual',
+                    name: 'Penjual',
+                    render: function(data, type, row, meta) {
+                        return userRole == 'help_desk' && row.status == 'Validasi' ?
+                            `<a type="button" target="_blank"
                                     href="https://api.whatsapp.com/send/?phone=${row.phone_penjual}&text=Hallo Bpk/Ibu ${data}. Kami dari tim Onanmedia ingin memberitahukan bahwa pekerjaan ${row.nama} dari Bpk /Ibu ${row.pembeli} dengan nomor order ${row.nomor_order} sudah selesai. Apakah nomor rekening penjual ${row.rekening_penjual} sudah benar? Mohon agar dibalas kembali, agar segera kita transfer ke rekening sejumlah ${row.harga}. Terima kasih sudah menggunakan Onanmedia dan Semoga berkah selalu.&type=phone_number&app_absent=0" class="btn btn-outline-success btn-border rounded-3">
                                     <i class="ri-whatsapp-fill"></i> ${data.split(" ")[0]}
                                 </a>` :
-                                data;
-                        }
-                    },
-                    {
-                        data: 'rekening_penjual',
-                        name: 'No Rek Penjual',
-                    },
-                    {
-                        data: 'status',
-                        name: 'Status',
-                    },
-                    {
-                        data: 'harga',
-                        name: 'Harga',
+                            data;
                     }
-                ]
+                }, {
+                    data: 'rekening_penjual',
+                    name: 'No Rek Penjual',
+                }, {
+                    data: 'status',
+                    name: 'Status',
+                }, {
+                    data: 'harga',
+                    name: 'Harga',
+                }, {
+                    data: 'bank_user_id',
+                    visible: false,
+                }, {
+                    data: 'bank_user_nama',
+                    visible: false,
+                }]
             });
 
             $('#cari').on('keyup', function() {
@@ -199,8 +202,8 @@
             });
         });
 
-        function modal_crud(id, tanggal, product, nomor_order, pembeli, penjual, rekening_penjual, status, harga, role,
-            judul) {
+        function modal_crud(id, tanggal, product, nomor_order, pembeli, penjual, rekening_penjual, status, harga,
+            bank_user_id, bank_user_nama, role, judul) {
             $('#modal_content').html(`
             <div class="modal-body p-5">
                 <h1 class="mb-4">${judul}</h1>
@@ -263,8 +266,9 @@
                 </div>
             </div>
             `)
+            var userRoleModal = $('#userRole').data('role');
 
-            if (userRoleModal != 'finance') {
+            if (userRoleModal === 'help_desk') {
                 $("#userbank").select2({
                     allowClear: true,
                     width: '100%',
@@ -287,13 +291,11 @@
                 });
             }
 
-            var userRoleModal = $('#userRole').data('role');
-
             if (userRoleModal === 'finance') {
                 $(function() {
                     var dataRole = {
-                        id: agama_id_modal,
-                        text: agama_modal,
+                        id: bank_user_id,
+                        text: bank_user_nama,
                         selected: true
                     };
                     var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
@@ -354,6 +356,7 @@
                 fd.append('total_nominal', harga)
                 fd.append('akunBankOnanmedia', $('#userBankOnanmedia').val())
                 fd.append('akun', $('#userbank').val())
+                fd.append('akunNama', $('#userbank').text())
                 fd.append('keterangan_kas', pembeli + ' - ' + rekening_penjual)
 
                 if (userRoleModal === 'finance') fd.append('foto_detail', $('#formFile')[0].files[0])

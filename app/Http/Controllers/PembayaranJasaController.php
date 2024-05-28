@@ -97,12 +97,14 @@ class PembayaranJasaController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $message = '';
         // DB::beginTransaction();
         // try {
         $update = [
             'approve_name' => $request->userName,
             'bank_user_id' => $request->akun,
+            'bank_user_nama' => $request->akunNama,
         ];
 
         if ($request->userRole == 'finance') {
