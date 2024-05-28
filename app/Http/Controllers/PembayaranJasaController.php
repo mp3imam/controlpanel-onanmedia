@@ -92,42 +92,25 @@ class PembayaranJasaController extends Controller
      */
     public function store(Request $request)
     {
-        // $validasi = [
-        //     'pilih_data_id' => 'required',
-        //     'kode_coa'      => 'required',
-        //     'nama_akun'     => 'required',
-        //     'rekening_bank' => 'required',
-        //     'nama_bank'     => 'required',
-        // ];
-
-        // if ($request->pilih_data_id > 2) $validasi += ['kdrek1_coa_id' => 'required'];
-        // if ($request->pilih_data_id > 3) $validasi += ['kdrek2_coa_id' => 'required'];
-
-        // $validator = Validator::make($request->all(), $validasi);
-
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator->messages());
-        // }
-
         $message = '';
-        // try {
-        $update = [
-            'approve_name' => $request->userName,
-        ];
-        if ($request->userRole == 'finance')
+        try {
             $update = [
-                'finance_name' => $request->userName,
-                'file_upload' => $request->foto_bukti_transfer_manual,
+                'approve_name' => $request->userName,
             ];
+            if ($request->userRole == 'finance')
+                $update = [
+                    'finance_name' => $request->userName,
+                    'file_upload' => $request->foto_bukti_transfer_manual,
+                ];
 
-        $message = OrderJasaModel::whereId($request->id)->update($update);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     return response()->json([
-        //         'status'  => Response::HTTP_BAD_REQUEST,
-        //         'message' => $th
-        //     ]);
-        // }
+            $message = OrderJasaModel::whereId($request->id)->update($update);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status'  => Response::HTTP_BAD_REQUEST,
+                'message' => $th
+            ]);
+        }
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => $message
@@ -232,15 +215,15 @@ class PembayaranJasaController extends Controller
                 ->when($status == 3, fn ($query) => $query->whereNotNull('finance_name'));
         })
             ->whereHas('order.aktifitas', fn ($q) => $q->where('id', 1007))
-            // ->when($request->cari_tanggal, function ($q) use ($request) {
-            //     $tanggal = explode(" to ", $request->cari_tanggal);
-            //     $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
-            //         $q->whereDate('createdAt', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'));
-            //     });
-            //     $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
-            //         $q->whereDate('createdAt', '>=', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'))->whereDate('createdAt', '<=', Carbon::createFromFormat('d-m-Y', $tanggal[1])->addDays(1)->format('Y-m-d'));
-            //     });
-            // })
+            ->when($request->cari_tanggal, function ($q) use ($request) {
+                $tanggal = explode(" to ", $request->cari_tanggal);
+                $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
+                    $q->whereDate('createdAt', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'));
+                });
+                $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
+                    $q->whereDate('createdAt', '>=', Carbon::createFromFormat('d-m-Y', $tanggal[0])->format('Y-m-d'))->whereDate('createdAt', '<=', Carbon::createFromFormat('d-m-Y', $tanggal[1])->addDays(1)->format('Y-m-d'));
+                });
+            })
             ->when($request->cari, function ($q) use ($request) {
                 $q->whereHas('order', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")->orWhere('nomor', 'ilike', '%' . $request->cari . "%")->orWhere('totalPenawaran', 'ilike', '%' . $request->cari . "%")->orWhereHas('aktifitas', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")))
                     ->orWhereHas('order.pembeli', fn ($q) => $q->where('name', 'ilike', '%' . $request->cari . "%"))

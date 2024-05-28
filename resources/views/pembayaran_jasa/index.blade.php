@@ -20,7 +20,7 @@
                                         <input type="text" class="form-control flatpickr-input active" id="cari_tanggal"
                                             name="cari_tanggal" data-provider="flatpickr" data-date-format="d-m-Y"
                                             data-range-date="true" readonly="readonly"
-                                            value="{{ Carbon\Carbon::now()->startOfWeek()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
+                                            value="{{ Carbon\Carbon::now()->subMonth(3)->startOfMonth()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
                                     </div>
                                 </div>
                                 <div class="col-xxl-6 col-md-6 p-3">
@@ -244,10 +244,17 @@
                             <label for="formFile" class="form-label">Upload Bukti Pembayaran</label>
                             <input class="form-control" id="formFile" type="file" required>
                         </div>
+                        <div class="col-lg-6 mb-3">
                         <button class="btn btn-primary form-control mt-4 btn-pembayaran-jasa">Upload Bukti Pembayaran</button>
                     @else
+                        <div class="col-lg-6 mb-3">
                         <button class="btn btn-primary form-control mt-4 btn-pembayaran-jasa">Approve</button>
                     @endif
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <button class="btn btn-warning form-control mt-4" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             `)

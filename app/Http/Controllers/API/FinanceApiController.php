@@ -48,6 +48,7 @@ class FinanceApiController extends Controller
             $request['approve_finance'] = 'System';
             $request['transfer_finance'] = 'System';
             $request['accept_finance'] = 'System';
+            $request['tipe'] = 1;
             $masterJurnal = MasterJurnal::create($request->except('_token'));
             $request['jurnal_umum_id'] = $masterJurnal->id;
             $bank_id = BankModel::where('nama', 'ilike', '%' . $request->nama_bank . '%')->first()->id;
