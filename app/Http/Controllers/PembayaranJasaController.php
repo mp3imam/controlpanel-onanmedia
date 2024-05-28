@@ -70,7 +70,7 @@ class PembayaranJasaController extends Controller
                         : 'Pembayaran');
             })
             ->addColumn('harga', function ($row) {
-                return "Rp. " . number_format($row->order->totalPenawaran, 0, ',', '.');
+                return "Rp. " . number_format($row->order->totalKomisiPenjual, 0, ',', '.');
             })
             ->rawColumns(['nomor_order', 'penjual', 'rekening_penjual', 'pembeli', 'status', 'harga'])
             ->make(true);
@@ -283,7 +283,7 @@ class PembayaranJasaController extends Controller
                 });
             })
             ->when($request->cari, function ($q) use ($request) {
-                $q->whereHas('order', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")->orWhere('nomor', 'ilike', '%' . $request->cari . "%")->orWhere('totalPenawaran', 'ilike', '%' . $request->cari . "%")->orWhereHas('aktifitas', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")))
+                $q->whereHas('order', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")->orWhere('nomor', 'ilike', '%' . $request->cari . "%")->orWhere('totalKomisiPenjual', 'ilike', '%' . $request->cari . "%")->orWhereHas('aktifitas', fn ($q) => $q->where('nama', 'ilike', '%' . $request->cari . "%")))
                     ->orWhereHas('order.pembeli', fn ($q) => $q->where('name', 'ilike', '%' . $request->cari . "%"))
                     ->orWhereHas('order.penjual', fn ($q) => $q->where('name', 'ilike', '%' . $request->cari . "%")->orWhereHas('rekening', fn ($q) => $q->where('isMain', 1)->where('rekening', 'ilike', '%' . $request->cari . "%")));
             })
