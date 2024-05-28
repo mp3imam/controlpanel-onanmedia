@@ -264,26 +264,44 @@
             </div>
             `)
 
-            $("#userbank").select2({
-                allowClear: true,
-                width: '100%',
-                ajax: {
-                    url: "{{ route('api.get_select2_banks') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data.data, function(item) {
-                                return {
-                                    id: item.id,
-                                    text: item.name
-                                };
-                            })
-                        };
-                    }
-                },
-                dropdownParent: $("#exampleModalgrid")
-            });
+            if (userRoleModal != 'finance') {
+                $("#userbank").select2({
+                    allowClear: true,
+                    width: '100%',
+                    ajax: {
+                        url: "{{ route('api.get_select2_banks') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data.data, function(item) {
+                                    return {
+                                        id: item.id,
+                                        text: item.name
+                                    };
+                                })
+                            };
+                        }
+                    },
+                    dropdownParent: $("#exampleModalgrid")
+                });
+            }
+
+            var userRoleModal = $('#userRole').data('role');
+
+            if (userRoleModal === 'finance') {
+                $(function() {
+                    var dataRole = {
+                        id: agama_id_modal,
+                        text: agama_modal,
+                        selected: true
+                    };
+                    var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
+                    $('#userbank').append(newOptionRole).trigger('change');
+                    $('#userbank').select2();
+                })
+            }
+
 
             $("#userBankOnanmedia").select2({
                 allowClear: true,
@@ -307,18 +325,22 @@
             });
 
             $('.btn-pembayaran-jasa').on('click', function() {
-                if (!$('#userbank').val() || !$('#userBankOnanmedia').val()) {
+                if (!$('#userbank').val()) {
                     alert('Bank Tidak Boleh Kosong');
                     return false;
                 }
 
-                var userRoleModal = $('#userRole').data('role');
+                if (userRoleModal === 'finance') {
+                    if (!$('#userBankOnanmedia').val()) {
+                        alert('Bank Tidak Boleh Kosong');
+                        return false;
+                    }
 
-                if (userRoleModal === 'finance')
                     if (!$('#formFile').val()) {
                         alert('File Upload Tidak Boleh Kosong');
                         return false
                     }
+                }
 
                 if (!confirm('Anda yakin ingin approve?')) return false
 

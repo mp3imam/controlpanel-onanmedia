@@ -102,7 +102,9 @@ class PembayaranJasaController extends Controller
         // try {
         $update = [
             'approve_name' => $request->userName,
+            'bank_user_id' => $request->akun,
         ];
+
         if ($request->userRole == 'finance') {
             $update = [
                 'finance_name' => $request->userName,
