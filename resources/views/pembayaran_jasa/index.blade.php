@@ -239,10 +239,14 @@
                         <label for="formFile" class="form-label">Harga</label>
                         <input class="form-control" type="text" value="${harga}" readonly>
                     </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="formFile" class="form-label">Pilih Bank Penjual</label>
+                        <select id="userbank" class="form-select" required></select>
+                    </div>
                     @if (auth()->user()->roles[0]->name == 'finance')
                         <div class="col-lg-6 mb-3">
-                            <label for="userBank_label" class="form-label">Pilih Bank</label>
-                            <select id="userbank" class="form-select" required></select>
+                            <label for="userBank_label" class="form-label">Pilih Bank Onanmedia</label>
+                            <select id="userBankOnanmedia" class="form-select" required></select>
                         </div>
                         <div class="col-lg-6 mb-3">
                             <label for="formFile" class="form-label">Upload Bukti Pembayaran</label>
@@ -281,25 +285,56 @@
                 dropdownParent: $("#exampleModalgrid")
             });
 
+            $("#userBankOnanmedia").select2({
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.get_select2_banks_coa') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data.data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                };
+                            })
+                        };
+                    }
+                },
+                dropdownParent: $("#exampleModalgrid")
+            });
+
             $('.btn-pembayaran-jasa').on('click', function() {
+                if (!$('#userbank').val() || !$('#userBankOnanmedia').val()) {
+                    alert('Bank Tidak Boleh Kosong');
+                    return false;
+                }
+
+                var userRoleModal = $('#userRole').data('role');
+
+                if (userRoleModal === 'finance')
+                    if (!$('#formFile').val()) {
+                        alert('File Upload Tidak Boleh Kosong');
+                        return false
+                    }
+
                 if (!confirm('Anda yakin ingin approve?')) return false
 
-                if (userRole === 'finance')
-                    if (!$('#formFile').val()) return false
-
-                var userRole = $('#userRole').data('role');
                 var userName = $('#userName').val();
                 var userbank = $('#userbank').val();
                 var fd = new FormData()
                 fd.append('id', id)
                 fd.append('userName', userName)
-                fd.append('userRole', userRole)
+                fd.append('userRole', userRoleModal)
                 fd.append('nomor_transaksi', nomor_order)
                 fd.append('total_nominal', harga)
+                fd.append('akunBankOnanmedia', $('#userBankOnanmedia').val())
                 fd.append('akun', $('#userbank').val())
-                fd.append('keterangan_kas', rekening_penjual)
+                fd.append('keterangan_kas', pembeli + ' - ' + rekening_penjual)
 
-                if (userRole === 'finance') fd.append('foto_detail', $('#formFile')[0].files[0])
+                if (userRoleModal === 'finance') fd.append('foto_detail', $('#formFile')[0].files[0])
                 $.ajax({
                     type: 'post',
                     url: "{{ route('data_transaksi.store') }}",

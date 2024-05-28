@@ -129,7 +129,7 @@ class PembayaranJasaController extends Controller
             $request['jurnal_umum_id'] = $masterJurnal->id;
 
             // Masukin gambar ke Jurnal Umum Detail
-            $request['account_id'] = $request->akun;
+            $request['account_id'] = $request->akunBankOnanmedia;
             $request['debet'] = $total_nominal;
             $request['kredit'] = 0;
             $request['keterangan'] = $request->nama_item;
@@ -150,8 +150,8 @@ class PembayaranJasaController extends Controller
                 ]);
             }
 
-            $request['keterangan'] = "";
-            $request['account_id'] = 7;
+            $request['keterangan'] = $request->keterangan_kas;
+            $request['account_id'] = $request->akun;
             $request['debet'] = 0;
             $request['kredit'] = $total_nominal;
             JurnalUmumDetail::create($request->except('_token'));
