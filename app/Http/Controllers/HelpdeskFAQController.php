@@ -30,7 +30,6 @@ class HelpdeskFAQController extends Controller
      */
     function __construct()
     {
-        dd(HelpdeskFAQModel::with(['details'])->first());
         $this->middleware('permission:Helpdesk FAQ');
     }
 
@@ -52,13 +51,13 @@ class HelpdeskFAQController extends Controller
         return
             DataTables::of($this->models($request))
             ->addColumn('detail_id', function ($row) {
-                return $row->details->id;
+                return $row->detail->id;
             })
-            ->addColumn('keluhan_email', function ($row) {
-                return $row->keluhan_user->email;
+            ->addColumn('detail_judul', function ($row) {
+                return $row->detail->email;
             })
-            ->addColumn('admin_id', function ($row) {
-                return $row->adminOnan->name ?? '-';
+            ->addColumn('detail_status', function ($row) {
+                return $row->detail->is_aktif ?? '-';
             })
             ->addColumn('tanggal_keluhan', function ($row) {
                 return Carbon::parse($row->createdAt)->format('d-m-Y');
