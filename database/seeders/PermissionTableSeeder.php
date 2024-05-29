@@ -50,7 +50,8 @@ class PermissionTableSeeder extends Seeder
                     'module_parent'         => 23,
                     'module_position'       => 1,
                     'module_description'    => '',
-                    'module_status'         => 1
+                    'module_status'         => 1,
+                    'is_deleted'            => 1
                 ], [
                     'name'                  => 'Users',
                     'alias'                 => 'Users',

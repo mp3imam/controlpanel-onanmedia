@@ -9,6 +9,7 @@ use App\Http\Controllers\DaftarProductJasaController;
 use App\Http\Controllers\DaftarTenderController;
 use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\HelpdeskController;
+use App\Http\Controllers\HelpdeskFAQController;
 use App\Http\Controllers\HrdAbsensiController;
 use App\Http\Controllers\HrdController;
 use App\Http\Controllers\KategoriController;
@@ -150,6 +151,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('aktifkan-seller-chat', [HelpdeskController::class, 'aktifkan_seller_chat'])->name('aktifkan.seller.chat');
     Route::post('selesaikan-keluhan', [HelpdeskController::class, 'selesaikan_keluhan'])->name('selesaikan.keluhan');
     Route::get('template_balasan_helpdesk', [HelpdeskController::class, 'template_balasan'])->name('template.balasan.helpdesk');
+    Route::resource('helpdesk_faq', HelpdeskFAQController::class);
 
     // Pengaturan
     Route::resource('users', UserController::class);
