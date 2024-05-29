@@ -414,7 +414,7 @@
                             @elseif ($detail->status == 3 && $detail->bukti_transfer_divisi_to_finance == null)
                                 <button class="btn bg-animation btn-info mr-5 rounded-5"><i
                                         class="bx bxs-save label-icon align-middle fs-16 me-2"></i> Upload Bukti
-                                    Transfer</button>
+                                    belanja</button>
                             @endif
                         @endhasrole
                         &nbsp;&nbsp;&nbsp;

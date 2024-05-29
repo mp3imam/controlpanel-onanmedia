@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_detail', 'file'))
-        Schema::connection('pgsql')->table('transaksi_kas_detail', function (Blueprint $table) {
-            $table->string('file')->nullable()->change();
-            $table->string('username');
-            $table->string('nomor_transaksi');
-        });
+        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas_detail', 'username'))
+            Schema::connection('pgsql')->table('transaksi_kas_detail', function (Blueprint $table) {
+                $table->string('file')->nullable()->change();
+                $table->string('username');
+                $table->string('nomor_transaksi');
+            });
     }
 
     /**
@@ -25,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas_detail', function (Blueprint $table) {
-            $table->dropColumn(['username','nomor_transaksi']);
+            $table->dropColumn(['username', 'nomor_transaksi']);
         });
     }
 };

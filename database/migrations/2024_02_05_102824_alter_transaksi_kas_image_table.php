@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::connection('pgsql')->hasColumn('transaksi_kas', 'bank_id'))
+        if (!Schema::connection('pgsql')->hasColumns('transaksi_kas', ['bank_id', 'belanjas_id', 'image', 'status']))
             Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
                 $table->integer('bank_id')->nullable()->change();
                 $table->string('belanjas_id')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::connection('pgsql')->table('transaksi_kas', function (Blueprint $table) {
-            $table->dropColumn(['image']);
+            $table->dropColumn(['bank_id', 'belanjas_id', 'image', 'status']);
         });
     }
 };

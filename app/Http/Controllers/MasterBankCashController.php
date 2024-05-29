@@ -260,7 +260,6 @@ class MasterBankCashController extends Controller
                         'image'   => asset('kas_belanja/') . "/" . $imageName,
                         'bank_id' => $request->sumber_dana,
                         'tujuan_id' => 7,
-                        // 'nominal_approve' => $request->seluruh_total,
                         'nominal' => $request->seluruh_total,
                     ]);
 
@@ -289,6 +288,7 @@ class MasterBankCashController extends Controller
                         // 'keterangan' => $request->keterangan[$kasBelanja],
                     ]);
                     MasterKasBelanja::whereId($request->id)->update([
+                        'nominal_approve' => $request->seluruh_total,
                         'status'  => 2
                     ]);
                 } else {
