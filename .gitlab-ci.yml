@@ -22,7 +22,7 @@ onanpanel-dev:
     - ssh -o StrictHostKeyChecking=no $SSH_USER@$ONANAPPS_DEV "
       cd /var/www/html/controlpanel-onanmedia/ &&
       git pull origin dev &&
-      composer install &&
+      composer update &&
       php artisan migrate --database=pgsql &&
       php artisan migrate --database=pgsql2"
   only:
