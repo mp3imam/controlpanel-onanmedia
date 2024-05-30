@@ -298,6 +298,7 @@ class MasterBankCashController extends Controller
                     ]);
 
                     MasterKasBelanja::whereId($request->id)->update([
+                        'nominal_approve' => $request->seluruh_total,
                         'status'  => $status
                     ]);
                 }
