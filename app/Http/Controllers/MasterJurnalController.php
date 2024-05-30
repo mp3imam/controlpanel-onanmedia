@@ -223,7 +223,7 @@ class MasterJurnalController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = MasterJurnal::with(['coa_jurnal_umum', 'details.coa_jurnal', 'details.jurnal_banks', 'jurnal_file'])->findOrFail($id);
+        $detail = MasterJurnal::with(['coa_jurnal_umum', 'details.coa_jurnal', 'details.jurnal_banks', 'details.jurnal_banks_public', 'jurnal_file'])->findOrFail($id);
         // dd($detail);
         $random_string = Str::random(25);
 
