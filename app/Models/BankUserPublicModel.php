@@ -5,16 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRekeningModel extends Model
+class BankUserPublicModel extends Model
 {
     use HasFactory;
     protected $connection = 'pgsql2';
-    protected $table = 'UserRekening';
+    protected $table = 'MsBank';
     public $incrementing = false;
     protected $keyType = 'string';
-
-    public function bank()
-    {
-        return $this->hasOne(BankUserPublicModel::class, 'id', 'msBankId')->where('isAktif', true);
-    }
 }

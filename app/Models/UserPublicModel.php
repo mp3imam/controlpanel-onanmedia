@@ -55,9 +55,14 @@ class UserPublicModel extends Model
         return $this->belongsTo(DaftarTenderModel::class, 'userId', 'id');
     }
 
-    public function rekening()
+    public function rekenings()
     {
         return $this->hasMany(UserRekeningModel::class, 'userId');
+    }
+
+    public function rekening()
+    {
+        return $this->hasOne(UserRekeningModel::class, 'userId')->where('isMain', 1);
     }
 
     public function scopePenjualRekening($q)

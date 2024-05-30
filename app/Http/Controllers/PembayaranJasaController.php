@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class PembayaranJasaController extends Controller
@@ -58,15 +57,21 @@ class PembayaranJasaController extends Controller
             ->addColumn('penjual', function ($row) {
                 return $row->order->penjual->name;
             })
+            ->addColumn('bank_public_penjual_id', function ($row) {
+                return $row->order->penjual->rekening->msBankId;
+            })
+            ->addColumn('bank_public_penjual_nama', function ($row) {
+                return $row->order->penjual->rekening->bank->nama;
+            })
             ->addColumn('rekening_penjual', function ($row) {
-                return $row->order->penjual->rekening ? $row->order->penjual->rekening[0]->rekening : "-";
+                return $row->order->penjual->rekening ? $row->order->penjual->rekening->rekening : "-";
             })
             ->addColumn('pembeli', function ($row) {
                 return $row->order->pembeli->name;
             })
             ->addColumn('status', function ($row) {
-                return $row->approve_name == null && $row->finance_name == null ? 'Validasi'
-                    : ($row->approve_name != null && $row->finance_name != null ? 'Selesai'
+                return $row->approveName == null && $row->financeName == null ? 'Validasi'
+                    : ($row->approveName != null && $row->financeName != null ? 'Selesai'
                         : 'Pembayaran');
             })
             ->addColumn('harga', function ($row) {
@@ -99,182 +104,91 @@ class PembayaranJasaController extends Controller
     {
         // dd($request->all());
         $message = '';
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
+        $update = [
+            'approveName' => $request->userName,
+            'bankUserId' => $request->akun,
+            'bankUserNama' => $request->akunNama,
+        ];
+
+        if ($request->userRole == 'finance') {
+            $tahun = Carbon::now()->format('Y');
+            $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
+            $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
+            $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
+            $request['dokumen'] = $request->nomor_transaksi;
+            $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            $total_nominal = intval(str_replace(',', '', str_replace(".", "", str_replace("Rp. ", "", $request->total_nominal))));
+
+            $request['debet'] = $total_nominal;
+            $request['kredit'] = $total_nominal;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_UPLOAD_BUKTI_JASA;
+            $request['user_onan'] = $request->username;
+            $request['approve_finance'] = auth()->user()->name;
+            $request['transfer_finance'] = auth()->user()->name;
+            $request['accept_finance'] = auth()->user()->name;
+            $masterJurnal = MasterJurnal::create($request->except('_token'));
+            $request['jurnal_umum_id'] = $masterJurnal->id;
+
+            // Masukin gambar ke Jurnal Umum Detail
+            $request['account_id'] = $request->akun;
+            $request['debet'] = $total_nominal;
+            $request['kredit'] = 0;
+            $request['keterangan'] = $request->nama_item;
+            JurnalUmumDetail::create($request->except('_token'));
+
+            // Masukin gambar ke Jurnal Umum Detail
+            $file = $request->file('foto_detail');
+            $path = public_path('transaksi_onan/');
+            $rand = rand(1000, 9999);
+            $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+            $file->move($path, $imageName);
+
+            MasterJurnalFile::create([
+                'jurnal_umum_id' => $masterJurnal->id,
+                'path'           => asset('transaksi_onan/'),
+                'filename'       => $imageName,
+            ]);
+
             $update = [
-                'approve_name' => $request->userName,
-                'bank_user_id' => $request->akun,
-                'bank_user_nama' => $request->akunNama,
+                'financeName' => $request->userName,
+                'fileUpload' => $path . $imageName,
             ];
 
-            if ($request->userRole == 'finance') {
-                $update = [
-                    'finance_name' => $request->userName,
-                    'file_upload' => $request->foto_bukti_transfer_manual,
-                ];
-
-                $tahun = Carbon::now()->format('Y');
-                $model = MasterJurnal::withTrashed()->latest()->whereYear('created_at', $tahun)->first();
-                $nomor = sprintf("%05s", $model !== null ? $model->id + 1 : 1);
-                $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
-                $request['dokumen'] = $request->nomor_transaksi;
-                $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-                $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
-                $total_nominal = intval(str_replace(',', '', str_replace(".", "", str_replace("Rp. ", "", $request->total_nominal))));
-
-                $request['debet'] = $total_nominal;
-                $request['kredit'] = $total_nominal;
-                $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_BELANJA;
-                $request['user_onan'] = $request->username;
-                $request['approve_finance'] = 'System';
-                $request['transfer_finance'] = 'System';
-                $request['accept_finance'] = 'System';
-                $masterJurnal = MasterJurnal::create($request->except('_token'));
-                $request['jurnal_umum_id'] = $masterJurnal->id;
-
-                // Masukin gambar ke Jurnal Umum Detail
-                $request['account_id'] = $request->akun;
-                $request['debet'] = $total_nominal;
-                $request['kredit'] = 0;
-                $request['keterangan'] = $request->nama_item;
-                JurnalUmumDetail::create($request->except('_token'));
-
-                // Masukin gambar ke Jurnal Umum Detail
-                if ($request->foto_detail) {
-                    $file = $request->file('foto_detail');
-                    $path = public_path('transaksi_onan/');
-                    $rand = rand(1000, 9999);
-                    $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
-                    $file->move($path, $imageName);
-
-                    MasterJurnalFile::create([
-                        'jurnal_umum_id' => $masterJurnal->id,
-                        'path'           => asset('transaksi_onan/'),
-                        'filename'       => $imageName,
-                    ]);
-                }
-
-                $request['keterangan'] = $request->keterangan_kas;
-                $request['account_id'] = $request->akunBankOnanmedia;
-                $request['debet'] = 0;
-                $request['kredit'] = $total_nominal;
-                JurnalUmumDetail::create($request->except('_token'));
-            }
-
-            $message = OrderJasaModel::whereId($request->id)->update($update);
-
-            DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-
-            return response()->json([
-                'status'  => Response::HTTP_BAD_REQUEST,
-                'message' => $th
-            ]);
+            $request['keterangan'] = $request->keterangan_kas;
+            $request['account_id'] = $request->akunBankOnanmedia;
+            $request['debet'] = 0;
+            $request['kredit'] = $total_nominal;
+            JurnalUmumDetail::create($request->except('_token'));
         }
+
+        $message = OrderJasaModel::whereId($request->id)->update($update);
+
+        //     DB::commit();
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+
+        //     return response()->json([
+        //         'status'  => Response::HTTP_BAD_REQUEST,
+        //         'message' => $th
+        //     ]);
+        // }
         return response()->json([
             'status'  => Response::HTTP_OK,
             'message' => $message
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request, $id)
-    {
-        $title['title'] = $this->title;
-        $title['li_1'] = $this->li_1;
-
-        $detail = MasterCoaModel::findOrFail($id)->first();
-
-        return view('pembayaran_jasa.detail', $title, compact(['detail']));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $title['title'] = $this->title;
-        $title['li_1'] = $this->li_1;
-
-        $detail = MasterCoaModel::whereId($id)->first();
-        $details = MasterCoaModel::with([
-            'relasi_kdrek1',
-            'relasi_kdrek2' => function ($query) use ($detail) {
-                $query->whereKdrek1($detail->kdrek1);
-            },
-            'relasi_kdrek3' => function ($query) use ($detail) {
-                $query->whereKdrek3($detail->kdrek3);
-            }
-        ])->whereId($id)->first();
-
-        return view('pembayaran_jasa.edit', $title, compact(['details']));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_akun' => 'required',
-            'kode_coa'  => 'required',
-        ]);
-
-        if ($request->pilih_data == "D" && $request->kdrek1_coa == 1 && $request->kdrek2_coa == 1 && $request->kdrek3_coa == 1) {
-            // insert to Banks
-            BankModel::whereId($request->akun_bank)->update([
-                'nama'  => $request->nama_akun,
-                'kode'  => $request->rekening_bank,
-            ]);
-        }
-
-        // Store your file into directory and db
-        $update = [
-            'kdrek'         => $request->kode_coa,
-            'uraian'        => $request->nama_akun,
-            'rekening_bank' => $request->rekening_bank,
-            'nama_bank'     => $request->nama_bank,
-        ];
-        MasterCoaModel::find($id)->update($update);
-
-        return redirect('pembayaran_jasa');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        return response()->json([
-            'status'  => Response::HTTP_BAD_REQUEST,
-            'message' => MasterCoaModel::findOrFail($id)->delete()
-        ]);
-    }
-
     public function models($request)
     {
-        return OrderJasaModel::with(['order.penjual.rekening', 'order.pembeli', 'order.aktifitas'])->when($request->cari_status, function ($q) use ($request) {
+        return OrderJasaModel::with(['order.penjual.rekening.bank', 'order.pembeli', 'order.aktifitas'])->when($request->cari_status, function ($q) use ($request) {
             $status = $request->cari_status;
-            $q->when($status == 1, fn ($query) => $query->whereNotNull('approve_name')->whereNull('finance_name'))
-                ->when($status == 2, fn ($query) => $query->whereNull('approve_name'))
-                ->when($status == 3, fn ($query) => $query->whereNotNull('finance_name'));
+            $q->when($status == 1, fn ($query) => $query->whereNotNull('approveName')->whereNull('financeName'))
+                ->when($status == 2, fn ($query) => $query->whereNull('approveName'))
+                ->when($status == 3, fn ($query) => $query->whereNotNull('financeName'));
         })
             ->whereHas('order.aktifitas', fn ($q) => $q->where('id', 1007))
             ->when($request->cari_tanggal, function ($q) use ($request) {

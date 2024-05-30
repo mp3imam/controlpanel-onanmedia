@@ -20,7 +20,7 @@
                                         <input type="text" class="form-control flatpickr-input active" id="cari_tanggal"
                                             name="cari_tanggal" data-provider="flatpickr" data-date-format="d-m-Y"
                                             data-range-date="true" readonly="readonly"
-                                            value="{{ Carbon\Carbon::now()->subMonth(3)->startOfMonth()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
+                                            value="{{ Carbon\Carbon::now()->subMonth(7)->startOfMonth()->format('d-m-Y') . ' to ' . Carbon\Carbon::now()->format('d-m-Y') }}">
                                     </div>
                                 </div>
                                 <div class="col-xxl-6 col-md-6 p-3">
@@ -143,9 +143,9 @@
                     name: 'Nomor Order',
                     render: function(data, type, row, meta) {
                         return userRole == 'finance' && row.status == 'Pembayaran' ?
-                            `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','${row.bank_user_id}','${row.bank_user_nama}','finance','Upload Foto Bukti Pembayaran Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                            `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','${row.bank_public_penjual_id}','${row.bank_public_penjual_nama}','finance','Upload Foto Bukti Pembayaran Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
                             userRole == 'help_desk' && row.status == 'Validasi' ?
-                            `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','${row.bank_user_id}','${row.bank_user_nama}','helpdesk','Pengecekan Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
+                            `<button class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" target="_blank" onclick="modal_crud('${row.id}','${row.tanggal}','${row.nama}','${data}', '${row.pembeli}', '${row.penjual}','${row.rekening_penjual}','${row.status}','${row.harga}','${row.bank_public_penjual_id}','${row.bank_public_penjual_nama}','helpdesk','Pengecekan Jasa')" data-bs-toggle="modal" data-bs-target="#exampleModalgrid">${data}</button>` :
                             data;
                     }
                 }, {
@@ -181,10 +181,10 @@
                     data: 'harga',
                     name: 'Harga',
                 }, {
-                    data: 'bank_user_id',
+                    data: 'bank_public_penjual_id',
                     visible: false,
                 }, {
-                    data: 'bank_user_nama',
+                    data: 'bank_public_penjual_nama',
                     visible: false,
                 }]
             });
@@ -243,8 +243,8 @@
                         <input class="form-control" type="text" value="${harga}" readonly>
                     </div>
                     <div class="col-lg-4 mb-3">
-                        <label for="formFile" class="form-label">Pilih Bank Penjual</label>
-                        <select id="userbank" class="form-select" required></select>
+                        <label for="formFile" class="form-label">Bank Penjual</label>
+                        <input class="form-control" type="text" value="${bank_user_nama}" readonly>
                     </div>
                     @if (auth()->user()->roles[0]->name == 'finance')
                         <div class="col-lg-6 mb-3">
@@ -268,43 +268,6 @@
             `)
             var userRoleModal = $('#userRole').data('role');
 
-            if (userRoleModal === 'help_desk') {
-                $("#userbank").select2({
-                    allowClear: true,
-                    width: '100%',
-                    ajax: {
-                        url: "{{ route('api.get_select2_banks') }}",
-                        dataType: 'json',
-                        delay: 250,
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data.data, function(item) {
-                                    return {
-                                        id: item.id,
-                                        text: item.name
-                                    };
-                                })
-                            };
-                        }
-                    },
-                    dropdownParent: $("#exampleModalgrid")
-                });
-            }
-
-            if (userRoleModal === 'finance') {
-                $(function() {
-                    var dataRole = {
-                        id: bank_user_id,
-                        text: bank_user_nama,
-                        selected: true
-                    };
-                    var newOptionRole = new Option(dataRole.text, dataRole.id, false, false);
-                    $('#userbank').append(newOptionRole).trigger('change');
-                    $('#userbank').select2();
-                })
-            }
-
-
             $("#userBankOnanmedia").select2({
                 allowClear: true,
                 width: '100%',
@@ -327,11 +290,6 @@
             });
 
             $('.btn-pembayaran-jasa').on('click', function() {
-                if (!$('#userbank').val()) {
-                    alert('Bank Tidak Boleh Kosong');
-                    return false;
-                }
-
                 if (userRoleModal === 'finance') {
                     if (!$('#userBankOnanmedia').val()) {
                         alert('Bank Tidak Boleh Kosong');
@@ -347,7 +305,6 @@
                 if (!confirm('Anda yakin ingin approve?')) return false
 
                 var userName = $('#userName').val();
-                var userbank = $('#userbank').val();
                 var fd = new FormData()
                 fd.append('id', id)
                 fd.append('userName', userName)
@@ -355,8 +312,8 @@
                 fd.append('nomor_transaksi', nomor_order)
                 fd.append('total_nominal', harga)
                 fd.append('akunBankOnanmedia', $('#userBankOnanmedia').val())
-                fd.append('akun', $('#userbank').val())
-                fd.append('akunNama', $('#userbank').text())
+                fd.append('akun', bank_user_id)
+                fd.append('akunNama', bank_user_nama)
                 fd.append('keterangan_kas', pembeli + ' - ' + rekening_penjual)
 
                 if (userRoleModal === 'finance') fd.append('foto_detail', $('#formFile')[0].files[0])
