@@ -26,6 +26,6 @@ class OrderJasaModel extends Model
 
     public function jasa()
     {
-        return $this->hasOne(JasaModel::class, 'jasaId');
+        return $this->hasOne(JasaModel::class, 'id', 'jasaId');
     }
 }

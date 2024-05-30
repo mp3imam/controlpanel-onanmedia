@@ -53,6 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'url_onan' => env('APP_URL_ONAN', 'https://onanmedia.com'),
 
     'asset_url' => env('ASSET_URL', null),
 

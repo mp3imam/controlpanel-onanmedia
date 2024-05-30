@@ -71,6 +71,7 @@
                                             <th class="text-uppercase">No Rek Penjual</th>
                                             <th class="text-uppercase">Status</th>
                                             <th class="text-uppercase">Harga</th>
+                                            <th class="text-uppercase" hidden>slug</th>
                                             <th class="text-uppercase" hidden>Bank_User_Id</th>
                                             <th class="text-uppercase" hidden>Bank_User_Nama</th>
                                         </tr>
@@ -136,7 +137,7 @@
                     render: function(data, type, row) {
                         var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
                         var link = data.toLowerCase().replace(/ /g, '-');
-                        return `<a target="_blank" href="http://www.onanmedia.com/jasa/${row.penjual}/${link}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
+                        return `<a target="_blank" href="{{ config('app.url_onan') }}jasa/${row.penjual}/${row.slug}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
                     }
                 }, {
                     data: 'nomor_order',
@@ -180,6 +181,9 @@
                 }, {
                     data: 'harga',
                     name: 'Harga',
+                }, {
+                    data: 'slug',
+                    visible: false,
                 }, {
                     data: 'bank_public_penjual_id',
                     visible: false,

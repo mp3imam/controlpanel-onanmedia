@@ -28,6 +28,7 @@ class PembayaranJasaController extends Controller
      */
     function __construct()
     {
+        // dd(OrderJasaModel::with(['order.penjual.rekening.bank', 'order.pembeli', 'order.aktifitas', 'jasa'])->first());
         $this->middleware('permission:Pembayaran Jasa');
     }
 
@@ -55,7 +56,7 @@ class PembayaranJasaController extends Controller
                 return $row->order->penjual->phone;
             })
             ->addColumn('penjual', function ($row) {
-                return $row->order->penjual->name;
+                return $row->order->penjual->username;
             })
             ->addColumn('bank_public_penjual_id', function ($row) {
                 return $row->order->penjual->rekening->msBankId;
@@ -67,7 +68,10 @@ class PembayaranJasaController extends Controller
                 return $row->order->penjual->rekening ? $row->order->penjual->rekening->rekening : "-";
             })
             ->addColumn('pembeli', function ($row) {
-                return $row->order->pembeli->name;
+                return $row->order->pembeli->username;
+            })
+            ->addColumn('slug', function ($row) {
+                return $row->jasa->slug ?? '';
             })
             ->addColumn('status', function ($row) {
                 return $row->approveName == null && $row->financeName == null ? 'Validasi'
@@ -184,7 +188,7 @@ class PembayaranJasaController extends Controller
 
     public function models($request)
     {
-        return OrderJasaModel::with(['order.penjual.rekening.bank', 'order.pembeli', 'order.aktifitas'])->when($request->cari_status, function ($q) use ($request) {
+        return OrderJasaModel::with(['order.penjual.rekening.bank', 'order.pembeli', 'order.aktifitas', 'jasa'])->when($request->cari_status, function ($q) use ($request) {
             $status = $request->cari_status;
             $q->when($status == 1, fn ($query) => $query->whereNotNull('approveName')->whereNull('financeName'))
                 ->when($status == 2, fn ($query) => $query->whereNull('approveName'))
