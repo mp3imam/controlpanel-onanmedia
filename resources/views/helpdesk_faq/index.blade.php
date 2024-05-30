@@ -95,42 +95,19 @@
                         data: 'detail_id',
                         name: 'Nama',
                         render: function(data, type, row, meta) {
-                            return `<a class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" href="{{ url('helpdesk_list/`+row.id+`/edit') }}">${row.keluhan_nama}</a>`;
+                            return `<a class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" href="{{ url('helpdesk_list/`+row.id+`/edit') }}">${row.detail_judul}</a>`;
                         }
                     }, {
-                        data: 'keluhan_email',
-                        name: 'Email',
+                        data: 'judul',
+                        name: 'Judul',
                     }, {
-                        data: 'admin_id',
-                        name: 'Di Kerjakan Oleh'
-                    }, {
-                        data: 'keluhan',
+                        data: 'deksripsi',
                         name: 'Keluhan',
                     }, {
-                        data: 'tanggal_keluhan',
-                        name: 'Tanggal',
-                    }, {
-                        data: 'statuss',
+                        data: 'aktif',
                         name: 'Status',
                         render: function(data, type, row, meta) {
-                            switch (data) {
-                                case 'Dibuat':
-                                    bgColor = 'FFEDD5'
-                                    color = 'F97316'
-                                    break;
-                                case 'Dalam Proses':
-                                    bgColor = 'FEE2E2'
-                                    color = 'EF4444'
-                                    break;
-                                case 'Pending':
-                                    bgColor = 'D1FAE5'
-                                    color = '10B981'
-                                    break;
-                                default:
-                                    bgColor = 'DBEAFE'
-                                    color = '3B82F6'
-                            }
-                            return `<span class="badge" style="background-color:#${bgColor}; color: #${color}"><i class="mdi mdi-circle-medium"></i> ${data}</span>`;
+                            return `<span class="badge" style="background-color:#success;"><i class="mdi mdi-circle-medium"></i> ${data}</span>`;
                         }
                     }]
                 });

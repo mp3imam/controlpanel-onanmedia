@@ -137,7 +137,7 @@
                     render: function(data, type, row) {
                         var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
                         var link = data.toLowerCase().replace(/ /g, '-');
-                        return `<a target="_blank" href="{{ config('app.url_onan') }}jasa/${row.penjual}/${row.slug}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
+                        return `<a target="_blank" href="{{ config('app.url_onan') }}/jasa/${row.penjual}/${row.slug}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
                     }
                 }, {
                     data: 'nomor_order',
