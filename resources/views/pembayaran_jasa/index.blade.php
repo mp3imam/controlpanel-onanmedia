@@ -74,6 +74,7 @@
                                             <th class="text-uppercase" hidden>slug</th>
                                             <th class="text-uppercase" hidden>Bank_User_Id</th>
                                             <th class="text-uppercase" hidden>Bank_User_Nama</th>
+                                            <th class="text-uppercase" hidden>Status Jasa</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -137,7 +138,9 @@
                     render: function(data, type, row) {
                         var btn = data.length > 15 ? data.substr(0, 15) + '...' : data;
                         var link = data.toLowerCase().replace(/ /g, '-');
-                        return `<a target="_blank" href="{{ config('app.url_onan') }}/jasa/${row.penjual}/${row.slug}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
+                        if (row.status_jasa == 1)
+                            return `<a target="_blank" href="{{ config('app.url_onan') }}/jasa/${row.penjual}/${row.slug}" class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button">${btn}</a>`
+                        return btn;
                     }
                 }, {
                     data: 'nomor_order',
@@ -189,6 +192,9 @@
                     visible: false,
                 }, {
                     data: 'bank_public_penjual_nama',
+                    visible: false,
+                }, {
+                    data: 'status_jasa',
                     visible: false,
                 }]
             });

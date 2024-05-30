@@ -73,6 +73,9 @@ class PembayaranJasaController extends Controller
             ->addColumn('slug', function ($row) {
                 return $row->jasa->slug ?? '';
             })
+            ->addColumn('status_jasa', function ($row) {
+                return $row->jasa->msStatusJasaId;
+            })
             ->addColumn('status', function ($row) {
                 return $row->approveName == null && $row->financeName == null ? 'Validasi'
                     : ($row->approveName != null && $row->financeName != null ? 'Selesai'

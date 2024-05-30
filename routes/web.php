@@ -28,7 +28,6 @@ use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UserPublicController;
 use App\Http\Controllers\UserRolePageController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
