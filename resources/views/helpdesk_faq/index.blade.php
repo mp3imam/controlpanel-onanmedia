@@ -13,9 +13,16 @@
                 <div class="card-body">
                     <div id="customerList">
                         <div class="col-sm-auto mb-3">
-                            <div class="row g-4">
-                                <div class="row mt-4">
-                                    <div class="col-md-9 p-3">
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="input-group">
+                                        <a href="{{ route('helpdesk_faq.create') }}" class="btn btn-success" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">Tambah
+                                            Data</a>
+                                    </div>
+                                </div>
+                                <div class="row my-3">
+                                    <div class="col-md">
                                         <div class="input-group">
                                             <input class="form-control" id='cari' name="cari"
                                                 placeholder="Cari data user di sini">
@@ -31,11 +38,11 @@
                                         <thead class="text-white text-center text-uppercase"
                                             style="background-color: #405189 !important">
                                             <tr>
-                                                <th width="50px">No</th>
-                                                <th>Kategori</th>
+                                                <th width="10$">No</th>
+                                                <th width="20%">Kategori</th>
                                                 <th>Judul</th>
-                                                <th>Deskripsi</th>
-                                                <th>Action</th>
+                                                <th width="60%">Deskripsi</th>
+                                                <th width="10%">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -92,22 +99,25 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     }, {
-                        data: 'detail_id',
-                        name: 'Nama',
+                        data: 'kategori',
+                        name: 'Kategori'
+                    }, {
+                        data: 'Title',
+                        name: 'Judul',
                         render: function(data, type, row, meta) {
-                            return `<a class="btn btn-ghost-primary waves-effect waves-light text-right btn-sm" type="button" href="{{ url('helpdesk_list/`+row.id+`/edit') }}">${row.detail_judul}</a>`;
+                            return `<a class="btn btn-ghost-primary waves-effect waves-light btn-sm" type="button" href="{{ url('helpdesk_faq/`+row.id+`/edit') }}">${data}</a>`;
                         }
                     }, {
-                        data: 'judul',
-                        name: 'Judul',
+                        data: 'Content',
+                        name: 'Content',
                     }, {
-                        data: 'deksripsi',
-                        name: 'Keluhan',
-                    }, {
-                        data: 'aktif',
+                        data: 'isAktif',
                         name: 'Status',
+                        class: 'text-center',
                         render: function(data, type, row, meta) {
-                            return `<span class="badge" style="background-color:#success;"><i class="mdi mdi-circle-medium"></i> ${data}</span>`;
+                            return data == 1 ?
+                                '<button class="btn btn-success waves-effect waves-light btn-xl" type="button">Aktif</button>' :
+                                '<button class="btn btn-danger waves-effect waves-light btn-xl" type="button">Tidak Aktif</button>';
                         }
                     }]
                 });

@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Helpers\IdStringRandom;
 use App\Models\AdminBalasanTemplateModel;
 use App\Models\HelpdeskDetailModel;
-use App\Models\HelpdeskFAQModel;
+use App\Models\HelpdeskFAQDetailModel;
 use App\Models\HelpdeskFileDetailModel;
 use App\Models\HelpdeskModel;
 use App\Models\TemporaryFileUploadHelpdesk;
 use App\Models\UserPublicModel;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -50,22 +49,10 @@ class HelpdeskFAQController extends Controller
     {
         return
             DataTables::of($this->models($request))
-            ->addColumn('detail_id', function ($row) {
-                return $row->detail->id;
+            ->addColumn('kategori', function ($row) {
+                return $row->faq->Judul;
             })
-            ->addColumn('detail_judul', function ($row) {
-                return $row->detail->email;
-            })
-            ->addColumn('detail_status', function ($row) {
-                return $row->detail->is_aktif ?? '-';
-            })
-            ->addColumn('tanggal_keluhan', function ($row) {
-                return Carbon::parse($row->createdAt)->format('d-m-Y');
-            })
-            ->addColumn('statuss', function ($row) {
-                return $row->statuses->nama;
-            })
-            ->rawColumns(['keluhan_nama', 'keluhan_email', 'tanggal_keluhan', 'statuss'])
+            ->rawColumns(['kategori'])
             ->make(true);
     }
 
@@ -162,8 +149,7 @@ class HelpdeskFAQController extends Controller
         $title['title'] = $this->title;
         $title['li_1'] = $this->li_1;
 
-        $detail = HelpdeskFAQModel::with(['detail'])
-            ->findOrFail($id);
+        $detail = HelpdeskFAQDetailModel::with(['faq'])->findOrFail($id);
         return view('helpdesk_faq.detail', $title, compact(['detail']));
     }
 
@@ -229,45 +215,46 @@ class HelpdeskFAQController extends Controller
     {
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => HelpdeskFAQModel::findOrFail($id)->delete()
+            'message' => HelpdeskFAQDetailModel::findOrFail($id)->delete()
         ]);
     }
 
     public function models($request)
     {
-        return HelpdeskFAQModel::with(['details'])
+        return HelpdeskFAQDetailModel::with(['faq'])
+            ->whereNull('deletedAt')
             ->when($request->cari, function ($q) use ($request) {
-                $q->where('judul', 'ilike', '%' . $request->cari . '%')
-                    ->orWhereHas('details', function ($q) use ($request) {
-                        $q->where('title', 'ilike', '%' . $request->cari . '%')
-                            ->orWhere('content', 'ilike', '%' . $request->cari . '%');
+                $q->where('Title', 'ilike', '%' . $request->cari . '%')
+                    ->orWhere('Content', 'ilike', '%' . $request->cari . '%')
+                    ->orWhereHas('faq', function ($q) use ($request) {
+                        $q->where('Judul', 'ilike', '%' . $request->cari . '%');
                     });
             })
             ->when($request->order, function ($q) use ($request) {
                 if ($request->order[0]['column'] == "0")
-                    return  $q->orderBy('nomor');
+                    return  $q->whereHas('faq')->orderBy('Judul');
 
                 switch ($request->order[0]['column']) {
                     case '1':
-                        $order = 'userId';
+                        $order = 'Judul';
                         break;
                     case '2':
-                        $order = 'userId';
+                        $order = 'Judul';
                         break;
                     case '3':
-                        $order = 'userId';
+                        $order = 'Judul';
                         break;
                     case '4':
-                        $order = 'keluhan';
+                        $order = 'Judul';
                         break;
                     case '5':
-                        $order = 'createdAt';
+                        $order = 'Judul';
                         break;
                     case '6':
-                        $order = 'helpdeskStatusId';
+                        $order = 'Judul';
                         break;
                     default:
-                        $order = 'userId';
+                        $order = 'Judul';
                         break;
                 }
                 return $q->orderBy($order, $request->order[0]['dir']);
@@ -279,7 +266,7 @@ class HelpdeskFAQController extends Controller
     {
         return response()->json([
             'status'  => Response::HTTP_OK,
-            'message' => HelpdeskFAQModel::findOrFail($request->id)->update(['is_aktif' => 1])
+            'message' => HelpdeskFAQDetailModel::findOrFail($request->id)->update(['is_aktif' => 1])
         ]);
     }
 }
