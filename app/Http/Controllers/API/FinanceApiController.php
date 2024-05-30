@@ -39,7 +39,7 @@ class FinanceApiController extends Controller
             $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
             $request['dokumen'] = $request->nomor_transaksi;
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
-            $request['keterangan_kas'] = $request->keterangan_kas ?? '-';
+            $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
             $total_nominal = intval(str_replace(',', '', $request->total_nominal));
             $request['debet'] = $total_nominal;
             $request['kredit'] = $total_nominal;
