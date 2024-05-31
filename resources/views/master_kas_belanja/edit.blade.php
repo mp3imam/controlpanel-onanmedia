@@ -442,14 +442,14 @@
             //     text: "Pembelian Barang",
             //     selected: true
             // };
-            // if (item.account_id !== null) data = {
-            //     id: item.account_id,
-            //     text: item.coa_belanja.uraian,
-            //     selected: true
-            // };
-            // var newOption = new Option(data.text, data.id, false, false)
-            // $('#akun' + item.id).append(newOption).trigger('change')
-            // $('#akun' + item.id).select2()
+            if (item.account_id !== null) data = {
+                id: item.account_id,
+                text: item.coa_belanja.uraian,
+                selected: true
+            };
+            var newOption = new Option(data.text, data.id, false, false)
+            $('#akun' + item.id).append(newOption).trigger('change')
+            $('#akun' + item.id).select2()
 
             if (item.status < 2) {
                 $("#akun" + item.id).select2({
