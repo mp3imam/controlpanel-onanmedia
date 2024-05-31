@@ -39,11 +39,12 @@ class FinanceApiController extends Controller
             $request['tanggal_transaksi'] = Carbon::now()->format('Y-m-d');
             $request['dokumen'] = $request->nomor_transaksi;
             $request['nomor_transaksi'] = "$nomor/JUR/$tahun";
+            $request['uraian'] = "Pembayaran Jasa " . $request->username . " - " . $request->nama_bank;
             $request['keterangan_jurnal_umum'] = $request->keterangan_kas ?? '-';
             $total_nominal = intval(str_replace(',', '', $request->total_nominal));
             $request['debet'] = $total_nominal;
             $request['kredit'] = $total_nominal;
-            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_PENGEMBALIAN;
+            $request['sumber_data'] = MasterBankCashModel::KATEGORY_KAS_PEMBAYARAN_JASA;
             $request['user_onan'] = $request->username;
             $request['approve_finance'] = 'System';
             $request['transfer_finance'] = 'System';
@@ -62,12 +63,19 @@ class FinanceApiController extends Controller
             JurnalUmumDetail::create($request->except('_token'));
 
             // Masukin gambar ke Jurnal Umum Detail
-            if ($request->foto_detail != null)
+            if ($request->foto_detail != null) {
+                $file = $request->file('foto_detail');
+                $path = public_path('pembayaran-jasa/');
+                $rand = rand(1000, 9999);
+                $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
+                $file->move($path, $imageName);
+
                 MasterJurnalFile::create([
                     'jurnal_umum_id' => $masterJurnal->id,
-                    'path'           => asset('kas_belanja/'),
-                    'filename'       => str_replace(asset('kas_belanja/') . "/", '', $request->foto_detail),
+                    'path'           => asset('pembayaran-jasa/') . $imageName,
+                    'filename'       => $imageName,
                 ]);
+            }
 
             DB::commit();
             return response()->json([

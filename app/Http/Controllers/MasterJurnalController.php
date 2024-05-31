@@ -313,7 +313,7 @@ class MasterJurnalController extends Controller
 
     public function models($request)
     {
-        return MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'coa_jurnal_umum', 'jurnal_file'])
+        return MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'details.jurnal_banks', 'coa_jurnal_umum', 'jurnal_file'])
             ->when($request->cari, function ($q) use ($request) {
                 $q->where('nomor_transaksi', 'ilike', '%' . $request->cari . '%')
                     ->orWhere('debet', 'ilike', '%' . $request->cari . '%')
@@ -335,7 +335,16 @@ class MasterJurnalController extends Controller
 
     public function get_pdf(Request $request)
     {
-        $datas = MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'coa_jurnal_umum', 'jurnal_file'])
+        $datas = MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'details.jurnal_banks', 'coa_jurnal_umum', 'jurnal_file'])
+            ->when($request->tanggal, function ($q) use ($request) {
+                $tanggal = explode(" to ", $request->tanggal);
+                $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
+                    $q->where('tanggal_transaksi', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'));
+                });
+                $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
+                    $q->where('tanggal_transaksi', '>=', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::createFromFormat('d M, Y', $tanggal[1])->format('Y-m-d'));
+                });
+            })
             ->when($request->cari, function ($q) use ($request) {
                 $q->where('nomor_transaksi', 'ilike', '%' . $request->cari . "%")
                     ->orWhere('keterangan_jurnal_umum', 'ilike', "%" . $request->cari . "%");
@@ -343,7 +352,16 @@ class MasterJurnalController extends Controller
             ->oldest()
             ->get();
 
-        $total = MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'coa_jurnal_umum', 'jurnal_file'])
+        $total = MasterJurnal::with(['details.jurnal_banks', 'details.coa_jurnal', 'details.jurnal_banks', 'coa_jurnal_umum', 'jurnal_file'])
+            ->when($request->tanggal, function ($q) use ($request) {
+                $tanggal = explode(" to ", $request->tanggal);
+                $q->when(count($tanggal) == 1, function ($q) use ($tanggal) {
+                    $q->where('tanggal_transaksi', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'));
+                });
+                $q->when(count($tanggal) == 2, function ($q) use ($tanggal) {
+                    $q->where('tanggal_transaksi', '>=', Carbon::createFromFormat('d M, Y', $tanggal[0])->format('Y-m-d'))->where('tanggal_transaksi', '<=', Carbon::createFromFormat('d M, Y', $tanggal[1])->format('Y-m-d'));
+                });
+            })
             ->when($request->cari, function ($q) use ($request) {
                 $q->where('nomor_transaksi', 'like', '%' . $request->cari . "%")
                     ->orWhere('keterangan_jurnal_umum', 'like', "%" . $request->cari . "%");
