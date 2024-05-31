@@ -580,7 +580,7 @@ class MasterKasBelanjaController extends Controller
         DB::beginTransaction();
         try {
             // All Approve
-            $file = $request->file('upload_bukti_belanja');
+            $file = $request->file('upload_bukti_pembayaran');
             $path = public_path('upload_bukti/');
             $rand = rand(1000, 9999);
             $imageName = Carbon::now()->format('H:i:s') . "_$rand." . $file->extension();
