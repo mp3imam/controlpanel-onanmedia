@@ -266,7 +266,7 @@ class MasterBankCashController extends Controller
                     $kasDetail = [
                         'kas_id'     => $request->id,
                         'account_id' => $request->akun[$kasBelanja],
-                        'keterangan' => $request->keterangan[$kasBelanja],
+                        'keterangan' => $request->keterangan[$kasBelanja] ?? '',
                         'nominal'    => $request->jumlah[$kasBelanja],
                         'nama_item'  => $request->nama_item[$kasBelanja],
                         'qty'        => $request->qty[$kasBelanja],
