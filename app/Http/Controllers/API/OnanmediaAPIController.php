@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\AgamaModel;
 use App\Models\BankModel;
+use App\Models\BankUserPublicModel;
 use App\Models\DepartementModel;
 use App\Models\DivisiModel;
 use App\Models\KategoriModel;
@@ -446,6 +447,19 @@ class OnanmediaAPIController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'data'   => TipePajakModel::select('id', 'nama as name')
+                ->when($request->q, function ($q) use ($request) {
+                    return $q->where('nama', 'ilike', '%' . $request->q . '%');
+                })
+                ->get()
+                ->all()
+        ]);
+    }
+
+    public function select2_bank_user_public(Request $request)
+    {
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'data'   => BankUserPublicModel::select('id', 'nama as name')
                 ->when($request->q, function ($q) use ($request) {
                     return $q->where('nama', 'ilike', '%' . $request->q . '%');
                 })

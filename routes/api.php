@@ -53,6 +53,9 @@ Route::get('get_select2_uraian_coa', [OnanmediaAPIController::class, 'select2_ur
 Route::get('get_select2_banks_coa', [OnanmediaAPIController::class, 'select2_banks_coa'])->name('api.get_select2_banks_coa');
 Route::get('get_select2_satuan_barang', [OnanmediaAPIController::class, 'get_select2_satuan_barang'])->name('api.get_select2_satuan_barang');
 
+// User Bank Public
+Route::get('get_select2_banks_user_public', [OnanmediaAPIController::class, 'get_select2_banks_user_public'])->name('api.get_select2_banks_user_public');
+
 // count number coa
 Route::get('count_kdrek1_coa', [OnanmediaAPIController::class, 'count_kdrek1_coa'])->name('api.count_kdrek1_coa');
 Route::get('count_kdrek2_coa', [OnanmediaAPIController::class, 'count_kdrek2_coa'])->name('api.count_kdrek2_coa');

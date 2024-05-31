@@ -77,7 +77,8 @@ return [
 
     'middleware' => [
         'web',
-        Authorize::class,
+        'auth.basic'
+        // Authorize::class,
     ],
 
     /*
