@@ -58,6 +58,7 @@
                                         ($data->sumber_data == 4 && $loop->last) ||
                                         ($data->sumber_data == 2 && $loop->last))
                                     {{ $d->jurnal_banks->nama }}
+                                @elseif ($data->sumber_data == 5)
                                 @else
                                     {{ $d->coa_jurnal->uraian }}
                                 @endif

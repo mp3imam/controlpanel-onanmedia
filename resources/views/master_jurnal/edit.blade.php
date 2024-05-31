@@ -318,7 +318,8 @@
     $.each(f, function(i, item) {
         var dataId = item.coa_jurnal.id
         var dataText = item.coa_jurnal.uraian
-        if (i !== 1 && s == 3 || i == f.length - 1 && s == 4 || i == f.length - 1 && s == 2) {
+        if (i !== 1 && s == 3 || i == f.length - 1 && s == 4 || i == f.length - 1 && s == 2 || i == f.length -
+            1 && s == 5) {
             dataId = item.jurnal_banks.id
             dataText = item.jurnal_banks.nama
         } else if (i !== 1 && s == 6) {
